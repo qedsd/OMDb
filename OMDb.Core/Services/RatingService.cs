@@ -28,10 +28,15 @@ namespace OMDb.Core.Services
             {
                 Rates = container.GetExports<IRate>();
             }
-            foreach(var rate in Rates)
+        }
+        public static IEnumerable<Models.Rating> GetRatings(string id)
+        {
+            List<Models.Rating> ratings = new List<Models.Rating>();
+            foreach (var rate in Rates)
             {
-                var r = rate.Rate();
+                ratings.Add(rate.Rate(id));
             }
+            return ratings;
         }
     }
 }

@@ -1,23 +1,20 @@
 ﻿using OMDb.Core.Interfaces;
 using OMDb.Core.Models;
-using System.Composition;
 using System;
 using System.Collections.Generic;
+using System.Composition;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-namespace OMDb.IMDb
+namespace OMDb.Douban
 {
     [Export(typeof(IRate))]
     public class Rate : IRate
     {
         Rating IRate.Rate(string id)
         {
-            return new Rating(9, 10,"IMDb");
+            return new Rating(3, 5,"douban");
         }
     }
 }

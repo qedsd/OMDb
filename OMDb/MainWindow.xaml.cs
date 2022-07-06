@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -27,12 +28,19 @@ namespace OMDb
         public MainWindow()
         {
             this.InitializeComponent();
+            RatingService.Init();
         }
 
         private void myButton_Click(object sender, RoutedEventArgs e)
         {
             myButton.Content = "Clicked";
-            RatingService.Init();
+            var s = RatingService.GetRatings("test");
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach(var p in s)
+            {
+                stringBuilder.AppendLine(p.ToString());
+            }
+            RateTextBlock.Text = stringBuilder.ToString();
         }
     }
 }
