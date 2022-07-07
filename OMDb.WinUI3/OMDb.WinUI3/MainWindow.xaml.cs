@@ -28,12 +28,15 @@ namespace OMDb.WinUI3
         {
             myButton.Content = "Clicked";
             var s = RatingService.GetRatings("test");
-            StringBuilder stringBuilder = new StringBuilder();
-            foreach (var p in s)
+            if (s != null)
             {
-                stringBuilder.AppendLine(p.ToString());
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var p in s)
+                {
+                    stringBuilder.AppendLine(p.ToString());
+                }
+                RateTextBlock.Text = stringBuilder.ToString();
             }
-            RateTextBlock.Text = stringBuilder.ToString();
         }
     }
 }

@@ -16,6 +16,11 @@ namespace OMDb.Core.Services
         private static IEnumerable<IRate> Rates;
         public static void Init()
         {
+            if(!System.IO.Directory.Exists(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins")))
+            {
+                System.IO.Directory.CreateDirectory(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins"));
+                return;
+            }
             var assembiles = System.IO.Directory.GetFiles(System.IO.Path.Combine(AppContext.BaseDirectory,"Plugins"), "*.dll", System.IO.SearchOption.TopDirectoryOnly)
                 .Select(AssemblyLoadContext.Default.LoadFromAssemblyPath);
 
@@ -31,12 +36,19 @@ namespace OMDb.Core.Services
         }
         public static IEnumerable<Models.Rating> GetRatings(string id)
         {
-            List<Models.Rating> ratings = new List<Models.Rating>();
-            foreach (var rate in Rates)
+            if (Rates != null)
             {
-                ratings.Add(rate.Rate(id));
+                List<Models.Rating> ratings = new List<Models.Rating>();
+                foreach (var rate in Rates)
+                {
+                    ratings.Add(rate.Rate(id));
+                }
+                return ratings;
             }
-            return ratings;
+            else
+            {
+                return null;
+            }
         }
     }
 }
