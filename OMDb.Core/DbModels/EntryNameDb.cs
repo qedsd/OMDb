@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,11 +11,13 @@ namespace OMDb.Core.DbModels
     /// 词条名称
     /// 一个词条可能存在多个不同语言名称
     /// </summary>
-    public class EntryName
+    [SugarTable("EntryName")]
+    public class EntryNameDb
     {
         /// <summary>
         /// 词条本地唯一Id
         /// </summary>
+        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
         public string Id { get; set; }
         /// <summary>
         /// 词条名称

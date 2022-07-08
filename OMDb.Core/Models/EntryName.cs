@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Models
 {
-    public class Entry: DbModels.EntryDb
+    public class EntryName : DbModels.EntryNameDb
     {
         /// <summary>
         /// 所属数据库唯一标识
         /// </summary>
         public string DbId { get; set; }
-        public string Name { get; set; }
-        public static Entry Create(DbModels.EntryDb entryDb,string DbId)
+        public static EntryName Create(DbModels.EntryNameDb dbItem, string DbId)
         {
-            var entry = entryDb.DepthClone<Entry>();
-            if (entry != null)
+            var newItem = dbItem.DepthClone<EntryName>();
+            if (newItem != null)
             {
-                entry.DbId = DbId;
+                newItem.DbId = DbId;
             }
-            return entry;
+            return newItem;
         }
     }
 }

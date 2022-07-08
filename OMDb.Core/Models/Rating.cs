@@ -12,6 +12,16 @@ namespace OMDb.Core.Models
     public class Rating
     {
         /// <summary>
+        /// 评分者
+        /// 如豆瓣、IMDB
+        /// </summary>
+        public string Rater { get; set; }
+        /// <summary>
+        /// 评分者logo
+        /// 路径相对软件运行目录下的Img文件夹
+        /// </summary>
+        public string Icon { get; set; }
+        /// <summary>
         /// 最大分
         /// </summary>
         public double Max { get; set; }
