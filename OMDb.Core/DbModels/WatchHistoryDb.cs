@@ -16,7 +16,6 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 词条本地唯一Id
         /// </summary>
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
         public string Id { get; set; }
         public DateTime Time { get; set; }
         /// <summary>

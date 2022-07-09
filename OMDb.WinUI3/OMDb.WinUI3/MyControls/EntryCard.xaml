@@ -1,0 +1,16 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.EntryCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.MyControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Image x:Name="Image_Cover" Stretch="UniformToFill" />
+        <Grid VerticalAlignment="Bottom">
+            <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center" />
+        </Grid>
+    </Grid>
+</UserControl>

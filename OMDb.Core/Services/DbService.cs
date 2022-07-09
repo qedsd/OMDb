@@ -22,7 +22,7 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="connet"></param>
         /// <param name="configId"></param>
-        public static bool AddDb(string connet,string configId)
+        public static bool AddDb(string connet,string configId, bool needCodeFirst)
         {
             if (DbConfigIds.Add(configId))
             {
@@ -46,15 +46,22 @@ namespace OMDb.Core.Services
                         ConfigId = configId
                     });
                 }
-                if(CodeFirst(configId))
+                if (needCodeFirst)
                 {
-                    return true;
+                    if (CodeFirst(configId))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        DbConfigIds.Remove(configId);
+                        //按理说这里还得移除Connection，但是没找到相应接口
+                        return false;
+                    }
                 }
                 else
                 {
-                    DbConfigIds.Remove(configId);
-                    //按理说这里还得移除Connection，但是没找到相应接口
-                    return false;
+                    return true;
                 }
             }
             else
@@ -69,7 +76,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         private static bool CodeFirst(string dbId)
         {
-            if(Db.GetConnection(dbId).DbMaintenance.CreateDatabase())
+            if (Db.GetConnection(dbId).DbMaintenance.CreateDatabase())
             {
                 var types = typeof(Entry).Assembly.GetTypes().Where(p => p.FullName.Contains("DbModels")).ToArray();
                 Db.GetConnection(dbId).CodeFirst.InitTables(types);

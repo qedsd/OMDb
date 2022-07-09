@@ -10,14 +10,94 @@
     <UseWinUI>true</UseWinUI>
     <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Remove="Assets\Img\p2873860568.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Dialogs\EditStorageDialog.xaml" />
+    <None Remove="Dialogs\MsgDialog.xaml" />
+    <None Remove="Dialogs\QueryDialog.xaml" />
+    <None Remove="MyControls\EntryCard.xaml" />
+    <None Remove="MyControls\NotifyPopup.xaml" />
+    <None Remove="MyControls\StorageCard.xaml" />
+    <None Remove="Strings\en-us\Resources.resw" />
+    <None Remove="Strings\zh-CN\Resources.resw" />
+    <None Remove="Views\EntryPage.xaml" />
+    <None Remove="Views\HomePage.xaml" />
+    <None Remove="Views\ShellPage.xaml" />
+    <None Remove="Views\StoragePage.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+    <PackageReference Include="PropertyChanged.Fody" Version="3.4.1" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\EntryCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\MsgDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\NotifyPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\QueryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\StoragePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\EntryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\HomePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ShellPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\StorageCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\EditStorageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

@@ -33,6 +33,12 @@ namespace OMDb.WinUI3
         public App()
         {
             this.InitializeComponent();
+            UnhandledException += App_UnhandledException;
+        }
+
+        private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+        {
+            e.Handled = true;
         }
 
         /// <summary>
@@ -42,6 +48,7 @@ namespace OMDb.WinUI3
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            Services.ActivationService.Init();
             m_window = new MainWindow();
             m_window.Activate();
         }

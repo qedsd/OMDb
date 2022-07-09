@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Dialogs.EditStorageDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Dialogs"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="page"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <StackPanel>
+        <TextBox
+            x:Name="StorageName"
+            Width="400"
+            Margin="10"
+            Header="名字"
+            Text="{x:Bind EnrtyStorage.StorageName, Mode=TwoWay}" />
+        <StackPanel Margin="10" Orientation="Horizontal">
+            <TextBox
+                x:Name="StoragePath"
+                Width="320"
+                Header="路径"
+                Text="{x:Bind EnrtyStorage.StoragePath, Mode=TwoWay}" />
+            <Button
+                VerticalAlignment="Bottom"
+                Click="Button_NewStoragePath_Click"
+                ToolTipService.ToolTip="新建">
+                <SymbolIcon Symbol="NewFolder" />
+            </Button>
+            <Button
+                VerticalAlignment="Bottom"
+                Click="Button_PickStorage_Click"
+                ToolTipService.ToolTip="已有">
+                <SymbolIcon Symbol="OpenFile" />
+            </Button>
+        </StackPanel>
+        <StackPanel Margin="10" Orientation="Horizontal">
+            <TextBox
+                x:Name="CoverImg"
+                Width="360"
+                Header="封面"
+                Text="{x:Bind Path=EnrtyStorage.CoverImg, Mode=TwoWay}" />
+            <Button VerticalAlignment="Bottom" Click="Button_CoverImg_Click">
+                <SymbolIcon Symbol="OpenFile" />
+            </Button>
+        </StackPanel>
+    </StackPanel>
+</Page>

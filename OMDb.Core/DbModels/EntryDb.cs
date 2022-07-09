@@ -16,13 +16,18 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 本地唯一Id
         /// </summary>
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
+        [SugarColumn(IsPrimaryKey = true)]
         public string Id { get; set; }
         /// <summary>
         /// 文件夹存储路径
         /// 当前数据库相对路径
         /// </summary>
         public string Path { get; set; }
+        /// <summary>
+        /// 封面图片
+        /// 相对Path路径
+        /// </summary>
+        public string CoverImg { get; set; }
         /// <summary>
         /// 词条创建时间
         /// </summary>

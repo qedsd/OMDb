@@ -37,7 +37,10 @@ namespace OMDb.Core.Services
                 };
             }
         }
-
+        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<int> labelIds = null)
+        {
+            return await Task.Run(()=> QueryEntry(sortType, sortWay, labelIds));
+        }
         private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<int> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
@@ -355,6 +358,11 @@ namespace OMDb.Core.Services
                   connet.Deleteable<EntryNameDb>().In(ids);
                   connet.Deleteable<WatchHistoryDb>().In(ids);
               });
+        }
+
+        public static async Task<int> QueryEntryCountAsync(string dbId)
+        {
+            return await DbService.Db.GetConnection(dbId).Queryable<EntryDb>().CountAsync();
         }
     }
 }

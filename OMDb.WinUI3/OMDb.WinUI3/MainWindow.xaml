@@ -5,21 +5,47 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="using:OMDb.WinUI3.Views"
     mc:Ignorable="d">
 
-    <Grid>
-        <Button
-            x:Name="myButton"
-            Margin="0,0,0,100"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Click="myButton_Click">
-            Click Me
-        </Button>
-        <TextBlock
-            x:Name="RateTextBlock"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            TextWrapping="Wrap" />
+    <Grid Background="Transparent">
+        <Grid
+            Height="48"
+            VerticalAlignment="Top"
+            Canvas.ZIndex="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Border
+                Name="AppTitleLeftBorder"
+                Grid.Column="0"
+                Width="48" />
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Image
+                    Width="16"
+                    Height="16"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Source="/Assets/Logo/Square44x44Logo.scale-100.png" />
+                <TextBlock
+                    x:Uid="AppDisplayNameTextBlock"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource CaptionTextBlockStyle}" />
+            </StackPanel>
+
+            <!--  Draggable part of the title bar  -->
+            <Border
+                x:Name="AppTitleBar"
+                Grid.Column="1"
+                Height="32"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top" />
+        </Grid>
+        <views:ShellPage Grid.Row="1" />
     </Grid>
+
 </Window>

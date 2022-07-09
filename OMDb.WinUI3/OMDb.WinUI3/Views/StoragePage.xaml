@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.StoragePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+
+    <Grid>
+        <controls:AdaptiveGridView
+            Padding="20"
+            DesiredWidth="220"
+            IsItemClickEnabled="True"
+            ItemHeight="300"
+            ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
+            OneRowModeEnabled="False"
+            SelectedItem="{x:Bind VM.EnrtyStorage, Mode=TwoWay}"
+            SelectionMode="None"
+            StretchContentForSingleRow="False">
+            <controls:AdaptiveGridView.ItemTemplate>
+                <DataTemplate>
+                    <mycontrols:StorageCard EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                </DataTemplate>
+            </controls:AdaptiveGridView.ItemTemplate>
+        </controls:AdaptiveGridView>
+    </Grid>
+</Page>
