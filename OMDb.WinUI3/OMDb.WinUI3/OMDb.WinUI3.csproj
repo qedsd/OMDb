@@ -14,8 +14,10 @@
     <Content Remove="Assets\Img\p2873860568.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Dialogs\EditEntryDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
+    <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
@@ -39,6 +41,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\MyContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\EditEntryDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

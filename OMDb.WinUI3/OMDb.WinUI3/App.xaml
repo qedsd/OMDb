@@ -12,6 +12,7 @@
             <!--  Other app resources here  -->
             <SolidColorBrush x:Key="WindowCaptionBackground">Transparent</SolidColorBrush>
             <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled">Transparent</SolidColorBrush>
+            <x:Double x:Key="ContentDialogMaxWidth">1000</x:Double>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

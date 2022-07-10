@@ -50,7 +50,11 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     enrtyStorage.Update((dialog.Content as EditStorageDialog).EnrtyStorage);
                 }
-                return (dialog.Content as EditStorageDialog).EnrtyStorage;
+                else
+                {
+                    enrtyStorage = (dialog.Content as EditStorageDialog).EnrtyStorage;
+                }
+                return enrtyStorage;
             }
             else
             {

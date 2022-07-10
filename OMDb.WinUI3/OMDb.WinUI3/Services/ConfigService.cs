@@ -11,6 +11,7 @@ namespace OMDb.WinUI3.Services
 {
     public static class ConfigService
     {
+        public static string DefaultEntryFolder { get; } = "Entries";
         public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = new ObservableCollection<EnrtyStorage>();
         private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
         public static void Load()

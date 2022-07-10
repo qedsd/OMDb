@@ -36,6 +36,17 @@
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>
+            <!--<Button
+                Margin="0,0,20,20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                CornerRadius="8"
+                ToolTipService.ToolTip="新增词条">
+                <SymbolIcon Symbol="Add" />
+            </Button>-->
+        </Grid>
+        <Grid Grid.Row="2">
+            <!--  分页导航区  -->
         </Grid>
     </Grid>
 </Page>

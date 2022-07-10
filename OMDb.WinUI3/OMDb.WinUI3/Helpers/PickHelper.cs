@@ -15,6 +15,21 @@ namespace OMDb.WinUI3.Helpers
         /// </summary>
         /// <param name="filter"></param>
         /// <returns></returns>
+        public static async Task<StorageFile> PickImgAsync()
+        {
+            List<string> ps = new List<string>()
+            {
+                ".jpg",
+                ".jpeg",
+                ".png"
+            };
+            return await PickFileAsync(ps);
+        }
+        /// <summary>
+        /// 选择文件
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public static async Task<StorageFile> PickFileAsync(string filter)
         {
             return await PickFileAsync(new List<string>() { filter });

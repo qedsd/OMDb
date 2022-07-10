@@ -36,5 +36,26 @@ namespace OMDb.Core.Extensions
                 return default(T);
             }
         }
+
+        /// <summary>
+        /// 复制target的同名属性、自动到自身
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="target"></param>
+        public static void CopyFrom<T>(this object obj,T target)
+        {
+            var type = typeof(T);
+            foreach (var sourceProperty in type.GetProperties())
+            {
+                var targetProperty = type.GetProperty(sourceProperty.Name);
+                targetProperty.SetValue(obj, sourceProperty.GetValue(target, null), null);
+            }
+            foreach (var sourceField in type.GetFields())
+            {
+                var targetField = type.GetField(sourceField.Name);
+                targetField.SetValue(obj, sourceField.GetValue(target));
+            }
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
                     Enums.SortType.CreateTime => SortByCreateTime(sortWay, labelIds),
                     Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, labelIds),
                     Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, labelIds),
-                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, labelIds),
+                    //Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, labelIds),
                     Enums.SortType.MyRating => SortByMyRating(sortWay, labelIds),
                     _ => null,
                 };
@@ -164,47 +164,47 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<int> labelIds = null)
-        {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            foreach (var dbid in DbService.DbConfigIds)
-            {
-                var db = DbService.Db.GetConnection(dbid);
-                if (db != null)
-                {
-                    if (labelIds != null)
-                    {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .In(inLabelEntryIds)
-                            .Select(p => new { p.Id, p.WatchTimes })
-                            .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, dbid));
-                        });
-                    }
-                    else
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .Select(p => new { p.Id, p.WatchTimes })
-                            .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, dbid));
-                        });
-                    }
-                }
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
-        }
+        //private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<int> labelIds = null)
+        //{
+        //    List<QueryResult> queryResults = new List<QueryResult>();
+        //    foreach (var dbid in DbService.DbConfigIds)
+        //    {
+        //        var db = DbService.Db.GetConnection(dbid);
+        //        if (db != null)
+        //        {
+        //            if (labelIds != null)
+        //            {
+        //                var inLabelEntryIds = LabelService.GetEntrys(labelIds);
+        //                var ls = db.Queryable<DbModels.EntryDb>()
+        //                    .In(inLabelEntryIds)
+        //                    .Select(p => new { p.Id, p.WatchTimes })
+        //                    .ToList();
+        //                ls.ForEach(p =>
+        //                {
+        //                    queryResults.Add(new QueryResult(p.Id, p.WatchTimes, dbid));
+        //                });
+        //            }
+        //            else
+        //            {
+        //                var ls = db.Queryable<DbModels.EntryDb>()
+        //                    .Select(p => new { p.Id, p.WatchTimes })
+        //                    .ToList();
+        //                ls.ForEach(p =>
+        //                {
+        //                    queryResults.Add(new QueryResult(p.Id, p.WatchTimes, dbid));
+        //                });
+        //            }
+        //        }
+        //    }
+        //    if (sortWay == Enums.SortWay.Positive)
+        //    {
+        //        return queryResults.OrderBy(p => p.Value).ToList();
+        //    }
+        //    else
+        //    {
+        //        return queryResults.OrderByDescending(p => p.Value).ToList();
+        //    }
+        //}
         private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<int> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
@@ -364,5 +364,7 @@ namespace OMDb.Core.Services
         {
             return await DbService.Db.GetConnection(dbId).Queryable<EntryDb>().CountAsync();
         }
+
+
     }
 }

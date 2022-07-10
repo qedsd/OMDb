@@ -41,10 +41,6 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public DateTime LastUpdateTime { get; set; }
         /// <summary>
-        /// 观看次数
-        /// </summary>
-        public int WatchTimes { get; set; }
-        /// <summary>
         /// 我的评分
         /// </summary>
         public double? MyRating { get; set; }
