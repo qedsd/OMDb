@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 

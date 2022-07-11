@@ -8,7 +8,7 @@
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="using:OMDb.WinUI3.Views"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Background="Transparent"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -93,7 +93,7 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
-            <Frame x:Name="shellFrame" />
+            <Frame x:Name="shellFrame" Background="Transparent"/>
         </NavigationView>
 
 
