@@ -53,13 +53,5 @@ namespace OMDb.WinUI3
         //        RateTextBlock.Text = stringBuilder.ToString();
         //    }
         //}
-        public async void Pick()
-        {
-            FileOpenPicker openPicker = new FileOpenPicker();
-            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
-            openPicker.FileTypeFilter.Add("*");
-            await openPicker.PickSingleFileAsync();
-        }
     }
 }

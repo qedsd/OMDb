@@ -17,7 +17,10 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Button Height="256" Click="Button_CoverImg_Click">
+        <Button
+            Height="256"
+            Background="Transparent"
+            Click="Button_CoverImg_Click">
             <Grid>
                 <StackPanel HorizontalAlignment="Center">
                     <SymbolIcon Symbol="Add" />
@@ -72,7 +75,10 @@
                     DisplayMemberPath="StorageName"
                     ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
                     SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
-                <TextBox Grid.Column="1" Text="{x:Bind VM.EntryPath, Mode=TwoWay}" Margin="4,0"/>
+                <TextBox
+                    Grid.Column="1"
+                    Margin="4,0"
+                    Text="{x:Bind VM.EntryPath, Mode=TwoWay}" />
                 <Button
                     Grid.Column="2"
                     VerticalAlignment="Bottom"

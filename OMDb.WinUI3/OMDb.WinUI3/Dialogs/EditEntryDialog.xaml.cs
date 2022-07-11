@@ -31,7 +31,6 @@ namespace OMDb.WinUI3.Dialogs
             else
             {
                 VM.Entry = entry.DepthClone<Core.Models.Entry>();
-                //VM.FullPathCoverImg = Converters.EntryCoverImgConverter.Convert(VM.Entry);
                 Image_CoverImg.Source = new BitmapImage(new Uri(Converters.EntryCoverImgConverter.Convert(VM.Entry)));
             }
             

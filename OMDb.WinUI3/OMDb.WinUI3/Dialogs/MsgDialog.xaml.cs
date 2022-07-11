@@ -31,15 +31,11 @@ namespace OMDb.WinUI3.Dialogs
         }
         public static async Task ShowDialog(string content, string title = "提示")
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.XamlRoot = MainWindow.Instance.Content.XamlRoot;
-            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-            dialog.Title = title;
-            dialog.IsPrimaryButtonEnabled = false;
-            dialog.IsSecondaryButtonEnabled = false;
-            dialog.CloseButtonText = "关闭";
-            dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.Content = new MsgDialog(content);
+            MyContentDialog dialog = new MyContentDialog();
+            dialog.TitleTextBlock.Text = title;
+            dialog.PrimaryButton.Visibility = Visibility.Collapsed;
+            dialog.CancelButton.Content = "关闭";
+            dialog.ContentFrame.Content = new MsgDialog(content);
             await dialog.ShowAsync();
         }
     }

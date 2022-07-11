@@ -35,16 +35,11 @@ namespace OMDb.WinUI3.Dialogs
         }
         public static async Task<Models.EnrtyStorage> ShowDialog(Models.EnrtyStorage enrtyStorage = null)
         {
-            ContentDialog dialog = new ContentDialog();
-            dialog.XamlRoot = MainWindow.Instance.Content.XamlRoot;
-            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-            dialog.Title = enrtyStorage == null ? "新建仓库" : "编辑仓库";
-            dialog.PrimaryButtonText = "保存";
-            dialog.IsSecondaryButtonEnabled = false;
-            dialog.CloseButtonText = "取消";
-            dialog.DefaultButton = ContentDialogButton.Primary;
-            dialog.RequestedTheme = Services.ThemeSelectorService.Theme;
-            dialog.Content = new EditStorageDialog(enrtyStorage);
+            MyContentDialog dialog = new MyContentDialog();
+            dialog.TitleTextBlock.Text = enrtyStorage == null ? "新建仓库" : "编辑仓库";
+            dialog.PrimaryButton.Content = "保存";
+            dialog.CancelButton.Content = "取消";
+            dialog.ContentFrame.Content = new EditStorageDialog(enrtyStorage);
             if(await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 if(enrtyStorage != null)

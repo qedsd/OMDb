@@ -1,10 +1,12 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -51,5 +53,19 @@ namespace OMDb.WinUI3.ViewModels
             }
             SelectedEnrtyStorage = EnrtyStorages.FirstOrDefault();
         }
+
+        public ICommand CheckDefaultCommand => new RelayCommand<Models.EntryName>((selected) =>
+        {
+            if (selected != null)
+            {
+                EntryNames.ForEach(p =>
+                {
+                    if (p.IsDefault && p != selected)
+                    {
+                        p.IsDefault = false;
+                    }
+                });
+            }
+        });
     }
 }
