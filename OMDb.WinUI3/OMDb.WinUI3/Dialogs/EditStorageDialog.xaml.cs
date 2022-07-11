@@ -43,6 +43,7 @@ namespace OMDb.WinUI3.Dialogs
             dialog.IsSecondaryButtonEnabled = false;
             dialog.CloseButtonText = "取消";
             dialog.DefaultButton = ContentDialogButton.Primary;
+            dialog.RequestedTheme = Services.ThemeSelectorService.Theme;
             dialog.Content = new EditStorageDialog(enrtyStorage);
             if(await dialog.ShowAsync() == ContentDialogResult.Primary)
             {

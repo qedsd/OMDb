@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -16,6 +17,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage.Pickers;
+using Windows.UI;
 
 namespace OMDb.WinUI3
 {
@@ -25,10 +27,16 @@ namespace OMDb.WinUI3
         public MainWindow()
         {
             this.InitializeComponent();
+            Helpers.WindowHelper.TrackWindow(this);
+            Helpers.WindowHelper.SetMainWindow(this);
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
             RatingService.Init();
             Instance = this;
+            if (Content is FrameworkElement rootElement)
+            {
+                rootElement.RequestedTheme = Services.ThemeSelectorService.Theme;
+            }
         }
         //private void myButton_Click(object sender, RoutedEventArgs e)
         //{

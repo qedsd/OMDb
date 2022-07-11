@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.SettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OMDb.WinUI3"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="using:OMDb.WinUI3.MyControls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <StackPanel Margin="{StaticResource MediumLeftTopRightBottomMargin}" Spacing="4">
+        <StackPanel.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition FromVerticalOffset="50" IsStaggeringEnabled="True" />
+            </TransitionCollection>
+        </StackPanel.ChildrenTransitions>
+        <controls:ExpandableSettingControl x:Uid="Setting_Theme">
+            <!--<controls:ExpandableSettingControl.Icon>
+                <fluent:FluentIconElement Symbol="PaintBrush20" />
+            </controls:ExpandableSettingControl.Icon>-->
+            <StackPanel Orientation="Horizontal">
+                <ComboBox Width="128" SelectedIndex="{x:Bind VM.SelectedThemeIndex, Mode=TwoWay}">
+                    <ComboBoxItem x:Uid="Setting_Theme_Default" />
+                    <ComboBoxItem x:Uid="Setting_Theme_Light" />
+                    <ComboBoxItem x:Uid="Setting_Theme_Dark" />
+                </ComboBox>
+            </StackPanel>
+        </controls:ExpandableSettingControl>
+    </StackPanel>
+</Page>

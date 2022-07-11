@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="White"
+    Background="{ThemeResource MainBackgroudBrush}"
     CornerRadius="8"
     mc:Ignorable="d">
 
@@ -20,7 +20,10 @@
             FontSize="24"
             FontWeight="Medium"
             Text="Title" />
-        <Frame x:Name="Frame_Content" Grid.Row="1" Margin="0,20"/>
+        <Frame
+            x:Name="Frame_Content"
+            Grid.Row="1"
+            Margin="0,20" />
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -31,16 +34,16 @@
                 Height="32"
                 Margin="10,0"
                 HorizontalAlignment="Stretch"
-                Style="{ThemeResource AccentButtonStyle}" 
-                Click="Button_Primary_Click"/>
+                Click="Button_Primary_Click"
+                Style="{ThemeResource AccentButtonStyle}" />
             <Button
                 x:Name="Button_Cancel"
                 Grid.Column="1"
                 Height="32"
                 Margin="10,0"
                 HorizontalAlignment="Stretch"
-                Style="{ThemeResource DefaultButtonStyle}" 
-                Click="Button_Cancel_Click"/>
+                Click="Button_Cancel_Click"
+                Style="{ThemeResource DefaultButtonStyle}" />
         </Grid>
     </Grid>
 </ContentDialog>

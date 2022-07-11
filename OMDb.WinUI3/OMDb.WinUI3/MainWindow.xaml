@@ -21,7 +21,7 @@
             <Border
                 Name="AppTitleLeftBorder"
                 Grid.Column="0"
-                Width="48" />
+                Width="40" />
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Image

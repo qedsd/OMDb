@@ -20,10 +20,15 @@
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
+    <None Remove="MyControls\ExpandableSettingControl.xaml" />
+    <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
+    <None Remove="SettingPage.xaml" />
     <None Remove="Strings\en-us\Resources.resw" />
     <None Remove="Strings\zh-CN\Resources.resw" />
+    <None Remove="Styles\Colors.xaml" />
+    <None Remove="Styles\Thickness.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
@@ -41,6 +46,30 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\ExpandableSettingHeaderControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\ExpandableSettingControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\SettingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
@@ -111,6 +140,12 @@
 
   <ItemGroup>
     <Page Update="Dialogs\EditStorageDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Thickness.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

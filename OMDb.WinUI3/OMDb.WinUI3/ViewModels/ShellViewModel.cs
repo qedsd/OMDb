@@ -28,10 +28,17 @@ namespace OMDb.WinUI3.ViewModels
         }
         private void OnSelectedChanged(NavigationViewItem selectedItem)
         {
-            var pageType = selectedItem?.GetValue(NavHelper.NavigateToProperty) as Type;
-            if (pageType != null)
+            if (selectedItem.Name == "SettingsItem")
             {
-                NavigationService.Navigate(pageType, null);
+                NavigationService.Navigate(typeof(Views.SettingPage), null);
+            }
+            else
+            {
+                var pageType = selectedItem?.GetValue(NavHelper.NavigateToProperty) as Type;
+                if (pageType != null)
+                {
+                    NavigationService.Navigate(pageType, null);
+                }
             }
         }
     }

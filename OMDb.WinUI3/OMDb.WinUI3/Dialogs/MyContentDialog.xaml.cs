@@ -26,6 +26,7 @@ namespace OMDb.WinUI3.Dialogs
         {
             XamlRoot = MainWindow.Instance.Content.XamlRoot;
             this.InitializeComponent();
+            RequestedTheme = Services.ThemeSelectorService.Theme;
         }
 
         private void Button_Primary_Click(object sender, RoutedEventArgs e)
