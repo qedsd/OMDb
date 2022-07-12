@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.DbModels;
+using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using SqlSugar;
 using System;
@@ -327,7 +328,9 @@ namespace OMDb.Core.Services
             {
                 entry.Id = Guid.NewGuid().ToString();
             }
-            DbService.Db.GetConnection(entry.DbId).Insertable(entry as EntryDb);
+            //EntryDb db = new EntryDb();
+            //db.CopyFrom<EntryDb>(entry);
+            DbService.Db.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
         }
 
         /// <summary>
@@ -338,9 +341,9 @@ namespace OMDb.Core.Services
         public static void RemoveEntry(Entry entry)
         {
             var connet = DbService.Db.GetConnection(entry.DbId);
-            connet.Deleteable<EntryDb>().In(entry.Id);
-            connet.Deleteable<EntryNameDb>().In(entry.Id);
-            connet.Deleteable<WatchHistoryDb>().In(entry.Id);
+            connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
+            connet.Deleteable<EntryNameDb>().In(entry.Id).ExecuteCommand();
+            connet.Deleteable<WatchHistoryDb>().In(entry.Id).ExecuteCommand();
         }
 
         /// <summary>
@@ -354,9 +357,9 @@ namespace OMDb.Core.Services
               {
                   var ids = g.Select(p => p.Id);
                   var connet = DbService.Db.GetConnection(g.Key);
-                  connet.Deleteable<EntryDb>().In(ids);
-                  connet.Deleteable<EntryNameDb>().In(ids);
-                  connet.Deleteable<WatchHistoryDb>().In(ids);
+                  connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
+                  connet.Deleteable<EntryNameDb>().In(ids).ExecuteCommand();
+                  connet.Deleteable<WatchHistoryDb>().In(ids).ExecuteCommand();
               });
         }
 

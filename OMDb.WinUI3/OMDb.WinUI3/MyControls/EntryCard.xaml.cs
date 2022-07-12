@@ -38,7 +38,7 @@ namespace OMDb.WinUI3.MyControls
                 card.Entry = e.NewValue as Entry;
                 if(card.Entry != null)
                 {
-                    card.Image_Cover.Source = new BitmapImage(new Uri(System.IO.Path.Combine(card.Entry.Path, card.Entry.CoverImg)));
+                    card.Image_Cover.Source = new BitmapImage(new Uri(Helpers.PathHelper.EntryCoverImgFullPath(card.Entry)));
                     card.TextBlock_Name.Text = card.Entry.Name;
                 }
             }

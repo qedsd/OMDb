@@ -33,7 +33,19 @@ namespace OMDb.Core.Services
                         ConnectionString = connet,
                         DbType = DbType.Sqlite,
                         IsAutoCloseConnection = true,
-                        ConfigId = configId
+                        ConfigId = configId,
+                        ConfigureExternalServices = new ConfigureExternalServices
+                        {
+                            EntityService = (c, p) =>
+                            {
+                                // int?  decimal?这种 isnullable=true
+                                if (c.PropertyType.IsGenericType &&
+                                c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                {
+                                    p.IsNullable = true;
+                                }
+                            }
+                        }
                     });
                 }
                 else
@@ -43,7 +55,19 @@ namespace OMDb.Core.Services
                         ConnectionString = connet,
                         DbType = DbType.Sqlite,
                         IsAutoCloseConnection = true,
-                        ConfigId = configId
+                        ConfigId = configId,
+                        ConfigureExternalServices = new ConfigureExternalServices
+                        {
+                            EntityService = (c, p) =>
+                            {
+                                // int?  decimal?这种 isnullable=true
+                                if (c.PropertyType.IsGenericType &&
+                                c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                                {
+                                    p.IsNullable = true;
+                                }
+                            }
+                        }
                     });
                 }
                 if (needCodeFirst)

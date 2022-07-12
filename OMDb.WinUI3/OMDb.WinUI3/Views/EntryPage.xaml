@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     Background="Transparent"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
     <Grid>
@@ -28,7 +29,6 @@
                 ItemHeight="300"
                 ItemsSource="{x:Bind VM.Entries, Mode=OneWay}"
                 OneRowModeEnabled="False"
-                SelectionMode="Multiple"
                 StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>

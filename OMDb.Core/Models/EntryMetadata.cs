@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,20 @@ namespace OMDb.Core.Models
         /// 第一次或者手动更新
         /// </summary>
         public List<Rating> Ratings { get; set; }
+
+        public string Name { get; set; }
+        public string Id { get; set; }
+
+        public void Save(string file)
+        {
+            var json = JsonConvert.SerializeObject(this);
+            System.IO.File.WriteAllText(file, json);
+        }
+
+        public static EntryMetadata Read(string file)
+        {
+            var json = System.IO.File.ReadAllText(file);
+            return JsonConvert.DeserializeObject<EntryMetadata>(json);
+        }
     }
 }

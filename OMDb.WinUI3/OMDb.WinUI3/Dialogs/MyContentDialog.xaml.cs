@@ -47,5 +47,6 @@ namespace OMDb.WinUI3.Dialogs
             await base.ShowAsync();
             return DialogResult;
         }
+
     }
 }

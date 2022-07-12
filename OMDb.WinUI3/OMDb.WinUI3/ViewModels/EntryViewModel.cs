@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,18 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    [PropertyChanged.AddINotifyPropertyChangedInterface]
-    public class EntryViewModel
+    public class EntryViewModel : ObservableObject
     {
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
-        public List<Core.Models.Entry> Entries { get; set; }
+        private List<Core.Models.Entry> entries;
+        public List<Core.Models.Entry> Entries
+        {
+            get => entries;
+            set
+            {
+                SetProperty(ref entries, value);
+            }
+        }
         public EntryViewModel()
         {
             Init();

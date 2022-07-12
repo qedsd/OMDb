@@ -25,7 +25,8 @@ namespace OMDb.Core.DbModels
         public string Path { get; set; }
         /// <summary>
         /// 封面图片
-        /// 相对Path路径
+        /// 相对词条Img路径、
+        /// 一般为词条img文件夹下的文件名
         /// </summary>
         public string CoverImg { get; set; }
         /// <summary>
@@ -35,7 +36,8 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 最近观看时间
         /// </summary>
-        public DateTime? LastWatchTime { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public DateTime LastWatchTime { get; set; }
         /// <summary>
         /// 最新更新时间
         /// </summary>

@@ -69,7 +69,8 @@
                 <NavigationViewItem
                     x:Uid="Shell_Home"
                     helpers:NavHelper.NavigateTo="views:HomePage"
-                    Tag="Collapsed">
+                    Tag="Collapsed"
+                    IsSelected="True">
                     <NavigationViewItem.Icon>
                         <SymbolIcon Symbol="Home" />
                     </NavigationViewItem.Icon>

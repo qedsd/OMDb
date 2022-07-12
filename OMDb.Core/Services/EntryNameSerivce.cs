@@ -32,7 +32,7 @@ namespace OMDb.Core.Services
             if (!string.IsNullOrEmpty(entryId))
             {
                 var names = DbService.Db.GetConnection(dbId).Queryable<DbModels.EntryNameDb>().Where(p => p.Id == entryId).ToList();
-                if (names.Any())
+                if (names != null && names.Any())
                 {
                     return names.FirstOrDefault(p => p.IsDefault)?.Name;
                 }
@@ -48,7 +48,7 @@ namespace OMDb.Core.Services
         public static void SetName(Entry entry)
         {
             var names = DbService.Db.GetConnection(entry.DbId).Queryable<EntryNameDb>().Where(p => p.Id == entry.Id).ToList();
-            if (names.Any())
+            if (names != null && names.Any())
             {
                 var name = names.FirstOrDefault(p => p.IsDefault);
                 if (name == null)
@@ -88,11 +88,11 @@ namespace OMDb.Core.Services
         public static void SetName(IEnumerable<Entry> entries, string dbId)
         {
             var dic = QueryName(entries.Select(p => p.Id), dbId);
-            if (dic.Any())
+            if (dic != null && dic.Any())
             {
                 foreach (var entry in entries)
                 {
-                    if (dic.TryGetValue(entry.Name, out string name))
+                    if (dic.TryGetValue(entry.Id, out string name))
                     {
                         entry.Name = name;
                     }
@@ -109,7 +109,7 @@ namespace OMDb.Core.Services
         public static async Task<List<EntryName>> QueryNamesAsync(string id, string dbId)
         {
             var entryNameDbs = await Task.Run(() => DbService.Db.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.Id == id).ToList());
-            if (entryNameDbs.Any())
+            if (entryNameDbs != null && entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => EntryName.Create(p, dbId)).ToList();
             }
@@ -117,6 +117,11 @@ namespace OMDb.Core.Services
             {
                 return null;
             }
+        }
+
+        public static async Task AddNamesAsync(List<EntryNameDb> entryNames, string dbId)
+        {
+            await Task.Run(()=>DbService.Db.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
         }
     }
 }

@@ -21,19 +21,14 @@ namespace OMDb.WinUI3.Dialogs
 {
     public sealed partial class EditEntryDialog : Page
     {
-        public ViewModels.EditEntryViewModel VM { get; set; } = new ViewModels.EditEntryViewModel();
+        public ViewModels.EditEntryViewModel VM { get; set; }
         public EditEntryDialog(Core.Models.Entry entry)
         {
-            if(entry == null)
+            VM = new ViewModels.EditEntryViewModel(entry);
+            if (entry != null && entry.CoverImg != null)
             {
-                VM.Entry = new Core.Models.Entry();
+                Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg));
             }
-            else
-            {
-                VM.Entry = entry.DepthClone<Core.Models.Entry>();
-                Image_CoverImg.Source = new BitmapImage(new Uri(Converters.EntryCoverImgConverter.Convert(VM.Entry)));
-            }
-            
             this.InitializeComponent();
         }
 
@@ -48,8 +43,12 @@ namespace OMDb.WinUI3.Dialogs
                 }
             });
         }
-
-        public static async Task<Core.Models.Entry> ShowDialog(Core.Models.Entry entry = null)
+        /// <summary>
+        /// 返回的entry的Path、CoverImg都为全路径
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static async Task<Tuple<Core.Models.Entry,List<Models.EntryName>>> ShowDialog(Core.Models.Entry entry = null)
         {
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = entry == null ? "新建词条" : "编辑词条";
@@ -59,10 +58,17 @@ namespace OMDb.WinUI3.Dialogs
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
+                if (entry == null)
+                {
+                    entry = content.VM.Entry;
+                    entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
+                    entry.DbId = content.VM.SelectedEnrtyStorage?.StorageName;
+                }
+                else
                 {
                     entry.CopyFrom(content.VM.Entry);
                 }
-                return entry;
+                return new Tuple<Core.Models.Entry, List<Models.EntryName>>(entry,content.VM.EntryNames);
             }
             else
             {
