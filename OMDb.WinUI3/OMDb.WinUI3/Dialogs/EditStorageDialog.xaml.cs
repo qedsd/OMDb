@@ -39,16 +39,17 @@ namespace OMDb.WinUI3.Dialogs
             dialog.TitleTextBlock.Text = enrtyStorage == null ? "新建仓库" : "编辑仓库";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
-            dialog.ContentFrame.Content = new EditStorageDialog(enrtyStorage);
-            if(await dialog.ShowAsync() == ContentDialogResult.Primary)
+            var content = new EditStorageDialog(enrtyStorage);
+            dialog.ContentFrame.Content = content;
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 if(enrtyStorage != null)
                 {
-                    enrtyStorage.Update((dialog.Content as EditStorageDialog).EnrtyStorage);
+                    enrtyStorage.Update(content.EnrtyStorage);
                 }
                 else
                 {
-                    enrtyStorage = (dialog.Content as EditStorageDialog).EnrtyStorage;
+                    enrtyStorage = content.EnrtyStorage;
                 }
                 return enrtyStorage;
             }

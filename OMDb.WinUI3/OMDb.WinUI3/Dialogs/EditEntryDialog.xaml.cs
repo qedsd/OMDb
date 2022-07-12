@@ -55,11 +55,12 @@ namespace OMDb.WinUI3.Dialogs
             dialog.TitleTextBlock.Text = entry == null ? "新建词条" : "编辑词条";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
-            dialog.ContentFrame.Content = new EditEntryDialog(entry);
+            EditEntryDialog content = new EditEntryDialog(entry);
+            dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 {
-                    entry.CopyFrom((dialog.Content as EditEntryDialog).VM.Entry);
+                    entry.CopyFrom(content.VM.Entry);
                 }
                 return entry;
             }
@@ -68,7 +69,7 @@ namespace OMDb.WinUI3.Dialogs
                 return null;
             }
         }
-
+        
         private async void Button_Path_Click(object sender, RoutedEventArgs e)
         {
             var folder = await Helpers.PickHelper.PickFolderAsync();
@@ -76,24 +77,34 @@ namespace OMDb.WinUI3.Dialogs
             {
                 if(!folder.Path.StartsWith(Path.GetDirectoryName(VM.SelectedEnrtyStorage.StoragePath), StringComparison.OrdinalIgnoreCase))
                 {
-                    //await Dialogs.MsgDialog.ShowDialog("请选择位于仓库下的路径");
+                    Helpers.DialogHelper.ShowError("请选择位于仓库下的路径");
                 }
                 else
                 {
-                    string partPath = folder.Path.Replace(Path.GetDirectoryName(VM.SelectedEnrtyStorage.StoragePath), "");
-                    VM.EntryPath = partPath[1..] + VM.Entry.Name;
+                    VM.SelectedEntryDicPath = folder.Path;
                 }
             }
         }
-        
+
         private async void Button_CoverImg_Click(object sender, RoutedEventArgs e)
         {
             var file = await Helpers.PickHelper.PickImgAsync();
             if(file != null)
             {
                 VM.Entry.CoverImg = file.Path;
-                //VM.FullPathCoverImg = file.Path;
                 Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));
+            }
+        }
+        /// <summary>
+        /// 编辑词条名的时候同步修改仓库路径
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (VM.EntryName.IsDefault)
+            {
+                VM.SetEntryPath((sender as TextBox).Text);
             }
         }
     }

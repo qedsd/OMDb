@@ -42,6 +42,8 @@ namespace OMDb.WinUI3.Dialogs
         }
         public async new System.Threading.Tasks.Task<ContentDialogResult> ShowAsync()
         {
+            Helpers.DialogHelper.Current = this;
+            Helpers.DialogHelper.InfoBar = InfoBar;
             await base.ShowAsync();
             return DialogResult;
         }

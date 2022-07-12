@@ -93,9 +93,15 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
-            <Frame x:Name="shellFrame" Background="Transparent"/>
+            <Frame x:Name="shellFrame" Background="Transparent" />
         </NavigationView>
 
-
+        <InfoBar
+            x:Name="InfoBar"
+            Margin="0,0,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            IsOpen="False"
+            Severity="Informational" />
     </Grid>
 </Page>

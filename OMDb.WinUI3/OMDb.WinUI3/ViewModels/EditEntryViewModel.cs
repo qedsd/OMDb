@@ -14,7 +14,12 @@ namespace OMDb.WinUI3.ViewModels
     {
         public Core.Models.Entry Entry { get; set; }
         public List<Models.EntryName> EntryNames { get; set; }
-        public Models.EntryName EntryName { get; set; }
+        private Models.EntryName entryName;
+        public Models.EntryName EntryName
+        {
+            get => entryName;
+            set => SetProperty(ref entryName, value);
+        }
         private string entryPath;
         public string EntryPath
         {
@@ -33,10 +38,33 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref selectedEnrtyStorage, value);
-                if (Entry!=null&&!string.IsNullOrEmpty(Entry.Name))
+                SelectedEntryDicPath = string.Empty;//更换仓库时重置已选的词条路径
+                if (EntryName != null&&!string.IsNullOrEmpty(EntryName.Name))
                 {
-                    Entry.Path = Path.Combine(Path.GetDirectoryName(selectedEnrtyStorage.StoragePath), Services.ConfigService.DefaultEntryFolder, Entry.Name);
+                    SelectedEntryDicPath = System.IO.Path.Combine(Path.GetDirectoryName(selectedEnrtyStorage.StoragePath),Services.ConfigService.DefaultEntryFolder);//重置为默认路径
+                    SetEntryPath(EntryName.Name);
                 }
+            }
+        }
+        private string selectedEntryDicPath = string.Empty;
+        /// <summary>
+        /// 文件夹选取的词条存储路径
+        /// 完整路径，必须在选中的仓库路径下
+        /// </summary>
+        public string SelectedEntryDicPath
+        {
+            get => selectedEntryDicPath;
+            set
+            {
+                selectedEntryDicPath = value;
+                SetEntryPath(EntryNames.FirstOrDefault(p=>p.IsDefault)?.Name);
+            }
+        }
+        public void SetEntryPath(string name)
+        {
+            if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
+            {
+                EntryPath = System.IO.Path.Combine(SelectedEntryDicPath, name);
             }
         }
 
@@ -51,20 +79,22 @@ namespace OMDb.WinUI3.ViewModels
                     IsDefault = p == Core.Enums.LangEnum.zh_CN,
                 });
             }
+            EntryName = EntryNames.FirstOrDefault();
             SelectedEnrtyStorage = EnrtyStorages.FirstOrDefault();
         }
 
-        public ICommand CheckDefaultCommand => new RelayCommand<Models.EntryName>((selected) =>
+        public ICommand CheckDefaultCommand => new RelayCommand(() =>
         {
-            if (selected != null)
+            if (EntryName != null)
             {
                 EntryNames.ForEach(p =>
                 {
-                    if (p.IsDefault && p != selected)
+                    if (p.IsDefault && p != EntryName)
                     {
                         p.IsDefault = false;
                     }
                 });
+                SetEntryPath(EntryName.Name);
             }
         });
     }
