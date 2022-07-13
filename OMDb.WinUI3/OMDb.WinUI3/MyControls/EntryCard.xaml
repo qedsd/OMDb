@@ -7,10 +7,16 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid>
-        <Image x:Name="Image_Cover" Stretch="UniformToFill" />
-        <Grid VerticalAlignment="Bottom">
-            <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center" />
+    <Grid Margin="4">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid CornerRadius="4">
+            <Image x:Name="Image_Cover" Stretch="UniformToFill"/>
+        </Grid>
+        <Grid VerticalAlignment="Bottom" Grid.Row="1" Margin="0,4,0,0">
+            <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center" FontWeight="Light"/>
         </Grid>
     </Grid>
 </UserControl>

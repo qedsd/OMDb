@@ -54,13 +54,17 @@ namespace OMDb.WinUI3.ViewModels
                         if(Core.Config.AddDbFile(enrtyStorage.StoragePath, enrtyStorage.StorageName, needCodeFirst))
                         {
                             await Dialogs.MsgDialog.ShowDialog("添加成功");
+                            enrtyStorage.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.StorageName);
+                            EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
+                            Services.ConfigService.Save();
                         }
-                        enrtyStorage.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.StorageName);
+                        else
+                        {
+                            await Dialogs.MsgDialog.ShowDialog("添加失败");
+                        }
                     }
                 }
             }
-            EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
-            Services.ConfigService.Save();
         }
 
         private void LoadEnrtyStorage(EnrtyStorage storage)

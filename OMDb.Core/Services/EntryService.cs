@@ -129,7 +129,7 @@ namespace OMDb.Core.Services
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var dbid in DbService.DbConfigIds)
             {
-                var db = DbService.Db.GetConnection(dbid);
+                var db = DbService.Db.AsTenant().GetConnection(dbid);
                 if (db != null)
                 {
                     if (labelIds != null)
@@ -267,7 +267,7 @@ namespace OMDb.Core.Services
                         var entryDbs = DbService.Db.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.Id)).ToList();
                         if (entryDbs.Any())
                         {
-                            var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key));
+                            var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
                             if (withName)
                             {
                                 EntryNameSerivce.SetName(entriesTemp, item.Key);

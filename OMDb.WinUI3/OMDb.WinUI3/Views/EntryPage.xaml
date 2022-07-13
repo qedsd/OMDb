@@ -24,9 +24,9 @@
             <!--  展示区  -->
             <controls:AdaptiveGridView
                 Padding="20"
-                DesiredWidth="220"
+                DesiredWidth="160"
                 IsItemClickEnabled="True"
-                ItemHeight="300"
+                ItemHeight="220"
                 ItemsSource="{x:Bind VM.Entries, Mode=OneWay}"
                 OneRowModeEnabled="False"
                 StretchContentForSingleRow="False">

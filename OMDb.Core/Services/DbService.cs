@@ -11,7 +11,7 @@ namespace OMDb.Core.Services
 {
     public static class DbService
     {
-        internal static SqlSugarScope Db;
+        internal static SqlSugarClient Db;
         internal static readonly HashSet<string> DbConfigIds = new();
         static DbService()
         {
@@ -28,7 +28,7 @@ namespace OMDb.Core.Services
             {
                 if (Db == null)
                 {
-                    Db = new SqlSugarScope(new ConnectionConfig()
+                    Db = new SqlSugarClient(new ConnectionConfig()
                     {
                         ConnectionString = connet,
                         DbType = DbType.Sqlite,
