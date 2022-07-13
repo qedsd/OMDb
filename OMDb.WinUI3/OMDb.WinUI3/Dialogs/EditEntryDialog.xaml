@@ -88,21 +88,14 @@
                     <SymbolIcon Symbol="NewFolder" />
                 </Button>
             </Grid>
-            <!--  封面  -->
-            <!--<Grid Grid.Row="2">
+            <!--  上映日期  -->
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox Text="{x:Bind Entry.CoverImg, Mode=TwoWay}" />
-                <Button
-                    Grid.Column="1"
-                    VerticalAlignment="Bottom"
-                    Click="Button_CoverImg_Click"
-                    ToolTipService.ToolTip="选择图片">
-                    <SymbolIcon Symbol="OpenFile" />
-                </Button>
-            </Grid>-->
+                <CalendarDatePicker  Header="上映日期" Date="{x:Bind VM.ReleaseDate,Mode=TwoWay}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

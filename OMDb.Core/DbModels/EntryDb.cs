@@ -43,6 +43,10 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public DateTime LastUpdateTime { get; set; }
         /// <summary>
+        /// 上映日期
+        /// </summary>
+        public DateTimeOffset? ReleaseDate { get; set; }
+        /// <summary>
         /// 我的评分
         /// </summary>
         public double? MyRating { get; set; }

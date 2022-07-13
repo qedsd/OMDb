@@ -31,6 +31,16 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.Path = value;
             }
         }
+        private DateTimeOffset releaseDate = DateTimeOffset.Now;
+        public DateTimeOffset ReleaseDate
+        {
+            get => releaseDate;
+            set
+            {
+                SetProperty(ref releaseDate, value);
+                Entry.ReleaseDate = value;
+            }
+        }
         public List<Models.EnrtyStorage> EnrtyStorages { get; set; }
         private Models.EnrtyStorage selectedEnrtyStorage;
         public Models.EnrtyStorage SelectedEnrtyStorage
@@ -77,6 +87,7 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.Id = Guid.NewGuid().ToString();
                 Entry.CreateTime = DateTime.Now;
                 Entry.LastUpdateTime = DateTime.Now;
+                Entry.ReleaseDate = DateTimeOffset.Now;
                 foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
                 {
                     EntryNames.Add(new Models.EntryName()
