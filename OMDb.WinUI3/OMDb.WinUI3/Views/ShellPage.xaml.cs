@@ -17,6 +17,7 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
             ViewModel.Init(shellFrame);
+            Helpers.InfoHelper.InfoBar = InfoBar;
             //var tiWtleBar = Microsoft.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
             //tiWtleBar.BackgroundColor = Colors.Transparent;
             //tiWtleBar.ButtonBackgroundColor = Colors.Transparent;

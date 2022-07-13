@@ -13,7 +13,7 @@ namespace OMDb.WinUI3.ViewModels
     {
         public ICommand AddEntryCommand => new RelayCommand(async() =>
         {
-            if(Services.ConfigService.EnrtyStorages.Count == 0)
+            if (Services.ConfigService.EnrtyStorages.Count == 0)
             {
                 await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
             }
@@ -41,6 +41,7 @@ namespace OMDb.WinUI3.ViewModels
                     InitFile(entry);
                     await SaveToDbAsync(entry, result.Item2);
                     //这时已经是相对路径
+                    Helpers.InfoHelper.ShowSuccess("创建成功");
                 }
             }
         });

@@ -16,7 +16,10 @@
             <Image x:Name="Image_Cover" Stretch="UniformToFill"/>
         </Grid>
         <Grid VerticalAlignment="Bottom" Grid.Row="1" Margin="0,4,0,0">
-            <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center" FontWeight="Light"/>
+            <StackPanel>
+                <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="TextBlock_Date" HorizontalAlignment="Center" FontWeight="Light"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

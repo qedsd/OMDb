@@ -26,13 +26,13 @@
                 Padding="20"
                 DesiredWidth="160"
                 IsItemClickEnabled="True"
-                ItemHeight="220"
+                ItemHeight="260"
                 ItemsSource="{x:Bind VM.Entries, Mode=OneWay}"
                 OneRowModeEnabled="False"
                 StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>
-                        <mycontrols:EntryCard Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                        <mycontrols:EntryCard Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" Margin="8"/>
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>

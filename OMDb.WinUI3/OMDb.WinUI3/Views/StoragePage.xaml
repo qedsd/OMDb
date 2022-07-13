@@ -15,9 +15,9 @@
     <Grid>
         <controls:AdaptiveGridView
             Padding="20"
-            DesiredWidth="220"
+            DesiredWidth="160"
             IsItemClickEnabled="True"
-            ItemHeight="300"
+            ItemHeight="240"
             ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
             OneRowModeEnabled="False"
             SelectedItem="{x:Bind VM.EnrtyStorage, Mode=TwoWay}"
@@ -25,7 +25,7 @@
             StretchContentForSingleRow="False">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate>
-                    <mycontrols:StorageCard EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    <mycontrols:StorageCard EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" Margin="4"/>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>

@@ -53,7 +53,7 @@ namespace OMDb.WinUI3.ViewModels
                         bool needCodeFirst = !System.IO.File.Exists(enrtyStorage.StoragePath);
                         if(Core.Config.AddDbFile(enrtyStorage.StoragePath, enrtyStorage.StorageName, needCodeFirst))
                         {
-                            await Dialogs.MsgDialog.ShowDialog("添加成功");
+                            Helpers.InfoHelper.ShowSuccess("创建成功");
                             enrtyStorage.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.StorageName);
                             EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
                             Services.ConfigService.Save();

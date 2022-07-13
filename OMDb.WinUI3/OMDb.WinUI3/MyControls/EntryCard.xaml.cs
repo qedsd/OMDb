@@ -40,6 +40,7 @@ namespace OMDb.WinUI3.MyControls
                 {
                     card.Image_Cover.Source = new BitmapImage(new Uri(Helpers.PathHelper.EntryCoverImgFullPath(card.Entry)));
                     card.TextBlock_Name.Text = card.Entry.Name;
+                    card.TextBlock_Date.Text = card.Entry.ReleaseDate.HasValue? card.Entry.ReleaseDate.Value.Year.ToString():string.Empty;
                 }
             }
         }
