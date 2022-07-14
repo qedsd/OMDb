@@ -12,6 +12,11 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Text="刷新" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -28,11 +33,12 @@
                 IsItemClickEnabled="True"
                 ItemHeight="260"
                 ItemsSource="{x:Bind VM.Entries, Mode=OneWay}"
-                OneRowModeEnabled="False"
-                StretchContentForSingleRow="False">
+                SelectionMode="None"
+                StretchContentForSingleRow="False"
+                ItemClickCommand="{x:Bind VM.ItemClickCommand}">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>
-                        <mycontrols:EntryCard Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" Margin="8"/>
+                        <mycontrols:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>

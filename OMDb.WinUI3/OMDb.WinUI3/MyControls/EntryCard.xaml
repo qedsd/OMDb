@@ -8,17 +8,28 @@
     mc:Ignorable="d">
 
     <Grid Margin="4">
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="编辑" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid CornerRadius="4">
-            <Image x:Name="Image_Cover" Stretch="UniformToFill"/>
+            <Image x:Name="Image_Cover" Stretch="UniformToFill" />
         </Grid>
-        <Grid VerticalAlignment="Bottom" Grid.Row="1" Margin="0,4,0,0">
+        <Grid
+            Grid.Row="1"
+            Margin="0,4,0,0"
+            VerticalAlignment="Bottom">
             <StackPanel>
-                <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="TextBlock_Date" HorizontalAlignment="Center" FontWeight="Light"/>
+                <TextBlock x:Name="TextBlock_Name" HorizontalAlignment="Center" />
+                <TextBlock
+                    x:Name="TextBlock_Date"
+                    HorizontalAlignment="Center"
+                    FontWeight="Light" />
             </StackPanel>
         </Grid>
     </Grid>

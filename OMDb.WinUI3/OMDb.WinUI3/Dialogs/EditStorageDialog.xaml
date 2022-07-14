@@ -23,12 +23,14 @@
                 Header="路径"
                 Text="{x:Bind EnrtyStorage.StoragePath, Mode=TwoWay}" />
             <Button
+                Margin="4,0,0,0"
                 VerticalAlignment="Bottom"
                 Click="Button_NewStoragePath_Click"
                 ToolTipService.ToolTip="新建">
                 <SymbolIcon Symbol="NewFolder" />
             </Button>
             <Button
+                Margin="4,0,0,0"
                 VerticalAlignment="Bottom"
                 Click="Button_PickStorage_Click"
                 ToolTipService.ToolTip="已有">
@@ -41,7 +43,10 @@
                 Width="360"
                 Header="封面"
                 Text="{x:Bind Path=EnrtyStorage.CoverImg, Mode=TwoWay}" />
-            <Button VerticalAlignment="Bottom" Click="Button_CoverImg_Click">
+            <Button
+                Margin="4,0,0,0"
+                VerticalAlignment="Bottom"
+                Click="Button_CoverImg_Click">
                 <SymbolIcon Symbol="OpenFile" />
             </Button>
         </StackPanel>
