@@ -14,7 +14,15 @@ namespace OMDb.WinUI3.ViewModels
     public class EditEntryViewModel: ObservableObject
     {
         public Core.Models.Entry Entry { get; set; }
-        public List<Models.EntryName> EntryNames { get; set; }
+        private List<Models.EntryName> entryNames;
+        public List<Models.EntryName> EntryNames
+        {
+            get => entryNames;
+            set
+            {
+                SetProperty(ref entryNames, value);
+            }
+        }
         private Models.EntryName entryName;
         public Models.EntryName EntryName
         {
@@ -39,6 +47,16 @@ namespace OMDb.WinUI3.ViewModels
             {
                 SetProperty(ref releaseDate, value);
                 Entry.ReleaseDate = value;
+            }
+        }
+        private double myRating = -1;
+        public double MyRating
+        {
+            get => myRating;
+            set
+            {
+                SetProperty(ref myRating, value);
+                Entry.MyRating = value;
             }
         }
         public List<Models.EnrtyStorage> EnrtyStorages { get; set; }
@@ -110,6 +128,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     EnrtyStorages = new List<Models.EnrtyStorage>() { onlyStorage };
                 }
+                MyRating = Entry.MyRating == null ? -1 : (double)Entry.MyRating;
                 Task.Run(async() =>
                 {
                     var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.Id, entry.DbId);
@@ -127,6 +146,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Name = targetName == null?null: targetName.Name
                                 });
                             }
+                            EntryName = EntryNames.FirstOrDefault();
                         });
                     }
                 });

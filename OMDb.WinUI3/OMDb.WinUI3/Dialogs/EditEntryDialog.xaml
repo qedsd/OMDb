@@ -37,9 +37,10 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <!--  名字  -->
-            <Grid>
+            <Grid Margin="0,0,0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
@@ -66,7 +67,7 @@
                     IsChecked="{Binding ElementName=ComboBox_Names, Path=SelectedItem.IsDefault, Mode=TwoWay}" />
             </Grid>
             <!--  路径  -->
-            <Grid Grid.Row="1" Margin="0,20">
+            <Grid Grid.Row="1" Margin="0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -89,12 +90,18 @@
                 </Button>
             </Grid>
             <!--  上映日期  -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Margin="0,10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <CalendarDatePicker  Header="上映日期" Date="{x:Bind VM.ReleaseDate,Mode=TwoWay}"/>
+                <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}" Header="上映日期" />
+            </Grid>
+            <Grid Grid.Row="3" Margin="0,10">
+                <StackPanel>
+                    <TextBlock Text="我的评分" />
+                    <RatingControl Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                </StackPanel>
             </Grid>
         </Grid>
     </Grid>

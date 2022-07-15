@@ -10,7 +10,7 @@
     <Grid Margin="4">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="编辑" />
+                <MenuFlyoutItem Text="编辑" Click="MenuFlyoutItem_Click"/>
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid.RowDefinitions>

@@ -24,12 +24,12 @@ namespace OMDb.WinUI3.Dialogs
         public ViewModels.EditEntryViewModel VM { get; set; }
         public EditEntryDialog(Core.Models.Entry entry)
         {
+            this.InitializeComponent();
             VM = new ViewModels.EditEntryViewModel(entry);
             if (entry != null && entry.CoverImg != null)
             {
                 Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg));
             }
-            this.InitializeComponent();
         }
 
         private void RadioButton_Click(object sender, RoutedEventArgs e)

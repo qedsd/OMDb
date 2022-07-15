@@ -50,5 +50,10 @@ namespace OMDb.WinUI3.MyControls
 
             set { SetValue(EntryProperty, value); }
         }
+
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            await Services.EntryService.EditEntryAsync(Entry);
+        }
     }
 }
