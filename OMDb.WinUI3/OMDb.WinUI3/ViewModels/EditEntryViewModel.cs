@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -88,6 +89,15 @@ namespace OMDb.WinUI3.ViewModels
                 SetEntryPath(EntryNames.FirstOrDefault(p=>p.IsDefault)?.Name);
             }
         }
+        private List<Core.DbModels.LabelDb> labels;
+        /// <summary>
+        /// 绑定的标签
+        /// </summary>
+        public List<Core.DbModels.LabelDb> Labels
+        {
+            get => labels;
+            set=>SetProperty(ref labels, value);
+        }
         public void SetEntryPath(string name)
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
@@ -153,6 +163,29 @@ namespace OMDb.WinUI3.ViewModels
             }
             EntryName = EntryNames.FirstOrDefault();
             SelectedEnrtyStorage = EnrtyStorages?.FirstOrDefault();
+            Init(entry);
+        }
+        private async void Init(Core.Models.Entry entry)
+        {
+            if(entry == null)
+            {
+                Labels = new List<Core.DbModels.LabelDb>();
+            }
+            else
+            {
+                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.DbId,entry.Id);
+                if (labels != null)
+                {
+                    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        Labels = new List<Core.DbModels.LabelDb>(labels);
+                    });
+                }
+                else
+                {
+                    Labels = new List<Core.DbModels.LabelDb>();
+                }
+            }
         }
 
         public ICommand CheckDefaultCommand => new RelayCommand(() =>

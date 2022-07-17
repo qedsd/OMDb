@@ -18,6 +18,21 @@ namespace OMDb.WinUI3.Services
 
         public static ElementTheme Theme { get; set; } = ElementTheme.Default;
 
+        public static bool IsDark
+        {
+            get
+            {
+                if (Theme == ElementTheme.Default)
+                {
+                    return Application.Current.RequestedTheme == ApplicationTheme.Dark;
+                }
+                else
+                {
+                    return Theme == ElementTheme.Dark;
+                }
+            }
+        }
+
         public static void Initialize()
         {
             Theme = LoadThemeFromSettings();

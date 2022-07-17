@@ -7,10 +7,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Margin="4">
+    <Grid Background="{ThemeResource ContentBackgroudBrush}">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Text="编辑" Click="MenuFlyoutItem_Click"/>
+                <MenuFlyoutItem Click="MenuFlyoutItem_Click" Text="编辑" />
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid.RowDefinitions>

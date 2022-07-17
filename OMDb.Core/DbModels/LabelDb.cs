@@ -14,8 +14,8 @@ namespace OMDb.Core.DbModels
     [SugarTable("Label")]
     public class LabelDb
     {
-        [SugarColumn(IsIdentity = true, IsPrimaryKey = true)]
-        public int Id { get; set; }
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Id { get; set; }
         public string Name { get; set; }
         [SugarColumn(IsNullable = true)]
         public string Description { get; set; }

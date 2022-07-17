@@ -135,6 +135,9 @@
   <data name="Shell_Home.Content" xml:space="preserve">
     <value>主页</value>
   </data>
+  <data name="Shell_Label.Content" xml:space="preserve">
+    <value>标签</value>
+  </data>
   <data name="Shell_Storage.Content" xml:space="preserve">
     <value>仓库</value>
   </data>

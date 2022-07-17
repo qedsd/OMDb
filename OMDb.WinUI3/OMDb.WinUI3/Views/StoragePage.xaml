@@ -25,7 +25,7 @@
             StretchContentForSingleRow="False">
             <controls:AdaptiveGridView.ItemTemplate>
                 <DataTemplate>
-                    <mycontrols:StorageCard EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" Margin="4"/>
+                    <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>

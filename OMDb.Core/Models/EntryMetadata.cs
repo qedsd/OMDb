@@ -23,6 +23,10 @@ namespace OMDb.Core.Models
 
         public string Name { get; set; }
         public string Id { get; set; }
+        /// <summary>
+        /// 描述
+        /// </summary>
+        public string Desc { get; set; }
 
         public void Save(string file)
         {

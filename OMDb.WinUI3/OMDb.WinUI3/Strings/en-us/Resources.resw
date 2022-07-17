@@ -130,9 +130,12 @@
     <value>Light</value>
   </data>
   <data name="Shell_Entry.Content" xml:space="preserve">
-    <value>词条</value>
+    <value>Entry</value>
   </data>
   <data name="Shell_Home.Content" xml:space="preserve">
-    <value>主页</value>
+    <value>Home</value>
+  </data>
+  <data name="Shell_Label.Content" xml:space="preserve">
+    <value>Label</value>
   </data>
 </root>

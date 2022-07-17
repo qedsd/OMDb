@@ -15,13 +15,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Dialogs\EditEntryDialog.xaml" />
+    <None Remove="Dialogs\EditLabelDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
+    <None Remove="MyControls\AddLabelsControl.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
+    <None Remove="MyControls\LabelsControl.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
     <None Remove="SettingPage.xaml" />
@@ -29,8 +32,10 @@
     <None Remove="Strings\zh-CN\Resources.resw" />
     <None Remove="Styles\Colors.xaml" />
     <None Remove="Styles\Thickness.xaml" />
+    <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
+    <None Remove="Views\LabelPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\StoragePage.xaml" />
   </ItemGroup>
@@ -46,6 +51,30 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\LabelsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\EditLabelDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\LabelPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\EntryDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
@@ -146,6 +175,16 @@
 
   <ItemGroup>
     <Page Update="Styles\Thickness.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\AddLabelsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

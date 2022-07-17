@@ -19,7 +19,7 @@ namespace OMDb.Core.Services
         /// <param name="sortType"></param>
         /// <param name="sortWay"></param>
         /// <returns></returns>
-        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<int> labelIds = null)
+        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> labelIds = null)
         {
             if (DbService.DbConfigIds?.Count == 0)
             {
@@ -38,11 +38,11 @@ namespace OMDb.Core.Services
                 };
             }
         }
-        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<int> labelIds = null)
+        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> labelIds = null)
         {
             return await Task.Run(()=> QueryEntry(sortType, sortWay, labelIds));
         }
-        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<int> labelIds = null)
+        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var dbid in DbService.DbConfigIds)
@@ -50,7 +50,7 @@ namespace OMDb.Core.Services
                 var db = DbService.Db.GetConnection(dbid);
                 if (db != null)
                 {
-                    if (labelIds != null)
+                    if (labelIds != null && labelIds.Count != 0)
                     {
                         var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
@@ -83,7 +83,7 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<int> labelIds = null)
+        private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var dbid in DbService.DbConfigIds)
@@ -91,7 +91,7 @@ namespace OMDb.Core.Services
                 var db = DbService.Db.GetConnection(dbid);
                 if (db != null)
                 {
-                    if (labelIds != null)
+                    if (labelIds != null && labelIds.Count != 0)
                     {
                         var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
@@ -124,7 +124,7 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<int> labelIds = null)
+        private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var dbid in DbService.DbConfigIds)
@@ -132,13 +132,12 @@ namespace OMDb.Core.Services
                 var db = DbService.Db.AsTenant().GetConnection(dbid);
                 if (db != null)
                 {
-                    if (labelIds != null)
+                    if (labelIds != null && labelIds.Count != 0)
                     {
                         var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
                             .In(inLabelEntryIds)
-                            .Select(p => new { p.Id, p.LastUpdateTime })
-                            .ToList();
+                            .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
                         ls.ForEach(p =>
                         {
                             queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, dbid));
@@ -206,7 +205,7 @@ namespace OMDb.Core.Services
         //        return queryResults.OrderByDescending(p => p.Value).ToList();
         //    }
         //}
-        private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<int> labelIds = null)
+        private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var dbid in DbService.DbConfigIds)
@@ -214,7 +213,7 @@ namespace OMDb.Core.Services
                 var db = DbService.Db.GetConnection(dbid);
                 if (db != null)
                 {
-                    if (labelIds != null)
+                    if (labelIds != null && labelIds.Count != 0)
                     {
                         var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
@@ -260,7 +259,7 @@ namespace OMDb.Core.Services
             {
                 return await Task.Run(() =>
                 {
-                    List<Entry> entries = new List<Entry>();
+                    Dictionary<string,Entry> dic = new Dictionary<string, Entry>();
                     var group = queryItems.GroupBy(p => p.DbId);
                     foreach (var item in group)
                     {
@@ -272,7 +271,19 @@ namespace OMDb.Core.Services
                             {
                                 EntryNameSerivce.SetName(entriesTemp, item.Key);
                             }
-                            entries.AddRange(entriesTemp);
+                            //entries.AddRange(entriesTemp);
+                            entriesTemp.ForEach(p =>
+                            {
+                                dic.Add(p.Id, p);
+                            });
+                        }
+                    }
+                    List<Entry> entries = new List<Entry>();
+                    foreach(var item in queryItems)
+                    {
+                        if(dic.TryGetValue(item.Id, out Entry entry))
+                        {
+                            entries.Add(entry);
                         }
                     }
                     return entries;

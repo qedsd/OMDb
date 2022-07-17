@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <converters:FileToDirConverter x:Key="FileToDirConverter" />
     </UserControl.Resources>
-    <Grid CornerRadius="8" Margin="4">
+    <Grid Margin="4" CornerRadius="4">
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem Click="Edit_Click" Text="编辑" />
@@ -23,10 +23,10 @@
             <Image
                 x:Name="Image_Cover"
                 Source="{Binding ElementName=page, Path=EnrtyStorage.CoverImg, Mode=OneWay}"
-                Stretch="UniformToFill"/>
+                Stretch="UniformToFill" />
             <Grid>
                 <Grid.Background>
-                    <SolidColorBrush Opacity="0.5" Color="Black"/>
+                    <SolidColorBrush Opacity="0.5" Color="Black" />
                 </Grid.Background>
             </Grid>
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">

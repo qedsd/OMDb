@@ -7,9 +7,10 @@
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     x:Name="page"
     MinWidth="600"
-    MaxWidth="1080"
+    MaxWidth="800"
     Background="Transparent"
     mc:Ignorable="d">
     <Grid>
@@ -34,6 +35,7 @@
         </Button>
         <Grid Grid.Column="1" Margin="10,0,0,0">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -97,10 +99,25 @@
                 </Grid.ColumnDefinitions>
                 <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}" Header="上映日期" />
             </Grid>
+            <!--  评分  -->
             <Grid Grid.Row="3" Margin="0,10">
                 <StackPanel>
                     <TextBlock Text="我的评分" />
-                    <RatingControl Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                    <RatingControl
+                        Margin="0,4,0,0"
+                        HorizontalAlignment="Left"
+                        Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                </StackPanel>
+            </Grid>
+            <!--  评分  -->
+            <Grid Grid.Row="4" Margin="0,10">
+                <StackPanel>
+                    <TextBlock Text="标签" />
+                    <mycontrols:LabelsControl
+                        Margin="0,4,0,0"
+                        HorizontalAlignment="Left"
+                        Labels="{x:Bind VM.Labels, Mode=TwoWay}"
+                        Mode="Add" />
                 </StackPanel>
             </Grid>
         </Grid>

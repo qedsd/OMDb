@@ -15,17 +15,20 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Views
 {
-    public sealed partial class EntryPage : Page
+    public sealed partial class EntryDetailPage : Page
     {
-        public ViewModels.EntryViewModel VM { get; set; } = new ViewModels.EntryViewModel();
-        public EntryPage()
+        public ViewModels.EntryDetailViewModel VM { get; set; }
+        public EntryDetailPage()
         {
             this.InitializeComponent();
         }
-
-        private void LabelsControl_OnSelectedItem(IEnumerable<Models.Label> labels, Models.Label label)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-
+            var entry = e.Parameter as Core.Models.Entry;
+            if(entry != null)
+            {
+                VM = new ViewModels.EntryDetailViewModel(Models.EntryDetail.Create(entry));
+            }
         }
     }
 }
