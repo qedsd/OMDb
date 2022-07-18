@@ -14,6 +14,7 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class EditEntryViewModel: ObservableObject
     {
+        public Models.EntryDetail EntryDetail { get; set; }
         public Core.Models.Entry Entry { get; set; }
         private List<Models.EntryName> entryNames;
         public List<Models.EntryName> EntryNames
@@ -35,7 +36,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             get => entryPath;
             set
-            { 
+            {
                 SetProperty(ref entryPath, value);
                 Entry.Path = value;
             }
@@ -124,6 +125,7 @@ namespace OMDb.WinUI3.ViewModels
                         IsDefault = p == Core.Enums.LangEnum.zh_CN,
                     });
                 }
+                EntryName = EntryNames.FirstOrDefault();
                 EnrtyStorages = Services.ConfigService.EnrtyStorages.Where(p => p.StoragePath != null).ToList();
             }
             else
@@ -139,29 +141,8 @@ namespace OMDb.WinUI3.ViewModels
                     EnrtyStorages = new List<Models.EnrtyStorage>() { onlyStorage };
                 }
                 MyRating = Entry.MyRating == null ? -1 : (double)Entry.MyRating;
-                Task.Run(async() =>
-                {
-                    var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.Id, entry.DbId);
-                    if(names != null)
-                    {
-                        Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
-                        {
-                            foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
-                            {
-                                var targetName = names.FirstOrDefault(p2 => p2.Lang == p.ToString());
-                                EntryNames.Add(new Models.EntryName()
-                                {
-                                    Lang = p,
-                                    IsDefault = p == Core.Enums.LangEnum.zh_CN,
-                                    Name = targetName == null?null: targetName.Name
-                                });
-                            }
-                            EntryName = EntryNames.FirstOrDefault();
-                        });
-                    }
-                });
             }
-            EntryName = EntryNames.FirstOrDefault();
+            
             SelectedEnrtyStorage = EnrtyStorages?.FirstOrDefault();
             Init(entry);
         }
@@ -184,6 +165,24 @@ namespace OMDb.WinUI3.ViewModels
                 else
                 {
                     Labels = new List<Core.DbModels.LabelDb>();
+                }
+                var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.Id, entry.DbId);
+                if (names != null)
+                {
+                    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
+                        {
+                            var targetName = names.FirstOrDefault(p2 => p2.Lang == p.ToString());
+                            EntryNames.Add(new Models.EntryName()
+                            {
+                                Lang = p,
+                                IsDefault = p == Core.Enums.LangEnum.zh_CN,
+                                Name = targetName?.Name
+                            });
+                        }
+                        EntryName = EntryNames.FirstOrDefault(p=>p.IsDefault);
+                    });
                 }
             }
         }

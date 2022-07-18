@@ -77,12 +77,12 @@ namespace OMDb.WinUI3.ViewModels
         public EntryViewModel()
         {
             InitEnumItemsource();
+            sortType = Core.Enums.SortType.LastUpdateTime;
+            sortWay = Core.Enums.SortWay.Positive;
             Init();
         }
         private async void Init()
         {
-            sortType = Core.Enums.SortType.LastUpdateTime;
-            sortWay = Core.Enums.SortWay.Positive;
             await InitEntry();
             await InitLabel();
         }
@@ -105,6 +105,10 @@ namespace OMDb.WinUI3.ViewModels
             if(queryResults?.Count > 0)
             {
                 Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p=>p.ToQueryItem()).ToList());
+            }
+            else
+            {
+                Entries = null;
             }
         }
         private async Task InitLabel ()

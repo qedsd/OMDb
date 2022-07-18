@@ -123,5 +123,10 @@ namespace OMDb.Core.Services
         {
             await Task.Run(()=>DbService.Db.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
         }
+
+        public static async Task RemoveNamesAsync(string id, string dbId)
+        {
+            await Task.Run(() => DbService.Db.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.Id == id).ExecuteCommand());
+        }
     }
 }

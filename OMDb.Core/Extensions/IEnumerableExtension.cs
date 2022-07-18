@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,18 @@ namespace OMDb.Core.Extensions
                 stringBuilder.Remove(stringBuilder.Length - separator.Length, separator.Length);
                 return stringBuilder.ToString();
             }
+        }
+
+        /// <summary>
+        ///     集合转为ObservableCollection
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+        {
+            if (source == null) return null;
+            return new ObservableCollection<T>(source);
         }
     }
 }

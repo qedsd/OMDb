@@ -11,6 +11,7 @@
         <Grid.ContextFlyout>
             <MenuFlyout>
                 <MenuFlyoutItem Click="MenuFlyoutItem_Click" Text="编辑" />
+                <MenuFlyoutItem Click="MenuFlyoutItem_Remove_Click" Text="删除" />
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid.RowDefinitions>

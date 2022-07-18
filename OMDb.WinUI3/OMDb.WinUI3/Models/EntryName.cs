@@ -29,5 +29,12 @@ namespace OMDb.WinUI3.Models
             get => _isDefault;
             set { SetProperty(ref _isDefault, value); }
         }
+        public EntryName() { }
+        public EntryName(Core.Models.EntryName entryName)
+        {
+            Name = entryName.Name;
+            Lang = (Core.Enums.LangEnum)Enum.Parse(typeof(Core.Enums.LangEnum), entryName.Lang);
+            IsDefault = entryName.IsDefault;
+        }
     }
 }

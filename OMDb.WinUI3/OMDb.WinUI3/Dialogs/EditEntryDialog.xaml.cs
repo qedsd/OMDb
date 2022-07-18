@@ -24,8 +24,8 @@ namespace OMDb.WinUI3.Dialogs
         public ViewModels.EditEntryViewModel VM { get; set; }
         public EditEntryDialog(Core.Models.Entry entry)
         {
-            this.InitializeComponent();
             VM = new ViewModels.EditEntryViewModel(entry);
+            this.InitializeComponent();
             if (entry != null && entry.CoverImg != null)
             {
                 Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg));
@@ -48,7 +48,7 @@ namespace OMDb.WinUI3.Dialogs
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public static async Task<Tuple<Core.Models.Entry,List<Models.EntryName>>> ShowDialog(Core.Models.Entry entry = null)
+        public static async Task<Models.EntryDetail> ShowDialog(Core.Models.Entry entry = null)
         {
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = entry == null ? "新建词条" : "编辑词条";
@@ -67,8 +67,20 @@ namespace OMDb.WinUI3.Dialogs
                 else
                 {
                     entry.CopyFrom(content.VM.Entry);
+                    entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
                 }
-                return new Tuple<Core.Models.Entry, List<Models.EntryName>>(entry,content.VM.EntryNames);
+                var entryDetail = new Models.EntryDetail()
+                {
+                    Entry = entry,
+                    Names = content.VM.EntryNames.ToObservableCollection(),
+                    Labels = content.VM.Labels,
+                    FullCoverImgPath = content.VM.Entry.CoverImg,
+                    FullEntryPath = content.VM.Entry.Path,
+                };
+                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.ImgFolder,Path.GetFileName(entry.CoverImg));
+                entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
+                return entryDetail;
+                //return new Tuple<Core.Models.Entry, List<Models.EntryName>>(entry,content.VM.EntryNames);
             }
             else
             {

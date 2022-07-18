@@ -3,38 +3,56 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DbModels="using:OMDb.Core.DbModels"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <converters:NullToZeroConverter x:Key="NullToZeroConverter" />
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
+        <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+    </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <StackPanel Width="400" Padding="56,0">
+        <StackPanel
+            Width="360"
+            Margin="0,0,10,0"
+            Padding="40,0"
+            Background="{ThemeResource EntryDetailContantBrush}"
+            CornerRadius="16">
             <Grid
-                Width="200"
-                Height="300"
-                Margin="0,60,0,0"
+                Width="160"
+                Height="240"
+                Margin="0,40,0,0"
                 CornerRadius="4">
-                <Image Source="{x:Bind VM.Entry.FullCoverImgPath}" Stretch="UniformToFill" />
+                <Image Source="{x:Bind VM.Entry.FullCoverImgPath, Mode=OneWay}" Stretch="UniformToFill" />
             </Grid>
             <TextBlock
                 Margin="0,24,0,0"
                 HorizontalAlignment="Center"
                 FontSize="20"
                 FontWeight="Medium"
-                Text="{x:Bind VM.Entry.Name}" />
+                Text="{x:Bind VM.Entry.Entry.Name, Mode=OneWay}" />
+            <Button
+                Width="160"
+                Margin="0,24,0,0"
+                HorizontalAlignment="Center"
+                Command="{x:Bind VM.OpenEntryPathCommand}"
+                Content="打开"
+                Style="{ThemeResource AccentButtonStyle}" />
             <StackPanel
-                Margin="0,32,0,0"
+                Margin="0,24,0,0"
                 HorizontalAlignment="Center"
                 Orientation="Horizontal">
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Center" Text="{x:Bind VM.Entry.MyRating}" />
+                    <TextBlock HorizontalAlignment="Center" Text="{x:Bind VM.Entry.Entry.MyRating, Converter={StaticResource NullToZeroConverter}, Mode=OneWay}" />
                     <TextBlock Margin="0,8,0,0" Text="我的评分" />
                 </StackPanel>
                 <Rectangle
@@ -42,7 +60,7 @@
                     Margin="20,4"
                     Fill="LightGray" />
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock HorizontalAlignment="Center" Text="2" />
+                    <TextBlock HorizontalAlignment="Center" Text="{x:Bind VM.Entry.WatchHistory.Count, Converter={StaticResource NullToZeroConverter}, Mode=OneWay}" />
                     <TextBlock Margin="0,8,0,0" Text="观看次数" />
                 </StackPanel>
             </StackPanel>
@@ -50,16 +68,212 @@
                 Margin="0,32,0,0"
                 HorizontalAlignment="Center"
                 MaxLines="3"
-                Text="《权力的游戏》是一部中世纪史诗奇幻题材的电视连续剧，该剧以美国作家乔治·R·R·马丁的奇幻巨作《冰与火之歌》七部曲为基础改编创作。　故事背景中虚构的世界，分为两片大陆：位于西面的日落国度维斯特洛；位于东面的类似亚欧大陆。维斯特洛大陆边境处发现远古传说中早已灭绝的生物开始，危险也渐渐在靠近这里。这片大陆的临冬城主暨北境统领艾德史塔克家族也迎来了老友兼国王劳勃·拜拉席恩的来访。"
+                Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}"
                 TextTrimming="CharacterEllipsis"
                 TextWrapping="WrapWholeWords" />
-            <GridView ItemsSource="{x:Bind VM.Entry.Labels}">
-                <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="DbModels:LabelDb">
-                        <Button Content="{x:Bind Name}" />
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
+            <mycontrols:LabelsControl Margin="0,32,0,0" Labels="{x:Bind VM.Entry.Labels, Mode=OneWay}" />
         </StackPanel>
+        <ScrollViewer Grid.Column="1">
+            <StackPanel Margin="0,0,8,0">
+                <StackPanel
+                    Margin="0,0,0,10"
+                    Padding="0,0,0,16"
+                    Background="{ThemeResource EntryDetailContantBrush}"
+                    CornerRadius="16">
+                    <Grid Height="48" Margin="10,0,0,0">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Text="图片" />
+                    </Grid>
+                    <Rectangle
+                        Height="1"
+                        Margin="0,0,0,24"
+                        Fill="LightGray"
+                        Opacity="0.6" />
+                    <FlipView
+                        Height="300"
+                        Background="Transparent"
+                        ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}">
+                        <FlipView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid CornerRadius="16">
+                                    <Image Source="{Binding}" />
+                                </Grid>
+                            </DataTemplate>
+                        </FlipView.ItemTemplate>
+                    </FlipView>
+                </StackPanel>
+
+                <StackPanel
+                    Margin="0,0,0,10"
+                    Padding="0,0,0,16"
+                    Background="{ThemeResource EntryDetailContantBrush}"
+                    CornerRadius="16">
+                    <Grid Height="48" Margin="10,0,0,0">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Text="描述" />
+                    </Grid>
+                    <Rectangle
+                        Height="1"
+                        Margin="0,0,0,24"
+                        Fill="LightGray"
+                        Opacity="0.6" />
+                    <Grid Margin="10,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}"
+                            TextWrapping="WrapWholeWords"
+                            Visibility="{x:Bind VM.EditDescSymbolVisibility, Mode=OneWay}" />
+                        <TextBox
+                            Text="{x:Bind VM.Desc, Mode=TwoWay}"
+                            TextWrapping="Wrap"
+                            Visibility="{x:Bind VM.DescEditorVisibility, Mode=OneWay}" />
+                        <Button
+                            Grid.Column="1"
+                            VerticalAlignment="Bottom"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind VM.EditDescCommand}"
+                            Visibility="{x:Bind VM.EditDescSymbolVisibility, Mode=OneWay}">
+                            <TextBlock
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE104;"
+                                ToolTipService.ToolTip="编辑" />
+                        </Button>
+                        <StackPanel
+                            Grid.Column="1"
+                            Orientation="Horizontal"
+                            Visibility="{x:Bind VM.SaveDescSymbolVisibility, Mode=OneWay}">
+                            <Button
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.SaveDescCommand}">
+                                <TextBlock
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE105;"
+                                    ToolTipService.ToolTip="保存" />
+                            </Button>
+                            <Button
+                                VerticalAlignment="Bottom"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.CancelEditDescCommand}">
+                                <TextBlock
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE10A;"
+                                    ToolTipService.ToolTip="取消" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel
+                    Margin="0,0,0,10"
+                    Padding="0,0,0,16"
+                    Background="{ThemeResource EntryDetailContantBrush}"
+                    CornerRadius="16">
+                    <Grid Height="48" Margin="10,0,0,0">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="18"
+                            Text="观看记录" />
+                    </Grid>
+                    <Rectangle
+                        Height="1"
+                        Margin="0,0,0,24"
+                        Fill="LightGray"
+                        Opacity="0.6" />
+                    <Grid Margin="10,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ListBox
+                            Background="Transparent"
+                            ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
+                            ItemsSource="{x:Bind VM.Entry.WatchHistory, Mode=OneWay}"
+                            SelectionMode="Extended">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="DbModels:WatchHistoryDb">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Time}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            MaxLines="3"
+                                            Text="{x:Bind Mark}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="WrapWholeWords"
+                                            ToolTipService.ToolTip="备注" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <StackPanel
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}">
+                            <StackPanel>
+                                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                    <DatePicker Date="{x:Bind VM.NewHistorDate, Mode=TwoWay}" />
+                                    <TimePicker Margin="10,0,0,0" Time="{x:Bind VM.NewHistorTime, Mode=TwoWay}" />
+                                </StackPanel>
+                                <TextBox
+                                    Margin="0,10,0,0"
+                                    PlaceholderText="备注"
+                                    Text="{x:Bind VM.NewHistorMark, Mode=TwoWay}" />
+                            </StackPanel>
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Button
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{x:Bind VM.SaveHistoryCommand}">
+                                    <TextBlock
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Text="&#xE105;"
+                                        ToolTipService.ToolTip="保存" />
+                                </Button>
+                                <Button
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{x:Bind VM.CancelEditHistoryCommand}">
+                                    <TextBlock
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Text="&#xE10A;"
+                                        ToolTipService.ToolTip="取消" />
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button
+                            Grid.Row="2"
+                            Width="160"
+                            Margin="0,10,0,0"
+                            HorizontalAlignment="Center"
+                            Command="{x:Bind VM.EditHistoryCommand}"
+                            Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
+                            <TextBlock
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE109;"
+                                ToolTipService.ToolTip="新增" />
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

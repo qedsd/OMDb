@@ -31,6 +31,7 @@
     <None Remove="Strings\en-us\Resources.resw" />
     <None Remove="Strings\zh-CN\Resources.resw" />
     <None Remove="Styles\Colors.xaml" />
+    <None Remove="Styles\Custom.xaml" />
     <None Remove="Styles\Thickness.xaml" />
     <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
@@ -181,6 +182,12 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styles\Custom.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

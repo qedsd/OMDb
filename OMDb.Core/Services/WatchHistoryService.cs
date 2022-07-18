@@ -28,5 +28,10 @@ namespace OMDb.Core.Services
                 return null;
             }
         }
+
+        public static void AddWatchHistoriesAsync(Models.WatchHistory watchHistory)
+        {
+            DbService.Db.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+        }
     }
 }

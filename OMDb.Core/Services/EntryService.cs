@@ -344,6 +344,11 @@ namespace OMDb.Core.Services
             DbService.Db.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
         }
 
+        public static void UpdateEntry(Entry entry)
+        {
+            DbService.Db.GetConnection(entry.DbId).Updateable(entry as EntryDb).ExecuteCommand();
+        }
+
         /// <summary>
         /// 从数据库移除词条
         /// 不会删除文件
@@ -352,9 +357,12 @@ namespace OMDb.Core.Services
         public static void RemoveEntry(Entry entry)
         {
             var connet = DbService.Db.GetConnection(entry.DbId);
+            DbService.Db.BeginTran();
             connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
-            connet.Deleteable<EntryNameDb>().In(entry.Id).ExecuteCommand();
-            connet.Deleteable<WatchHistoryDb>().In(entry.Id).ExecuteCommand();
+            connet.Deleteable<EntryNameDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
+            connet.Deleteable<WatchHistoryDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
+            connet.Deleteable<EntryLabelDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
+            DbService.Db.CommitTran();
         }
 
         /// <summary>

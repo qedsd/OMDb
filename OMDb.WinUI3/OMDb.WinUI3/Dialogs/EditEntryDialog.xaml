@@ -20,6 +20,7 @@
         </Grid.ColumnDefinitions>
         <Button
             Height="256"
+            VerticalAlignment="Top"
             Background="Transparent"
             Click="Button_CoverImg_Click">
             <Grid>

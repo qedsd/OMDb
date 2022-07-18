@@ -79,6 +79,46 @@ namespace OMDb.Core.Services
                 }
             });
         }
+        /// <summary>
+        /// 清空词条绑定的标签
+        /// </summary>
+        /// <param name="entryId"></param>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static async Task ClearEntryLabelAsync(string entryId, string dbId)
+        {
+            //使用事务确保数据统一
+            await Task.Run(() =>
+            {
+                DbService.Db.GetConnection(dbId).Deleteable<EntryLabelDb>(p=>p.EntryId == entryId).ExecuteCommand();
+            });
+        }
+        public static async Task AddEntryLabelAsync(List<EntryLabelDb> entryLabeles)
+        {
+            //使用事务确保数据统一
+            await Task.Run(() =>
+            {
+                DbService.Db.BeginTran();
+                foreach (var id in DbService.DbConfigIds)
+                {
+                    DbService.Db.GetConnection(id).Insertable(entryLabeles).ExecuteCommand();
+                }
+                DbService.Db.CommitTran();
+            });
+        }
+        public static async Task AddEntryLabelAsyn(EntryLabelDb entryLabel)
+        {
+            await Task.Run(() =>
+            {
+                //使用事务确保数据统一
+                DbService.Db.BeginTran();
+                foreach (var id in DbService.DbConfigIds)
+                {
+                    DbService.Db.GetConnection(id).Insertable(entryLabel).ExecuteCommand();
+                }
+                DbService.Db.CommitTran();
+            });
+        }
         public static void AddLabel(LabelDb labelDb)
         {
             if(string.IsNullOrEmpty(labelDb.Id))

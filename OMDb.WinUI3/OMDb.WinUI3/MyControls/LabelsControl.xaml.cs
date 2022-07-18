@@ -111,34 +111,38 @@ namespace OMDb.WinUI3.MyControls
             {
                 label.IsChecked = !label.IsChecked;
                 var labelsOut = GridView_Label.ItemsSource as List<Models.Label>;
-                if(Mode == LabelControlMode.Add && label.IsTemp)
+                if (Mode == LabelControlMode.Add && label.IsTemp)
                 {
                     ShowAddLabelsFlyout(sender as Button);
                 }
-                SelecteItemEvent?.Invoke(Mode == LabelControlMode.Add? labelsOut.Take(labelsOut.Count -1): labelsOut, label);
-                switch(Mode)
+                else
                 {
-                    case LabelControlMode.None:break;
-                    case LabelControlMode.Selecte:
-                        {
-                            if (label.IsChecked)
+                    SelecteItemEvent?.Invoke(Mode == LabelControlMode.Add ? labelsOut.Take(labelsOut.Count - 1) : labelsOut, label);
+                    switch (Mode)
+                    {
+                        case LabelControlMode.None: break;
+                        case LabelControlMode.Selecte:
                             {
-                                ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(100, 0, 200, 0));
-                            }
-                            else
-                            {
-                                if (Services.ThemeSelectorService.IsDark)
+                                if (label.IsChecked)
                                 {
-                                    ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
+                                    ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(100, 0, 200, 0));
                                 }
                                 else
                                 {
-                                    ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                                    if (Services.ThemeSelectorService.IsDark)
+                                    {
+                                        ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
+                                    }
+                                    else
+                                    {
+                                        ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                                    }
+                                    //(sender as Button).BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 235, 234, 231));
                                 }
-                                //(sender as Button).BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 235, 234, 231));
                             }
-                        }break;
-                    case LabelControlMode.Add:break;
+                            break;
+                        case LabelControlMode.Add: break;
+                    }
                 }
             }
         }
@@ -152,6 +156,17 @@ namespace OMDb.WinUI3.MyControls
                 if (labels != null)
                 {
                     AllLabels = labels.Select(p => new Models.Label(p)).ToList();
+                    if(labels?.Count!=0)
+                    {
+                        var dic = Labels.ToDictionary(p => p.Id);
+                        foreach(var label in AllLabels)
+                        {
+                            if(dic.ContainsKey(label.LabelDb.Id))
+                            {
+                                label.IsChecked = true;
+                            }
+                        }
+                    }
                 }
             }
             if(AddLabelFlyout == null)

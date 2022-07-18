@@ -55,5 +55,10 @@ namespace OMDb.WinUI3.MyControls
         {
             await Services.EntryService.EditEntryAsync(Entry);
         }
+
+        private async void MenuFlyoutItem_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            await Services.EntryService.RemoveEntryAsync(Entry);
+        }
     }
 }

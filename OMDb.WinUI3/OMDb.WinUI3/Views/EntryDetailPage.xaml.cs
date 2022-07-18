@@ -17,17 +17,17 @@ namespace OMDb.WinUI3.Views
 {
     public sealed partial class EntryDetailPage : Page
     {
-        public ViewModels.EntryDetailViewModel VM { get; set; }
+        public ViewModels.EntryDetailViewModel VM { get; set; } = new ViewModels.EntryDetailViewModel(null);
         public EntryDetailPage()
         {
             this.InitializeComponent();
         }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             var entry = e.Parameter as Core.Models.Entry;
             if(entry != null)
             {
-                VM = new ViewModels.EntryDetailViewModel(Models.EntryDetail.Create(entry));
+                VM.Entry = await Models.EntryDetail.CreateAsync(entry);
             }
         }
     }
