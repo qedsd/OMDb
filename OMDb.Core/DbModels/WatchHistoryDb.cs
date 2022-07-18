@@ -23,6 +23,7 @@ namespace OMDb.Core.DbModels
         /// 可以用来记录本次看到了哪
         /// 写给自己看的
         /// </summary>
+        [SugarColumn(IsNullable = true)]
         public string Mark { get; set; }
     }
 }

@@ -15,6 +15,28 @@
         <converters:NullToZeroConverter x:Key="NullToZeroConverter" />
         <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
         <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+        <Style x:Key="ItemOutStackPanel" TargetType="StackPanel">
+            <Setter Property="Margin" Value="0,0,0,10" />
+            <Setter Property="Padding" Value="0,0,0,16" />
+            <Setter Property="Background" Value="{ThemeResource EntryDetailContantBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource EntryDetailBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style x:Key="ItemHeaderGrid" TargetType="StackPanel">
+            <Setter Property="Height" Value="48" />
+            <Setter Property="Margin" Value="20,0,0,0" />
+            <Setter Property="Orientation" Value="Horizontal" />
+        </Style>
+        <Style x:Key="ItemHeaderTextBlock" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="18" />
+        </Style>
+        <Style x:Key="ItemHeaderSplit" TargetType="Rectangle">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Margin" Value="0,0,0,24" />
+            <Setter Property="Fill" Value="{ThemeResource EntryDetailSplitBrush}" />
+        </Style>
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -26,7 +48,9 @@
             Margin="0,0,10,0"
             Padding="40,0"
             Background="{ThemeResource EntryDetailContantBrush}"
-            CornerRadius="16">
+            BorderBrush="{ThemeResource EntryDetailBorderBrush}"
+            BorderThickness="0,0,1,0"
+            CornerRadius="8">
             <Grid
                 Width="160"
                 Height="240"
@@ -75,22 +99,23 @@
         </StackPanel>
         <ScrollViewer Grid.Column="1">
             <StackPanel Margin="0,0,8,0">
-                <StackPanel
-                    Margin="0,0,0,10"
-                    Padding="0,0,0,16"
-                    Background="{ThemeResource EntryDetailContantBrush}"
-                    CornerRadius="16">
-                    <Grid Height="48" Margin="10,0,0,0">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="18"
-                            Text="图片" />
-                    </Grid>
-                    <Rectangle
-                        Height="1"
-                        Margin="0,0,0,24"
-                        Fill="LightGray"
-                        Opacity="0.6" />
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
+                        <Button
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind VM.OpenImgFolderCommand}"
+                            ToolTipService.ToolTip="打开文件夹">
+                            <TextBlock
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE169;" />
+                        </Button>
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                     <FlipView
                         Height="300"
                         Background="Transparent"
@@ -105,91 +130,68 @@
                     </FlipView>
                 </StackPanel>
 
-                <StackPanel
-                    Margin="0,0,0,10"
-                    Padding="0,0,0,16"
-                    Background="{ThemeResource EntryDetailContantBrush}"
-                    CornerRadius="16">
-                    <Grid Height="48" Margin="10,0,0,0">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="18"
-                            Text="描述" />
-                    </Grid>
-                    <Rectangle
-                        Height="1"
-                        Margin="0,0,0,24"
-                        Fill="LightGray"
-                        Opacity="0.6" />
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="描述" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                     <Grid Margin="10,0,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}"
-                            TextWrapping="WrapWholeWords"
-                            Visibility="{x:Bind VM.EditDescSymbolVisibility, Mode=OneWay}" />
-                        <TextBox
-                            Text="{x:Bind VM.Desc, Mode=TwoWay}"
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind VM.DescEditorVisibility, Mode=OneWay}" />
-                        <Button
-                            Grid.Column="1"
-                            VerticalAlignment="Bottom"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind VM.EditDescCommand}"
-                            Visibility="{x:Bind VM.EditDescSymbolVisibility, Mode=OneWay}">
-                            <TextBlock
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE104;"
-                                ToolTipService.ToolTip="编辑" />
-                        </Button>
-                        <StackPanel
-                            Grid.Column="1"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind VM.SaveDescSymbolVisibility, Mode=OneWay}">
+                        <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="40" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}" TextWrapping="WrapWholeWords" />
                             <Button
-                                VerticalAlignment="Bottom"
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
                                 Background="Transparent"
                                 BorderThickness="0"
-                                Command="{x:Bind VM.SaveDescCommand}">
+                                Command="{x:Bind VM.EditDescCommand}">
                                 <TextBlock
                                     FontFamily="Segoe MDL2 Assets"
-                                    Text="&#xE105;"
-                                    ToolTipService.ToolTip="保存" />
+                                    Text="&#xE104;"
+                                    ToolTipService.ToolTip="编辑" />
                             </Button>
-                            <Button
-                                VerticalAlignment="Bottom"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Command="{x:Bind VM.CancelEditDescCommand}">
-                                <TextBlock
-                                    FontFamily="Segoe MDL2 Assets"
-                                    Text="&#xE10A;"
-                                    ToolTipService.ToolTip="取消" />
-                            </Button>
-                        </StackPanel>
+                        </Grid>
+                        <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{x:Bind VM.Desc, Mode=TwoWay}" TextWrapping="Wrap" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                <Button
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{x:Bind VM.SaveDescCommand}">
+                                    <TextBlock
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Text="&#xE105;"
+                                        ToolTipService.ToolTip="保存" />
+                                </Button>
+                                <Button
+                                    VerticalAlignment="Bottom"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Command="{x:Bind VM.CancelEditDescCommand}">
+                                    <TextBlock
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Text="&#xE10A;"
+                                        ToolTipService.ToolTip="取消" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </StackPanel>
 
-                <StackPanel
-                    Margin="0,0,0,10"
-                    Padding="0,0,0,16"
-                    Background="{ThemeResource EntryDetailContantBrush}"
-                    CornerRadius="16">
-                    <Grid Height="48" Margin="10,0,0,0">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="18"
-                            Text="观看记录" />
-                    </Grid>
-                    <Rectangle
-                        Height="1"
-                        Margin="0,0,0,24"
-                        Fill="LightGray"
-                        Opacity="0.6" />
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="观看记录" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                     <Grid Margin="10,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition />

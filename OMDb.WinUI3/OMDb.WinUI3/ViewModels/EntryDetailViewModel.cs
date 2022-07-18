@@ -33,24 +33,24 @@ namespace OMDb.WinUI3.ViewModels
             get => desc;
             set => SetProperty(ref desc, value);
         }
-        private Visibility descEditorVisibility = Visibility.Collapsed;
-        public Visibility DescEditorVisibility
-        {
-            get => descEditorVisibility;
-            set => SetProperty(ref descEditorVisibility, value);
-        }
-        private Visibility editDescSymbolVisibility = Visibility.Visible;
-        public Visibility EditDescSymbolVisibility
-        {
-            get => editDescSymbolVisibility;
-            set => SetProperty(ref editDescSymbolVisibility, value);
-        }
-        private Visibility saveDescSymbolVisibility = Visibility.Collapsed;
-        public Visibility SaveDescSymbolVisibility
-        {
-            get=> saveDescSymbolVisibility;
-            set => SetProperty(ref saveDescSymbolVisibility, value);
-        }
+        //private Visibility descEditorVisibility = Visibility.Collapsed;
+        //public Visibility DescEditorVisibility
+        //{
+        //    get => descEditorVisibility;
+        //    set => SetProperty(ref descEditorVisibility, value);
+        //}
+        //private Visibility editDescSymbolVisibility = Visibility.Visible;
+        //public Visibility EditDescSymbolVisibility
+        //{
+        //    get => editDescSymbolVisibility;
+        //    set => SetProperty(ref editDescSymbolVisibility, value);
+        //}
+        //private Visibility saveDescSymbolVisibility = Visibility.Collapsed;
+        //public Visibility SaveDescSymbolVisibility
+        //{
+        //    get=> saveDescSymbolVisibility;
+        //    set => SetProperty(ref saveDescSymbolVisibility, value);
+        //}
         public EntryDetailViewModel(EntryDetail entry)
         {
             Entry = entry;
@@ -60,11 +60,16 @@ namespace OMDb.WinUI3.ViewModels
         {
             System.Diagnostics.Process.Start("explorer.exe", Entry.FullEntryPath);
         });
+
+        private bool isEditDesc = false;
+        public bool IsEditDesc
+        {
+            get => isEditDesc;
+            set => SetProperty(ref isEditDesc, value);
+        }
         public ICommand EditDescCommand => new RelayCommand(() =>
         {
-            DescEditorVisibility = Visibility.Visible;
-            EditDescSymbolVisibility = Visibility.Collapsed ;
-            SaveDescSymbolVisibility = Visibility.Visible;
+            IsEditDesc = true;
         });
         public ICommand SaveDescCommand => new RelayCommand(() =>
         {
@@ -75,9 +80,7 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ICommand CancelEditDescCommand => new RelayCommand(() =>
         {
-            DescEditorVisibility = Visibility.Collapsed;
-            EditDescSymbolVisibility = Visibility.Visible;
-            SaveDescSymbolVisibility = Visibility.Collapsed;
+            IsEditDesc = false;
         });
         private DateTimeOffset newHistorDate = DateTimeOffset.Now;
         public DateTimeOffset NewHistorDate
@@ -126,6 +129,10 @@ namespace OMDb.WinUI3.ViewModels
             NewHistorDate = DateTimeOffset.Now;
             NewHistorTime = DateTimeOffset.Now.TimeOfDay;
             NewHistorMark = null;
+        });
+        public ICommand OpenImgFolderCommand => new RelayCommand(() =>
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath,Services.ConfigService.ImgFolder));
         });
     }
 }
