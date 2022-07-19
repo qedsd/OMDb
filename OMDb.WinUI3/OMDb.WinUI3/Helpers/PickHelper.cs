@@ -61,6 +61,7 @@ namespace OMDb.WinUI3.Helpers
         public static async Task<StorageFolder> PickFolderAsync()
         {
             FolderPicker openPicker = new FolderPicker();
+            openPicker.FileTypeFilter.Add("*");
             var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(MainWindow.Instance);
             WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
             return await openPicker.PickSingleFolderAsync();
