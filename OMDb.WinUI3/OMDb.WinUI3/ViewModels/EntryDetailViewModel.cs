@@ -134,5 +134,17 @@ namespace OMDb.WinUI3.ViewModels
         {
             System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath,Services.ConfigService.ImgFolder));
         });
+        public ICommand OpenVideoFolderCommand => new RelayCommand(() =>
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.VideoFolder));
+        });
+        public ICommand OpenSubFolderCommand => new RelayCommand(() =>
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.SubFolder));
+        });
+        public ICommand OpenResFolderCommand => new RelayCommand(() =>
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.ResourceFolder));
+        });
     }
 }

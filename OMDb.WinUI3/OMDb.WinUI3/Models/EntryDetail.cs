@@ -85,6 +85,9 @@ namespace OMDb.WinUI3.Models
             }
             LoadImgs();
             LoadMetaData();
+            LoadVideos();
+            LoadSubs();
+            LoadRes();
         }
         private void LoadImgs()
         {
@@ -109,20 +112,106 @@ namespace OMDb.WinUI3.Models
         {
             Metadata = Core.Models.EntryMetadata.Read(Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
+
+        private List<Models.ExplorerItem> videoExplorerItems;
+        public List<Models.ExplorerItem> VideoExplorerItems
+        {
+            get => videoExplorerItems;
+            set=>SetProperty(ref videoExplorerItems, value);
+        }
         private void LoadVideos()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
             if (Directory.Exists(folder))
             {
-                var files = new DirectoryInfo(folder).GetFiles();
-                if (files.Any())
+                VideoExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+            }
+        }
+
+        private List<Models.ExplorerItem> subExplorerItems;
+        public List<Models.ExplorerItem> SubExplorerItems
+        {
+            get => subExplorerItems;
+            set => SetProperty(ref subExplorerItems, value);
+        }
+        private void LoadSubs()
+        {
+            string folder = Path.Combine(FullEntryPath, Services.ConfigService.SubFolder);
+            if (Directory.Exists(folder))
+            {
+                SubExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+            }
+        }
+
+        private List<Models.ExplorerItem> resExplorerItems;
+        public List<Models.ExplorerItem> ResExplorerItems
+        {
+            get => resExplorerItems;
+            set => SetProperty(ref resExplorerItems, value);
+        }
+        private void LoadRes()
+        {
+            string folder = Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
+            if (Directory.Exists(folder))
+            {
+                ResExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+            }
+        }
+
+        /// <summary>
+        /// 获取指定路径下所有文件、文件夹
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        private List<Models.ExplorerItem> FindExplorerItems(string path)
+        {
+            List<Models.ExplorerItem> items = new List<Models.ExplorerItem>();
+            if (Path.HasExtension(path)&&File.Exists(path))//文件
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                items.Add(new Models.ExplorerItem()
                 {
-                    foreach (var file in files)
+                    Name = fileInfo.Name,
+                    IsFile = true,
+                    Length = fileInfo.Length,
+                    FullName = fileInfo.FullName,
+                });
+            }
+            else if(Directory.Exists(path))//文件夹
+            {
+                var dire = new DirectoryInfo(path);
+                var dirItem = new ExplorerItem()
+                {
+                    Name = dire.Name,
+                    IsFile = false,
+                    FullName = dire.FullName,
+                };
+                items.Add(dirItem);
+                var dirs = new DirectoryInfo(path).GetDirectories();
+                if (dirs.Any())
+                {
+                    dirItem.Children = new List<ExplorerItem>();
+                    
+                    foreach (var dir in dirs)
                     {
-                        
+                        dirItem.Children.AddRange(FindExplorerItems(dir.FullName));
                     }
                 }
+                var files = new DirectoryInfo(path).GetFiles();
+                if (files.Any())
+                {
+                    if (dirItem.Children == null)
+                    {
+                        dirItem.Children = new List<ExplorerItem>();
+                    }
+                    foreach (var file in files)
+                    {
+                        dirItem.Children.AddRange(FindExplorerItems(file.FullName));
+                    }
+                }
+                dirItem.Length += dirItem.Children?.Count > 0 ? dirItem.Children.Sum(p => p.Length) : 0;
             }
+            return items;
         }
         /// <summary>
         /// 修改词条存储路径

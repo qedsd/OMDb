@@ -30,5 +30,10 @@ namespace OMDb.WinUI3.Views
                 VM.Entry = await Models.EntryDetail.CreateAsync(entry);
             }
         }
+
+        private void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", (sender as Grid).DataContext as string);
+        }
     }
 }

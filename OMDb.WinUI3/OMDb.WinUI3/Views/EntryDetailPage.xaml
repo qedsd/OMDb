@@ -7,7 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    x:Name="page"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -15,6 +17,7 @@
         <converters:NullToZeroConverter x:Key="NullToZeroConverter" />
         <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
         <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+        <converters:ByteSizeConverter x:Key="ByteSizeConverter" />
         <Style x:Key="ItemOutStackPanel" TargetType="StackPanel">
             <Setter Property="Margin" Value="0,0,0,10" />
             <Setter Property="Padding" Value="0,0,0,16" />
@@ -122,7 +125,7 @@
                         ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}">
                         <FlipView.ItemTemplate>
                             <DataTemplate>
-                                <Grid CornerRadius="16">
+                                <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
                                     <Image Source="{Binding}" />
                                 </Grid>
                             </DataTemplate>
@@ -273,6 +276,72 @@
                                 Text="&#xE109;"
                                 ToolTipService.ToolTip="新增" />
                         </Button>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频文件" />
+                        <Button
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind VM.OpenVideoFolderCommand}"
+                            ToolTipService.ToolTip="打开文件夹">
+                            <TextBlock
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE169;" />
+                        </Button>
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                    <Grid Margin="10,0,0,0">
+                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
+                        <Button
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind VM.OpenSubFolderCommand}"
+                            ToolTipService.ToolTip="打开文件夹">
+                            <TextBlock
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE169;" />
+                        </Button>
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                    <Grid Margin="10,0,0,0">
+                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.SubExplorerItems, Mode=OneWay}" />
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />
+                        <Button
+                            Padding="0"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind VM.OpenResFolderCommand}"
+                            ToolTipService.ToolTip="打开文件夹">
+                            <TextBlock
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                Text="&#xE169;" />
+                        </Button>
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                    <Grid Margin="10,0,0,0">
+                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.ResExplorerItems, Mode=OneWay}" />
                     </Grid>
                 </StackPanel>
             </StackPanel>

@@ -24,6 +24,7 @@
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
+    <None Remove="MyControls\ExplorerItemControl.xaml" />
     <None Remove="MyControls\LabelsControl.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
@@ -182,6 +183,12 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\ExplorerItemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
