@@ -10,41 +10,32 @@ namespace OMDb.WinUI3.Helpers
 {
     public static class FileHelper
     {
-        public static void CopyAllFiles(string sourcePath,string targetPath)
-        {
-            var items = GetAllFiles(sourcePath);
-            if (items?.Count!=0)
-            {
-                foreach(var item in items)
-                {
-                    File.Copy(item.FullName, Path.Combine(targetPath,item.Name), true);
-                }
-            }
-        }
-        public delegate void ProgressCallBack(int progress);
-        public static void CopyFiles(string sourcePath, string targetPath, ProgressCallBack progressCallBack)
-        {
-            
-        }
-        private static void CopyFile(string source, string target, ref float percent, int bufferSize = 1024 * 1024 * 10)
+        //public static void CopyAllFiles(string sourcePath,string targetPath)
+        //{
+        //    var items = GetAllFiles(sourcePath);
+        //    if (items?.Count!=0)
+        //    {
+        //        foreach(var item in items)
+        //        {
+        //            File.Copy(item.FullName, Path.Combine(targetPath,item.Name), true);
+        //        }
+        //    }
+        //}
+        public delegate void ProgressCallBack(float progress);
+        public static void CopyFiles(string sourcePath, string targetPath, ProgressCallBack progressCallBack, int bufferSize = 1024 * 1024)
         {
             byte[] array = new byte[bufferSize]; //创建缓冲区
-            using (FileStream fsRead = File.Open(source, FileMode.Open, FileAccess.Read))
+            using FileStream fsRead = File.Open(sourcePath, FileMode.Open, FileAccess.Read);
+            using FileStream fsWrite = File.Open(targetPath, FileMode.Create, FileAccess.Write);
+            while (fsRead.Position < fsRead.Length)
             {
-                using (FileStream fsWrite = File.Open(target, FileMode.Create, FileAccess.Write))
-                {
-                    while (fsRead.Position < fsRead.Length)
-                    {
-                        //读取到文件缓冲区
-                        int length = fsRead.Read(array, 0, array.Length);
-                        //从缓冲区写到新文件
-                        fsWrite.Write(array, 0, length);
-                        //计算进度
-                        percent = (float)fsRead.Position / fsRead.Length;
-                        //输出进度
-                        Console.WriteLine(percent.ToString("p"));
-                    }
-                }
+                //读取到文件缓冲区
+                int length = fsRead.Read(array, 0, array.Length);
+                //从缓冲区写到新文件
+                fsWrite.Write(array, 0, length);
+                //计算进度
+                var percent = (float)fsRead.Position / fsRead.Length;
+                progressCallBack.Invoke(percent);
             }
         }
 

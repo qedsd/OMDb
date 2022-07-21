@@ -14,9 +14,6 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace OMDb.WinUI3.MyControls
 {
     public sealed partial class DropArea : UserControl
@@ -68,7 +65,6 @@ namespace OMDb.WinUI3.MyControls
                     var items = await dataPackage.GetStorageItemsAsync();
                     if(items?.Count!=0)
                     {
-                        Helpers.InfoHelper.ShowMsg(items.FirstOrDefault()?.Path);
                         DropCommand?.Execute(items);
                     }
                 }

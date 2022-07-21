@@ -134,6 +134,26 @@ namespace OMDb.WinUI3.ViewModels
             if(items?.Count > 0)
             {
                 var paths = items.Select(p => p.Path).ToList();
+                List<ExplorerItem> source = new List<ExplorerItem>();//源文件，保留原本目录结构
+                foreach (var path in paths)
+                {
+                    source.AddRange(Helpers.FileHelper.FindExplorerItems(path));
+                }
+                if(source.Count > 0)
+                {
+                    string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
+                    var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
+                    sourceFiles.ForEach(p =>
+                    {
+                        p.SourcePath = p.FullName;//保留原文件路径
+                        p.FullName = p.FullName.Replace(rootPath,Entry.GetVideoFolder());//创建目标文件路径
+                        Entry.VideoExplorerItems.Add(p);
+                    });
+                    foreach(var p in sourceFiles)
+                    {
+                        p.Copy();
+                    }
+                }
             }
         });
     }

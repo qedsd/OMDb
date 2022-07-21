@@ -6,8 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.MyControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    MinWidth="140"
-    MaxHeight="400"
     AllowDrop="True"
     DragLeave="Grid_DragLeave"
     DragOver="Grid_DragOver"

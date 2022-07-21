@@ -113,8 +113,8 @@ namespace OMDb.WinUI3.Models
             Metadata = Core.Models.EntryMetadata.Read(Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
 
-        private List<Models.ExplorerItem> videoExplorerItems;
-        public List<Models.ExplorerItem> VideoExplorerItems
+        private ObservableCollection<Models.ExplorerItem> videoExplorerItems;
+        public ObservableCollection<Models.ExplorerItem> VideoExplorerItems
         {
             get => videoExplorerItems;
             set=>SetProperty(ref videoExplorerItems, value);
@@ -124,7 +124,7 @@ namespace OMDb.WinUI3.Models
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
             if (Directory.Exists(folder))
             {
-                VideoExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+                VideoExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children.ToObservableCollection();
             }
         }
 
@@ -139,7 +139,7 @@ namespace OMDb.WinUI3.Models
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.SubFolder);
             if (Directory.Exists(folder))
             {
-                SubExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+                SubExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children;
             }
         }
 
@@ -174,6 +174,11 @@ namespace OMDb.WinUI3.Models
         public void ChangeCoverImg(string newImgName)
         {
 
+        }
+
+        public string GetVideoFolder()
+        {
+            return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
         }
     }
 }

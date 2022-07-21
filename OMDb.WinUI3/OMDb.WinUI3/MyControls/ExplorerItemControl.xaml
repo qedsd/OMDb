@@ -10,29 +10,48 @@
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:ByteSizeConverter x:Key="ByteSizeConverter" />
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibilityConverter" />
+        <converters:BoolReverseConverte x:Key="BoolReverseConverte" />
     </UserControl.Resources>
     <TreeView x:Name="TreeView">
         <TreeView.ItemTemplate>
             <DataTemplate x:DataType="models:ExplorerItem">
                 <TreeViewItem DoubleTapped="ExplorerItem_DoubleTapped" ItemsSource="{x:Bind Children}">
-                    <Grid Height="32">
-                        <Grid.ContextFlyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem Click="ExplorerItem_Click" Text="打开" />
-                            </MenuFlyout>
-                        </Grid.ContextFlyout>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="0,0,16,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind Length, Converter={StaticResource ByteSizeConverter}}" />
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid Height="32">
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem
+                                        Click="ExplorerItem_Click"
+                                        IsEnabled="{x:Bind IsCopying, Converter={StaticResource BoolReverseConverte},Mode=OneWay}"
+                                        Text="打开" />
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="0,0,16,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind Length, Converter={StaticResource ByteSizeConverter}}" />
+                        </Grid>
+                        <Grid Grid.Row="1" Visibility="{x:Bind IsCopying, Converter={StaticResource TrueToVisibilityConverter},Mode=OneWay}">
+                            <ProgressBar
+                                Margin="0,0,16,0"
+                                Maximum="1"
+                                ToolTipService.ToolTip="{x:Bind CopyPercent, Mode=OneWay}"
+                                Value="{x:Bind CopyPercent, Mode=OneWay}" />
+                        </Grid>
                     </Grid>
+
                 </TreeViewItem>
             </DataTemplate>
         </TreeView.ItemTemplate>
