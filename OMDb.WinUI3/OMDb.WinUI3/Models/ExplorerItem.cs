@@ -10,6 +10,7 @@ namespace OMDb.WinUI3.Models
     {
         /// <summary>
         /// 文件/文件夹名
+        /// 带文件后缀名
         /// </summary>
         public string Name { get; set; }
         /// <summary>

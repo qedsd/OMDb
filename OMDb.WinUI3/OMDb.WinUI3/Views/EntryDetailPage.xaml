@@ -46,6 +46,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <!--  左侧基本信息栏  -->
         <StackPanel
             Width="360"
             Margin="0,0,10,0"
@@ -100,10 +101,12 @@
                 TextWrapping="WrapWholeWords" />
             <mycontrols:LabelsControl Margin="0,32,0,0" Labels="{x:Bind VM.Entry.Labels, Mode=OneWay}" />
         </StackPanel>
+        <!--  右侧滚动数据  -->
         <ScrollViewer Grid.Column="1">
             <StackPanel Margin="0,0,8,0">
+                <!--  图片  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                    <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
                         <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
                         <Button
                             Padding="0"
@@ -133,6 +136,7 @@
                     </FlipView>
                 </StackPanel>
 
+                <!--  描述  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
                     <StackPanel Style="{StaticResource ItemHeaderGrid}">
                         <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="描述" />
@@ -190,6 +194,7 @@
                     </Grid>
                 </StackPanel>
 
+                <!--  观看记录  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
                     <StackPanel Style="{StaticResource ItemHeaderGrid}">
                         <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="观看记录" />
@@ -279,28 +284,32 @@
                     </Grid>
                 </StackPanel>
 
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频文件" />
-                        <Button
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind VM.OpenVideoFolderCommand}"
-                            ToolTipService.ToolTip="打开文件夹">
-                            <TextBlock
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE169;" />
-                        </Button>
+                <!--  视频文件  -->
+                <mycontrols:DropArea Caption="复制到视频文件夹" DropCommand="{x:Bind VM.DropVideoCommand}">
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频文件" />
+                            <Button
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.OpenVideoFolderCommand}"
+                                ToolTipService.ToolTip="打开文件夹">
+                                <TextBlock
+                                    Margin="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE169;" />
+                            </Button>
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid Margin="10,0,0,0">
+                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
+                        </Grid>
                     </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
-                    </Grid>
-                </StackPanel>
+                </mycontrols:DropArea>
 
+                <!--  字幕文件  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
                     <StackPanel Style="{StaticResource ItemHeaderGrid}">
                         <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
@@ -323,6 +332,7 @@
                     </Grid>
                 </StackPanel>
 
+                <!--  资源文件  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
                     <StackPanel Style="{StaticResource ItemHeaderGrid}">
                         <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />

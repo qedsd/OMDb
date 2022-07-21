@@ -154,65 +154,11 @@ namespace OMDb.WinUI3.Models
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
             if (Directory.Exists(folder))
             {
-                ResExplorerItems = FindExplorerItems(folder).FirstOrDefault().Children;
+                ResExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children;
             }
         }
 
-        /// <summary>
-        /// 获取指定路径下所有文件、文件夹
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private List<Models.ExplorerItem> FindExplorerItems(string path)
-        {
-            List<Models.ExplorerItem> items = new List<Models.ExplorerItem>();
-            if (Path.HasExtension(path)&&File.Exists(path))//文件
-            {
-                FileInfo fileInfo = new FileInfo(path);
-                items.Add(new Models.ExplorerItem()
-                {
-                    Name = fileInfo.Name,
-                    IsFile = true,
-                    Length = fileInfo.Length,
-                    FullName = fileInfo.FullName,
-                });
-            }
-            else if(Directory.Exists(path))//文件夹
-            {
-                var dire = new DirectoryInfo(path);
-                var dirItem = new ExplorerItem()
-                {
-                    Name = dire.Name,
-                    IsFile = false,
-                    FullName = dire.FullName,
-                };
-                items.Add(dirItem);
-                var dirs = new DirectoryInfo(path).GetDirectories();
-                if (dirs.Any())
-                {
-                    dirItem.Children = new List<ExplorerItem>();
-                    
-                    foreach (var dir in dirs)
-                    {
-                        dirItem.Children.AddRange(FindExplorerItems(dir.FullName));
-                    }
-                }
-                var files = new DirectoryInfo(path).GetFiles();
-                if (files.Any())
-                {
-                    if (dirItem.Children == null)
-                    {
-                        dirItem.Children = new List<ExplorerItem>();
-                    }
-                    foreach (var file in files)
-                    {
-                        dirItem.Children.AddRange(FindExplorerItems(file.FullName));
-                    }
-                }
-                dirItem.Length += dirItem.Children?.Count > 0 ? dirItem.Children.Sum(p => p.Length) : 0;
-            }
-            return items;
-        }
+        
         /// <summary>
         /// 修改词条存储路径
         /// </summary>

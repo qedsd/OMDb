@@ -21,6 +21,7 @@
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="MyControls\AddLabelsControl.xaml" />
+    <None Remove="MyControls\DropArea.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
@@ -56,6 +57,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="MyControls\DropArea.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="MyControls\LabelsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -33,24 +33,6 @@ namespace OMDb.WinUI3.ViewModels
             get => desc;
             set => SetProperty(ref desc, value);
         }
-        //private Visibility descEditorVisibility = Visibility.Collapsed;
-        //public Visibility DescEditorVisibility
-        //{
-        //    get => descEditorVisibility;
-        //    set => SetProperty(ref descEditorVisibility, value);
-        //}
-        //private Visibility editDescSymbolVisibility = Visibility.Visible;
-        //public Visibility EditDescSymbolVisibility
-        //{
-        //    get => editDescSymbolVisibility;
-        //    set => SetProperty(ref editDescSymbolVisibility, value);
-        //}
-        //private Visibility saveDescSymbolVisibility = Visibility.Collapsed;
-        //public Visibility SaveDescSymbolVisibility
-        //{
-        //    get=> saveDescSymbolVisibility;
-        //    set => SetProperty(ref saveDescSymbolVisibility, value);
-        //}
         public EntryDetailViewModel(EntryDetail entry)
         {
             Entry = entry;
@@ -145,6 +127,14 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand OpenResFolderCommand => new RelayCommand(() =>
         {
             System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.ResourceFolder));
+        });
+
+        public ICommand DropVideoCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>((items) =>
+        {
+            if(items?.Count > 0)
+            {
+                var paths = items.Select(p => p.Path).ToList();
+            }
         });
     }
 }
