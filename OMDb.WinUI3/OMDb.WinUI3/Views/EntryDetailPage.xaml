@@ -304,56 +304,60 @@
                         </StackPanel>
                         <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                         <Grid Margin="10,0,0,0">
-                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}"/>
+                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
                         </Grid>
                     </StackPanel>
                 </mycontrols:DropArea>
 
                 <!--  字幕文件  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
-                        <Button
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind VM.OpenSubFolderCommand}"
-                            ToolTipService.ToolTip="打开文件夹">
-                            <TextBlock
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE169;" />
-                        </Button>
+                <mycontrols:DropArea Caption="复制到字幕文件夹" DropCommand="{x:Bind VM.DropSubCommand}">
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
+                            <Button
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.OpenSubFolderCommand}"
+                                ToolTipService.ToolTip="打开文件夹">
+                                <TextBlock
+                                    Margin="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE169;" />
+                            </Button>
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid Margin="10,0,0,0">
+                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.SubExplorerItems, Mode=OneWay}" />
+                        </Grid>
                     </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.SubExplorerItems, Mode=OneWay}" />
-                    </Grid>
-                </StackPanel>
+                </mycontrols:DropArea>
 
                 <!--  资源文件  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />
-                        <Button
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind VM.OpenResFolderCommand}"
-                            ToolTipService.ToolTip="打开文件夹">
-                            <TextBlock
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE169;" />
-                        </Button>
+                <mycontrols:DropArea Caption="复制到资源文件夹" DropCommand="{x:Bind VM.DropResCommand}">
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />
+                            <Button
+                                Padding="0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.OpenResFolderCommand}"
+                                ToolTipService.ToolTip="打开文件夹">
+                                <TextBlock
+                                    Margin="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE169;" />
+                            </Button>
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid Margin="10,0,0,0">
+                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.ResExplorerItems, Mode=OneWay}" />
+                        </Grid>
                     </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.ResExplorerItems, Mode=OneWay}" />
-                    </Grid>
-                </StackPanel>
+                </mycontrols:DropArea>
             </StackPanel>
         </ScrollViewer>
     </Grid>

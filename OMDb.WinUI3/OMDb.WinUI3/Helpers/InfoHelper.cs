@@ -30,26 +30,44 @@ namespace OMDb.WinUI3.Helpers
                 InfoBar.IsOpen = false;
             });
         }
-        public static void ShowMsg(string msg)
+        public static void ShowMsg(string msg, bool autoClose = true)
         {
-            InfoBar.Severity = InfoBarSeverity.Informational;
-            InfoBar.Message = msg;
-            InfoBar.IsOpen = true;
-            StartTimer();
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                InfoBar.Severity = InfoBarSeverity.Informational;
+                InfoBar.Message = msg;
+                InfoBar.IsOpen = true;
+                if (autoClose)
+                {
+                    StartTimer();
+                }
+            });
         }
-        public static void ShowError(string msg)
+        public static void ShowError(string msg, bool autoClose = true)
         {
-            InfoBar.Severity = InfoBarSeverity.Error;
-            InfoBar.Message = msg;
-            InfoBar.IsOpen = true;
-            StartTimer();
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                InfoBar.Severity = InfoBarSeverity.Error;
+                InfoBar.Message = msg;
+                InfoBar.IsOpen = true;
+                if (autoClose)
+                {
+                    StartTimer();
+                }
+            });
         }
-        public static void ShowSuccess(string msg)
+        public static void ShowSuccess(string msg, bool autoClose = true)
         {
-            InfoBar.Severity = InfoBarSeverity.Success;
-            InfoBar.Message = msg;
-            InfoBar.IsOpen = true;
-            StartTimer();
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                InfoBar.Severity = InfoBarSeverity.Success;
+                InfoBar.Message = msg;
+                InfoBar.IsOpen = true;
+                if (autoClose)
+                {
+                    StartTimer();
+                }
+            });
         }
     }
 }

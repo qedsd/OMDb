@@ -4,31 +4,53 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Helpers
 {
     public static class FileHelper
     {
-        //public static void CopyAllFiles(string sourcePath,string targetPath)
-        //{
-        //    var items = GetAllFiles(sourcePath);
-        //    if (items?.Count!=0)
-        //    {
-        //        foreach(var item in items)
-        //        {
-        //            File.Copy(item.FullName, Path.Combine(targetPath,item.Name), true);
-        //        }
-        //    }
-        //}
         public delegate void ProgressCallBack(float progress);
-        public static void CopyFiles(string sourcePath, string targetPath, ProgressCallBack progressCallBack, int bufferSize = 1024 * 1024)
+        /// <summary>
+        /// 复制文件
+        /// 如果目标文件已存在，则在文件后面加上(数字)
+        /// </summary>
+        /// <param name="sourcePath"></param>
+        /// <param name="targetPath"></param>
+        /// <param name="progressCallBack"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="bufferSize"></param>
+        /// <returns>返回复制后的文件路径</returns>
+        public static string CopyFile(string sourcePath, string targetPath, ProgressCallBack progressCallBack, CancellationToken cancellationToken = default, int bufferSize = 1024 * 1024 * 10)
         {
             byte[] array = new byte[bufferSize]; //创建缓冲区
             using FileStream fsRead = File.Open(sourcePath, FileMode.Open, FileAccess.Read);
+            var targetDir = System.IO.Path.GetDirectoryName(targetPath);
+            if (!System.IO.Directory.Exists(targetDir))
+            {
+                System.IO.Directory.CreateDirectory(targetDir);
+            }
+            if (File.Exists(targetPath))
+            {
+                int i = 1;
+                while (true)
+                {
+                    string newPath = $"{targetPath}({i++})";
+                    if (!Directory.Exists(newPath))
+                    {
+                        targetPath = newPath;
+                        break;
+                    }
+                }
+            }
             using FileStream fsWrite = File.Open(targetPath, FileMode.Create, FileAccess.Write);
             while (fsRead.Position < fsRead.Length)
             {
+                if(cancellationToken.IsCancellationRequested)
+                {
+                    break;
+                }
                 //读取到文件缓冲区
                 int length = fsRead.Read(array, 0, array.Length);
                 //从缓冲区写到新文件
@@ -37,6 +59,7 @@ namespace OMDb.WinUI3.Helpers
                 var percent = (float)fsRead.Position / fsRead.Length;
                 progressCallBack.Invoke(percent);
             }
+            return targetPath;
         }
 
         /// <summary>
@@ -134,6 +157,9 @@ namespace OMDb.WinUI3.Helpers
             return GetAllFiles(items);
         }
 
-        
+        public static void OpenBySystem(string path)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", path);
+        }
     }
 }

@@ -20,19 +20,27 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
-                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid Height="32">
                             <Grid.ContextFlyout>
                                 <MenuFlyout>
                                     <MenuFlyoutItem
                                         Click="ExplorerItem_Click"
-                                        IsEnabled="{x:Bind IsCopying, Converter={StaticResource BoolReverseConverte},Mode=OneWay}"
+                                        IsEnabled="{x:Bind IsCopying, Converter={StaticResource BoolReverseConverte}, Mode=OneWay}"
                                         Text="打开" />
+                                    <MenuFlyoutItem
+                                        Command="{x:Bind DeleteCommand}"
+                                        IsEnabled="{x:Bind IsCopying, Converter={StaticResource BoolReverseConverte}, Mode=OneWay}"
+                                        Text="删除"
+                                        Visibility="Collapsed" />
                                 </MenuFlyout>
                             </Grid.ContextFlyout>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
@@ -42,13 +50,33 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
                                 Text="{x:Bind Length, Converter={StaticResource ByteSizeConverter}}" />
+                            <Button
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Command="{x:Bind CancelCopyCommand}"
+                                Visibility="{x:Bind IsCopying, Converter={StaticResource TrueToVisibilityConverter}, Mode=OneWay}">
+                                <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE10A;" />
+                            </Button>
                         </Grid>
-                        <Grid Grid.Row="1" Visibility="{x:Bind IsCopying, Converter={StaticResource TrueToVisibilityConverter},Mode=OneWay}">
+                        <Grid Grid.Row="1" Visibility="{x:Bind IsCopying, Converter={StaticResource TrueToVisibilityConverter}, Mode=OneWay}">
                             <ProgressBar
                                 Margin="0,0,16,0"
                                 Maximum="1"
                                 ToolTipService.ToolTip="{x:Bind CopyPercent, Mode=OneWay}"
                                 Value="{x:Bind CopyPercent, Mode=OneWay}" />
+                        </Grid>
+                        <Grid Grid.Row="2" Visibility="{x:Bind IsDeleting, Converter={StaticResource TrueToVisibilityConverter}, Mode=OneWay}">
+                            <ProgressBar
+                                Margin="0,0,16,0"
+                                IsIndeterminate="True"
+                                ToolTipService.ToolTip="删除中" />
+                        </Grid>
+                        <Grid Grid.Row="3" Visibility="{x:Bind IsVerifying, Converter={StaticResource TrueToVisibilityConverter}, Mode=OneWay}">
+                            <ProgressBar
+                                Margin="0,0,16,0"
+                                IsIndeterminate="True"
+                                ToolTipService.ToolTip="校验中" />
                         </Grid>
                     </Grid>
 

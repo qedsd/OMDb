@@ -81,5 +81,10 @@ namespace OMDb.WinUI3.Helpers
                 return null;
             }
         }
+
+        public static void OpenBySystem(string path)
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.GetDirectoryName(path));
+        }
     }
 }

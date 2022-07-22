@@ -17,6 +17,7 @@
     <None Remove="Dialogs\EditEntryDialog.xaml" />
     <None Remove="Dialogs\EditLabelDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
+    <None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
@@ -57,6 +58,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
     <Page Update="MyControls\DropArea.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>

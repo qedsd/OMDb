@@ -128,8 +128,8 @@ namespace OMDb.WinUI3.ViewModels
         {
             System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.ResourceFolder));
         });
-
-        public ICommand DropVideoCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>((items) =>
+        #region 视频
+        public ICommand DropVideoCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async(items) =>
         {
             if(items?.Count > 0)
             {
@@ -147,14 +147,159 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         p.SourcePath = p.FullName;//保留原文件路径
                         p.FullName = p.FullName.Replace(rootPath,Entry.GetVideoFolder());//创建目标文件路径
+                        p.CanceledCopyEvent += (s) =>
+                        {
+                            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                            {
+                                Entry.VideoExplorerItems.Remove(s);
+                            });
+                        };
                         Entry.VideoExplorerItems.Add(p);
                     });
+                    if (VerifyFaiedVideoItems == null)
+                    {
+                        VerifyFaiedVideoItems = new List<ExplorerItem>();
+                    }
+                    else
+                    {
+                        VerifyFaiedVideoItems.Clear();
+                    }
+                    ExplorerItem.VerifyFaiedEvent += VideoExplorerItem_VerifyFaiedEvent;
                     foreach(var p in sourceFiles)
                     {
-                        p.Copy();
+                        await p.CopyAsync();
+                    }
+                    ExplorerItem.VerifyFaiedEvent -= VideoExplorerItem_VerifyFaiedEvent;
+                    Entry.LoadVideos();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    if(VerifyFaiedVideoItems.Count!=0)//存在校验失败的
+                    {
+                        await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedVideoItems, Entry.FullEntryPath);
                     }
                 }
             }
         });
+        private List<ExplorerItem> VerifyFaiedVideoItems;
+        private void VideoExplorerItem_VerifyFaiedEvent(ExplorerItem explorerItem)
+        {
+            Helpers.InfoHelper.ShowError($"{explorerItem.Name}校验不通过");
+            VerifyFaiedVideoItems.Add(explorerItem);
+        }
+        #endregion
+
+        #region 字幕
+        public ICommand DropSubCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async (items) =>
+        {
+            if (items?.Count > 0)
+            {
+                var paths = items.Select(p => p.Path).ToList();
+                List<ExplorerItem> source = new List<ExplorerItem>();//源文件，保留原本目录结构
+                foreach (var path in paths)
+                {
+                    source.AddRange(Helpers.FileHelper.FindExplorerItems(path));
+                }
+                if (source.Count > 0)
+                {
+                    string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
+                    var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
+                    sourceFiles.ForEach(p =>
+                    {
+                        p.SourcePath = p.FullName;//保留原文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetSubFolder());//创建目标文件路径
+                        p.CanceledCopyEvent += (s) =>
+                        {
+                            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                            {
+                                Entry.SubExplorerItems.Remove(s);
+                            });
+                        };
+                        Entry.SubExplorerItems.Add(p);
+                    });
+                    if (VerifyFaiedSubItems == null)
+                    {
+                        VerifyFaiedSubItems = new List<ExplorerItem>();
+                    }
+                    else
+                    {
+                        VerifyFaiedSubItems.Clear();
+                    }
+                    ExplorerItem.VerifyFaiedEvent += SubExplorerItem_VerifyFaiedEvent;
+                    foreach (var p in sourceFiles)
+                    {
+                        await p.CopyAsync();
+                    }
+                    ExplorerItem.VerifyFaiedEvent -= SubExplorerItem_VerifyFaiedEvent;
+                    Entry.LoadSubs();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    if (VerifyFaiedSubItems.Count != 0)//存在校验失败的
+                    {
+                        await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedSubItems, Entry.FullEntryPath);
+                    }
+                }
+            }
+        });
+        private List<ExplorerItem> VerifyFaiedSubItems;
+        private void SubExplorerItem_VerifyFaiedEvent(ExplorerItem explorerItem)
+        {
+            Helpers.InfoHelper.ShowError($"{explorerItem.Name}校验不通过");
+            VerifyFaiedSubItems.Add(explorerItem);
+        }
+        #endregion
+
+        #region 资源
+        public ICommand DropResCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async (items) =>
+        {
+            if (items?.Count > 0)
+            {
+                var paths = items.Select(p => p.Path).ToList();
+                List<ExplorerItem> source = new List<ExplorerItem>();//源文件，保留原本目录结构
+                foreach (var path in paths)
+                {
+                    source.AddRange(Helpers.FileHelper.FindExplorerItems(path));
+                }
+                if (source.Count > 0)
+                {
+                    string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
+                    var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
+                    sourceFiles.ForEach(p =>
+                    {
+                        p.SourcePath = p.FullName;//保留原文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetResFolder());//创建目标文件路径
+                        p.CanceledCopyEvent += (s) =>
+                        {
+                            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                            {
+                                Entry.ResExplorerItems.Remove(s);
+                            });
+                        };
+                        Entry.ResExplorerItems.Add(p);
+                    });
+                    if (VerifyFaiedResItems == null)
+                    {
+                        VerifyFaiedResItems = new List<ExplorerItem>();
+                    }
+                    else
+                    {
+                        VerifyFaiedResItems.Clear();
+                    }
+                    ExplorerItem.VerifyFaiedEvent += ResExplorerItem_VerifyFaiedEvent;
+                    foreach (var p in sourceFiles)
+                    {
+                        await p.CopyAsync();
+                    }
+                    ExplorerItem.VerifyFaiedEvent -= ResExplorerItem_VerifyFaiedEvent;
+                    Entry.LoadRes();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    if (VerifyFaiedResItems.Count != 0)//存在校验失败的
+                    {
+                        await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedResItems, Entry.FullEntryPath);
+                    }
+                }
+            }
+        });
+        private List<ExplorerItem> VerifyFaiedResItems;
+        private void ResExplorerItem_VerifyFaiedEvent(ExplorerItem explorerItem)
+        {
+            Helpers.InfoHelper.ShowError($"{explorerItem.Name}校验不通过");
+            VerifyFaiedResItems.Add(explorerItem);
+        }
+        #endregion
     }
 }

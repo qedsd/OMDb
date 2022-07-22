@@ -119,42 +119,54 @@ namespace OMDb.WinUI3.Models
             get => videoExplorerItems;
             set=>SetProperty(ref videoExplorerItems, value);
         }
-        private void LoadVideos()
+        public void LoadVideos()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
             if (Directory.Exists(folder))
             {
-                VideoExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children.ToObservableCollection();
+                VideoExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
+                if(VideoExplorerItems == null)
+                {
+                    VideoExplorerItems = new ObservableCollection<ExplorerItem>();
+                }
             }
         }
 
-        private List<Models.ExplorerItem> subExplorerItems;
-        public List<Models.ExplorerItem> SubExplorerItems
+        private ObservableCollection<Models.ExplorerItem> subExplorerItems;
+        public ObservableCollection<Models.ExplorerItem> SubExplorerItems
         {
             get => subExplorerItems;
             set => SetProperty(ref subExplorerItems, value);
         }
-        private void LoadSubs()
+        public void LoadSubs()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.SubFolder);
             if (Directory.Exists(folder))
             {
-                SubExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children;
+                SubExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
+                if (SubExplorerItems == null)
+                {
+                    SubExplorerItems = new ObservableCollection<ExplorerItem>();
+                }
             }
         }
 
-        private List<Models.ExplorerItem> resExplorerItems;
-        public List<Models.ExplorerItem> ResExplorerItems
+        private ObservableCollection<Models.ExplorerItem> resExplorerItems;
+        public ObservableCollection<Models.ExplorerItem> ResExplorerItems
         {
             get => resExplorerItems;
             set => SetProperty(ref resExplorerItems, value);
         }
-        private void LoadRes()
+        public void LoadRes()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
             if (Directory.Exists(folder))
             {
-                ResExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children;
+                ResExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
+                if (ResExplorerItems == null)
+                {
+                    ResExplorerItems = new ObservableCollection<ExplorerItem>();
+                }
             }
         }
 
@@ -179,6 +191,14 @@ namespace OMDb.WinUI3.Models
         public string GetVideoFolder()
         {
             return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
+        }
+        public string GetSubFolder()
+        {
+            return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.SubFolder);
+        }
+        public string GetResFolder()
+        {
+            return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
         }
     }
 }
