@@ -44,7 +44,7 @@
             </Grid.RowDefinitions>
             <!--  名字  -->
             <Grid Margin="0,0,0,10">
-                <Grid.ColumnDefinitions>
+                <!--<Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                     <ColumnDefinition Width="32" />
@@ -58,16 +58,17 @@
                             <TextBlock Text="{x:Bind Lang}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
-                </ComboBox>
+                </ComboBox>-->
                 <TextBox
                     Grid.Column="1"
                     Margin="4,0,12,0"
-                    Text="{x:Bind VM.EntryName.Name, Mode=TwoWay}"
-                    TextChanged="TextBox_TextChanged" />
-                <CheckBox
+                    Text="{x:Bind VM.EntryName, Mode=TwoWay}"
+                    TextChanged="TextBox_TextChanged" 
+                    PlaceholderText="词条名称"/>
+                <!--<CheckBox
                     Grid.Column="2"
                     Command="{x:Bind VM.CheckDefaultCommand}"
-                    IsChecked="{Binding ElementName=ComboBox_Names, Path=SelectedItem.IsDefault, Mode=TwoWay}" />
+                    IsChecked="{Binding ElementName=ComboBox_Names, Path=SelectedItem.IsDefault, Mode=TwoWay}" />-->
             </Grid>
             <!--  路径  -->
             <Grid Grid.Row="1" Margin="0,10">

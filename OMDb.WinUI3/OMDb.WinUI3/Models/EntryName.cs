@@ -16,11 +16,18 @@ namespace OMDb.WinUI3.Models
             set { SetProperty(ref _name, value); }
         }
 
-        private Core.Enums.LangEnum _lang;
-        public Core.Enums.LangEnum Lang
+        //private Core.Enums.LangEnum _lang;
+        //public Core.Enums.LangEnum Lang
+        //{
+        //    get => _lang;
+        //    set { SetProperty(ref _lang, value); }
+        //}
+
+        private string _mark;
+        public string Mark
         {
-            get => _lang;
-            set { SetProperty(ref _lang, value); }
+            get => _mark;
+            set { SetProperty(ref _mark, value); }
         }
 
         private bool _isDefault;
@@ -33,7 +40,7 @@ namespace OMDb.WinUI3.Models
         public EntryName(Core.Models.EntryName entryName)
         {
             Name = entryName.Name;
-            Lang = (Core.Enums.LangEnum)Enum.Parse(typeof(Core.Enums.LangEnum), entryName.Lang);
+            Mark = entryName.Mark;
             IsDefault = entryName.IsDefault;
         }
     }

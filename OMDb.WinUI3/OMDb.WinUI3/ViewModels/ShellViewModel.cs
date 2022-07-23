@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    [PropertyChanged.AddINotifyPropertyChangedInterface]
     public class ShellViewModel
     {
         private NavigationViewItem selected;

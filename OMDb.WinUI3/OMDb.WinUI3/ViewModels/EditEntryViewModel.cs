@@ -16,17 +16,23 @@ namespace OMDb.WinUI3.ViewModels
     {
         public Models.EntryDetail EntryDetail { get; set; }
         public Core.Models.Entry Entry { get; set; }
-        private List<Models.EntryName> entryNames;
-        public List<Models.EntryName> EntryNames
-        {
-            get => entryNames;
-            set
-            {
-                SetProperty(ref entryNames, value);
-            }
-        }
-        private Models.EntryName entryName;
-        public Models.EntryName EntryName
+        //private List<Models.EntryName> entryNames;
+        //public List<Models.EntryName> EntryNames
+        //{
+        //    get => entryNames;
+        //    set
+        //    {
+        //        SetProperty(ref entryNames, value);
+        //    }
+        //}
+        //private Models.EntryName entryName;
+        //public Models.EntryName EntryName
+        //{
+        //    get => entryName;
+        //    set => SetProperty(ref entryName, value);
+        //}
+        private string entryName;
+        public string EntryName
         {
             get => entryName;
             set => SetProperty(ref entryName, value);
@@ -70,10 +76,11 @@ namespace OMDb.WinUI3.ViewModels
             {
                 SetProperty(ref selectedEnrtyStorage, value);
                 SelectedEntryDicPath = Path.Combine(Path.GetDirectoryName(selectedEnrtyStorage.StoragePath), Services.ConfigService.DefaultEntryFolder);//重置为默认路径
-                if (EntryName != null&&!string.IsNullOrEmpty(EntryName.Name))
-                {
-                    SetEntryPath(EntryName.Name);
-                }
+                //if (EntryName != null&&!string.IsNullOrEmpty(EntryName.Name))
+                //{
+                //    SetEntryPath(EntryName.Name);
+                //}
+                SetEntryPath(EntryName);
             }
         }
         private string selectedEntryDicPath = string.Empty;
@@ -87,7 +94,8 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 selectedEntryDicPath = value;
-                SetEntryPath(EntryNames.FirstOrDefault(p=>p.IsDefault)?.Name);
+                //SetEntryPath(EntryNames.FirstOrDefault(p=>p.IsDefault)?.Name);
+                SetEntryPath(EntryName);
             }
         }
         private List<Core.DbModels.LabelDb> labels;
@@ -109,7 +117,7 @@ namespace OMDb.WinUI3.ViewModels
 
         public EditEntryViewModel(Core.Models.Entry entry)
         {
-            EntryNames = new List<Models.EntryName>();
+            //EntryNames = new List<Models.EntryName>();
             if (entry == null)
             {
                 Entry = new Core.Models.Entry();
@@ -117,15 +125,15 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.CreateTime = DateTime.Now;
                 Entry.LastUpdateTime = DateTime.Now;
                 Entry.ReleaseDate = DateTimeOffset.Now;
-                foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
-                {
-                    EntryNames.Add(new Models.EntryName()
-                    {
-                        Lang = p,
-                        IsDefault = p == Core.Enums.LangEnum.zh_CN,
-                    });
-                }
-                EntryName = EntryNames.FirstOrDefault();
+                //foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
+                //{
+                //    EntryNames.Add(new Models.EntryName()
+                //    {
+                //        Lang = p,
+                //        IsDefault = p == Core.Enums.LangEnum.zh_CN,
+                //    });
+                //}
+                //EntryName = EntryNames.FirstOrDefault();
                 EnrtyStorages = Services.ConfigService.EnrtyStorages.Where(p => p.StoragePath != null).ToList();
             }
             else
@@ -171,35 +179,36 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
-                        {
-                            var targetName = names.FirstOrDefault(p2 => p2.Lang == p.ToString());
-                            EntryNames.Add(new Models.EntryName()
-                            {
-                                Lang = p,
-                                IsDefault = p == Core.Enums.LangEnum.zh_CN,
-                                Name = targetName?.Name
-                            });
-                        }
-                        EntryName = EntryNames.FirstOrDefault(p=>p.IsDefault);
+                        //foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
+                        //{
+                        //    var targetName = names.FirstOrDefault(p2 => p2.Lang == p.ToString());
+                        //    EntryNames.Add(new Models.EntryName()
+                        //    {
+                        //        Lang = p,
+                        //        IsDefault = p == Core.Enums.LangEnum.zh_CN,
+                        //        Name = targetName?.Name
+                        //    });
+                        //}
+                        //EntryName = EntryNames.FirstOrDefault(p=>p.IsDefault);
+                        EntryName = names.FirstOrDefault(p => p.IsDefault)?.Name;
                     });
                 }
             }
         }
 
-        public ICommand CheckDefaultCommand => new RelayCommand(() =>
-        {
-            if (EntryName != null)
-            {
-                EntryNames.ForEach(p =>
-                {
-                    if (p.IsDefault && p != EntryName)
-                    {
-                        p.IsDefault = false;
-                    }
-                });
-                SetEntryPath(EntryName.Name);
-            }
-        });
+        //public ICommand CheckDefaultCommand => new RelayCommand(() =>
+        //{
+        //    if (EntryName != null)
+        //    {
+        //        EntryNames.ForEach(p =>
+        //        {
+        //            if (p.IsDefault && p != EntryName)
+        //            {
+        //                p.IsDefault = false;
+        //            }
+        //        });
+        //        SetEntryPath(EntryName.Name);
+        //    }
+        //});
     }
 }

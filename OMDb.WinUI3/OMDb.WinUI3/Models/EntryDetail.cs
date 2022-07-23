@@ -64,7 +64,25 @@ namespace OMDb.WinUI3.Models
             set=>SetProperty(ref metadata,value);
         }
         public ObservableCollection<Core.Models.WatchHistory> WatchHistory { get; set; } = new ObservableCollection<Core.Models.WatchHistory>();
-        public List<Core.DbModels.LabelDb> Labels { get; set; } = new List<Core.DbModels.LabelDb>();
+        private List<Core.DbModels.LabelDb> labels ;
+        public List<Core.DbModels.LabelDb> Labels
+        {
+            get => labels;
+            set
+            {
+                SetProperty(ref labels, value);
+                Task.Run(() =>
+                {
+                    Core.Services.LabelService.ClearEntryLabel(Entry.Id);//清空词条标签
+                    if (value != null)
+                    {
+                        List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(labels.Count);
+                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.Id, LabelId = p.Id }));
+                        Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
+                    }
+                });
+            }
+        }
         public ObservableCollection<string> Imgs { get; set; }
         private async Task Init()
         {
@@ -74,14 +92,14 @@ namespace OMDb.WinUI3.Models
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
             WatchHistory = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
-            Labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.DbId, Entry.Id);
+            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.DbId, Entry.Id);
+            if(Labels == null)
+            {
+                Labels = new List<Core.DbModels.LabelDb>();
+            }
             if (WatchHistory == null)
             {
                 WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
-            }
-            if (Labels == null)
-            {
-                Labels = new List<Core.DbModels.LabelDb>();
             }
             LoadImgs();
             LoadMetaData();

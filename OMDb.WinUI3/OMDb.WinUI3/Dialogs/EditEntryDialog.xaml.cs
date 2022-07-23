@@ -32,17 +32,17 @@ namespace OMDb.WinUI3.Dialogs
             }
         }
 
-        private void RadioButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selected = ComboBox_Names.SelectedItem as Models.EntryName;
-            VM.EntryNames.ForEach(p =>
-            {
-                if (p.IsDefault && p != selected)
-                {
-                    p.IsDefault = false;
-                }
-            });
-        }
+        //private void RadioButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var selected = ComboBox_Names.SelectedItem as Models.EntryName;
+        //    VM.EntryNames.ForEach(p =>
+        //    {
+        //        if (p.IsDefault && p != selected)
+        //        {
+        //            p.IsDefault = false;
+        //        }
+        //    });
+        //}
         /// <summary>
         /// 返回的entry的Path、CoverImg都为全路径
         /// </summary>
@@ -61,18 +61,20 @@ namespace OMDb.WinUI3.Dialogs
                 if (entry == null)
                 {
                     entry = content.VM.Entry;
-                    entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
+                    //entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
+                    entry.Name = content.VM.EntryName;
                     entry.DbId = content.VM.SelectedEnrtyStorage?.StorageName;
                 }
                 else
                 {
                     entry.CopyFrom(content.VM.Entry);
-                    entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
+                    //entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
+                    entry.Name = content.VM.EntryName;
                 }
                 var entryDetail = new Models.EntryDetail()
                 {
                     Entry = entry,
-                    Names = content.VM.EntryNames.ToObservableCollection(),
+                    //Names = content.VM.EntryNames.ToObservableCollection(),
                     Labels = content.VM.Labels,
                     FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
@@ -120,10 +122,11 @@ namespace OMDb.WinUI3.Dialogs
         /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (VM.EntryName.IsDefault)
-            {
-                VM.SetEntryPath((sender as TextBox).Text);
-            }
+            //if (VM.EntryName.IsDefault)
+            //{
+            //    VM.SetEntryPath((sender as TextBox).Text);
+            //}
+            VM.SetEntryPath((sender as TextBox).Text);
         }
     }
 }

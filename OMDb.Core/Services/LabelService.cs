@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 namespace OMDb.Core.Services
 {
     /// <summary>
-    /// 前提条件是每个数据库的LabelDb、EntryLabelDb表数据都统一
+    /// 每个数据库的LabelDb、EntryLabelDb表数据都统一，必须使用事务提交
+    /// 添加、删除标签相关数据时需要每个仓库的表都添加
+    /// 查询时查询任意一个均可
     /// </summary>
     public static class LabelService
     {
@@ -85,26 +87,47 @@ namespace OMDb.Core.Services
         /// <param name="entryId"></param>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static async Task ClearEntryLabelAsync(string entryId, string dbId)
+        public static async Task ClearEntryLabelAsync(string entryId)
         {
             //使用事务确保数据统一
             await Task.Run(() =>
             {
-                DbService.Db.GetConnection(dbId).Deleteable<EntryLabelDb>(p=>p.EntryId == entryId).ExecuteCommand();
+                ClearEntryLabel(entryId);
             });
+        }
+        /// <summary>
+        /// 清空词条绑定的标签
+        /// </summary>
+        /// <param name="entryId"></param>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static void ClearEntryLabel(string entryId)
+        {
+            //使用事务确保数据统一
+            DbService.Db.BeginTran();
+            foreach (var id in DbService.DbConfigIds)
+            {
+                DbService.Db.GetConnection(id).Deleteable<EntryLabelDb>(p => p.EntryId == entryId).ExecuteCommand();
+            }
+            DbService.Db.CommitTran();
         }
         public static async Task AddEntryLabelAsync(List<EntryLabelDb> entryLabeles)
         {
             //使用事务确保数据统一
             await Task.Run(() =>
             {
-                DbService.Db.BeginTran();
-                foreach (var id in DbService.DbConfigIds)
-                {
-                    DbService.Db.GetConnection(id).Insertable(entryLabeles).ExecuteCommand();
-                }
-                DbService.Db.CommitTran();
+                AddEntryLabel(entryLabeles);
             });
+        }
+        public static void AddEntryLabel(List<EntryLabelDb> entryLabeles)
+        {
+            //使用事务确保数据统一
+            DbService.Db.BeginTran();
+            foreach (var id in DbService.DbConfigIds)
+            {
+                DbService.Db.GetConnection(id).Insertable(entryLabeles).ExecuteCommand();
+            }
+            DbService.Db.CommitTran();
         }
         public static async Task AddEntryLabelAsyn(EntryLabelDb entryLabel)
         {

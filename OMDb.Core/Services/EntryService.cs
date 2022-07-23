@@ -359,7 +359,7 @@ namespace OMDb.Core.Services
             var connet = DbService.Db.GetConnection(entry.DbId);
             DbService.Db.BeginTran();
             connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
-            connet.Deleteable<EntryNameDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
+            connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             connet.Deleteable<WatchHistoryDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
             connet.Deleteable<EntryLabelDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             DbService.Db.CommitTran();

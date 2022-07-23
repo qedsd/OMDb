@@ -17,7 +17,6 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Dialogs
 {
-    [PropertyChanged.AddINotifyPropertyChangedInterface]
     public sealed partial class EditStorageDialog : Page
     {
         public Models.EnrtyStorage EnrtyStorage { get; set; }

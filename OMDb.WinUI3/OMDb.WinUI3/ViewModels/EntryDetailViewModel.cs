@@ -21,7 +21,8 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref entry, value);
-                Desc = Entry.Metadata?.Desc;
+                Desc = Entry?.Metadata?.Desc;
+                Rating = Entry?.Entry.MyRating?? 0;
             }
         }
         private string desc=string.Empty;
@@ -32,6 +33,15 @@ namespace OMDb.WinUI3.ViewModels
         {
             get => desc;
             set => SetProperty(ref desc, value);
+        }
+        private double rating ;
+        /// <summary>
+        /// 编辑描述使用
+        /// </summary>
+        public double Rating
+        {
+            get => rating;
+            set => SetProperty(ref rating, value);
         }
         public EntryDetailViewModel(EntryDetail entry)
         {
@@ -127,6 +137,13 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand OpenResFolderCommand => new RelayCommand(() =>
         {
             System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.ResourceFolder));
+        });
+        public ICommand SaveRatingCommand => new RelayCommand<double>((value) =>
+        {
+            Rating = value;
+            Entry.Entry.MyRating = Rating;
+            Core.Services.EntryService.UpdateEntry(Entry.Entry);
+            Helpers.InfoHelper.ShowSuccess("已更新评分");
         });
         #region 视频
         public ICommand DropVideoCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async(items) =>
