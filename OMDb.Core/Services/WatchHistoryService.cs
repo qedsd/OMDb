@@ -18,7 +18,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<WatchHistory>> QueryWatchHistoriesAsync(string id, string dbId)
         {
-            var entryNameDbs = await Task.Run(() => DbService.Db.GetConnection(dbId).Queryable<WatchHistoryDb>().Where(p => p.Id == id).ToList());
+            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<WatchHistoryDb>().Where(p => p.Id == id).ToList());
             if (entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => WatchHistory.Create(p, dbId)).ToList();
@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
 
         public static void AddWatchHistoriesAsync(Models.WatchHistory watchHistory)
         {
-            DbService.Db.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+            DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
         }
     }
 }

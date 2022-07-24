@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
         {
             if (!string.IsNullOrEmpty(entryId))
             {
-                var names = DbService.Db.GetConnection(dbId).Queryable<DbModels.EntryNameDb>().Where(p => p.EntryId == entryId).ToList();
+                var names = DbService.GetConnection(dbId).Queryable<DbModels.EntryNameDb>().Where(p => p.EntryId == entryId).ToList();
                 if (names != null && names.Any())
                 {
                     return names.FirstOrDefault(p => p.IsDefault)?.Name;
@@ -47,7 +47,7 @@ namespace OMDb.Core.Services
         /// <param name="entry"></param>
         public static void SetName(Entry entry)
         {
-            var names = DbService.Db.GetConnection(entry.DbId).Queryable<EntryNameDb>().Where(p => p.EntryId == entry.Id).ToList();
+            var names = DbService.GetConnection(entry.DbId).Queryable<EntryNameDb>().Where(p => p.EntryId == entry.Id).ToList();
             if (names != null && names.Any())
             {
                 var name = names.FirstOrDefault(p => p.IsDefault);
@@ -70,7 +70,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static Dictionary<string, string> QueryName(IEnumerable<string> ids, string dbId)
         {
-            var names = DbService.Db.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.IsDefault && ids.Contains(p.EntryId)).ToList();
+            var names = DbService.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.IsDefault && ids.Contains(p.EntryId)).ToList();
             if (names.Any())
             {
                 return names.ToDictionary(p => p.EntryId, p => p.Name);
@@ -108,7 +108,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<EntryName>> QueryNamesAsync(string id, string dbId)
         {
-            var entryNameDbs = await Task.Run(() => DbService.Db.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.EntryId == id).ToList());
+            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.EntryId == id).ToList());
             if (entryNameDbs != null && entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => EntryName.Create(p, dbId)).ToList();
@@ -121,12 +121,12 @@ namespace OMDb.Core.Services
 
         public static async Task AddNamesAsync(List<EntryNameDb> entryNames, string dbId)
         {
-            await Task.Run(()=>DbService.Db.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
+            await Task.Run(()=>DbService.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
         }
 
         public static async Task RemoveNamesAsync(string id, string dbId)
         {
-            await Task.Run(() => DbService.Db.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).ExecuteCommand());
+            await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).ExecuteCommand());
         }
         /// <summary>
         /// 若词条存在默认名称，则更新，负责插入
@@ -152,7 +152,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void UpdateOrAddDefaultNames(string id, string dbId, string name)
         {
-            var defaultName = DbService.Db.GetConnection(dbId).Queryable<EntryNameDb>().First(p => p.EntryId == id && p.IsDefault);
+            var defaultName = DbService.GetConnection(dbId).Queryable<EntryNameDb>().First(p => p.EntryId == id && p.IsDefault);
             if (defaultName == null)//插入
             {
                 EntryNameDb entryNameDb = new EntryNameDb()
@@ -161,12 +161,12 @@ namespace OMDb.Core.Services
                     EntryId = id,
                     IsDefault = true
                 };
-                DbService.Db.GetConnection(dbId).Insertable(entryNameDb).ExecuteCommand();
+                DbService.GetConnection(dbId).Insertable(entryNameDb).ExecuteCommand();
             }
             else//更新
             {
                 defaultName.Name = name;
-                DbService.Db.GetConnection(dbId).Updateable(defaultName).ExecuteCommand();
+                DbService.GetConnection(dbId).Updateable(defaultName).ExecuteCommand();
             }
         }
     }

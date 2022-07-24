@@ -21,7 +21,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> labelIds = null)
         {
-            if (DbService.DbConfigIds?.Count == 0)
+            if (DbService.IsEmpty)
             {
                 return null;
             }
@@ -45,33 +45,30 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
-            foreach (var dbid in DbService.DbConfigIds)
+            foreach (var item in DbService.Dbs)
             {
-                var db = DbService.Db.GetConnection(dbid);
-                if (db != null)
+                var db = item.Value;
+                if (labelIds != null && labelIds.Count != 0)
                 {
-                    if (labelIds != null && labelIds.Count != 0)
+                    var inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                    var ls = db.Queryable<DbModels.EntryDb>()
+                        .In(inLabelEntryIds)
+                        .Select(p => new { p.Id, p.CreateTime })
+                        .ToList();
+                    ls.ForEach(p =>
                     {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .In(inLabelEntryIds)
+                        queryResults.Add(new QueryResult(p.Id, p.CreateTime, item.Key));
+                    });
+                }
+                else
+                {
+                    var ls = db.Queryable<DbModels.EntryDb>()
                             .Select(p => new { p.Id, p.CreateTime })
                             .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.CreateTime, dbid));
-                        });
-                    }
-                    else
+                    ls.ForEach(p =>
                     {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                                .Select(p => new { p.Id, p.CreateTime })
-                                .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.CreateTime, dbid));
-                        });
-                    }
+                        queryResults.Add(new QueryResult(p.Id, p.CreateTime, item.Key));
+                    });
                 }
             }
             if (sortWay == Enums.SortWay.Positive)
@@ -86,33 +83,30 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
-            foreach (var dbid in DbService.DbConfigIds)
+            foreach (var item in DbService.Dbs)
             {
-                var db = DbService.Db.GetConnection(dbid);
-                if (db != null)
+                var db = item.Value;
+                if (labelIds != null && labelIds.Count != 0)
                 {
-                    if (labelIds != null && labelIds.Count != 0)
-                    {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .In(inLabelEntryIds)
-                            .Select(p => new { p.Id, p.LastWatchTime })
-                            .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, dbid));
-                        });
-                    }
-                    else
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
+                    var inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                    var ls = db.Queryable<DbModels.EntryDb>()
+                        .In(inLabelEntryIds)
                         .Select(p => new { p.Id, p.LastWatchTime })
                         .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, dbid));
-                        });
-                    }
+                    ls.ForEach(p =>
+                    {
+                        queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, item.Key));
+                    });
+                }
+                else
+                {
+                    var ls = db.Queryable<DbModels.EntryDb>()
+                    .Select(p => new { p.Id, p.LastWatchTime })
+                    .ToList();
+                    ls.ForEach(p =>
+                    {
+                        queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, item.Key));
+                    });
                 }
             }
             if (sortWay == Enums.SortWay.Positive)
@@ -127,9 +121,9 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
-            foreach (var dbid in DbService.DbConfigIds)
+            foreach (var item in DbService.Dbs)
             {
-                var db = DbService.Db.AsTenant().GetConnection(dbid);
+                var db = item.Value;
                 if (db != null)
                 {
                     if (labelIds != null && labelIds.Count != 0)
@@ -140,7 +134,7 @@ namespace OMDb.Core.Services
                             .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, dbid));
+                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, item.Key));
                         });
                     }
                     else
@@ -150,7 +144,7 @@ namespace OMDb.Core.Services
                             .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, dbid));
+                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, item.Key));
                         });
                     }
                 }
@@ -208,9 +202,9 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
-            foreach (var dbid in DbService.DbConfigIds)
+            foreach (var item in DbService.Dbs)
             {
-                var db = DbService.Db.GetConnection(dbid);
+                var db = item.Value;
                 if (db != null)
                 {
                     if (labelIds != null && labelIds.Count != 0)
@@ -222,7 +216,7 @@ namespace OMDb.Core.Services
                             .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.MyRating, dbid));
+                            queryResults.Add(new QueryResult(p.Id, p.MyRating, item.Key));
                         });
                     }
                     else
@@ -232,7 +226,7 @@ namespace OMDb.Core.Services
                             .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.MyRating, dbid));
+                            queryResults.Add(new QueryResult(p.Id, p.MyRating, item.Key));
                         });
                     }
                 }
@@ -263,7 +257,7 @@ namespace OMDb.Core.Services
                     var group = queryItems.GroupBy(p => p.DbId);
                     foreach (var item in group)
                     {
-                        var entryDbs = DbService.Db.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.Id)).ToList();
+                        var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.Id)).ToList();
                         if (entryDbs.Any())
                         {
                             var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
@@ -306,7 +300,7 @@ namespace OMDb.Core.Services
             {
                 return await Task.Run(() =>
                 {
-                    var result = DbService.Db.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().First(p => p.Id == queryItem.DbId);
+                    var result = DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().First(p => p.Id == queryItem.DbId);
                     if (result == null)
                     {
                         var entry = Entry.Create(result, queryItem.DbId);
@@ -341,12 +335,12 @@ namespace OMDb.Core.Services
             }
             //EntryDb db = new EntryDb();
             //db.CopyFrom<EntryDb>(entry);
-            DbService.Db.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
+            DbService.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
         }
 
         public static void UpdateEntry(Entry entry)
         {
-            DbService.Db.GetConnection(entry.DbId).Updateable(entry as EntryDb).ExecuteCommand();
+            DbService.GetConnection(entry.DbId).Updateable(entry as EntryDb).ExecuteCommand();
         }
 
         /// <summary>
@@ -356,13 +350,13 @@ namespace OMDb.Core.Services
         /// <param name="entry"></param>
         public static void RemoveEntry(Entry entry)
         {
-            var connet = DbService.Db.GetConnection(entry.DbId);
-            DbService.Db.BeginTran();
+            var connet = DbService.GetConnection(entry.DbId);
+            connet.BeginTran();
             connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
             connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             connet.Deleteable<WatchHistoryDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
             connet.Deleteable<EntryLabelDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
-            DbService.Db.CommitTran();
+            connet.CommitTran();
         }
 
         /// <summary>
@@ -375,7 +369,7 @@ namespace OMDb.Core.Services
             entries.GroupBy(p => p.DbId).ToList().ForEach(g =>
               {
                   var ids = g.Select(p => p.Id);
-                  var connet = DbService.Db.GetConnection(g.Key);
+                  var connet = DbService.GetConnection(g.Key);
                   connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<EntryNameDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<WatchHistoryDb>().In(ids).ExecuteCommand();
@@ -384,7 +378,7 @@ namespace OMDb.Core.Services
 
         public static async Task<int> QueryEntryCountAsync(string dbId)
         {
-            return await DbService.Db.GetConnection(dbId).Queryable<EntryDb>().CountAsync();
+            return await DbService.GetConnection(dbId).Queryable<EntryDb>().CountAsync();
         }
 
 

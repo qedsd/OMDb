@@ -11,65 +11,48 @@ namespace OMDb.Core.Services
 {
     public static class DbService
     {
-        internal static SqlSugarClient Db;
-        internal static readonly HashSet<string> DbConfigIds = new();
+        /// <summary>
+        /// 管理所有数据库连接
+        /// </summary>
+        internal static readonly Dictionary<string,SqlSugarScope> Dbs = new();
+        /// <summary>
+        /// 是否有数据库连接
+        /// </summary>
+        public static bool IsEmpty
+        {
+            get=>Dbs.Count ==0;
+        }
         static DbService()
         {
             
         }
         /// <summary>
-        /// 按数据库连接字符串创建多租户
+        /// 按数据库连接字符串创建多数据库
         /// </summary>
         /// <param name="connet"></param>
         /// <param name="configId"></param>
         public static bool AddDb(string connet,string configId, bool needCodeFirst)
         {
-            if (DbConfigIds.Add(configId))
+            if (!Dbs.ContainsKey(configId))
             {
-                if (Db == null)
+                Dbs.Add(configId, new SqlSugarScope(new ConnectionConfig()
                 {
-                    Db = new SqlSugarClient(new ConnectionConfig()
+                    ConnectionString = connet,
+                    DbType = DbType.Sqlite,
+                    IsAutoCloseConnection = true,
+                    ConfigId = configId,
+                    ConfigureExternalServices = new ConfigureExternalServices
                     {
-                        ConnectionString = connet,
-                        DbType = DbType.Sqlite,
-                        IsAutoCloseConnection = true,
-                        ConfigId = configId,
-                        ConfigureExternalServices = new ConfigureExternalServices
+                        EntityService = (c, p) =>
                         {
-                            EntityService = (c, p) =>
+                            if (c.PropertyType.IsGenericType &&c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
                             {
-                                // int?  decimal?这种 isnullable=true
-                                if (c.PropertyType.IsGenericType &&
-                                c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                                {
-                                    p.IsNullable = true;
-                                }
+                                p.IsNullable = true;
                             }
                         }
-                    });
+                    }
                 }
-                else
-                {
-                    Db.AddConnection(new ConnectionConfig()
-                    {
-                        ConnectionString = connet,
-                        DbType = DbType.Sqlite,
-                        IsAutoCloseConnection = true,
-                        ConfigId = configId,
-                        ConfigureExternalServices = new ConfigureExternalServices
-                        {
-                            EntityService = (c, p) =>
-                            {
-                                // int?  decimal?这种 isnullable=true
-                                if (c.PropertyType.IsGenericType &&
-                                c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                                {
-                                    p.IsNullable = true;
-                                }
-                            }
-                        }
-                    });
-                }
+                ));
                 if (needCodeFirst)
                 {
                     if (CodeFirst(configId))
@@ -78,8 +61,7 @@ namespace OMDb.Core.Services
                     }
                     else
                     {
-                        DbConfigIds.Remove(configId);
-                        //按理说这里还得移除Connection，但是没找到相应接口
+                        Dbs.Remove(configId);
                         return false;
                     }
                 }
@@ -100,15 +82,32 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         private static bool CodeFirst(string dbId)
         {
-            if (Db.GetConnection(dbId).DbMaintenance.CreateDatabase())
+            if (GetConnection(dbId).DbMaintenance.CreateDatabase())
             {
                 var types = typeof(Entry).Assembly.GetTypes().Where(p => p.FullName.Contains("DbModels")).ToArray();
-                Db.GetConnection(dbId).CodeFirst.InitTables(types);
+                GetConnection(dbId).CodeFirst.InitTables(types);
                 return true;
             }
             else
             {
                 return false;
+            }
+        }
+        /// <summary>
+        /// 获取Scope实例
+        /// 不要自己到Dbs拿，统一使用此方法，避免以后改回ORM的多租户模式
+        /// </summary>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static SqlSugarScope GetConnection(string dbId)
+        {
+            if(Dbs.TryGetValue(dbId, out SqlSugarScope scope))
+            {
+                return scope;
+            }
+            else
+            {
+                return null;
             }
         }
     }
