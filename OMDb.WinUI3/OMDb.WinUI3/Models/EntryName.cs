@@ -43,5 +43,15 @@ namespace OMDb.WinUI3.Models
             Mark = entryName.Mark;
             IsDefault = entryName.IsDefault;
         }
+        public Core.DbModels.EntryNameDb ToCoreEntryNameDb(string entryId)
+        {
+            return new Core.DbModels.EntryNameDb()
+            {
+                Name = Name,
+                Mark = Mark,
+                IsDefault = IsDefault,
+                EntryId = entryId
+            };
+        }
     }
 }

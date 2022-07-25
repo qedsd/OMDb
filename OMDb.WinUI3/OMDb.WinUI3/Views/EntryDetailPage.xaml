@@ -20,6 +20,7 @@
         <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
         <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
         <converters:ByteSizeConverter x:Key="ByteSizeConverter" />
+        <converters:StringToVisibilityConverter x:Key="NullStringToCollapsedConverter" IsNullOrEmptyToCollapsed="True" />
         <Style x:Key="ItemOutStackPanel" TargetType="StackPanel">
             <Setter Property="Margin" Value="0,0,0,10" />
             <Setter Property="Padding" Value="0,0,0,16" />
@@ -82,29 +83,53 @@
                 <RelativePanel HorizontalAlignment="Center">
                     <TextBlock
                         x:Name="NameTextBlock"
-                        RelativePanel.AlignHorizontalCenterWithPanel="True"
-                        RelativePanel.AlignVerticalCenterWithPanel="True"
                         FontSize="20"
                         FontWeight="Medium"
-                        Text="{x:Bind VM.Entry.Entry.Name, Mode=OneWay}" />
+                        RelativePanel.AlignHorizontalCenterWithPanel="True"
+                        RelativePanel.AlignVerticalCenterWithPanel="True"
+                        Text="{x:Bind VM.Entry.Name, Mode=OneWay}" />
                     <Button
                         x:Name="EditNameButton"
-                        Padding="8,0"
-                        Background="Transparent"
-                        VerticalAlignment="Center"
-                        BorderThickness="0"
                         Height="24"
+                        Padding="8,0"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
                         RelativePanel.AlignVerticalCenterWithPanel="True"
                         RelativePanel.RightOf="NameTextBlock"
                         Visibility="Collapsed">
                         <TextBlock
-                            FontFamily="Segoe MDL2 Assets"
                             VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
                             Text="&#xE104;"
                             ToolTipService.ToolTip="编辑" />
                         <Button.Flyout>
-                            <Flyout>
-                                
+                            <Flyout x:Name="EditNameFlyout">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <mycontrols:EditEntryName ItemSource="{x:Bind VM.Names, Mode=TwoWay}" />
+                                    <Grid Grid.Row="1" HorizontalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="64" />
+                                            <ColumnDefinition Width="64" />
+                                        </Grid.ColumnDefinitions>
+                                        <Button
+                                            HorizontalAlignment="Center"
+                                            Command="{x:Bind VM.SaveNamesCommand}"
+                                            Content="确定" 
+                                            Click="EditNameFlyout_Button_Click"/>
+                                        <Button
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Center"
+                                            Command="{x:Bind VM.CancelEidtNamesCommand}"
+                                            Content="取消" 
+                                            Click="EditNameFlyout_Button_Click"/>
+                                    </Grid>
+                                </Grid>
+
                             </Flyout>
                         </Button.Flyout>
                     </Button>
@@ -463,26 +488,10 @@
                     </StackPanel>
                     <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                     <StackPanel Margin="10,0,0,0">
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock Text="名称" />
-                            <!--<ListBox
-                                Margin="0,10,0,0"
-                                Background="Transparent"
-                                ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
-                                ItemsSource="{x:Bind VM.Entry.Names, Mode=OneWay}">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate x:DataType="models:EntryName">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{x:Bind Name}" />
-                                            <TextBlock Grid.Column="1" Text="{x:Bind Lang}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>-->
+                        <StackPanel Margin="10,0,0,0" Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}" Orientation="Horizontal">
+                            <TextBlock Text="别名" />
+                            <TextBlock Text=":" />
+                            <TextBlock Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" Margin="10,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

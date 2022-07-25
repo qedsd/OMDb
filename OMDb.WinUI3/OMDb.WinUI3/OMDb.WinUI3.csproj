@@ -23,6 +23,7 @@
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="MyControls\AddLabelsControl.xaml" />
     <None Remove="MyControls\DropArea.xaml" />
+    <None Remove="MyControls\EditEntryName.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
@@ -191,6 +192,12 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\EditEntryName.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

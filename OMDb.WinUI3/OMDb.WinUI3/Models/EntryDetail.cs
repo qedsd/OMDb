@@ -16,20 +16,10 @@ namespace OMDb.WinUI3.Models
         public EntryDetail(Core.Models.Entry entry)
         {
             Entry = entry.DepthClone<Core.Models.Entry>();
+            Name = entry.Name;
             FullEntryPath = Helpers.PathHelper.EntryFullPath(entry);
             FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
-        }
-        public static EntryDetail Create(Core.Models.Entry entry)
-        {
-            var entryDetail = entry.DepthClone<EntryDetail>();
-            if(entryDetail != null)
-            {
-                entryDetail.FullEntryPath = Helpers.PathHelper.EntryFullPath(entry);
-                entryDetail.FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
-                entryDetail.FullMetaDataPath = System.IO.Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.MetadataFileNmae);
-            }
-            return entryDetail;
         }
         public static async Task<EntryDetail> CreateAsync(Core.Models.Entry entry)
         {
@@ -37,8 +27,62 @@ namespace OMDb.WinUI3.Models
             await entryDetail.Init();
             return entryDetail;
         }
+        private string name;
+        public string Name
+        {
+            get => name;
+            set=>SetProperty(ref name, value);
+        }
         public Core.Models.Entry Entry { get; set; }
-        public ObservableCollection<EntryName> Names { get; set; } = new ObservableCollection<EntryName>();
+        public ObservableCollection<EntryName> names = new ObservableCollection<EntryName>();
+        public ObservableCollection<EntryName> Names
+        {
+            get => names;
+            set
+            {
+                SetProperty(ref names, value);
+                value.CollectionChanged += (s, e) =>
+                {
+                    UpdateAlias();
+                };
+                UpdateAlias();
+            }
+        }
+
+        private string alias;
+        /// <summary>
+        /// 别名
+        /// </summary>
+        public string Alias
+        {
+            get => alias;
+            set => SetProperty(ref alias, value);
+        }
+        private void UpdateAlias()
+        {
+            if (Names != null)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                foreach (var name in Names.Where(p => !p.IsDefault))
+                {
+                    stringBuilder.Append(name.Name);
+                    if (!string.IsNullOrEmpty(name.Mark))
+                    {
+                        stringBuilder.Append($"({name.Mark})");
+                    }
+                    stringBuilder.Append(';');
+                }
+                if (stringBuilder.Length > 0)
+                {
+                    stringBuilder.Remove(stringBuilder.Length - 1, 1);
+                }
+                Alias = stringBuilder.ToString();
+            }
+            else
+            {
+                Alias = string.Empty;
+            }
+        }
         private string fullEntryPath;
         public string FullEntryPath
         {

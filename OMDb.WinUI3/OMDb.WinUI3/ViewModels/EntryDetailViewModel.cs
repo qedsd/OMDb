@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
+using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace OMDb.WinUI3.ViewModels
                 SetProperty(ref entry, value);
                 Desc = Entry?.Metadata?.Desc;
                 Rating = Entry?.Entry.MyRating?? 0;
+                Names = Entry?.Names?.DepthClone<ObservableCollection<EntryName>>();
             }
         }
         private string desc=string.Empty;
@@ -43,6 +45,19 @@ namespace OMDb.WinUI3.ViewModels
             get => rating;
             set => SetProperty(ref rating, value);
         }
+        private ObservableCollection<EntryName> names;
+        /// <summary>
+        /// 供编辑使用
+        /// </summary>
+        public ObservableCollection<EntryName> Names
+        {
+            get => names;
+            set
+            {
+                SetProperty(ref names, value);
+            }
+        }
+        
         public EntryDetailViewModel(EntryDetail entry)
         {
             Entry = entry;
@@ -144,6 +159,24 @@ namespace OMDb.WinUI3.ViewModels
             Entry.Entry.MyRating = Rating;
             Core.Services.EntryService.UpdateEntry(Entry.Entry);
             Helpers.InfoHelper.ShowSuccess("已更新评分");
+        });
+
+        public ICommand SaveNamesCommand => new RelayCommand(async() =>
+        {
+            Names = Names.Where(p=>!string.IsNullOrEmpty(p.Name)).ToObservableCollection();
+            await Core.Services.EntryNameSerivce.RemoveNamesAsync(Entry.Entry.Id,Entry.Entry.DbId);
+            await Core.Services.EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.Id)).ToList(), Entry.Entry.DbId);
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                Entry.Name = Names.FirstOrDefault(p => p.IsDefault)?.Name;
+                Entry.Names = Names.DepthClone<ObservableCollection<EntryName>>();
+            });
+            Helpers.InfoHelper.ShowSuccess("已更新名称");
+        });
+        public ICommand CancelEidtNamesCommand => new RelayCommand(async () =>
+        {
+            Names = Entry.Names.DepthClone<ObservableCollection<EntryName>>();
+            Helpers.InfoHelper.ShowSuccess("已取消");
         });
         #region 视频
         public ICommand DropVideoCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async(items) =>

@@ -128,6 +128,10 @@ namespace OMDb.Core.Services
         {
             await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).ExecuteCommand());
         }
+        //public static async Task RemoveNamesAsync(string id, string dbId)
+        //{
+        //    await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p => p.EntryId == id).ExecuteCommand());
+        //}
         /// <summary>
         /// 若词条存在默认名称，则更新，负责插入
         /// </summary>

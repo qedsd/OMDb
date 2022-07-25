@@ -36,6 +36,9 @@ namespace OMDb.WinUI3.Views
             System.Diagnostics.Process.Start("explorer.exe", (sender as Grid).DataContext as string);
         }
 
-        
+        private void EditNameFlyout_Button_Click(object sender, RoutedEventArgs e)
+        {
+            EditNameFlyout.Hide();
+        }
     }
 }
