@@ -50,6 +50,10 @@ namespace OMDb.Core.Services
                                 p.IsNullable = true;
                             }
                         }
+                    },
+                    MoreSettings = new ConnMoreSettings()
+                    {
+                        IsAutoRemoveDataCache = true
                     }
                 }
                 ));

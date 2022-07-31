@@ -160,20 +160,61 @@ namespace OMDb.WinUI3.ViewModels
             Core.Services.EntryService.UpdateEntry(Entry.Entry);
             Helpers.InfoHelper.ShowSuccess("已更新评分");
         });
+        public ICommand RefreshCommand => new RelayCommand(async() =>
+        {
+            Entry = await Models.EntryDetail.CreateAsync(Entry.Entry);
+        });
 
         public ICommand SaveNamesCommand => new RelayCommand(async() =>
         {
             Names = Names.Where(p=>!string.IsNullOrEmpty(p.Name)).ToObservableCollection();
             await Core.Services.EntryNameSerivce.RemoveNamesAsync(Entry.Entry.Id,Entry.Entry.DbId);
             await Core.Services.EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.Id)).ToList(), Entry.Entry.DbId);
+            string oldEntryName = Entry.Name;
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
                 Entry.Name = Names.FirstOrDefault(p => p.IsDefault)?.Name;
                 Entry.Names = Names.DepthClone<ObservableCollection<EntryName>>();
             });
+            if(oldEntryName != Names.FirstOrDefault(p => p.IsDefault)?.Name)
+            {
+                if(await Dialogs.QueryDialog.ShowDialog("词条名已修改","词条名已修改，是否重命名词条文件夹?"))
+                {
+                    int index = Entry.FullEntryPath.LastIndexOf(oldEntryName);
+                    if (index > -1)
+                    {
+                        string newEntryPath = System.IO.Path.Combine(Entry.FullEntryPath.Substring(0, index), Entry.Name);
+                        if (System.IO.Directory.Exists(newEntryPath))
+                        {
+                            await Dialogs.MsgDialog.ShowDialog("已存在同名文件夹，将维持原词条文件夹名", "移动失败");
+                        }
+                        else
+                        {
+                            Dialogs.WatingDialog.Show("移动文件中");
+                            await Task.Run(() =>
+                            {
+                                Helpers.FileHelper.CopyFolder(Entry.FullEntryPath, newEntryPath, CopyFolderCallBack);
+                            });
+                            string newRelPath = System.IO.Path.Combine(Entry.Entry.Path.Substring(0, Entry.Entry.Path.LastIndexOf(oldEntryName)), Entry.Name);
+                            Entry.Entry.Path = newRelPath;
+                            Core.Services.EntryService.UpdateEntry(Entry.Entry);
+                            Dialogs.WatingDialog.Hide();
+                            RefreshCommand.Execute(null);
+                        }
+                    }
+                }
+            }
             Helpers.InfoHelper.ShowSuccess("已更新名称");
         });
-        public ICommand CancelEidtNamesCommand => new RelayCommand(async () =>
+        private int CopyFiles = 0;
+        private void CopyFolderCallBack(float p)
+        {
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+                Dialogs.WatingDialog.Show($"移动文件中(已移动文件:{++CopyFiles})");
+            });
+        }
+        public ICommand CancelEidtNamesCommand => new RelayCommand(() =>
         {
             Names = Entry.Names.DepthClone<ObservableCollection<EntryName>>();
             Helpers.InfoHelper.ShowSuccess("已取消");

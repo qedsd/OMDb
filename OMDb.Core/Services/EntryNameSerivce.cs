@@ -126,7 +126,7 @@ namespace OMDb.Core.Services
 
         public static async Task RemoveNamesAsync(string id, string dbId)
         {
-            await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).ExecuteCommand());
+            await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).RemoveDataCache().ExecuteCommand());
         }
         //public static async Task RemoveNamesAsync(string id, string dbId)
         //{
@@ -165,12 +165,12 @@ namespace OMDb.Core.Services
                     EntryId = id,
                     IsDefault = true
                 };
-                DbService.GetConnection(dbId).Insertable(entryNameDb).ExecuteCommand();
+                DbService.GetConnection(dbId).Insertable(entryNameDb).RemoveDataCache().ExecuteCommand();
             }
             else//更新
             {
                 defaultName.Name = name;
-                DbService.GetConnection(dbId).Updateable(defaultName).ExecuteCommand();
+                DbService.GetConnection(dbId).Updateable(defaultName).RemoveDataCache().ExecuteCommand();
             }
         }
     }

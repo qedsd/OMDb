@@ -340,7 +340,7 @@ namespace OMDb.Core.Services
 
         public static void UpdateEntry(Entry entry)
         {
-            DbService.GetConnection(entry.DbId).Updateable(entry as EntryDb).ExecuteCommand();
+            DbService.GetConnection(entry.DbId).Updateable<EntryDb>(entry as EntryDb).RemoveDataCache().ExecuteCommand();
         }
 
         /// <summary>

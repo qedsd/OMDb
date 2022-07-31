@@ -21,6 +21,7 @@
     <None Remove="Dialogs\MsgDialog.xaml" />
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
+    <None Remove="Dialogs\WatingDialog.xaml" />
     <None Remove="MyControls\AddLabelsControl.xaml" />
     <None Remove="MyControls\DropArea.xaml" />
     <None Remove="MyControls\EditEntryName.xaml" />
@@ -31,6 +32,7 @@
     <None Remove="MyControls\LabelsControl.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
+    <None Remove="MyControls\WaitingPopup.xaml" />
     <None Remove="SettingPage.xaml" />
     <None Remove="Strings\en-us\Resources.resw" />
     <None Remove="Strings\zh-CN\Resources.resw" />
@@ -192,6 +194,18 @@
 
   <ItemGroup>
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\WatingDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\WaitingPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
