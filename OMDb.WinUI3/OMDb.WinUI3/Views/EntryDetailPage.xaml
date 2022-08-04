@@ -118,15 +118,15 @@
                                         </Grid.ColumnDefinitions>
                                         <Button
                                             HorizontalAlignment="Center"
+                                            Click="EditNameFlyout_Button_Click"
                                             Command="{x:Bind VM.SaveNamesCommand}"
-                                            Content="确定" 
-                                            Click="EditNameFlyout_Button_Click"/>
+                                            Content="确定" />
                                         <Button
                                             Grid.Column="1"
                                             HorizontalAlignment="Center"
+                                            Click="EditNameFlyout_Button_Click"
                                             Command="{x:Bind VM.CancelEidtNamesCommand}"
-                                            Content="取消" 
-                                            Click="EditNameFlyout_Button_Click"/>
+                                            Content="取消" />
                                     </Grid>
                                 </Grid>
 
@@ -336,8 +336,20 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate x:DataType="DbModels:WatchHistoryDb">
                                     <Grid>
+                                        <Grid.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem
+                                                    Command="{Binding ElementName=page, Path=VM.EditHistoryCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                    Text="编辑" />
+                                                <MenuFlyoutItem
+                                                    Command="{Binding ElementName=page, Path=VM.DeleteHistoryCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                    Text="删除" />
+                                            </MenuFlyout>
+                                        </Grid.ContextFlyout>
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition Width="160" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock VerticalAlignment="Center" Text="{x:Bind Time}" />
@@ -387,7 +399,7 @@
                                     <TextBlock
                                         FontFamily="Segoe MDL2 Assets"
                                         Text="&#xE10A;"
-                                        ToolTipService.ToolTip="取消" />
+                                        ToolTipService.ToolTip="取消编辑" />
                                 </Button>
                             </StackPanel>
                         </StackPanel>
@@ -396,7 +408,7 @@
                             Width="160"
                             Margin="0,10,0,0"
                             HorizontalAlignment="Center"
-                            Command="{x:Bind VM.EditHistoryCommand}"
+                            Command="{x:Bind VM.AddHistoryCommand}"
                             Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
                             <TextBlock
                                 FontFamily="Segoe MDL2 Assets"
@@ -488,10 +500,13 @@
                     </StackPanel>
                     <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                     <StackPanel Margin="10,0,0,0">
-                        <StackPanel Margin="10,0,0,0" Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}" Orientation="Horizontal">
+                        <StackPanel
+                            Margin="10,0,0,0"
+                            Orientation="Horizontal"
+                            Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}">
                             <TextBlock Text="别名" />
                             <TextBlock Text=":" />
-                            <TextBlock Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" Margin="10,0,0,0"/>
+                            <TextBlock Margin="10,0,0,0" Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>

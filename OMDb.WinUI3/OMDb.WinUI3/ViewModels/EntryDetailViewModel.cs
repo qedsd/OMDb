@@ -113,22 +113,54 @@ namespace OMDb.WinUI3.ViewModels
             get => isEditWatchHistory;
             set=>SetProperty(ref isEditWatchHistory, value);
         }
-        public ICommand EditHistoryCommand => new RelayCommand(() =>
+        private Core.Models.WatchHistory EditingWatchHistory;
+        public ICommand AddHistoryCommand => new RelayCommand(() =>
         {
+            EditingWatchHistory = null;
             IsEditWatchHistory = true;
         });
-        public ICommand SaveHistoryCommand => new RelayCommand(() =>
+        public ICommand SaveHistoryCommand => new RelayCommand(async() =>
         {
-            Core.Models.WatchHistory watchHistory = new Core.Models.WatchHistory()
+            if(EditingWatchHistory == null)//新增
             {
-                DbId = Entry.Entry.DbId,
-                Id = Entry.Entry.Id,
-                Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0),
-                Mark = NewHistorMark
-            };
-            Core.Services.WatchHistoryService.AddWatchHistoriesAsync(watchHistory);
-            Entry.WatchHistory.Add(watchHistory);
+                Core.Models.WatchHistory watchHistory = new Core.Models.WatchHistory()
+                {
+                    DbId = Entry.Entry.DbId,
+                    Id = Entry.Entry.Id,
+                    Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0),
+                    Mark = NewHistorMark
+                };
+                Core.Services.WatchHistoryService.AddWatchHistory(watchHistory);
+                Entry.WatchHistory.Add(watchHistory);
+            }
+            else//编辑
+            {
+                EditingWatchHistory.Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0);
+                EditingWatchHistory.Mark = NewHistorMark;
+                Core.Services.WatchHistoryService.UpdateWatchHistory(EditingWatchHistory);
+                await Entry.UpdateWatchHistoryAsync();
+            }
             CancelEditHistoryCommand.Execute(null);
+        });
+        public ICommand EditHistoryCommand => new RelayCommand<Core.Models.WatchHistory>((item) =>
+        {
+            if(item!=null)
+            {
+                EditingWatchHistory = item;
+                NewHistorDate = new DateTimeOffset(item.Time);
+                NewHistorMark = item.Mark;
+                IsEditWatchHistory = true;
+            }
+        });
+        public ICommand DeleteHistoryCommand => new RelayCommand<Core.Models.WatchHistory>(async (item) =>
+        {
+            if (item != null)
+            {
+                if (await Dialogs.QueryDialog.ShowDialog("是否确认删除记录", $"{item.Time} - {item.Mark}"))
+                {
+                    Core.Services.WatchHistoryService.DeleteWatchHistory(item);
+                }
+            }
         });
         public ICommand CancelEditHistoryCommand => new RelayCommand(() =>
         {

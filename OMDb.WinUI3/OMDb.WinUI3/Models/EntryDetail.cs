@@ -107,7 +107,12 @@ namespace OMDb.WinUI3.Models
             get => metadata;
             set=>SetProperty(ref metadata,value);
         }
-        public ObservableCollection<Core.Models.WatchHistory> WatchHistory { get; set; } = new ObservableCollection<Core.Models.WatchHistory>();
+        private ObservableCollection<Core.Models.WatchHistory> watchHistory;
+        public ObservableCollection<Core.Models.WatchHistory> WatchHistory
+        {
+            get => watchHistory;
+            set => SetProperty(ref watchHistory, value);
+        }
         private List<Core.DbModels.LabelDb> labels ;
         public List<Core.DbModels.LabelDb> Labels
         {
@@ -135,7 +140,7 @@ namespace OMDb.WinUI3.Models
             {
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
-            WatchHistory = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
+            await UpdateWatchHistoryAsync();
             labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.DbId, Entry.Id);
             if(Labels == null)
             {
@@ -150,6 +155,14 @@ namespace OMDb.WinUI3.Models
             LoadVideos();
             LoadSubs();
             LoadRes();
+        }
+        public async Task UpdateWatchHistoryAsync()
+        {
+            WatchHistory = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
+            if (WatchHistory == null)
+            {
+                WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
+            }
         }
         private void LoadImgs()
         {

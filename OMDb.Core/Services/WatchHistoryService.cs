@@ -29,9 +29,18 @@ namespace OMDb.Core.Services
             }
         }
 
-        public static void AddWatchHistoriesAsync(Models.WatchHistory watchHistory)
+        public static void AddWatchHistory(Models.WatchHistory watchHistory)
         {
             DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+        }
+
+        public static void UpdateWatchHistory(Models.WatchHistory watchHistory)
+        {
+            DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+        }
+        public static void DeleteWatchHistory(Models.WatchHistory watchHistory)
+        {
+            DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
         }
     }
 }
