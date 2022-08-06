@@ -13,11 +13,17 @@ namespace OMDb.Core.DbModels
     [SugarTable("WatchHistory")]
     public class WatchHistoryDb
     {
+        [SugarColumn(IsPrimaryKey = true)]
+        public string Id { get; set; }
         /// <summary>
         /// 词条本地唯一Id
         /// </summary>
-        public string Id { get; set; }
+        public string EntryId { get; set; }
         public DateTime Time { get; set; }
+        /// <summary>
+        /// 观看完毕，作为有效观看次数进行统计
+        /// </summary>
+        public bool Done { get; set; }
         /// <summary>
         /// 观看备注
         /// 可以用来记录本次看到了哪

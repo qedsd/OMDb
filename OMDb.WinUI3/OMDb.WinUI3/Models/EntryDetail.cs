@@ -113,6 +113,15 @@ namespace OMDb.WinUI3.Models
             get => watchHistory;
             set => SetProperty(ref watchHistory, value);
         }
+        private int watchCount;
+        /// <summary>
+        /// 有效观看次数
+        /// </summary>
+        public int WatchCount
+        {
+            get=> watchCount;
+            set=>SetProperty(ref watchCount, value);
+        }
         private List<Core.DbModels.LabelDb> labels ;
         public List<Core.DbModels.LabelDb> Labels
         {
@@ -158,10 +167,16 @@ namespace OMDb.WinUI3.Models
         }
         public async Task UpdateWatchHistoryAsync()
         {
-            WatchHistory = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
-            if (WatchHistory == null)
+            var histories = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
+            if (histories == null)
             {
                 WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
+                WatchCount = 0;
+            }
+            else
+            {
+                WatchHistory = histories.OrderByDescending(p => p.Time).ToObservableCollection();
+                WatchCount = WatchHistory.Where(p => p.Done).Count();
             }
         }
         private void LoadImgs()

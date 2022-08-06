@@ -354,7 +354,7 @@ namespace OMDb.Core.Services
             connet.BeginTran();
             connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
             connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
-            connet.Deleteable<WatchHistoryDb>().Where(p=>p.Id == entry.Id).ExecuteCommand();
+            connet.Deleteable<WatchHistoryDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             connet.Deleteable<EntryLabelDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             connet.CommitTran();
         }
