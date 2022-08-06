@@ -311,7 +311,8 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     ExplorerItem.VerifyFaiedEvent -= VideoExplorerItem_VerifyFaiedEvent;
                     Entry.LoadVideos();//前面添加的是无目录结构显示，需要刷新显示目录结构
-                    if(VerifyFaiedVideoItems.Count!=0)//存在校验失败的
+                    Helpers.InfoHelper.ShowSuccess("复制完成");
+                    if (VerifyFaiedVideoItems.Count!=0)//存在校验失败的
                     {
                         await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedVideoItems, Entry.FullEntryPath);
                     }
@@ -369,6 +370,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     ExplorerItem.VerifyFaiedEvent -= SubExplorerItem_VerifyFaiedEvent;
                     Entry.LoadSubs();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    Helpers.InfoHelper.ShowSuccess("复制完成");
                     if (VerifyFaiedSubItems.Count != 0)//存在校验失败的
                     {
                         await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedSubItems, Entry.FullEntryPath);
@@ -427,6 +429,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     ExplorerItem.VerifyFaiedEvent -= ResExplorerItem_VerifyFaiedEvent;
                     Entry.LoadRes();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    Helpers.InfoHelper.ShowSuccess("复制完成");
                     if (VerifyFaiedResItems.Count != 0)//存在校验失败的
                     {
                         await Dialogs.ExplorerItemVerifyFaiedDialog.ShowDialog(VerifyFaiedResItems, Entry.FullEntryPath);
@@ -440,6 +443,37 @@ namespace OMDb.WinUI3.ViewModels
             Helpers.InfoHelper.ShowError($"{explorerItem.Name}校验不通过");
             VerifyFaiedResItems.Add(explorerItem);
         }
+        #endregion
+
+        #region 图片
+        public ICommand DropImgCommand => new RelayCommand<IReadOnlyList<Windows.Storage.IStorageItem>>(async (items) =>
+        {
+            if (items?.Count > 0)
+            {
+                var paths = items.Select(p => p.Path).ToList();
+                List<ExplorerItem> source = new List<ExplorerItem>();//源文件，保留原本目录结构
+                foreach (var path in paths)
+                {
+                    source.AddRange(Helpers.FileHelper.FindExplorerItems(path));
+                }
+                if (source.Count > 0)
+                {
+                    string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
+                    var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
+                    sourceFiles.ForEach(p =>
+                    {
+                        p.SourcePath = p.FullName;//保留原文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetImgFolder());//创建目标文件路径
+                    });
+                    foreach (var p in sourceFiles)
+                    {
+                        await p.CopyAsync();
+                    }
+                    Entry.LoadImgs();
+                    Helpers.InfoHelper.ShowSuccess("复制完成");
+                }
+            }
+        });
         #endregion
     }
 }

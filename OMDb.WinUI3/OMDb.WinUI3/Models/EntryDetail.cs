@@ -141,7 +141,12 @@ namespace OMDb.WinUI3.Models
                 });
             }
         }
-        public ObservableCollection<string> Imgs { get; set; }
+        private ObservableCollection<string> imgs;
+        public ObservableCollection<string> Imgs
+        {
+            get => imgs;
+            set=> SetProperty(ref imgs, value);
+        }
         private async Task Init()
         {
             var namesT = await Core.Services.EntryNameSerivce.QueryNamesAsync(Entry.Id, Entry.DbId);
@@ -179,18 +184,18 @@ namespace OMDb.WinUI3.Models
                 WatchCount = WatchHistory.Where(p => p.Done).Count();
             }
         }
-        private void LoadImgs()
+        public void LoadImgs()
         {
             Imgs = new ObservableCollection<string>();
             string imgFolder = Path.Combine(FullEntryPath,Services.ConfigService.ImgFolder);
             if(Directory.Exists(imgFolder))
             {
-                var files = new DirectoryInfo(imgFolder).GetFiles();
-                if(files.Any())
+                var items = Helpers.FileHelper.GetAllFiles(imgFolder);
+                if(items != null && items.Any())
                 {
-                    foreach(var file in files)
+                    foreach (var file in items)
                     {
-                        if(Helpers.ImgHelper.IsSupportImg(file.FullName))
+                        if (Helpers.ImgHelper.IsSupportImg(file.FullName))
                         {
                             Imgs.Add(file.FullName);
                         }
@@ -289,6 +294,11 @@ namespace OMDb.WinUI3.Models
         public string GetResFolder()
         {
             return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
+        }
+
+        public string GetImgFolder()
+        {
+            return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.ImgFolder);
         }
     }
 }

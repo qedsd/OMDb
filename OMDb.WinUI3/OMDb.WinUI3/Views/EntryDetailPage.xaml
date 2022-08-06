@@ -227,50 +227,51 @@
         <ScrollViewer Grid.Column="1">
             <StackPanel Margin="0,0,8,0">
                 <!--  图片  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
-                        <Button
-                            Padding="0"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind VM.OpenImgFolderCommand}"
-                            ToolTipService.ToolTip="打开文件夹">
-                            <TextBlock
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                Text="&#xE169;" />
-                        </Button>
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid>
-                        <ScrollViewer
-                            x:Name="ImgScrollViewer"
-                            HorizontalScrollBarVisibility="Visible"
-                            HorizontalScrollMode="Enabled"
-                            VerticalScrollMode="Disabled">
-                            <ListBox
+                <mycontrols:DropArea Caption="复制到图片文件夹" DropCommand="{x:Bind VM.DropImgCommand}">
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
+                            <Button
+                                Padding="0"
                                 Background="Transparent"
-                                ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
-                                ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}"
-                                ScrollViewer.HorizontalScrollMode="Disabled"
-                                ScrollViewer.VerticalScrollMode="Disabled">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
-                                            <Image Height="300" Source="{Binding}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-                            </ListBox>
-                        </ScrollViewer>
-                        <!--<Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
+                                BorderThickness="0"
+                                Command="{x:Bind VM.OpenImgFolderCommand}"
+                                ToolTipService.ToolTip="打开文件夹">
+                                <TextBlock
+                                    Margin="16,0,0,0"
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    Text="&#xE169;" />
+                            </Button>
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid>
+                            <ScrollViewer
+                                x:Name="ImgScrollViewer"
+                                HorizontalScrollBarVisibility="Visible"
+                                HorizontalScrollMode="Enabled"
+                                VerticalScrollMode="Disabled">
+                                <ListBox
+                                    Background="Transparent"
+                                    ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
+                                    ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}"
+                                    ScrollViewer.HorizontalScrollMode="Disabled"
+                                    ScrollViewer.VerticalScrollMode="Disabled">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
+                                                <Image Height="300" Source="{Binding}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </ScrollViewer>
+                            <!--<Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
                                 Click="PrevImg_Click">
                             <TextBlock Text="&#xEDD9;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
                         </Button>
@@ -279,8 +280,9 @@
                                 Click="NextImg_Click">
                             <TextBlock Text="&#xEDDA;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
                         </Button>-->
-                    </Grid>
-                </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </mycontrols:DropArea>
 
                 <!--  描述  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
