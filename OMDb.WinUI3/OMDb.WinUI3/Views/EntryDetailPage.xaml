@@ -244,18 +244,42 @@
                         </Button>
                     </StackPanel>
                     <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <FlipView
-                        Height="300"
-                        Background="Transparent"
-                        ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}">
-                        <FlipView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
-                                    <Image Source="{Binding}" />
-                                </Grid>
-                            </DataTemplate>
-                        </FlipView.ItemTemplate>
-                    </FlipView>
+                    <Grid>
+                        <ScrollViewer
+                            x:Name="ImgScrollViewer"
+                            HorizontalScrollBarVisibility="Visible"
+                            HorizontalScrollMode="Enabled"
+                            VerticalScrollMode="Disabled">
+                            <ListBox
+                                Background="Transparent"
+                                ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
+                                ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}"
+                                ScrollViewer.HorizontalScrollMode="Disabled"
+                                ScrollViewer.VerticalScrollMode="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
+                                            <Image Height="300" Source="{Binding}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                            </ListBox>
+                        </ScrollViewer>
+                        <!--<Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
+                                Click="PrevImg_Click">
+                            <TextBlock Text="&#xEDD9;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
+                        </Button>
+                        <Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
+                                HorizontalAlignment="Right"
+                                Click="NextImg_Click">
+                            <TextBlock Text="&#xEDDA;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
+                        </Button>-->
+                    </Grid>
                 </StackPanel>
 
                 <!--  描述  -->
@@ -358,9 +382,9 @@
                                             Grid.Column="1"
                                             VerticalAlignment="Center"
                                             FontFamily="Segoe MDL2 Assets"
+                                            FontSize="10"
                                             Foreground="MediumSeaGreen"
                                             Text="&#xE082;"
-                                            FontSize="10"
                                             ToolTipService.ToolTip="看完"
                                             Visibility="{x:Bind Done, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
                                         <TextBlock

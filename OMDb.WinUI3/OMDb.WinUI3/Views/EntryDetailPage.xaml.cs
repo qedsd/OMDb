@@ -40,5 +40,15 @@ namespace OMDb.WinUI3.Views
         {
             EditNameFlyout.Hide();
         }
+
+        private void PrevImg_Click(object sender, RoutedEventArgs e)
+        {
+            ImgScrollViewer.ScrollToHorizontalOffset(ImgScrollViewer.HorizontalOffset - 300);
+        }
+
+        private void NextImg_Click(object sender, RoutedEventArgs e)
+        {
+            ImgScrollViewer.ScrollToHorizontalOffset(ImgScrollViewer.HorizontalOffset+300);
+        }
     }
 }
