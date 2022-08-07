@@ -35,12 +35,18 @@
                 Width="48" />
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Image
+                <Grid
                     Width="16"
                     Height="16"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Source="/Assets/Logo/Square44x44Logo.scale-100.png" />
+                    CornerRadius="8">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Source="/Images/logo_32.png" />
+                </Grid>
+
                 <!--<TextBlock
                     x:Uid="AppDisplayNameTextBlock"
                     Margin="12,0,0,0"

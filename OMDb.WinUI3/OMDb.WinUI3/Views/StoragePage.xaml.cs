@@ -21,13 +21,6 @@ namespace OMDb.WinUI3.Views
         public StoragePage()
         {
             this.InitializeComponent();
-            //VM.EnrtyStorages.Add(new Models.EnrtyStorage()
-            //{
-            //    StorageName = "仓库1",
-            //    EntryCount = 123,
-            //    CoverImg = @"E:\影音\图片\怪奇物语\p2873860568.jpg",
-            //    StoragePath = @"E:\影音\"
-            //});
             VM.EnrtyStorages.Add(new Models.EnrtyStorage()
             {
                 StoragePath = null

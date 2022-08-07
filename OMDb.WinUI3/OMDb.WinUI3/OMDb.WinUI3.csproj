@@ -11,7 +11,7 @@
     <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="Assets\Img\p2873860568.jpg" />
+    <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Dialogs\EditEntryDialog.xaml" />
