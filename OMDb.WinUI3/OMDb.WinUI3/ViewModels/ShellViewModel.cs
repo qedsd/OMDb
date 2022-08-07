@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Controls;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Services;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public class ShellViewModel
+    public class ShellViewModel : ObservableObject
     {
         private NavigationViewItem selected;
         public NavigationViewItem Selected
@@ -19,6 +20,15 @@ namespace OMDb.WinUI3.ViewModels
             {
                 selected = value;
                 OnSelectedChanged(selected);
+            }
+        }
+        private bool canGoBack;
+        public bool CanGoBack
+        {
+            get => canGoBack;
+            set
+            {
+                SetProperty(ref canGoBack, value);
             }
         }
         public void Init(Frame frame)
@@ -39,6 +49,12 @@ namespace OMDb.WinUI3.ViewModels
                     NavigationService.Navigate(pageType, null);
                 }
             }
+            CanGoBack = NavigationService.CanGoBack;
+        }
+        public void GoBack()
+        {
+            NavigationService.GoBack();
+            CanGoBack = NavigationService.CanGoBack;
         }
     }
 }

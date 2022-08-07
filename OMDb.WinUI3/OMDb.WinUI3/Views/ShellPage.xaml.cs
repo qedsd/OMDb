@@ -24,5 +24,10 @@ namespace OMDb.WinUI3.Views
             //tiWtleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             //Microsoft.UI.Xaml.Window.Current.SetTitleBar(AppTitleBar);
         }
+
+        private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            ViewModel.GoBack();
+        }
     }
 }
