@@ -60,9 +60,9 @@
                     Text="标签:" />
                 <mycontrols:LabelsControl
                     Grid.Column="1"
+                    CheckChangedCommand="{x:Bind VM.LabelChangedCommand}"
                     Labels="{x:Bind VM.LabelDbs, Mode=OneWay}"
-                    Mode="Selecte"
-                    OnSelectedItem="LabelsControl_OnSelectedItem" />
+                    Mode="Selecte" />
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

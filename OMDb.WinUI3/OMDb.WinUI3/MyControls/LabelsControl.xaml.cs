@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -41,51 +42,33 @@ namespace OMDb.WinUI3.MyControls
                     List<Models.Label> list = new List<Models.Label>();
                     foreach (var item in card.Labels)
                     {
-                        list.Add(new Models.Label(item));
+                        list.Add(new Models.Label(item) { IsChecked = true });
                     }
                     if(card.Mode == LabelControlMode.Add)
                     {
-                        list.Add(new Models.Label(new Core.DbModels.LabelDb() { Name = "+"}) { IsTemp = true});
+                        list.Add(new Models.Label(new Core.DbModels.LabelDb() { Name = "+"}) { IsTemp = true,IsChecked = true});
+                    }
+                    else if(card.Mode == LabelControlMode.Selecte)
+                    {
+                        list.Insert(0,new Models.Label(new Core.DbModels.LabelDb() { Name = "全选" }) { IsTemp = true, IsChecked = true });
                     }
                     card.GridView_Label.ItemsSource = list;
+                    card.LabelsSource = list;
                 }
                 else
                 {
                     card.GridView_Label.ItemsSource = null;
+                    card.LabelsSource = null;
                 }
             }
         }
+        private List<Models.Label> LabelsSource;
         public IEnumerable<Core.DbModels.LabelDb> Labels
         {
             get { return (IEnumerable<Core.DbModels.LabelDb>)GetValue(LabelsProperty); }
 
             set { SetValue(LabelsProperty, value); }
         }
-
-        //public static readonly DependencyProperty SelecteModeProperty = DependencyProperty.Register
-        //    (
-        //    "SelecteMode",
-        //    typeof(bool),
-        //    typeof(UserControl),
-        //    new PropertyMetadata(false, new PropertyChangedCallback(SetSelecteMode))
-        //    );
-        //private static void SetSelecteMode(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var card = d as LabelsControl;
-        //    if (card != null)
-        //    {
-                
-        //    }
-        //}
-        ///// <summary>
-        ///// 是否为选择模式
-        ///// </summary>
-        //public bool SelecteMode
-        //{
-        //    get { return (bool)GetValue(SelecteModeProperty); }
-
-        //    set { SetValue(SelecteModeProperty, value); }
-        //}
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register
             (
@@ -109,35 +92,35 @@ namespace OMDb.WinUI3.MyControls
             var label = (sender as Button).DataContext as Models.Label;
             if(label != null)
             {
-                label.IsChecked = !label.IsChecked;
-                var labelsOut = GridView_Label.ItemsSource as List<Models.Label>;
-                if (Mode == LabelControlMode.Add && label.IsTemp)
+                if (Mode == LabelControlMode.Add && label.IsTemp)//新增标签
                 {
                     ShowAddLabelsFlyout(sender as Button);
                 }
+                else if(Mode == LabelControlMode.Selecte && label.IsTemp)//全选、全不选
+                {
+                    label.IsChecked = !label.IsChecked;
+                    LabelsSource.ForEach(p => p.IsChecked = label.IsChecked);
+                    CallChanged();
+                }
                 else
                 {
-                    SelecteItemEvent?.Invoke(Mode == LabelControlMode.Add ? labelsOut.Take(labelsOut.Count - 1) : labelsOut, label);
+                    CallChanged();
                     switch (Mode)
                     {
                         case LabelControlMode.None: break;
                         case LabelControlMode.Selecte:
                             {
-                                if (label.IsChecked)
+                                label.IsChecked = !label.IsChecked;
+                                if(label.IsChecked)
                                 {
-                                    ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(100, 0, 200, 0));
+                                    if(LabelsSource.FirstOrDefault(p=>!p.IsTemp && !p.IsChecked) == null)
+                                    {
+                                        LabelsSource.First().IsChecked = true;
+                                    }
                                 }
                                 else
                                 {
-                                    if (Services.ThemeSelectorService.IsDark)
-                                    {
-                                        ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
-                                    }
-                                    else
-                                    {
-                                        ((sender as Button).Content as TextBlock).Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
-                                    }
-                                    //(sender as Button).BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 235, 234, 231));
+                                    LabelsSource.First().IsChecked = false;
                                 }
                             }
                             break;
@@ -145,6 +128,12 @@ namespace OMDb.WinUI3.MyControls
                     }
                 }
             }
+        }
+        private void CallChanged()
+        {
+            var ls = LabelsSource.Where(p => !p.IsTemp).ToList();
+            CheckChanged?.Invoke(ls);
+            CheckChangedCommand?.Execute(ls);
         }
         private List<Models.Label> AllLabels;
         private Flyout AddLabelFlyout;
@@ -206,20 +195,34 @@ namespace OMDb.WinUI3.MyControls
         /// </summary>
         /// <param name="labels">所有标签</param>
         /// <param name="label">当前触发标签</param>
-        public delegate void SelecteItemDelegate(IEnumerable<Models.Label> labels, Models.Label label);
-        private SelecteItemDelegate SelecteItemEvent;
+        public delegate void CheckChangedEventHandel(IEnumerable<Models.Label> allLabels);
+        private CheckChangedEventHandel CheckChanged;
+
+        public static readonly DependencyProperty CheckChangedCommandProperty
+           = DependencyProperty.Register(
+               nameof(CheckChangedCommand),
+               typeof(string),
+               typeof(LabelsControl),
+               new PropertyMetadata(string.Empty));
+
+        public ICommand CheckChangedCommand
+        {
+            get => (ICommand)GetValue(CheckChangedCommandProperty);
+            set => SetValue(CheckChangedCommandProperty, value);
+        }
+
         /// <summary>
         /// 选择标签后触发
         /// </summary>
-        public event SelecteItemDelegate OnSelectedItem
+        public event CheckChangedEventHandel OnCheckChanged
         {
             add
             {
-                SelecteItemEvent+=value;
+                CheckChanged += value;
             }
             remove
             {
-                SelecteItemEvent-=value;
+                CheckChanged -= value;
             }
         }
 
@@ -231,6 +234,25 @@ namespace OMDb.WinUI3.MyControls
             Selecte,
             [Description("添加模式")]
             Add
+        }
+    }
+    public sealed class CheckToOpacityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if ((bool)value)
+            {
+                return 1.0;
+            }
+            else
+            {
+                return 0.4;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

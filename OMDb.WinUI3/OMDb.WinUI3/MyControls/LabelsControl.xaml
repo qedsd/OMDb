@@ -6,10 +6,12 @@
     xmlns:converters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     Background="Transparent"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <mycontrols:CheckToOpacityConverter x:Key="CheckToOpacityConverter" />
     </UserControl.Resources>
     <Grid>
         <GridView x:Name="GridView_Label" SelectionMode="None">
@@ -24,11 +26,14 @@
                         Background="Transparent"
                         Click="Button_Click"
                         CornerRadius="16">
-                        <TextBlock Grid.Column="1" Text="{x:Bind LabelDb.Name}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            Opacity="{x:Bind IsChecked, Mode=OneWay, Converter={StaticResource CheckToOpacityConverter}}"
+                            Text="{x:Bind LabelDb.Name}" />
                     </Button>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
-        
+
     </Grid>
 </UserControl>

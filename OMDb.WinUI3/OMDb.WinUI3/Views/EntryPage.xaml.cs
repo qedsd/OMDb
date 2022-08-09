@@ -22,10 +22,5 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
         }
-
-        private void LabelsControl_OnSelectedItem(IEnumerable<Models.Label> labels, Models.Label label)
-        {
-
-        }
     }
 }

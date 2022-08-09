@@ -155,5 +155,10 @@ namespace OMDb.WinUI3.ViewModels
                 });
             }
         }
+
+        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
+        {
+            //刷新词条
+        });
     }
 }
