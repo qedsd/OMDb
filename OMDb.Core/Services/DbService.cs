@@ -18,7 +18,7 @@ namespace OMDb.Core.Services
         /// <summary>
         /// 是否有数据库连接
         /// </summary>
-        public static bool IsEmpty
+        internal static bool IsEmpty
         {
             get=>Dbs.Count ==0;
         }
@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="connet"></param>
         /// <param name="configId"></param>
-        public static bool AddDb(string connet,string configId, bool needCodeFirst)
+        internal static bool AddDb(string connet,string configId, bool needCodeFirst)
         {
             if (!Dbs.ContainsKey(configId))
             {
@@ -103,7 +103,7 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static SqlSugarScope GetConnection(string dbId)
+        internal static SqlSugarScope GetConnection(string dbId)
         {
             if(Dbs.TryGetValue(dbId, out SqlSugarScope scope))
             {

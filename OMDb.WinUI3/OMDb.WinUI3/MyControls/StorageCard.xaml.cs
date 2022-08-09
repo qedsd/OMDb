@@ -144,23 +144,16 @@ namespace OMDb.WinUI3.MyControls
             if (card != null)
             {
                 card.EnrtyStorage = e.NewValue as EnrtyStorage;
-                if(card.EnrtyStorage == null)
+                var es = card.EnrtyStorage;
+                if (es == null || string.IsNullOrEmpty(es.StoragePath))
                 {
                     card.AddGrid.Visibility = Visibility.Visible;
                     card.ShowGrid.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(card.EnrtyStorage.StoragePath))
-                    {
-                        card.AddGrid.Visibility = Visibility.Visible;
-                        card.ShowGrid.Visibility = Visibility.Collapsed;
-                    }
-                    else
-                    {
-                        card.AddGrid.Visibility = Visibility.Collapsed;
-                        card.ShowGrid.Visibility = Visibility.Visible;
-                    }
+                    card.AddGrid.Visibility = Visibility.Collapsed;
+                    card.ShowGrid.Visibility = Visibility.Visible;
                 }
             }
         }

@@ -19,5 +19,9 @@ namespace OMDb.Core
             SqliteConnectionStrings.Add(@"DataSource=" + filePath);
             return Services.DbService.AddDb(@"DataSource=" + filePath, configId, needCodeFirst);
         }
+        public static bool RemoveDb(string key)
+        {
+            return Services.DbService.Dbs.Remove(key);
+        }
     }
 }

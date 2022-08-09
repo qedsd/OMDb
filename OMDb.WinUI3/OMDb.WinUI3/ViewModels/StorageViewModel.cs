@@ -34,6 +34,7 @@ namespace OMDb.WinUI3.ViewModels
         private void StorageCard_RemoveStorageEvent(EnrtyStorage enrtyStorage)
         {
             EnrtyStorages.Remove(enrtyStorage);
+            Core.Config.RemoveDb(enrtyStorage.StorageName);
             Services.ConfigService.Save();
         }
 
