@@ -220,7 +220,7 @@
             <mycontrols:LabelsControl
                 Margin="0,32,0,0"
                 HorizontalAlignment="Center"
-                Labels="{x:Bind VM.Entry.Labels, Mode=TwoWay}"
+                LabelDbs="{x:Bind VM.Entry.Labels, Mode=TwoWay}"
                 Mode="Add" />
         </StackPanel>
         <!--  右侧滚动数据  -->

@@ -98,11 +98,11 @@ namespace OMDb.WinUI3.ViewModels
                 SetEntryPath(EntryName);
             }
         }
-        private List<Core.DbModels.LabelDb> labels;
+        private List<Models.Label> labels;
         /// <summary>
         /// 绑定的标签
         /// </summary>
-        public List<Core.DbModels.LabelDb> Labels
+        public List<Models.Label> Labels
         {
             get => labels;
             set=>SetProperty(ref labels, value);
@@ -158,7 +158,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if(entry == null)
             {
-                Labels = new List<Core.DbModels.LabelDb>();
+                Labels = new List<Models.Label>();
             }
             else
             {
@@ -167,12 +167,12 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        Labels = new List<Core.DbModels.LabelDb>(labels);
+                        Labels = new List<Models.Label>(labels.Select(p=>new Models.Label(p)));
                     });
                 }
                 else
                 {
-                    Labels = new List<Core.DbModels.LabelDb>();
+                    Labels = new List<Models.Label>();
                 }
                 var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.Id, entry.DbId);
                 if (names != null)

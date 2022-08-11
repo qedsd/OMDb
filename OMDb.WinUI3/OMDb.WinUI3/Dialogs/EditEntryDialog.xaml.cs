@@ -75,7 +75,7 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     Entry = entry,
                     //Names = content.VM.EntryNames.ToObservableCollection(),
-                    Labels = content.VM.Labels,
+                    Labels = content.VM.Labels.Select(p=>p.LabelDb).ToList(),
                     FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
                 };

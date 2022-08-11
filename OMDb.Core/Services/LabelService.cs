@@ -82,6 +82,15 @@ namespace OMDb.Core.Services
             return all.ToHashSet().ToList();
         }
         /// <summary>
+        /// 获取拥有标签的词条id
+        /// </summary>
+        /// <returns>结果已去重</returns>
+        public static List<string> GetAllEntryIds()
+        {
+            var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().GroupBy(p => p.EntryId).ToList();
+            return all.Select(p => p.EntryId).ToList();
+        }
+        /// <summary>
         /// 获取标签下所有的词条id
         /// 已去重
         /// </summary>

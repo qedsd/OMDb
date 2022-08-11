@@ -26,11 +26,11 @@ namespace OMDb.WinUI3.ViewModels
                 SetProperty(ref entries, value);
             }
         }
-        private ObservableCollection<Core.DbModels.LabelDb> labelDbs;
-        public ObservableCollection<Core.DbModels.LabelDb> LabelDbs
+        private ObservableCollection<Label> labels;
+        public ObservableCollection<Label> Labels
         {
-            get => labelDbs;
-            set => SetProperty(ref labelDbs, value);
+            get => labels;
+            set => SetProperty(ref labels, value);
         }
         private Core.Enums.SortType sortType = Core.Enums.SortType.LastUpdateTime;
         public Core.Enums.SortType SortType
@@ -83,8 +83,22 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async void Init()
         {
-            await InitEntry();
-            await InitLabel();
+            var labelDbs = await Core.Services.LabelService.GetAllLabelAsync();
+            List<Label> labels = null;
+            if (labelDbs != null)
+            {
+                labels = labelDbs.Select(p => new Label(p)).ToList();
+                Labels = new ObservableCollection<Label>(labels);
+            }
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, labels.Select(p=>p.LabelDb.Id).ToList());
+            if (queryResults?.Count > 0)
+            {
+                Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
+            }
+            else
+            {
+                Entries = null;
+            }
         }
         private void InitEnumItemsource()
         {
@@ -99,30 +113,6 @@ namespace OMDb.WinUI3.ViewModels
                 SortWayStrs.Add(p.GetDescription());
             }
         }
-        private async Task InitEntry()
-        {
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay);
-            if(queryResults?.Count > 0)
-            {
-                Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p=>p.ToQueryItem()).ToList());
-            }
-            else
-            {
-                Entries = null;
-            }
-        }
-        private async Task InitLabel ()
-        {
-            var labels = await Core.Services.LabelService.GetAllLabelAsync();
-            if (labels != null)
-            {
-                Labels = labels.Select(p=>new Label(p)).ToList();
-                Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
-                {
-                    LabelDbs = new ObservableCollection<Core.DbModels.LabelDb>(labels);
-                });
-            }
-        }
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
@@ -131,12 +121,6 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand ItemClickCommand => new RelayCommand<Core.Models.Entry>((entry) =>
         {
             NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
-        });
-        private List<Models.Label> Labels;
-        public ICommand LabelSelectedCommand => new RelayCommand<Models.Label>((label) =>
-        {
-            Labels.FirstOrDefault(p=>p.LabelDb == label.LabelDb).IsChecked = label.IsChecked;
-            UpdateEntryList();
         });
         private async void UpdateEntryList()
         {
@@ -154,11 +138,18 @@ namespace OMDb.WinUI3.ViewModels
                     Entries = newList;
                 });
             }
+            else
+            {
+                Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                {
+                    Entries = null;
+                });
+            }
         }
 
         public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
         {
-            //刷新词条
+            UpdateEntryList();
         });
     }
 }

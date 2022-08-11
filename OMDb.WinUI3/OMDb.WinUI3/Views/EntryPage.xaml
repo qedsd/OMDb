@@ -61,7 +61,7 @@
                 <mycontrols:LabelsControl
                     Grid.Column="1"
                     CheckChangedCommand="{x:Bind VM.LabelChangedCommand}"
-                    Labels="{x:Bind VM.LabelDbs, Mode=OneWay}"
+                    Labels="{x:Bind VM.Labels, Mode=OneWay}"
                     Mode="Selecte" />
             </Grid>
         </Grid>
