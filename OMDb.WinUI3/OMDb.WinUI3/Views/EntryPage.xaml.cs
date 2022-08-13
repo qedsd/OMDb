@@ -22,5 +22,27 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
         }
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            if(e.Parameter != null)
+            {
+                var dbid = e.Parameter as string;
+                var target = VM.EntryStorages.FirstOrDefault(p=>p.StorageName == dbid);
+                if(target != null)
+                {
+                    foreach(var item in VM.EntryStorages)
+                    {
+                        if(item != target)
+                        {
+                            item.IsChecked = false;
+                        }
+                        else
+                        {
+                            item.IsChecked = true;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

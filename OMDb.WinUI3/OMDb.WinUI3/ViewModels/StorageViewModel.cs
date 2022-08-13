@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Toolkit.Mvvm.Input;
+using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -19,10 +21,6 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 enrtyStorage = value;
-                if(enrtyStorage != null)
-                {
-                    LoadEnrtyStorage(enrtyStorage);
-                }
             }
         }
         public StorageViewModel()
@@ -70,11 +68,13 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         }
-
-        private void LoadEnrtyStorage(EnrtyStorage storage)
+        public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>((item) =>
         {
-
-        }
-        
+            if (item != null)
+            {
+                Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
+                EntryViewModel.Current.UpdateEntryList();
+            }
+        });
     }
 }

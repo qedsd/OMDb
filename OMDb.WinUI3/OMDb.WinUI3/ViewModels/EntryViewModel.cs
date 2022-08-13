@@ -16,6 +16,7 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class EntryViewModel : ObservableObject
     {
+        public static EntryViewModel Current { get;private set; }
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
         private List<Core.Models.Entry> entries;
         public List<Core.Models.Entry> Entries
@@ -88,6 +89,7 @@ namespace OMDb.WinUI3.ViewModels
             sortType = Core.Enums.SortType.LastUpdateTime;
             sortWay = Core.Enums.SortWay.Positive;
             Init();
+            Current = this;
         }
         private async void Init()
         {
@@ -131,7 +133,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
         });
-        private async void UpdateEntryList()
+        public async void UpdateEntryList()
         {
             List<string> filterLabel = null;
             if(Labels!=null)

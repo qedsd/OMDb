@@ -21,6 +21,7 @@
             ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
             OneRowModeEnabled="False"
             SelectedItem="{x:Bind VM.EnrtyStorage, Mode=TwoWay}"
+            ItemClickCommand="{x:Bind VM.ItemClickCommand}"
             SelectionMode="None"
             StretchContentForSingleRow="False">
             <controls:AdaptiveGridView.ItemTemplate>
