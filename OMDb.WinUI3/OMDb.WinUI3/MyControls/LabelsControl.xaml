@@ -24,7 +24,7 @@
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="Models:Label">
                     <Button
-                        Width="64"
+                        Width="72"
                         Background="Transparent"
                         Click="Button_Click"
                         CornerRadius="16">
