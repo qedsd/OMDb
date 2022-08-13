@@ -26,7 +26,8 @@
             <!--  筛选区  -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="42" />
+                <RowDefinition Height="42" />
             </Grid.RowDefinitions>
             <Grid Margin="0,20,20,0">
                 <Grid.ColumnDefinitions>
@@ -55,14 +56,29 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <TextBlock
-                    Margin="0,0,8,10"
+                    Margin="0,8,8,0"
                     VerticalAlignment="Center"
-                    Text="标签:" />
+                    Text="标签:"/>
                 <mycontrols:LabelsControl
                     Grid.Column="1"
                     CheckChangedCommand="{x:Bind VM.LabelChangedCommand}"
                     Labels="{x:Bind VM.Labels, Mode=OneWay}"
-                    Mode="Selecte" />
+                    Mode="Selecte" 
+                    />
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,8,8,0"
+                    VerticalAlignment="Center"
+                    Text="仓库:" />
+                <mycontrols:EntryStoragesControl
+                    Grid.Column="1"
+                    CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}"
+                    EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

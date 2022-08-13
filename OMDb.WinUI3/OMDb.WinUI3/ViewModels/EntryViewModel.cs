@@ -74,6 +74,14 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
         public List<string> SortWayStrs { get; set; }
+
+        private ObservableCollection<EnrtyStorage> entryStorages;
+        public ObservableCollection<EnrtyStorage> EntryStorages
+        {
+            get => entryStorages;
+            set => SetProperty(ref entryStorages, value);
+        }
+
         public EntryViewModel()
         {
             InitEnumItemsource();
@@ -90,7 +98,7 @@ namespace OMDb.WinUI3.ViewModels
                 labels = labelDbs.Select(p => new Label(p)).ToList();
                 Labels = new ObservableCollection<Label>(labels);
             }
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, labels.Select(p=>p.LabelDb.Id).ToList());
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay,null, labels.Select(p=>p.LabelDb.Id).ToList());
             if (queryResults?.Count > 0)
             {
                 Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
@@ -99,6 +107,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Entries = null;
             }
+            EntryStorages = ConfigService.EnrtyStorages;
         }
         private void InitEnumItemsource()
         {
@@ -129,7 +138,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 filterLabel = Labels.Where(p=>p.IsChecked).Select(p=>p.LabelDb.Id).ToList();
             }
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, filterLabel);
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, EntryStorages.Where(p=>p.IsChecked).Select(p=>p.StorageName).ToList(),filterLabel);
             if (queryResults?.Count > 0)
             {
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
@@ -148,6 +157,11 @@ namespace OMDb.WinUI3.ViewModels
         }
 
         public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
+        {
+            UpdateEntryList();
+        });
+
+        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>((items) =>
         {
             UpdateEntryList();
         });

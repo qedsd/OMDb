@@ -33,7 +33,12 @@ namespace OMDb.WinUI3.Models
             get => coverImg;
             set { SetProperty(ref coverImg, value); }
         }
-
+        private bool isChecked;
+        public bool IsChecked
+        {
+            get => isChecked;
+            set => SetProperty(ref isChecked, value);
+        }
         public void Update(EnrtyStorage copy)
         {
             if (copy != null)

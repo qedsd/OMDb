@@ -19,7 +19,7 @@ namespace OMDb.Core.Services
         /// <param name="sortType"></param>
         /// <param name="sortWay"></param>
         /// <returns></returns>
-        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> labelIds = null)
+        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
         {
             if (DbService.IsEmpty)
             {
@@ -29,24 +29,28 @@ namespace OMDb.Core.Services
             {
                 return sortType switch
                 {
-                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, labelIds),
-                    Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, labelIds),
-                    Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, labelIds),
-                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, labelIds),
-                    Enums.SortType.MyRating => SortByMyRating(sortWay, labelIds),
+                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds,labelIds),
+                    Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, dbIds, labelIds),
+                    Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, dbIds, labelIds),
+                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, dbIds, labelIds),
+                    Enums.SortType.MyRating => SortByMyRating(sortWay, dbIds, labelIds),
                     _ => null,
                 };
             }
         }
-        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> labelIds = null)
+        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
         {
-            return await Task.Run(()=> QueryEntry(sortType, sortWay, labelIds));
+            return await Task.Run(()=> QueryEntry(sortType, sortWay, dbIds, labelIds));
         }
-        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> labelIds = null)
+        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var item in DbService.Dbs)
             {
+                if (dbIds != null && !dbIds.Contains(item.Key))
+                {
+                    continue;
+                }
                 var db = item.Value;
                 if (labelIds != null && labelIds.Count != 0)
                 {
@@ -83,11 +87,15 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> labelIds = null)
+        private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var item in DbService.Dbs)
             {
+                if (dbIds != null && !dbIds.Contains(item.Key))
+                {
+                    continue;
+                }
                 var db = item.Value;
                 if (labelIds != null && labelIds.Count != 0)
                 {
@@ -123,11 +131,15 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> labelIds = null)
+        private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var item in DbService.Dbs)
             {
+                if (dbIds != null && !dbIds.Contains(item.Key))
+                {
+                    continue;
+                }
                 var db = item.Value;
                 if (db != null)
                 {
@@ -165,11 +177,15 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<string> labelIds = null)
+        private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var item in DbService.Dbs)
             {
+                if (dbIds != null && !dbIds.Contains(item.Key))
+                {
+                    continue;
+                }
                 var db = item.Value;
                 if (db != null)
                 {
@@ -232,11 +248,15 @@ namespace OMDb.Core.Services
                 return queryResults.OrderByDescending(p => p.Value).ToList();
             }
         }
-        private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> labelIds = null)
+        private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             foreach (var item in DbService.Dbs)
             {
+                if (dbIds != null && !dbIds.Contains(item.Key))
+                {
+                    continue;
+                }
                 var db = item.Value;
                 if (db != null)
                 {
