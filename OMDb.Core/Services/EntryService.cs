@@ -436,6 +436,9 @@ namespace OMDb.Core.Services
             return await DbService.GetConnection(dbId).Queryable<EntryDb>().CountAsync();
         }
 
-
+        public static async Task<List<Entry>> GetEntryByIdsAsync(IEnumerable<string> entryIds, string dbId)
+        {
+            return await QueryEntryAsync(entryIds.Select(p => new QueryItem(p, dbId)).ToList());
+        }
     }
 }

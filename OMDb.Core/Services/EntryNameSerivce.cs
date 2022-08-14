@@ -173,5 +173,48 @@ namespace OMDb.Core.Services
                 DbService.GetConnection(dbId).Updateable(defaultName).RemoveDataCache().ExecuteCommand();
             }
         }
+
+        /// <summary>
+        /// 模糊搜索词条名
+        /// </summary>
+        /// <param name="partstr"></param>
+        /// <returns>id为EntryNameDb.Id，Value为EntryNameDb.Name</returns>
+        public static async Task<List<QueryResult>> QueryLikeNamesAsync(string partstr)
+        {
+            List<QueryResult> queryItems = new List<QueryResult>();
+            foreach(var db in DbService.Dbs)
+            {
+                var ls = await db.Value.Queryable<EntryNameDb>().Where(p=>p.Name.Contains(partstr)).ToListAsync();
+                if(ls != null)
+                {
+                    foreach(var item in ls)
+                    {
+                        queryItems.Add(new QueryResult(item.Id, item.Name,db.Key));
+                    }
+                }
+            }
+            return queryItems;
+        }
+        /// <summary>
+        /// 完整搜索词条名
+        /// </summary>
+        /// <param name="partstr"></param>
+        /// <returns>id为EntryId，Value为EntryNameDb.Name</returns>
+        public static async Task<List<QueryResult>> QueryFullNamesAsync(string name)
+        {
+            List<QueryResult> queryItems = new List<QueryResult>();
+            foreach (var db in DbService.Dbs)
+            {
+                var ls = await db.Value.Queryable<EntryNameDb>().Where(p => p.Name == name).ToListAsync();
+                if (ls != null)
+                {
+                    foreach (var item in ls)
+                    {
+                        queryItems.Add(new QueryResult(item.EntryId, item.Name, db.Key));
+                    }
+                }
+            }
+            return queryItems;
+        }
     }
 }

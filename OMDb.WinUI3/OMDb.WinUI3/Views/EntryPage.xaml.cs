@@ -44,5 +44,17 @@ namespace OMDb.WinUI3.Views
                 }
             }
         }
+
+        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            if(args.ChosenSuggestion == null)
+            {
+                VM.UpdateEntryList();
+            }
+            else
+            {
+                VM.AutoSuggestItem = args.ChosenSuggestion as Core.Models.QueryResult;
+            }
+        }
     }
 }
