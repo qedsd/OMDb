@@ -230,9 +230,32 @@ namespace OMDb.WinUI3.ViewModels
         {
             UpdateEntryList();
         });
-        public ICommand QuerySubmittedCommand => new RelayCommand(() =>
+        public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async(item) =>
         {
-            
+            if(item == null)
+            {
+                if(string.IsNullOrEmpty(AutoSuggestText))
+                {
+                    UpdateEntryList();
+                }
+                else
+                {
+                    List<Core.Models.Entry> items = new List<Core.Models.Entry>();
+                    foreach (var p in AutoSuggestItems.GroupBy(p => p.DbId))
+                    {
+                        var entryIds = p.Select(p => p.Id).ToList().Distinct();
+                        items.AddRange(await Core.Services.EntryService.GetEntryByIdsAsync(entryIds, p.Key));
+                    }
+                    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        Entries = items;
+                    });
+                }
+            }
+            else
+            {
+                AutoSuggestItem = item;
+            }
         });
     }
 }

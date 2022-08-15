@@ -178,7 +178,7 @@ namespace OMDb.Core.Services
         /// 模糊搜索词条名
         /// </summary>
         /// <param name="partstr"></param>
-        /// <returns>id为EntryNameDb.Id，Value为EntryNameDb.Name</returns>
+        /// <returns>id为EntryDb.Id，Value为EntryNameDb.Name</returns>
         public static async Task<List<QueryResult>> QueryLikeNamesAsync(string partstr)
         {
             List<QueryResult> queryItems = new List<QueryResult>();
@@ -189,7 +189,7 @@ namespace OMDb.Core.Services
                 {
                     foreach(var item in ls)
                     {
-                        queryItems.Add(new QueryResult(item.Id, item.Name,db.Key));
+                        queryItems.Add(new QueryResult(item.EntryId, item.Name,db.Key));
                     }
                 }
             }
