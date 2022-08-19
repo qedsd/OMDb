@@ -100,7 +100,7 @@ namespace OMDb.WinUI3.ViewModels
                 labels = labelDbs.Select(p => new Label(p)).ToList();
                 Labels = new ObservableCollection<Label>(labels);
             }
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay,null, labels.Select(p=>p.LabelDb.Id).ToList());
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay,null, labels is null?null: labels.Select(p=>p.LabelDb.Id).ToList());
             if (queryResults?.Count > 0)
             {
                 Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
