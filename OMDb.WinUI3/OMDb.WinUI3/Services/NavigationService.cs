@@ -48,6 +48,7 @@ namespace OMDb.WinUI3.Services
             if (CanGoBack)
             {
                 Frame.GoBack();
+                ViewModels.ShellViewModel.Current.SetSelected(Frame.Content?.GetType());
                 return true;
             }
 
@@ -71,7 +72,11 @@ namespace OMDb.WinUI3.Services
                 {
                     _lastParamUsed = parameter;
                 }
-
+                var targetType = ViewModels.ShellViewModel.Current.Selected.GetValue(Helpers.NavHelper.NavigateToProperty) as Type;
+                if (pageType != targetType)
+                {
+                    ViewModels.ShellViewModel.Current.SetSelected(targetType);
+                }
                 return navigationResult;
             }
             else

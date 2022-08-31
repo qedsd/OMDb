@@ -11,6 +11,14 @@
     <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Enums\**" />
+    <Content Remove="Enums\**" />
+    <EmbeddedResource Remove="Enums\**" />
+    <None Remove="Enums\**" />
+    <Page Remove="Enums\**" />
+    <PRIResource Remove="Enums\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>
@@ -191,10 +199,6 @@
     <Page Update="Styles\Thickness.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Enums\" />
   </ItemGroup>
 
   <ItemGroup>

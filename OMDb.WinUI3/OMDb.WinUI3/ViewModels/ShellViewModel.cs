@@ -12,6 +12,15 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class ShellViewModel : ObservableObject
     {
+        public static ShellViewModel Current
+        {
+            get;
+            set;
+        }
+        public ShellViewModel()
+        {
+            Current = this;
+        }
         private NavigationViewItem selected;
         public NavigationViewItem Selected
         {
@@ -20,41 +29,66 @@ namespace OMDb.WinUI3.ViewModels
             {
                 selected = value;
                 OnSelectedChanged(selected);
+                SetProperty(ref selected, value);
             }
         }
         private bool canGoBack;
         public bool CanGoBack
         {
             get => canGoBack;
-            set
-            {
-                SetProperty(ref canGoBack, value);
-            }
+            set => SetProperty(ref canGoBack, value);
         }
+        private Dictionary<Type, NavigationViewItem> NavigationViewItemDic = new Dictionary<Type, NavigationViewItem>();
         public void Init(Frame frame)
         {
             NavigationService.Frame = frame;
         }
         private void OnSelectedChanged(NavigationViewItem selectedItem)
         {
-            if (selectedItem.Name == "SettingsItem")
+            if (selectedItem != null)
             {
-                NavigationService.Navigate(typeof(Views.SettingPage), null);
-            }
-            else
-            {
-                var pageType = selectedItem?.GetValue(NavHelper.NavigateToProperty) as Type;
-                if (pageType != null)
+                if (selectedItem.Name == "SettingsItem")
                 {
-                    NavigationService.Navigate(pageType, null);
+                    NavigationService.Navigate(typeof(Views.SettingPage), null);
                 }
+                else
+                {
+                    var pageType = selectedItem?.GetValue(NavHelper.NavigateToProperty) as Type;
+                    if (pageType != null)
+                    {
+                        NavigationService.Navigate(pageType, null);
+                    }
+                }
+                CanGoBack = NavigationService.CanGoBack;
             }
-            CanGoBack = NavigationService.CanGoBack;
+            
         }
         public void GoBack()
         {
             NavigationService.GoBack();
             CanGoBack = NavigationService.CanGoBack;
+        }
+
+        public void InitItems(NavigationView navigationView)
+        {
+            foreach (NavigationViewItem item in navigationView.MenuItems)
+            {
+                NavigationViewItemDic.TryAdd(item.GetValue(Helpers.NavHelper.NavigateToProperty) as Type, item);
+            }
+        }
+
+        public void SetSelected(Type type)
+        {
+            if (type == null)
+            {
+                return;
+            }
+            if (Selected.GetValue(NavHelper.NavigateToProperty) as Type != type && NavigationViewItemDic.TryGetValue(type, out NavigationViewItem item))
+            {
+                Selected.IsSelected = false;
+                Selected = item;
+                Selected.IsSelected = true;
+            }
         }
     }
 }

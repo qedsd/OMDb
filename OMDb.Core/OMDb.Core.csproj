@@ -9,6 +9,14 @@
     <Platforms>AnyCPU;x64</Platforms>
     <BaseOutputPath></BaseOutputPath>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <Content Remove="Helpers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Helpers\**" />
+    <Page Remove="Helpers\**" />
+    <PRIResource Remove="Helpers\**" />
+  </ItemGroup>
 
   <ItemGroup>
       <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.2" />
@@ -19,9 +27,5 @@
       <PackageReference Include="System.Composition.Convention" Version="6.0.0" />
       <PackageReference Include="System.Composition.TypedParts" Version="6.0.0" />
       <PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

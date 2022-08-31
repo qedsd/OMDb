@@ -17,12 +17,14 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
             ViewModel.Init(shellFrame);
+            ViewModel.InitItems(NavigationView);
             Helpers.InfoHelper.InfoBar = InfoBar;
             //var tiWtleBar = Microsoft.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
             //tiWtleBar.BackgroundColor = Colors.Transparent;
             //tiWtleBar.ButtonBackgroundColor = Colors.Transparent;
             //tiWtleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             //Microsoft.UI.Xaml.Window.Current.SetTitleBar(AppTitleBar);
+
         }
 
         private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
