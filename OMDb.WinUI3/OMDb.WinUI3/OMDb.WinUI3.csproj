@@ -67,10 +67,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
@@ -246,5 +242,9 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
   </ItemGroup>
 </Project>
