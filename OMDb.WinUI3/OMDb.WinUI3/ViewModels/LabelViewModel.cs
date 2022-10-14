@@ -46,7 +46,14 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    if (Labels.FirstOrDefault(p => p.Name == result.Name) != null)
+                    if (Labels == null)
+                    {
+                        Core.Services.LabelService.AddLabel(result);
+                        Labels = new ObservableCollection<Core.DbModels.LabelDb>();
+                        Labels.Add(result);
+                        Helpers.InfoHelper.ShowSuccess("已保存标签");
+                    }
+                    else if (Labels.FirstOrDefault(p => p.Name == result.Name) != null)
                     {
                         Helpers.InfoHelper.ShowError("标签名不可重复");
                     }
