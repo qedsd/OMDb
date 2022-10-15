@@ -7,66 +7,119 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
     x:Name="page"
-    Background="Transparent"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <controls:AdaptiveGridView
-                Margin="20"
-                IsItemClickEnabled="True"
-                ItemClickCommand="{x:Bind VM.ItemClickCommand, Mode=OneWay}"
-                ItemsSource="{x:Bind VM.Labels, Mode=OneWay}"
-                SelectionMode="None">
-                <controls:AdaptiveGridView.ItemTemplate>
-                    <DataTemplate x:DataType="DbModels:LabelDb">
-                        <StackPanel
-                            Width="300"
-                            Height="80"
-                            Padding="20,0,0,0"
-                            Background="{ThemeResource ContentBackgroudBrush}">
-                            <StackPanel.ContextFlyout>
-                                <MenuFlyout>
-                                    <MenuFlyoutItem Command="{Binding ElementName=page, Path=VM.RemoveCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=DataContext}" Text="删除" />
-                                </MenuFlyout>
-                            </StackPanel.ContextFlyout>
-                            <TextBlock
-                                Margin="0,10,0,10"
-                                FontSize="20"
-                                FontWeight="Medium"
-                                Text="{x:Bind Name}" />
-                            <TextBlock
-                                Margin="0,0,0,0"
-                                FontWeight="Thin"
-                                Text="{x:Bind Description}"
-                                TextWrapping="WrapWholeWords" />
-                        </StackPanel>
-                    </DataTemplate>
-                </controls:AdaptiveGridView.ItemTemplate>
-            </controls:AdaptiveGridView>
-            <Button
-                Grid.Row="1"
-                Margin="0,20"
-                Padding="10,8"
-                HorizontalAlignment="Center"
-                Command="{x:Bind VM.AddCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"
-                        Text="&#xE109;" />
-                    <TextBlock Margin="10,0,0,0" Text="新建标签" />
-                </StackPanel>
-            </Button>
-        </Grid>
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Text="刷新" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <GridView
+            x:Name="GridView"
+            Margin="20"
+            ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}"
+            SelectionMode="None">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="models:LabelTree">
+                    <Expander
+                        Width="300"
+                        VerticalAlignment="Top"
+                        Header="{x:Bind Label.Name}"
+                        ToolTipService.ToolTip="{x:Bind Label.Description}">
+                        <Expander.Content>
+                            <Grid Margin="-10,-10,-10,-8">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ListBox Background="Transparent" ItemsSource="{x:Bind Children}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                            <Setter Property="Padding" Value="10,4" />
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate x:DataType="DbModels:LabelDb">
+                                            <Grid Height="32" ToolTipService.ToolTip="{x:Bind Description}">
+                                                <Grid.ContextFlyout>
+                                                    <MenuFlyout>
+                                                        <MenuFlyoutItem
+                                                            Command="{Binding ElementName=page, Path=VM.EditSubCommand}"
+                                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                            Text="编辑" />
+                                                        <MenuFlyoutItem
+                                                            Command="{Binding ElementName=page, Path=VM.RemoveCommand}"
+                                                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                            Text="删除" />
+                                                    </MenuFlyout>
+                                                </Grid.ContextFlyout>
+                                                <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                                <Button
+                                    Grid.Row="1"
+                                    Margin="0,4,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    Command="{Binding ElementName=page, Path=VM.AddSubCommand}"
+                                    CommandParameter="{Binding}">
+                                    <FontIcon
+                                        Height="16"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        FontSize="12"
+                                        Glyph="&#xE109;" />
+                                </Button>
+                            </Grid>
+                        </Expander.Content>
+                        <Expander.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem
+                                    Command="{Binding ElementName=page, Path=VM.EditRootCommand}"
+                                    CommandParameter="{Binding}"
+                                    Text="编辑" />
+                                <MenuFlyoutItem
+                                    Command="{Binding ElementName=page, Path=VM.RemoveCommand}"
+                                    CommandParameter="{x:Bind Label}"
+                                    Text="删除" />
+                            </MenuFlyout>
+                        </Expander.ContextFlyout>
+                    </Expander>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <controls:StaggeredPanel
+                        HorizontalAlignment="Stretch"
+                        ColumnSpacing="0"
+                        DesiredColumnWidth="300"
+                        RowSpacing="0" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+        </GridView>
+        <Button
+            Grid.Row="1"
+            Margin="0,20"
+            Padding="10,8"
+            HorizontalAlignment="Center"
+            Command="{x:Bind VM.AddRootCommand}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontFamily="Segoe MDL2 Assets"
+                    Text="&#xE109;" />
+                <TextBlock Margin="10,0,0,0" Text="新建标签" />
+            </StackPanel>
+        </Button>
     </Grid>
 </Page>

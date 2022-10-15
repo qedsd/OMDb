@@ -19,5 +19,7 @@ namespace OMDb.Core.DbModels
         public string Name { get; set; }
         [SugarColumn(IsNullable = true)]
         public string Description { get; set; }
+        [SugarColumn(IsNullable = true)]
+        public string ParentId { get; set; }
     }
 }
