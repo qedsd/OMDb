@@ -1,0 +1,91 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.Banner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.MyControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    Height="650"
+    mc:Ignorable="d">
+
+    <Grid x:Name="MainGrid">
+        <Image
+            x:Name="MainImage1"
+            HorizontalAlignment="Stretch"
+            Stretch="UniformToFill" />
+        <Image
+            x:Name="MainImage2"
+            HorizontalAlignment="Stretch"
+            Opacity="0"
+            Stretch="UniformToFill" />
+        <StackPanel Margin="32,0,0,0" VerticalAlignment="Center">
+            <TextBlock
+                x:Name="TitleTextBlock"
+                FontSize="40"
+                Foreground="White"
+                Text="标题" />
+            <TextBlock
+                x:Name="DesTextBlock"
+                Margin="2,10,0,20"
+                FontSize="16"
+                FontWeight="Thin"
+                Foreground="LightGray"
+                Text="备注" />
+            <Button
+                Width="130"
+                Margin="0,10"
+                Click="Button_Click"
+                Content="查看详情"
+                FontSize="16" />
+        </StackPanel>
+        <!--<Rectangle Height="160" VerticalAlignment="Bottom">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
+                    <GradientStop Offset="1" Color="#00f6fafc" />
+                    <GradientStop Offset="0" Color="#f6fafc" />
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>-->
+        <ListBox
+            x:Name="ItemsListBox"
+            Grid.Row="1"
+            Margin="24,0,0,2"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            ScrollViewer.HorizontalScrollMode="Disabled"
+            ScrollViewer.VerticalScrollMode="Disabled"
+            SelectionChanged="ItemsListBox_SelectionChanged">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="6,0" />
+                    <Setter Property="Padding" Value="2" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="models:BannerItem">
+                    <Grid
+                        Width="216"
+                        Height="120"
+                        CornerRadius="8">
+                        <Image
+                            PointerEntered="Item_PointerEntered"
+                            PointerExited="Item_PointerExited"
+                            Source="{x:Bind PreviewImg}"
+                            Stretch="UniformToFill" />
+                        <TextBlock
+                            Margin="10,0,0,10"
+                            VerticalAlignment="Bottom"
+                            Foreground="White"
+                            Text="{x:Bind Title}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
+</UserControl>
