@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.ClassificationPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    Background="Transparent"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewmodels:ClassificationViewModel />
+    </Page.DataContext>
+
+    <ScrollViewer CornerRadius="8,8,0,0">
+        <mycontrols:Banner
+            x:Name="Banner"
+            Height="650"
+            VerticalAlignment="Top"
+            DetailCommand="{Binding CheckDetailBannerItemCommand}"
+            ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
+    </ScrollViewer>
+</Page>

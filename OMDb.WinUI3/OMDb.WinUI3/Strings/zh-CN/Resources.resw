@@ -132,6 +132,9 @@
   <data name="Setting_Theme_Light.Content" xml:space="preserve">
     <value>亮</value>
   </data>
+  <data name="Shell_Classification.Content" xml:space="preserve">
+    <value>分类</value>
+  </data>
   <data name="Shell_Entry.Content" xml:space="preserve">
     <value>词条</value>
   </data>

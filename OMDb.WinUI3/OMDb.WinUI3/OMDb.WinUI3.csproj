@@ -22,6 +22,8 @@
     <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Assets\Img\defaultbanner.jpg" />
+    <None Remove="Assets\Img\defaultbanneritem.jpg" />
     <None Remove="Dialogs\EditEntryDialog.xaml" />
     <None Remove="Dialogs\EditLabelDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
@@ -31,6 +33,7 @@
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="Dialogs\WatingDialog.xaml" />
     <None Remove="MyControls\AddLabelsControl.xaml" />
+    <None Remove="MyControls\Banner.xaml" />
     <None Remove="MyControls\DropArea.xaml" />
     <None Remove="MyControls\EditEntryName.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
@@ -48,6 +51,7 @@
     <None Remove="Styles\Colors.xaml" />
     <None Remove="Styles\Custom.xaml" />
     <None Remove="Styles\Thickness.xaml" />
+    <None Remove="Views\ClassificationPage.xaml" />
     <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -246,5 +250,17 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\Banner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ClassificationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
