@@ -14,11 +14,14 @@
     </Page.DataContext>
 
     <ScrollViewer CornerRadius="8,8,0,0">
-        <mycontrols:Banner
-            x:Name="Banner"
-            Height="650"
-            VerticalAlignment="Top"
-            DetailCommand="{Binding CheckDetailBannerItemCommand}"
-            ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
+        <StackPanel>
+            <mycontrols:Banner
+                x:Name="Banner"
+                Height="650"
+                VerticalAlignment="Top"
+                DetailCommand="{Binding CheckDetailBannerItemCommand}"
+                ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
+            <mycontrols:LabelCollection1 Height="650" />
+        </StackPanel>
     </ScrollViewer>
 </Page>

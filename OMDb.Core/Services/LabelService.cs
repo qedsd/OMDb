@@ -81,6 +81,19 @@ namespace OMDb.Core.Services
             var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().Where(p => labelIds.Contains(p.LabelId)).ToList().Select(p=>p.EntryId).ToList();
             return all.ToHashSet().ToList();
         }
+
+        /// <summary>
+        /// 获取标签下所有的词条id
+        /// 已去重
+        /// </summary>
+        /// <param name="labelIds"></param>
+        /// <returns></returns>
+        public static List<string> GetEntrys(string labelId)
+        {
+            var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().Where(p => p.LabelId == labelId).ToList().Select(p => p.EntryId).ToList();
+            return all.ToHashSet().ToList();
+        }
+
         /// <summary>
         /// 获取拥有标签的词条id
         /// </summary>

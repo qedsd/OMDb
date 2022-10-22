@@ -56,11 +56,11 @@
                     HorizontalAlignment="Right"
                     DisplayMemberPath="Value"
                     ItemsSource="{x:Bind VM.AutoSuggestItems, Mode=OneWay}"
-                    UpdateTextOnSelect="True"
                     PlaceholderText="搜索词条..."
                     QueryIcon="Find"
                     QuerySubmitted="AutoSuggestBox_QuerySubmitted"
-                    Text="{x:Bind VM.AutoSuggestText, Mode=TwoWay}" />
+                    Text="{x:Bind VM.AutoSuggestText, Mode=TwoWay}"
+                    UpdateTextOnSelect="True" />
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
