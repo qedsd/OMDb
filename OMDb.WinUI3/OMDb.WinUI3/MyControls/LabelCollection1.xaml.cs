@@ -114,5 +114,10 @@ namespace OMDb.WinUI3.MyControls
         {
             DetailCommand?.Execute(null);
         }
+
+        private void ItemsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

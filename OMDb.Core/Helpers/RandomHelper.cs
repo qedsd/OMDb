@@ -18,7 +18,7 @@ namespace OMDb.Core.Helpers
             List<T> results = new List<T>();
             if (items.Count() <= count)
             {
-                results = results.ToList();
+                results = items.ToList();
             }
             else
             {
@@ -26,7 +26,7 @@ namespace OMDb.Core.Helpers
                 HashSet<int> indexs = new HashSet<int>();
                 while (indexs.Count < count)
                 {
-                    var index = random.Next(0, items.Count() - 1);
+                    var index = random.Next(0, items.Count());
                     indexs.Add(index);
                 }
                 foreach (var i in indexs)
@@ -92,7 +92,7 @@ namespace OMDb.Core.Helpers
             else
             {
                 Random random = new Random();
-                var index = random.Next(0, items.Count() - 1);
+                var index = random.Next(0, items.Count());
                 return items.ElementAt(index);
             }
         }

@@ -103,6 +103,7 @@ namespace OMDb.WinUI3.ViewModels
                     LabelTrees.Add(item.Value);
                 }
             }
+            InitBanner();
         }
 
         private async void InitBanner()
@@ -111,25 +112,114 @@ namespace OMDb.WinUI3.ViewModels
             {
                 return;
             }
+            var items = new List<BannerItem>();
+            items.Add(await GetAllBannerItem());
             List<Label> target = Core.Helpers.RandomHelper.RandomList(Labels, 10);
             foreach(var item in target)
             {
                 var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { item.LabelDb.Id });
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults,3);
-                var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
-                if (entrys != null)
+                if(result?.Any() == true)
                 {
-                    List<string> covers = new List<string>(entrys.Count);//所有词条封面图
-                    foreach(var entry in entrys)
+                    var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
+                    if (entrys?.Any() == true)
                     {
-                        covers.Add(Helpers.PathHelper.EntryCoverImgFullPath(entry));
+                        //List<string> covers = new List<string>(entrys.Count);//所有词条封面图
+                        //foreach (var entry in entrys)
+                        //{
+                        //    covers.Add(Helpers.PathHelper.EntryCoverImgFullPath(entry));
+                        //}
+                        string bg = FindBannerCover(entrys);//背景
+                        if(!string.IsNullOrEmpty(bg))
+                        {
+                            //合并成一个图
+                            string folder = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp");
+                            if (!System.IO.Directory.Exists(folder))
+                            {
+                                Directory.CreateDirectory(folder);
+                            }
+                            //手动绘制实现封面图
+                            //string saved = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Temp", $"{Guid.NewGuid()}.jpeg");
+                            string savedSmall = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
+                            //Core.Helpers.ImageHelper.DrawBannerCoverAsync(covers, bg, saved);
+                            //Core.Helpers.ImageHelper.ResetSizeAsync(bg, savedSmall, 400, 0);
+                            string saved = bg;
+                            Core.Helpers.ImageHelper.ResetSizeAsync(bg, savedSmall, 400, 0);
+                            items.Add(new BannerItem()
+                            {
+                                Title = item.LabelDb.Name,
+                                Description = item.LabelDb.Description,
+                                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, saved))),
+                                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, savedSmall)))
+                            });
+                        }
+                        else
+                        {
+                            items.Add(new BannerItem()
+                            {
+                                Title = item.LabelDb.Name,
+                                Description = item.LabelDb.Description,
+                                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
+                                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
+                            });
+                        }
                     }
-                    string cover = FindBannerCover(entrys);//背景
-                    //todo:合并成一个图
-
                 }
             }
+            BannerItemSource = items;
         }
+        private async Task<BannerItem> GetAllBannerItem()
+        {
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelDb.Id).ToList());
+            if(queryResults.Count > 2)
+            {
+                var result = Core.Helpers.RandomHelper.RandomList(queryResults, 40);
+                if (result?.Any() == true)
+                {
+                    var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
+                    if (entrys?.Any() == true)
+                    {
+                        List<string> covers = new List<string>(entrys.Count);//所有词条封面图
+                        foreach (var entry in entrys)
+                        {
+                            covers.Add(Helpers.PathHelper.EntryCoverImgFullPath(entry));
+                        }
+                        string bg = covers.FirstOrDefault();
+                        if (!string.IsNullOrEmpty(bg))
+                        {
+                            //合并成一个图
+                            string folder = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp");
+                            if (!System.IO.Directory.Exists(folder))
+                            {
+                                Directory.CreateDirectory(folder);
+                            }
+                            string bg1920 = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
+                            Core.Helpers.ImageHelper.ResetSizeAsync(bg, bg1920, 1920,1080);
+                            //手动绘制实现封面图
+                            string saved = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Temp", $"{Guid.NewGuid()}.jpeg");
+                            string savedSmall = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
+                            Core.Helpers.ImageHelper.DrawWaterfallAsync(covers, bg1920, saved);
+                            Core.Helpers.ImageHelper.ResetSizeAsync(saved, savedSmall, 400, 0);
+                            return new BannerItem()
+                            {
+                                Title = "全部",
+                                Description = null,
+                                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, saved))),
+                                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, savedSmall)))
+                            };
+                        }
+                    }
+                }
+            }
+            return new BannerItem()
+            {
+                Title = "全部",
+                Description = null,
+                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
+                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
+            };
+        }
+
         /// <summary>
         /// 按长宽比、文件大小选出最优封面
         /// </summary>
@@ -172,7 +262,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             if(bestImages.Count > 0)
             {
-                return bestImages.OrderByDescending(p => p.Length).First().FullPath;
+                return Core.Helpers.RandomHelper.RandomOne(bestImages).FullPath;
             }
             else
             {

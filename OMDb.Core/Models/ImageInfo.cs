@@ -33,7 +33,7 @@ namespace OMDb.Core.Models
         /// </summary>
         public double Scale
         {
-            get => Height / Width;
+            get => Width / Height;
         }
     }
 }
