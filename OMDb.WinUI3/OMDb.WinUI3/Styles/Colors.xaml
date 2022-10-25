@@ -12,6 +12,8 @@
                 x:Key="EntryDetailSplitBrush"
                 Opacity="0.6"
                 Color="#555555" />
+            <SolidColorBrush x:Key="WindowCaptionForeground">White</SolidColorBrush>
+            <SolidColorBrush x:Key="WindowCaptionForegroundDisabled">White</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="ContentBackgroudBrush" Color="#fdfdfe" />
@@ -31,6 +33,8 @@
                 x:Key="EntryDetailBorderBrush"
                 Opacity="0.6"
                 Color="#e5e5e5" />
+            <SolidColorBrush x:Key="WindowCaptionForeground">Black</SolidColorBrush>
+            <SolidColorBrush x:Key="WindowCaptionForegroundDisabled">Black</SolidColorBrush>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>
