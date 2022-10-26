@@ -22,6 +22,12 @@ namespace OMDb.WinUI3.ViewModels
             get => bannerItemsSource;
             set => SetProperty(ref bannerItemsSource, value);
         }
+        private List<LabelCollection> labelCollections;
+        public List<LabelCollection> LabelCollections
+        {
+            get => labelCollections;
+            set => SetProperty(ref labelCollections, value);
+        }
 
         private ObservableCollection<LabelTree> labelTrees;
         public ObservableCollection<LabelTree> LabelTrees
@@ -97,6 +103,13 @@ namespace OMDb.WinUI3.ViewModels
                         Labels.Add(new Label(label));
                     }
                 }
+                foreach (var item in labelsDb)
+                {
+                    if(item.Value.Children.Count == 0)
+                    {
+                        Labels.Add(new Label(item.Value.Label));
+                    }
+                }
                 LabelTrees = new ObservableCollection<LabelTree>();
                 foreach (var item in labelsDb)
                 {
@@ -104,8 +117,10 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
             InitBanner();
+            InitLabelCollection();
         }
 
+        #region Banner
         private async void InitBanner()
         {
             if(Labels == null)
@@ -269,5 +284,32 @@ namespace OMDb.WinUI3.ViewModels
                 return null;
             }
         }
+        #endregion
+
+        #region LabelCollection
+        private async void InitLabelCollection()
+        {
+            var items = new List<LabelCollection>();
+            foreach (var label in Labels)
+            {
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
+                var result = Core.Helpers.RandomHelper.RandomList(queryResults, 3);
+                if (result?.Any() == true)
+                {
+                    var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
+                    if (entrys?.Any() == true)
+                    {
+                        items.Add(new LabelCollection()
+                        {
+                            Title = label.LabelDb.Name,
+                            Description = label.LabelDb.Description,
+                            Entries = entrys
+                        });
+                    }
+                }
+            }
+            LabelCollections = items;
+        }
+        #endregion
     }
 }

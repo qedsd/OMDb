@@ -30,7 +30,7 @@
                 Width="130"
                 Margin="0,10"
                 Click="Button_Click"
-                Content="查看详情"
+                Content="查看全部"
                 FontSize="16" />
         </StackPanel>
         <!--<Rectangle Height="160" VerticalAlignment="Bottom">
@@ -53,13 +53,17 @@
             SelectionChanged="ItemsListBox_SelectionChanged">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem">
-                    <Setter Property="Margin" Value="6,0" />
-                    <Setter Property="Padding" Value="2" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="4,0" />
                 </Style>
             </GridView.ItemContainerStyle>
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:Entry">
-                    <local:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    <local:EntryCard
+                        Width="120"
+                        Height="200"
+                        Margin="4"
+                        Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>

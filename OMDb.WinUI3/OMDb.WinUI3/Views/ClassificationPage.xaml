@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     Background="Transparent"
@@ -21,7 +22,17 @@
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
-            <mycontrols:LabelCollection1 Height="650" />
+            <ListView ItemsSource="{Binding LabelCollections}" SelectionMode="None">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollection">
+                        <mycontrols:LabelCollection1
+                            Title="{Binding Title}"
+                            Height="360"
+                            Description="{Binding Description}"
+                            ItemsSource="{Binding Entries}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
     </ScrollViewer>
 </Page>
