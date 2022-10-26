@@ -1,5 +1,8 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 using OMDb.Core.Services;
+using OMDb.WinUI3.Services;
 using System.Runtime.InteropServices; // For DllImport
 using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
 
@@ -22,8 +25,35 @@ namespace OMDb.WinUI3
             {
                 rootElement.RequestedTheme = Services.ThemeSelectorService.Theme;
             }
-            TrySetMicaBackdrop();
+            if(!TrySetMicaBackdrop())
+            {
+                //不启用需要自行修改主背景色
+                ThemeSelectorService.OnChangedTheme += ThemeSelectorService_OnChangedTheme;
+                ThemeSelectorService_OnChangedTheme(ThemeSelectorService.Theme);
+            }
         }
+
+        private void ThemeSelectorService_OnChangedTheme(ElementTheme theme)
+        {
+            switch (theme)
+            {
+                case ElementTheme.Dark: MainWindowGrid.Background = new SolidColorBrush(Colors.Black); break;
+                case ElementTheme.Light: MainWindowGrid.Background = new SolidColorBrush(Colors.White); break;
+                case ElementTheme.Default:
+                    {
+                        if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                        {
+                            MainWindowGrid.Background = new SolidColorBrush(Colors.Black);
+                        }
+                        else
+                        {
+                            MainWindowGrid.Background = new SolidColorBrush(Colors.White);
+                        }
+                    }
+                    break;
+            }
+        }
+
         //private void myButton_Click(object sender, RoutedEventArgs e)
         //{
         //    Core.Config.AddConnectionString($"DataSource={System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OMDb.db")}", "1");

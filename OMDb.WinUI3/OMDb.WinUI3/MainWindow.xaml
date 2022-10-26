@@ -8,7 +8,7 @@
     xmlns:views="using:OMDb.WinUI3.Views"
     mc:Ignorable="d">
 
-    <Grid Background="Transparent">
+    <Grid x:Name="MainWindowGrid" Background="Transparent">
         <Grid
             Height="48"
             VerticalAlignment="Top"

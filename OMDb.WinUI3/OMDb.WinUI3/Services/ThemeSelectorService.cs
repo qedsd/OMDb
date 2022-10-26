@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
+using OMDb.WinUI3.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,22 +37,45 @@ namespace OMDb.WinUI3.Services
         public static void Initialize()
         {
             Theme = LoadThemeFromSettings();
+            SetRequestedTheme();
+            OnChangedThemeHandler?.Invoke(Theme);
         }
 
         public static async Task SetThemeAsync(ElementTheme theme)
         {
             Theme = theme;
             SetRequestedTheme();
+            OnChangedThemeHandler?.Invoke(Theme);
             await SaveThemeInSettingsAsync(Theme);
         }
 
         public static void SetRequestedTheme()
         {
+            var res = Microsoft.UI.Xaml.Application.Current.Resources;
+            Action<Windows.UI.Color> SetTitleBarButtonForegroundColor = (Windows.UI.Color color) => { res["WindowCaptionForeground"] = color; };
+            switch (Theme)
+            {
+                case ElementTheme.Dark: SetTitleBarButtonForegroundColor(Colors.White); break;
+                case ElementTheme.Light: SetTitleBarButtonForegroundColor(Colors.Black); break;
+                case ElementTheme.Default:
+                    {
+                        if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                        {
+                            SetTitleBarButtonForegroundColor(Colors.White);
+                        }
+                        else
+                        {
+                            SetTitleBarButtonForegroundColor(Colors.Black);
+                        }
+                    }
+                    break;
+            }
             foreach (Window window in Helpers.WindowHelper.ActiveWindows)
             {
                 if (window.Content is FrameworkElement rootElement)
                 {
                     rootElement.RequestedTheme = Theme;
+                    TitleBarHelper.triggerTitleBarRepaint(WindowHelper.GetWindowForElement(Helpers.WindowHelper.MainWindow.Content));
                 }
             }
         }
@@ -71,6 +95,14 @@ namespace OMDb.WinUI3.Services
         private static async Task SaveThemeInSettingsAsync(ElementTheme theme)
         {
             await SettingService.SetValueAsync(SettingsKey, theme.ToString());
+        }
+        private static ChangedThemeDelegate OnChangedThemeHandler;
+        public delegate void ChangedThemeDelegate(ElementTheme theme);
+
+        public static event ChangedThemeDelegate OnChangedTheme
+        {
+            add => OnChangedThemeHandler += value;
+            remove => OnChangedThemeHandler-=value;
         }
     }
 }
