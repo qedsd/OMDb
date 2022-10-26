@@ -293,7 +293,7 @@ namespace OMDb.WinUI3.ViewModels
             foreach (var label in Labels)
             {
                 var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
-                var result = Core.Helpers.RandomHelper.RandomList(queryResults, 3);
+                var result = Core.Helpers.RandomHelper.RandomList(queryResults, 5);
                 if (result?.Any() == true)
                 {
                     var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
