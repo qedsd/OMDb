@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using OMDb.Core.Enums;
 using OMDb.WinUI3.Models;
@@ -139,33 +140,16 @@ namespace OMDb.WinUI3.ViewModels
                     var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
                     if (entrys?.Any() == true)
                     {
-                        //List<string> covers = new List<string>(entrys.Count);//所有词条封面图
-                        //foreach (var entry in entrys)
-                        //{
-                        //    covers.Add(Helpers.PathHelper.EntryCoverImgFullPath(entry));
-                        //}
                         string bg = FindBannerCover(entrys);//背景
                         if(!string.IsNullOrEmpty(bg))
                         {
-                            //合并成一个图
-                            string folder = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp");
-                            if (!System.IO.Directory.Exists(folder))
-                            {
-                                Directory.CreateDirectory(folder);
-                            }
-                            //手动绘制实现封面图
-                            //string saved = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Temp", $"{Guid.NewGuid()}.jpeg");
-                            string savedSmall = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
-                            //Core.Helpers.ImageHelper.DrawBannerCoverAsync(covers, bg, saved);
-                            //Core.Helpers.ImageHelper.ResetSizeAsync(bg, savedSmall, 400, 0);
-                            string saved = bg;
-                            Core.Helpers.ImageHelper.ResetSizeAsync(bg, savedSmall, 400, 0);
+                            var samllStream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 400, 0);
                             items.Add(new BannerItem()
                             {
                                 Title = item.LabelDb.Name,
                                 Description = item.LabelDb.Description,
-                                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, saved))),
-                                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, savedSmall)))
+                                Img = new BitmapImage(new Uri(bg)),
+                                PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(samllStream)
                             });
                         }
                         else
@@ -203,24 +187,16 @@ namespace OMDb.WinUI3.ViewModels
                         if (!string.IsNullOrEmpty(bg))
                         {
                             //合并成一个图
-                            string folder = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp");
-                            if (!System.IO.Directory.Exists(folder))
-                            {
-                                Directory.CreateDirectory(folder);
-                            }
-                            string bg1920 = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
-                            Core.Helpers.ImageHelper.ResetSizeAsync(bg, bg1920, 1920,1080);
+                            var bg1920Stream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 1920, 1080);
                             //手动绘制实现封面图
-                            string saved = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory,"Temp", $"{Guid.NewGuid()}.jpeg");
-                            string savedSmall = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Temp", $"{Guid.NewGuid()}.jpeg");
-                            Core.Helpers.ImageHelper.DrawWaterfallAsync(covers, bg1920, saved);
-                            Core.Helpers.ImageHelper.ResetSizeAsync(saved, savedSmall, 400, 0);
+                            var savedStream = await Core.Helpers.ImageHelper.DrawWaterfallAsync(covers, bg1920Stream);
+                            var smallStream = await Core.Helpers.ImageHelper.ResetSizeAsync(savedStream, 400, 0);
                             return new BannerItem()
                             {
                                 Title = "全部",
                                 Description = null,
-                                Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, saved))),
-                                PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, savedSmall)))
+                                Img = await Helpers.ImgHelper.CreateBitmapImageAsync(savedStream),
+                                PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(smallStream)
                             };
                         }
                     }

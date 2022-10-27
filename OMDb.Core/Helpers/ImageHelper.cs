@@ -115,7 +115,7 @@ namespace OMDb.Core.Helpers
             }
         }
 
-        public static async void DrawWaterfallAsync(List<string> covers, string bg, string savedPath)
+        public static async Task<MemoryStream> DrawWaterfallAsync(List<string> covers, string bg)
         {
             using (Image image = Image.Load(bg))
             {
@@ -151,7 +151,53 @@ namespace OMDb.Core.Helpers
                 {
                     temp.Dispose();
                 }
-                await image.SaveAsJpegAsync(savedPath);
+                MemoryStream stream = new MemoryStream();
+                await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
+            }
+        }
+
+        public static async Task<MemoryStream> DrawWaterfallAsync(List<string> covers, MemoryStream bgStream)
+        {
+            using (Image image = Image.Load(bgStream.GetBuffer()))
+            {
+                List<Image> images = new List<Image>(covers.Count);
+                foreach (var cover in covers)
+                {
+                    images.Add(Image.Load(cover));
+                }
+                int width = (int)(image.Width * 0.1);
+                int height = (int)(width / 0.68);
+                foreach (Image coverImage in images)
+                {
+                    coverImage.Mutate(x => x.Resize(width, height));
+                }
+                int columCount = (int)Math.Ceiling(image.Width / (float)width);
+                int rowCount = (int)Math.Ceiling(image.Height / (float)height) + 1;
+                int usedCount = 0;
+                for (int i = 0; i < rowCount; i++)
+                {
+                    int baseY = i * height;
+                    for (int j = 0; j < columCount; j++)
+                    {
+                        int startY = baseY - (int)(Math.Pow(-1, j) == 1 ? 0 : 1 * height * 0.5);
+                        var currentImage = images[usedCount++ % images.Count];
+                        int startX = j * width;
+                        if (startY < image.Height)
+                        {
+                            image.Mutate(c => c.DrawImage(currentImage, new Point(startX, startY), 1f));
+                        }
+                    }
+                }
+                foreach (var temp in images)
+                {
+                    temp.Dispose();
+                }
+                MemoryStream stream = new MemoryStream();
+                await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
             }
         }
 
@@ -179,6 +225,65 @@ namespace OMDb.Core.Helpers
                     image.Mutate(x => x.Resize(image.Width * (height / image.Height), height));
                 }
                 await image.SaveAsJpegAsync(savedPath);
+            }
+        }
+
+        /// <summary>
+        /// 修改尺寸
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="savedPath"></param>
+        /// <param name="width">如果为0则依据height等比例缩放</param>
+        /// <param name="height">如果为0则依据width等比例缩放</param>
+        public static async Task<MemoryStream> ResetSizeAsync(string path, int width, int height)
+        {
+            using (Image image = Image.Load(path))
+            {
+                if (width != 0 && height != 0)
+                {
+                    image.Mutate(x => x.Resize(width, height));
+                }
+                else if (width != 0)
+                {
+                    image.Mutate(x => x.Resize(width, image.Height * (width / image.Width)));
+                }
+                else if (height != 0)
+                {
+                    image.Mutate(x => x.Resize(image.Width * (height / image.Height), height));
+                }
+                MemoryStream stream = new MemoryStream();
+                await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
+            }
+        }
+
+        /// <summary>
+        /// 修改尺寸
+        /// </summary>
+        /// <param name="inputStream">输入照片流</param>
+        /// <param name="width">如果为0则依据height等比例缩放</param>
+        /// <param name="height">如果为0则依据width等比例缩放</param>
+        public static async Task<MemoryStream> ResetSizeAsync(MemoryStream inputStream, int width, int height)
+        {
+            using (Image image = Image.Load(inputStream.GetBuffer()))
+            {
+                if (width != 0 && height != 0)
+                {
+                    image.Mutate(x => x.Resize(width, height));
+                }
+                else if (width != 0)
+                {
+                    image.Mutate(x => x.Resize(width, image.Height * (width / image.Width)));
+                }
+                else if (height != 0)
+                {
+                    image.Mutate(x => x.Resize(image.Width * (height / image.Height), height));
+                }
+                MemoryStream stream = new MemoryStream();
+                await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
             }
         }
     }
