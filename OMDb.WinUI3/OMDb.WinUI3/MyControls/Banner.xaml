@@ -21,7 +21,7 @@
             Stretch="UniformToFill" />
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.Background>
-                <SolidColorBrush Opacity="0.1" Color="Black" />
+                <SolidColorBrush Opacity="0.3" Color="Black" />
             </Grid.Background>
         </Grid>
         <StackPanel Margin="32,0,0,0" VerticalAlignment="Center">

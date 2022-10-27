@@ -14,7 +14,8 @@
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>
 
-    <ScrollViewer CornerRadius="8,0,0,0">
+    <ScrollViewer CornerRadius="8,8,0,0"
+                  Margin="0,0,8,0">
         <StackPanel>
             <mycontrols:Banner
                 x:Name="Banner"
