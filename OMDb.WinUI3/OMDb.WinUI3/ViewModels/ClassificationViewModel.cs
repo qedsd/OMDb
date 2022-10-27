@@ -151,6 +151,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Img = new BitmapImage(new Uri(bg)),
                                 PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(samllStream)
                             });
+                            samllStream.Dispose();
                         }
                         else
                         {
@@ -191,13 +192,17 @@ namespace OMDb.WinUI3.ViewModels
                             //手动绘制实现封面图
                             var savedStream = await Core.Helpers.ImageHelper.DrawWaterfallAsync(covers, bg1920Stream);
                             var smallStream = await Core.Helpers.ImageHelper.ResetSizeAsync(savedStream, 400, 0);
-                            return new BannerItem()
+                            var bannerItem =  new BannerItem()
                             {
                                 Title = "全部",
                                 Description = null,
                                 Img = await Helpers.ImgHelper.CreateBitmapImageAsync(savedStream),
                                 PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(smallStream)
                             };
+                            bg1920Stream.Dispose();
+                            savedStream.Dispose();
+                            smallStream.Dispose();
+                            return bannerItem;
                         }
                     }
                 }
