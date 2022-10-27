@@ -18,21 +18,18 @@ namespace OMDb.Core.Helpers
             List<T> results = new List<T>();
             if (items.Count() <= count)
             {
-                results = items.ToList();
+                count = items.Count();
             }
-            else
+            Random random = new Random();
+            HashSet<int> indexs = new HashSet<int>();
+            while (indexs.Count < count)
             {
-                Random random = new Random();
-                HashSet<int> indexs = new HashSet<int>();
-                while (indexs.Count < count)
-                {
-                    var index = random.Next(0, items.Count());
-                    indexs.Add(index);
-                }
-                foreach (var i in indexs)
-                {
-                    results.Add(items.ElementAt(i));
-                }
+                var index = random.Next(0, items.Count());
+                indexs.Add(index);
+            }
+            foreach (var i in indexs)
+            {
+                results.Add(items.ElementAt(i));
             }
             return results;
         }

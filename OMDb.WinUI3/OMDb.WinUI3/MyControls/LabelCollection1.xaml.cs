@@ -24,33 +24,16 @@ namespace OMDb.WinUI3.MyControls
         {
             this.InitializeComponent();
         }
-        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register
-            (
-            "ItemsSource",
-            typeof(IEnumerable<Entry>),
-            typeof(LabelCollection1),
-            new PropertyMetadata(null, new PropertyChangedCallback(OnItemsSourceChanged))
-            );
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register
-           (
-           "Title",
-           typeof(string),
-           typeof(LabelCollection1),
-           new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged))
-           );
-        public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register
-           (
-           "Description",
-           typeof(string),
-           typeof(LabelCollection1),
-           new PropertyMetadata(null, new PropertyChangedCallback(OnDescriptionhanged))
-           );
-        public static readonly DependencyProperty DetailCommandProperty
-            = DependencyProperty.Register(
-                nameof(DetailCommand),
-                typeof(ICommand),
-                typeof(Banner),
-                new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
+            "ItemsSource", typeof(IEnumerable<Entry>), typeof(LabelCollection1), new PropertyMetadata(null, new PropertyChangedCallback(OnItemsSourceChanged)));
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(
+           "Title", typeof(string), typeof(LabelCollection1), new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged)));
+        public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
+            "Description",typeof(string),typeof(LabelCollection1),new PropertyMetadata(null, new PropertyChangedCallback(OnDescriptionhanged)));
+        public static readonly DependencyProperty DetailCommandProperty= DependencyProperty.Register(
+            nameof(DetailCommand),typeof(ICommand),typeof(Banner), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty BgImageSourceProperty = DependencyProperty.Register(
+            "BgImageSource", typeof(ImageSource), typeof(LabelCollection1), new PropertyMetadata(null, new PropertyChangedCallback(OnBgImageSourceChanged)));
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as LabelCollection1).ItemsList.ItemsSource = e.NewValue as IEnumerable<Entry>;
@@ -63,7 +46,10 @@ namespace OMDb.WinUI3.MyControls
         {
             (d as LabelCollection1).DesTextBlock.Text = e.NewValue as string;
         }
-
+        private static void OnBgImageSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            (d as LabelCollection1).BgImage.Source = e.NewValue as ImageSource;
+        }
         public IEnumerable<Entry> ItemsSource
         {
             get { return (IEnumerable<Entry>)GetValue(ItemsSourceProperty); }
@@ -86,6 +72,11 @@ namespace OMDb.WinUI3.MyControls
         {
             get => (ICommand)GetValue(DetailCommandProperty);
             set => SetValue(DetailCommandProperty, value);
+        }
+        public ImageSource BgImageSource
+        {
+            get => (ImageSource)GetValue(BgImageSourceProperty);
+            set => SetValue(BgImageSourceProperty, value);
         }
 
         private void Item_PointerEntered(object sender, PointerRoutedEventArgs e)

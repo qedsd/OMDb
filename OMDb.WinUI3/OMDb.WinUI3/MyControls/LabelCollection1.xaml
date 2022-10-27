@@ -15,6 +15,9 @@
             HorizontalAlignment="Stretch"
             Stretch="UniformToFill" />
         <Grid>
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.2" Color="Black" />
+            </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
                 <ColumnDefinition />
@@ -55,7 +58,6 @@
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>
-
         </Grid>
     </Grid>
 </UserControl>

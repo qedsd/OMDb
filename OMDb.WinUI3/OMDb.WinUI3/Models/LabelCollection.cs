@@ -1,4 +1,5 @@
-﻿using OMDb.Core.Models;
+﻿using Microsoft.UI.Xaml.Media;
+using OMDb.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace OMDb.WinUI3.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public List<Entry> Entries { get; set; }
+        public ImageSource ImageSource { get; set; }
     }
 }

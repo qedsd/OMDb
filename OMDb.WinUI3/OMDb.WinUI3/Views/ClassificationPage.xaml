@@ -23,11 +23,17 @@
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
             <ListView ItemsSource="{Binding LabelCollections}" SelectionMode="None">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelCollection">
                         <mycontrols:LabelCollection1
                             Title="{Binding Title}"
                             Height="360"
+                            BgImageSource="{Binding ImageSource}"
                             Description="{Binding Description}"
                             ItemsSource="{Binding Entries}" />
                     </DataTemplate>

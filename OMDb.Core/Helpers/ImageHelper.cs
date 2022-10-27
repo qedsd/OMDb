@@ -48,6 +48,15 @@ namespace OMDb.Core.Helpers
             }
         }
 
+
+        private static async Task<MemoryStream> ToMemoryStreamAsync(Image image)
+        {
+            MemoryStream stream = new MemoryStream();
+            await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
+            stream.Seek(0, SeekOrigin.Begin);
+            return stream;
+        }
+
         public static async void DrawBannerCoverAsync(List<ImageInfo> covers, ImageInfo bg,string savedPath)
         {
             using (Image image = Image.Load(bg.FullPath))
@@ -284,6 +293,20 @@ namespace OMDb.Core.Helpers
                 await image.SaveAsync(stream, new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder());
                 stream.Seek(0, SeekOrigin.Begin);
                 return stream;
+            }
+        }
+
+        /// <summary>
+        /// 模糊图片
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static async Task<MemoryStream> BlurAsync(string path)
+        {
+            using (Image image = Image.Load(path))
+            {
+                image.Mutate(x => x.BokehBlur());
+                return await ToMemoryStreamAsync(image);
             }
         }
     }

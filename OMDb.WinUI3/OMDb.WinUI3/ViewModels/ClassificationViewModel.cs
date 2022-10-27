@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using OMDb.Core.Enums;
+using OMDb.Core.Models;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -280,11 +281,13 @@ namespace OMDb.WinUI3.ViewModels
                     var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
                     if (entrys?.Any() == true)
                     {
+                        var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                         items.Add(new LabelCollection()
                         {
                             Title = label.LabelDb.Name,
                             Description = label.LabelDb.Description,
-                            Entries = entrys
+                            Entries = entrys,
+                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream)
                         });
                     }
                 }
