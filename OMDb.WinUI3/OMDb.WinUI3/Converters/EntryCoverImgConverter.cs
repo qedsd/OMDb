@@ -9,8 +9,8 @@ namespace OMDb.WinUI3.Converters
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var entry = parameter as Core.Models.Entry;
-            if (value != null)
+            var entry = value as Core.Models.Entry;
+            if (entry != null)
             {
                 var storage = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
                 if(storage != null)

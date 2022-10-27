@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI.UI.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -31,9 +32,11 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register(
             "Description",typeof(string),typeof(LabelCollection1),new PropertyMetadata(null, new PropertyChangedCallback(OnDescriptionhanged)));
         public static readonly DependencyProperty DetailCommandProperty= DependencyProperty.Register(
-            nameof(DetailCommand),typeof(ICommand),typeof(Banner), new PropertyMetadata(string.Empty));
+            nameof(DetailCommand),typeof(ICommand),typeof(LabelCollection1), new PropertyMetadata(default(ICommand)));
         public static readonly DependencyProperty BgImageSourceProperty = DependencyProperty.Register(
             "BgImageSource", typeof(ImageSource), typeof(LabelCollection1), new PropertyMetadata(null, new PropertyChangedCallback(OnBgImageSourceChanged)));
+        public static readonly DependencyProperty ClickItemCommandProperty = DependencyProperty.Register(
+            nameof(ClickItemCommand), typeof(ICommand), typeof(LabelCollection1), new PropertyMetadata(default(ICommand)));
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as LabelCollection1).ItemsList.ItemsSource = e.NewValue as IEnumerable<Entry>;
@@ -73,6 +76,11 @@ namespace OMDb.WinUI3.MyControls
             get => (ICommand)GetValue(DetailCommandProperty);
             set => SetValue(DetailCommandProperty, value);
         }
+        public ICommand ClickItemCommand
+        {
+            get => (ICommand)GetValue(ClickItemCommandProperty);
+            set => SetValue(ClickItemCommandProperty, value);
+        }
         public ImageSource BgImageSource
         {
             get => (ImageSource)GetValue(BgImageSourceProperty);
@@ -81,24 +89,26 @@ namespace OMDb.WinUI3.MyControls
 
         private void Item_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
+            var elment = sender as FrameworkElement;
             var targetVisual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(sender as UIElement);
-            var scaleAnimation = targetVisual.Compositor.CreateVector3KeyFrameAnimation();
-            scaleAnimation.Duration = TimeSpan.FromSeconds(0.3);
-            scaleAnimation.Target = nameof(targetVisual.Scale);
+            var animation = targetVisual.Compositor.CreateVector3KeyFrameAnimation();
+            animation.Duration = TimeSpan.FromSeconds(0.3);
+            animation.Target = nameof(targetVisual.Offset);
             var linear = targetVisual.Compositor.CreateLinearEasingFunction();
-            scaleAnimation.InsertKeyFrame(1.0f, new Vector3((float)1.1), linear);
-            targetVisual.StartAnimation(nameof(targetVisual.Scale), scaleAnimation);
+            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.Margin.Left, 0, 0), linear);
+            targetVisual.StartAnimation(nameof(targetVisual.Offset), animation);
         }
 
         private void Item_PointerExited(object sender, PointerRoutedEventArgs e)
         {
+            var elment = sender as FrameworkElement;
             var targetVisual = Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(sender as UIElement);
-            var scaleAnimation = targetVisual.Compositor.CreateVector3KeyFrameAnimation();
-            scaleAnimation.Duration = TimeSpan.FromSeconds(0.3);
-            scaleAnimation.Target = nameof(targetVisual.Scale);
+            var animation = targetVisual.Compositor.CreateVector3KeyFrameAnimation();
+            animation.Duration = TimeSpan.FromSeconds(0.3);
+            animation.Target = nameof(targetVisual.Offset);
             var linear = targetVisual.Compositor.CreateLinearEasingFunction();
-            scaleAnimation.InsertKeyFrame(1.0f, new Vector3((float)1.0), linear);
-            targetVisual.StartAnimation(nameof(targetVisual.Scale), scaleAnimation);
+            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.Margin.Left, (float)elment.Margin.Top, 0), linear);
+            targetVisual.StartAnimation(nameof(targetVisual.Offset), animation);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -106,9 +116,14 @@ namespace OMDb.WinUI3.MyControls
             DetailCommand?.Execute(null);
         }
 
-        private void ItemsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ItemsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            var ad = sender as AdaptiveGridView;
+            if(ad != null && ad.SelectedItem != null)
+            {
+                ClickItemCommand?.Execute(ad.SelectedItem);
+                ad.SelectedItem = null;
+            }
         }
     }
 }

@@ -14,6 +14,10 @@ namespace OMDb.Core.Models
         /// </summary>
         public string DbId { get; set; }
         public string Name { get; set; }
+        public int ReleaseYear
+        {
+            get=> ReleaseDate.HasValue ? ReleaseDate.Value.Year : 1895;
+        }
         public static Entry Create(DbModels.EntryDb entryDb,string DbId)
         {
             var entry = entryDb.DepthClone<Entry>();

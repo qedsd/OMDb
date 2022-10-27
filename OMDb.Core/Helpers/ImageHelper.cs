@@ -301,11 +301,11 @@ namespace OMDb.Core.Helpers
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static async Task<MemoryStream> BlurAsync(string path)
+        public static async Task<MemoryStream> BlurAsync(string path,float sigma = 10)
         {
             using (Image image = Image.Load(path))
             {
-                image.Mutate(x => x.BokehBlur());
+                image.Mutate(x => x.GaussianBlur(sigma));
                 return await ToMemoryStreamAsync(image);
             }
         }
