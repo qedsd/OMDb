@@ -37,17 +37,17 @@ namespace OMDb.WinUI3
         {
             switch (theme)
             {
-                case ElementTheme.Dark: MainWindowGrid.Background = new SolidColorBrush(Colors.Black); break;
-                case ElementTheme.Light: MainWindowGrid.Background = new SolidColorBrush(Colors.White); break;
+                case ElementTheme.Dark: MainWindowGrid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,32, 32, 32)); break;
+                case ElementTheme.Light: MainWindowGrid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255,243, 243, 243)); break;
                 case ElementTheme.Default:
                     {
                         if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
                         {
-                            MainWindowGrid.Background = new SolidColorBrush(Colors.Black);
+                            MainWindowGrid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 32, 32, 32));
                         }
                         else
                         {
-                            MainWindowGrid.Background = new SolidColorBrush(Colors.White);
+                            MainWindowGrid.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 243, 243, 243));
                         }
                     }
                     break;

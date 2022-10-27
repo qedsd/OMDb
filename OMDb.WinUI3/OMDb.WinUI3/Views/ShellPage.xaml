@@ -110,13 +110,6 @@
                     <NavigationViewItem.Icon>
                         <SymbolIcon Symbol="Home" />
                     </NavigationViewItem.Icon>
-                    <!--<NavigationViewItem.ContentTemplate>
-                        <DataTemplate x:DataType="NavigationViewItem">
-                            <StackPanel>
-                                <TextBlock Text="111" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </NavigationViewItem.ContentTemplate>-->
                 </NavigationViewItem>
 
                 <NavigationViewItem
