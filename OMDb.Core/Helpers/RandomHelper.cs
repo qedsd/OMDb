@@ -51,7 +51,7 @@ namespace OMDb.Core.Helpers
             List<T> results = new List<T>();
             if (items.Count() <= count)
             {
-                results = results.ToList();
+                results = items.ToList();
             }
             else
             {
