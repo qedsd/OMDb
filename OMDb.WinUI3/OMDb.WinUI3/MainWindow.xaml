@@ -21,15 +21,21 @@
             <Border
                 Name="AppTitleLeftBorder"
                 Grid.Column="0"
-                Width="40" />
+                Width="80" />
 
             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                <Image
-                    Width="16"
+                <Grid
+                    Grid.Column="1"
                     Height="16"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Source="/Assets/Logo/Square44x44Logo.scale-100.png" />
+                    CornerRadius="8">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Source="/Images/logo_32.png" />
+                </Grid>
+
                 <TextBlock
                     x:Uid="AppDisplayNameTextBlock"
                     Margin="12,0,0,0"

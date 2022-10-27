@@ -9,7 +9,8 @@
     Height="650"
     mc:Ignorable="d">
 
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid"
+          CornerRadius="8">
         <Image
             x:Name="MainImage1"
             HorizontalAlignment="Stretch"

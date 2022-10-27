@@ -19,6 +19,7 @@
         <StackPanel>
             <mycontrols:Banner
                 x:Name="Banner"
+                Margin="4,4"
                 Height="650"
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
@@ -32,6 +33,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelCollection">
                         <mycontrols:LabelCollection1
+                            Margin="4,4"
                             Title="{Binding Title}"
                             Height="360"
                             BgImageSource="{Binding ImageSource}"
