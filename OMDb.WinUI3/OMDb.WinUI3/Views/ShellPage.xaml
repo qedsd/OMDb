@@ -40,12 +40,11 @@
                 <Style TargetType="NavigationViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Padding" Value="0,10" />
-                    <Setter Property="Width" Value="80" />
                 </Style>
             </NavigationView.MenuItemContainerStyle>
             <NavigationView.MenuItemTemplate>
                 <DataTemplate x:DataType="NavigationViewItem">
-                    <Grid>
+                    <Grid HorizontalAlignment="Center">
                         <!--  bug  -->
                         <!--<Interactivity:Interaction.Behaviors>
                             <Core:DataTriggerBehavior

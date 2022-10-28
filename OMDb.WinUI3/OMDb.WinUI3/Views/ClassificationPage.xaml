@@ -14,28 +14,27 @@
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>
 
-    <ScrollViewer CornerRadius="8,8,0,0"
-                  Margin="0,0,8,0">
+    <ScrollViewer Margin="0,0,8,0" CornerRadius="8,8,0,0">
         <StackPanel>
             <mycontrols:Banner
                 x:Name="Banner"
-                Margin="4,4"
                 Height="650"
+                Margin="4,4"
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
             <ListView ItemsSource="{Binding LabelCollections}" SelectionMode="None">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
-                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelCollection">
-                        <mycontrols:LabelCollection1
-                            Margin="4,4"
+                        <mycontrols:LabelCollection2
                             Title="{Binding Title}"
-                            Height="360"
+                            Margin="4,4"
                             BgImageSource="{Binding ImageSource}"
                             Description="{Binding Description}"
                             ItemsSource="{Binding Entries}" />
