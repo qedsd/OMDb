@@ -125,19 +125,5 @@ namespace OMDb.WinUI3.MyControls
                 ad.SelectedItem = null;
             }
         }
-
-        private void ItemsList_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            //if((sender as AdaptiveGridView).ActualHeight<this.ActualHeight / 2)
-            //{
-            //    BgImage.Visibility = Visibility.Collapsed;
-            //    BgImage.Height = this.ActualHeight;
-            //    BgImage.Visibility = Visibility.Visible;
-            //}
-            //else
-            //{
-            //    BgImage.Height = this.MaxHeight;
-            //}
-        }
     }
 }

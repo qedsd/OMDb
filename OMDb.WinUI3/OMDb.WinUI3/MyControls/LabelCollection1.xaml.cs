@@ -51,7 +51,7 @@ namespace OMDb.WinUI3.MyControls
         }
         private static void OnBgImageSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            (d as LabelCollection1).BgImage.Source = e.NewValue as ImageSource;
+            (d as LabelCollection1).BgImage.ImageSource = e.NewValue as ImageSource;
         }
         public IEnumerable<Entry> ItemsSource
         {

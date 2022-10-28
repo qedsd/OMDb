@@ -8,18 +8,18 @@
     xmlns:local="using:OMDb.WinUI3.MyControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.Core.Models"
+    Height="400"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:EntryCoverImgConverter x:Key="EntryCoverImgConverter" />
     </UserControl.Resources>
     <Grid x:Name="MainGrid" CornerRadius="8">
-        <Image
-            x:Name="BgImage"
-            HorizontalAlignment="Stretch"
-            Stretch="UniformToFill" />
         <Grid>
             <Grid.Background>
-                <SolidColorBrush Opacity="0.3" Color="Black" />
+                <ImageBrush
+                    x:Name="BgImage"
+                    Opacity="0.5"
+                    Stretch="UniformToFill" />
             </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
@@ -29,14 +29,12 @@
                 <TextBlock
                     x:Name="TitleTextBlock"
                     FontSize="40"
-                    Foreground="White"
                     Text="标题" />
                 <TextBlock
                     x:Name="DesTextBlock"
                     Margin="2,10,0,20"
                     FontSize="16"
                     FontWeight="Thin"
-                    Foreground="LightGray"
                     Text="备注" />
                 <Button
                     Width="130"
@@ -52,8 +50,8 @@
                 VerticalAlignment="Center"
                 ItemHeight="260"
                 OneRowModeEnabled="True"
-                SelectionChanged="ItemsList_SelectionChanged"
                 ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                SelectionChanged="ItemsList_SelectionChanged"
                 StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate x:DataType="models:Entry">
@@ -61,10 +59,10 @@
                             Width="160"
                             Margin="4,10,4,-10"
                             Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                            CornerRadius="4"
+                            CornerRadius="4,4,0,0"
                             PointerEntered="Item_PointerEntered"
                             PointerExited="Item_PointerExited">
-                            <Grid Margin="10">
+                            <Grid Margin="0,0,0,4">
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />

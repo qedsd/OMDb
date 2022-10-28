@@ -14,16 +14,11 @@
         <converters:EntryCoverImgConverter x:Key="EntryCoverImgConverter" />
     </UserControl.Resources>
     <Grid x:Name="MainGrid" CornerRadius="8">
-        <!--<Image
-            x:Name="BgImage"
-            Height="{Binding ElementName=ContentGrid, Path=ActualHeight, Mode=OneWay}"
-            HorizontalAlignment="Stretch"
-            Stretch="UniformToFill" />-->
         <Grid x:Name="ContentGrid">
             <Grid.Background>
                 <ImageBrush
                     x:Name="BgImage"
-                    Opacity="0.3"
+                    Opacity="0.5"
                     Stretch="UniformToFill" />
             </Grid.Background>
             <Grid.RowDefinitions>
@@ -69,7 +64,6 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 SelectionChanged="ItemsList_SelectionChanged"
-                SizeChanged="ItemsList_SizeChanged"
                 StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate x:DataType="models:Entry">
