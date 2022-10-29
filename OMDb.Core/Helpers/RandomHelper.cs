@@ -16,13 +16,9 @@ namespace OMDb.Core.Helpers
                 return null;
             }
             List<T> results = new List<T>();
-            if (items.Count() <= count)
-            {
-                count = items.Count();
-            }
             Random random = new Random();
             HashSet<int> indexs = new HashSet<int>();
-            while (indexs.Count < count)
+            while (indexs.Count < count && indexs.Count != items.Count())
             {
                 var index = random.Next(0, items.Count());
                 indexs.Add(index);
