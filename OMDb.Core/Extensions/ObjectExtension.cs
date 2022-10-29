@@ -48,8 +48,11 @@ namespace OMDb.Core.Extensions
             var type = typeof(T);
             foreach (var sourceProperty in type.GetProperties())
             {
-                var targetProperty = type.GetProperty(sourceProperty.Name);
-                targetProperty.SetValue(obj, sourceProperty.GetValue(target, null), null);
+                if(sourceProperty.CanWrite)
+                {
+                    var targetProperty = type.GetProperty(sourceProperty.Name);
+                    targetProperty.SetValue(obj, sourceProperty.GetValue(target, null), null);
+                }
             }
             foreach (var sourceField in type.GetFields())
             {
