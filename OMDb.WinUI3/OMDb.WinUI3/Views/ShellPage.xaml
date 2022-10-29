@@ -22,31 +22,32 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
 
-    <Grid Background="Transparent">
-        <NavigationView
-            x:Name="NavigationView"
-            AlwaysShowHeader="True"
-            BackRequested="NavigationView_BackRequested"
-            CompactPaneLength="80"
-            IsBackButtonVisible="Visible"
-            IsBackEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
-            IsPaneToggleButtonVisible="False"
-            IsSettingsVisible="True"
-            IsTitleBarAutoPaddingEnabled="False"
-            OpenPaneLength="80"
-            PaneDisplayMode="Left"
-            SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}">
-            <NavigationView.MenuItemContainerStyle>
-                <Style TargetType="NavigationViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Padding" Value="0,10" />
-                </Style>
-            </NavigationView.MenuItemContainerStyle>
-            <NavigationView.MenuItemTemplate>
-                <DataTemplate x:DataType="NavigationViewItem">
-                    <Grid HorizontalAlignment="Center">
-                        <!--  bug  -->
-                        <!--<Interactivity:Interaction.Behaviors>
+    <Grid>
+        <Grid x:Name="MainContentGrid" Background="Transparent">
+            <NavigationView
+                x:Name="NavigationView"
+                AlwaysShowHeader="True"
+                BackRequested="NavigationView_BackRequested"
+                CompactPaneLength="80"
+                IsBackButtonVisible="Visible"
+                IsBackEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
+                IsPaneToggleButtonVisible="False"
+                IsSettingsVisible="True"
+                IsTitleBarAutoPaddingEnabled="False"
+                OpenPaneLength="80"
+                PaneDisplayMode="Left"
+                SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}">
+                <NavigationView.MenuItemContainerStyle>
+                    <Style TargetType="NavigationViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0,10" />
+                    </Style>
+                </NavigationView.MenuItemContainerStyle>
+                <NavigationView.MenuItemTemplate>
+                    <DataTemplate x:DataType="NavigationViewItem">
+                        <Grid HorizontalAlignment="Center">
+                            <!--  bug  -->
+                            <!--<Interactivity:Interaction.Behaviors>
                             <Core:DataTriggerBehavior
                                 Binding="{Binding IsSelected,Mode=OneWay}"
                                 ComparisonCondition="Equal"
@@ -74,79 +75,79 @@
                                     Value="{ThemeResource ForegroundBrush}" />
                             </Core:DataTriggerBehavior>
                         </Interactivity:Interaction.Behaviors>-->
-                        <StackPanel Orientation="Vertical">
-                            <ContentPresenter
-                                x:Name="MenuItemIcon"
-                                Width="24"
-                                Height="24"
-                                HorizontalAlignment="Center"
-                                Content="{Binding Icon}">
-                                <ContentPresenter.RenderTransform>
-                                    <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                </ContentPresenter.RenderTransform>
-                            </ContentPresenter>
-                            <TextBlock
-                                x:Name="MenuItemContent"
-                                HorizontalAlignment="Center"
-                                FontSize="12"
-                                Text="{Binding Content}" />
-                        </StackPanel>
-                        <Rectangle
-                            Width="2"
-                            Margin="-8,8,0,8"
-                            HorizontalAlignment="Left"
-                            Fill="{ThemeResource SystemAccentColor}"
-                            Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    </Grid>
-                </DataTemplate>
-            </NavigationView.MenuItemTemplate>
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    x:Uid="Shell_Home"
-                    helpers:NavHelper.NavigateTo="views:HomePage"
-                    IsSelected="True"
-                    Tag="Collapsed">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Home" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                            <StackPanel Orientation="Vertical">
+                                <ContentPresenter
+                                    x:Name="MenuItemIcon"
+                                    Width="24"
+                                    Height="24"
+                                    HorizontalAlignment="Center"
+                                    Content="{Binding Icon}">
+                                    <ContentPresenter.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </ContentPresenter.RenderTransform>
+                                </ContentPresenter>
+                                <TextBlock
+                                    x:Name="MenuItemContent"
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="{Binding Content}" />
+                            </StackPanel>
+                            <Rectangle
+                                Width="2"
+                                Margin="-16,8,0,8"
+                                HorizontalAlignment="Left"
+                                Fill="{ThemeResource SystemAccentColor}"
+                                Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </NavigationView.MenuItemTemplate>
+                <NavigationView.MenuItems>
+                    <NavigationViewItem
+                        x:Uid="Shell_Home"
+                        helpers:NavHelper.NavigateTo="views:HomePage"
+                        IsSelected="True"
+                        Tag="Collapsed">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Home" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
-                <NavigationViewItem
-                    x:Uid="Shell_Classification"
-                    helpers:NavHelper.NavigateTo="views:ClassificationPage"
-                    Tag="Collapsed">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="AlignLeft" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                    <NavigationViewItem
+                        x:Uid="Shell_Classification"
+                        helpers:NavHelper.NavigateTo="views:ClassificationPage"
+                        Tag="Collapsed">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="AlignRight" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
-                <NavigationViewItem
-                    x:Uid="Shell_Entry"
-                    helpers:NavHelper.NavigateTo="views:EntryPage"
-                    Tag="Collapsed">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="AlignLeft" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                    <NavigationViewItem
+                        x:Uid="Shell_Entry"
+                        helpers:NavHelper.NavigateTo="views:EntryPage"
+                        Tag="Collapsed">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="AlignLeft" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
-                <NavigationViewItem
-                    x:Uid="Shell_Storage"
-                    helpers:NavHelper.NavigateTo="views:StoragePage"
-                    Tag="Collapsed">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="ViewAll" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                    <NavigationViewItem
+                        x:Uid="Shell_Storage"
+                        helpers:NavHelper.NavigateTo="views:StoragePage"
+                        Tag="Collapsed">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="ViewAll" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
 
-                <NavigationViewItem x:Uid="Shell_Label" helpers:NavHelper.NavigateTo="views:LabelPage">
-                    <NavigationViewItem.Icon>
-                        <SymbolIcon Symbol="Flag" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-            <Frame x:Name="shellFrame" Background="Transparent" />
-        </NavigationView>
-
+                    <NavigationViewItem x:Uid="Shell_Label" helpers:NavHelper.NavigateTo="views:LabelPage">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Flag" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
+                <Frame x:Name="shellFrame" Background="Transparent" />
+            </NavigationView>
+        </Grid>
         <InfoBar
             x:Name="InfoBar"
             Height="50"
@@ -155,5 +156,14 @@
             VerticalAlignment="Top"
             IsOpen="False"
             Severity="Informational" />
+        <Grid x:Name="WaitingGrid" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Opacity="0.6" Color="{ThemeResource ControlFillColorDefault}" />
+            </Grid.Background>
+            <ProgressRing
+                x:Name="WaitingProgressRing"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
     </Grid>
 </Page>

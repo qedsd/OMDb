@@ -10,6 +10,7 @@
     xmlns:templateselectors="using:OMDb.WinUI3.TemplateSelectors"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     Background="Transparent"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>
         <viewmodels:ClassificationViewModel />
@@ -20,7 +21,7 @@
                 <DataTemplate x:DataType="models:LabelCollection">
                     <mycontrols:LabelCollection1
                         Title="{Binding Title}"
-                        Margin="4,4"
+                        Margin="4"
                         BgImageSource="{Binding ImageSource}"
                         Description="{Binding Description}"
                         ItemsSource="{Binding Entries}" />
@@ -30,7 +31,7 @@
                 <DataTemplate x:DataType="models:LabelCollection">
                     <mycontrols:LabelCollection2
                         Title="{Binding Title}"
-                        Margin="4,4"
+                        Margin="4"
                         BgImageSource="{Binding ImageSource}"
                         Description="{Binding Description}"
                         ItemsSource="{Binding Entries}" />
@@ -39,7 +40,7 @@
         </templateselectors:LabelCollectionTemplateSelector>
     </Page.Resources>
 
-    <ScrollViewer Margin="0,0,8,0" CornerRadius="8,8,0,0">
+    <ScrollViewer Margin="0,0,4,0" CornerRadius="8,8,0,0">
         <StackPanel>
             <mycontrols:Banner
                 x:Name="Banner"
@@ -60,5 +61,10 @@
                 </ListView.ItemContainerStyle>
             </ListView>
         </StackPanel>
+        <ScrollViewer.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{Binding RefreshCommand}" Text="刷新" />
+            </MenuFlyout>
+        </ScrollViewer.ContextFlyout>
     </ScrollViewer>
 </Page>

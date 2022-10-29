@@ -34,20 +34,6 @@ namespace OMDb.WinUI3.MyControls
             typeof(Banner),
             new PropertyMetadata(null, new PropertyChangedCallback(OnItemsSourceChanged))
             );
-        //public static readonly DependencyProperty TitleProperty = DependencyProperty.Register
-        //   (
-        //   "Title",
-        //   typeof(string),
-        //   typeof(Banner),
-        //   new PropertyMetadata(null, new PropertyChangedCallback(OnTitleChanged))
-        //   );
-        //public static readonly DependencyProperty DescriptionProperty = DependencyProperty.Register
-        //   (
-        //   "Description",
-        //   typeof(string),
-        //   typeof(Banner),
-        //   new PropertyMetadata(null, new PropertyChangedCallback(OnDescriptionhanged))
-        //   );
         public static readonly DependencyProperty DetailCommandProperty
             = DependencyProperty.Register(
                 nameof(DetailCommand),
@@ -58,33 +44,13 @@ namespace OMDb.WinUI3.MyControls
         {
             (d as Banner).UpdateItemsSource(e.NewValue as IEnumerable<BannerItem>);
         }
-        //private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    (d as Banner).TitleTextBlock.Text = e.NewValue as string;
-        //}
-        //private static void OnDescriptionhanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    (d as Banner).DesTextBlock.Text = e.NewValue as string;
-        //}
-
         public IEnumerable<BannerItem> ItemsSource
         {
             get { return (IEnumerable<BannerItem>)GetValue(ItemsSourceProperty); }
 
             set { SetValue(ItemsSourceProperty, value); }
         }
-        //public string Title
-        //{
-        //    get { return (string)GetValue(TitleProperty); }
 
-        //    set { SetValue(TitleProperty, value); }
-        //}
-        //public string Description
-        //{
-        //    get { return (string)GetValue(DescriptionProperty); }
-
-        //    set { SetValue(DescriptionProperty, value); }
-        //}
         public ICommand DetailCommand
         {
             get => (ICommand)GetValue(DetailCommandProperty);
@@ -121,7 +87,7 @@ namespace OMDb.WinUI3.MyControls
             scaleAnimation.Duration = TimeSpan.FromSeconds(0.3);
             scaleAnimation.Target = nameof(targetVisual.Scale);
             var linear = targetVisual.Compositor.CreateLinearEasingFunction();
-            scaleAnimation.InsertKeyFrame(1.0f, new Vector3((float)1.1), linear);
+            scaleAnimation.InsertKeyFrame(1.0f, new Vector3((float)1.05), linear);
             targetVisual.StartAnimation(nameof(targetVisual.Scale), scaleAnimation);
         }
 
@@ -145,15 +111,31 @@ namespace OMDb.WinUI3.MyControls
         {
             if (ItemsListBox.SelectedItem != null)
             {
+                if(e.RemovedItems.Count > 0)
+                {
+                    foreach (var old in e.RemovedItems)
+                    {
+                        (old as BannerItem).IsSelected = false;
+                    }
+                }
                 var item = ItemsListBox.SelectedItem as BannerItem;
                 if (item != null)
                 {
+                    item.IsSelected = true;
                     TitleTextBlock.Text = item.Title;
                     DesTextBlock.Text = item.Description;
-                    GetTargetImage(out Image showImage, out Image hideImage);
-                    showImage.Source = item.Img;
+                    GetTargetImage(out Grid showImage, out Grid hideImage);
+                    (showImage.Background as ImageBrush).ImageSource = item.Img;
                     HideAnimation(hideImage);
                     ShowAnimation(showImage);
+                    if (item == ItemsListBox.Items.FirstOrDefault())
+                    {
+                        ItemsScrollViewer.ScrollToHorizontalOffset(0);
+                    }
+                    else
+                    {
+                        ItemsScrollViewer.ScrollToHorizontalOffset(ItemsScrollViewer.HorizontalOffset + 228);
+                    }
                 }
                 if(_timer != null)
                 {
@@ -161,17 +143,17 @@ namespace OMDb.WinUI3.MyControls
                 }
             }
         }
-        private void GetTargetImage(out Image showImage,out Image hideImage)
+        private void GetTargetImage(out Grid showImage,out Grid hideImage)
         {
             if(MainImage1.Opacity == 0)
             {
-                showImage = MainImage1;
-                hideImage = MainImage2;
+                showImage = MainGrid1;
+                hideImage = MainGrid2;
             }
             else
             {
-                showImage = MainImage2;
-                hideImage = MainImage1;
+                showImage = MainGrid2;
+                hideImage = MainGrid1;
             }
         }
         private void ShowAnimation(UIElement ui)
@@ -199,6 +181,30 @@ namespace OMDb.WinUI3.MyControls
             Storyboard.SetTargetProperty(animColon, new PropertyPath(nameof(targetVisual.Opacity)).Path);
             sbClock.Children.Add(animColon);
             sbClock.Begin();
+        }
+
+        private void Left_Click(object sender, RoutedEventArgs e)
+        {
+            ItemsScrollViewer.ScrollToHorizontalOffset(ItemsScrollViewer.HorizontalOffset - 228);
+        }
+
+        private void Right_Click(object sender, RoutedEventArgs e)
+        {
+            ItemsScrollViewer.ScrollToHorizontalOffset(ItemsScrollViewer.HorizontalOffset + 228);
+        }
+
+        private void Grid_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
+        {
+            var delta = e.GetCurrentPoint((UIElement)sender).Properties.MouseWheelDelta;
+            if (delta < 0)
+            {
+                ItemsScrollViewer.ScrollToHorizontalOffset(ItemsScrollViewer.HorizontalOffset + 228);
+            }
+            else
+            {
+                ItemsScrollViewer.ScrollToHorizontalOffset(ItemsScrollViewer.HorizontalOffset - 228);
+            }
+            e.Handled = true;
         }
     }
 }

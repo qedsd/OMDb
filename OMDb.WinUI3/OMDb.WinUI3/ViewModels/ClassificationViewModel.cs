@@ -57,6 +57,7 @@ namespace OMDb.WinUI3.ViewModels
 
         private async void Init()
         {
+            Helpers.InfoHelper.ShowWaiting();
             var labels = await Core.Services.LabelService.GetAllLabelAsync();
             if (labels != null)
             {
@@ -94,12 +95,13 @@ namespace OMDb.WinUI3.ViewModels
                     LabelTrees.Add(item.Value);
                 }
             }
-            InitBanner();
-            InitLabelCollection();
+            await InitBannerAsync();
+            await InitLabelCollectionAsync();
+            Helpers.InfoHelper.HideWaiting();
         }
 
         #region Banner
-        private async void InitBanner()
+        private async Task InitBannerAsync()
         {
             if(Labels == null)
             {
@@ -245,7 +247,7 @@ namespace OMDb.WinUI3.ViewModels
         #endregion
 
         #region LabelCollection
-        private async void InitLabelCollection()
+        private async Task InitLabelCollectionAsync()
         {
             var items = new List<LabelCollection>();
             foreach (var label in Labels)
@@ -265,7 +267,7 @@ namespace OMDb.WinUI3.ViewModels
                             Description = label.LabelDb.Description,
                             Entries = entrys,
                             ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                            Template = entrys.Count <= 6 ? 1 : 2
+                            Template = entryCount == 6 ? 1 : 2
                         });
                     }
                 }
@@ -273,5 +275,10 @@ namespace OMDb.WinUI3.ViewModels
             LabelCollections = items;
         }
         #endregion
+
+        public ICommand RefreshCommand => new RelayCommand(() =>
+        {
+            Init();
+        });
     }
 }

@@ -21,6 +21,7 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
             SizeChanged += ClassificationPage_SizeChanged;
+            ClassificationPage_SizeChanged(null,null);
         }
 
         private void ClassificationPage_SizeChanged(object sender, SizeChangedEventArgs e)

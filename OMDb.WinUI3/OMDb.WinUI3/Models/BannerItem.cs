@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Models
 {
-    public class BannerItem
+    public class BannerItem : ObservableObject
     {
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => SetProperty(ref isSelected, value);
+        }
         public string Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }

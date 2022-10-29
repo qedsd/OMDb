@@ -9,6 +9,8 @@ namespace OMDb.WinUI3.Helpers
 {
     public static class InfoHelper
     {
+        public static Grid WaitingGrid { get; set; }
+        public static ProgressRing WaitingProgressRing { get; set; }
         public static InfoBar InfoBar { get; set; }
         
         private static System.Timers.Timer Timer;
@@ -68,6 +70,17 @@ namespace OMDb.WinUI3.Helpers
                     StartTimer();
                 }
             });
+        }
+
+        public static void ShowWaiting()
+        {
+            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            WaitingProgressRing.IsActive = true;
+        }
+        public static void HideWaiting()
+        {
+            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+            WaitingProgressRing.IsActive = false;
         }
     }
 }

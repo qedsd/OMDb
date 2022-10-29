@@ -8,7 +8,7 @@
     xmlns:local="using:OMDb.WinUI3.MyControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.Core.Models"
-    Height="460"
+    Height="420"
     Foreground="White"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -25,11 +25,7 @@
                     Opacity="0.3"
                     Stretch="UniformToFill" />
             </Grid.Background>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Grid Margin="32,20,20,0">
+            <Grid Margin="32,20,20,0" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -54,48 +50,42 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Click="Button_Click"
-                    Foreground="White"
                     Content="查看全部"
-                    FontSize="14" />
+                    FontSize="14"
+                    Foreground="White" />
             </Grid>
-            <controls:AdaptiveGridView
+            <GridView
                 x:Name="ItemsList"
-                Grid.Row="1"
-                Margin="20,0,20,0"
-                HorizontalAlignment="Stretch"
+                Height="320"
+                Margin="20,20,20,0"
+                HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                DesiredWidth="200"
-                ItemHeight="310"
-                OneRowModeEnabled="True"
-                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                SelectionChanged="ItemsList_SelectionChanged"
-                StretchContentForSingleRow="True">
-                <controls:AdaptiveGridView.ItemContainerStyle>
+                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                SelectionChanged="ItemsList_SelectionChanged">
+                <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
-                        <Setter Property="Padding" Value="10,0,10,8" />
+                        <Setter Property="Margin" Value="12,10" />
+                        <Setter Property="Padding" Value="0" />
                     </Style>
-                </controls:AdaptiveGridView.ItemContainerStyle>
-                <controls:AdaptiveGridView.ItemTemplate>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemTemplate>
                     <DataTemplate x:DataType="models:Entry">
                         <Grid
-                            Width="180"
-                            Margin="0,0,0,-8"
+                            Margin="0,0,0,0"
                             HorizontalAlignment="Center"
-                            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                             PointerEntered="Item_PointerEntered"
                             PointerExited="Item_PointerExited">
-                            <Grid Margin="0,0,0,4">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid Margin="0,0,0,0" HorizontalAlignment="Stretch">
-                                    <Image Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext, Converter={StaticResource EntryCoverImgConverter}}" Stretch="UniformToFill" />
-                                </Grid>
+                            <Grid
+                                Width="180"
+                                Height="300"
+                                CornerRadius="4,4,0,0">
+                                <Grid.Background>
+                                    <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext, Converter={StaticResource EntryCoverImgConverter}}" Stretch="UniformToFill" />
+                                </Grid.Background>
                                 <Grid
-                                    Grid.Row="1"
-                                    Margin="0,10"
-                                    VerticalAlignment="Center">
+                                    VerticalAlignment="Bottom"
+                                    Padding="0,8"
+                                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                                     <StackPanel>
                                         <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                         <TextBlock
@@ -107,8 +97,8 @@
                             </Grid>
                         </Grid>
                     </DataTemplate>
-                </controls:AdaptiveGridView.ItemTemplate>
-            </controls:AdaptiveGridView>
+                </GridView.ItemTemplate>
+            </GridView>
         </Grid>
     </Grid>
 </UserControl>

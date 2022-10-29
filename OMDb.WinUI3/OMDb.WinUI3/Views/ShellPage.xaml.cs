@@ -19,12 +19,8 @@ namespace OMDb.WinUI3.Views
             ViewModel.Init(shellFrame);
             ViewModel.InitItems(NavigationView);
             Helpers.InfoHelper.InfoBar = InfoBar;
-            //var tiWtleBar = Microsoft.UI.ViewManagement.ApplicationView.GetForCurrentView().TitleBar;
-            //tiWtleBar.BackgroundColor = Colors.Transparent;
-            //tiWtleBar.ButtonBackgroundColor = Colors.Transparent;
-            //tiWtleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-            //Microsoft.UI.Xaml.Window.Current.SetTitleBar(AppTitleBar);
-
+            Helpers.InfoHelper.WaitingGrid = WaitingGrid;
+            Helpers.InfoHelper.WaitingProgressRing = WaitingProgressRing;
         }
 
         private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
