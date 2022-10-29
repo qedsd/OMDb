@@ -95,7 +95,7 @@ namespace OMDb.WinUI3.MyControls
             animation.Duration = TimeSpan.FromSeconds(0.3);
             animation.Target = nameof(targetVisual.Offset);
             var linear = targetVisual.Compositor.CreateLinearEasingFunction();
-            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.Margin.Left, 0, 0), linear);
+            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.ActualOffset.X, -10, 0), linear);
             targetVisual.StartAnimation(nameof(targetVisual.Offset), animation);
         }
 
@@ -107,7 +107,7 @@ namespace OMDb.WinUI3.MyControls
             animation.Duration = TimeSpan.FromSeconds(0.3);
             animation.Target = nameof(targetVisual.Offset);
             var linear = targetVisual.Compositor.CreateLinearEasingFunction();
-            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.Margin.Left, (float)elment.Margin.Top, 0), linear);
+            animation.InsertKeyFrame(1.0f, new Vector3((float)elment.ActualOffset.X, 0, 0), linear);
             targetVisual.StartAnimation(nameof(targetVisual.Offset), animation);
         }
 

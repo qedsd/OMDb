@@ -7,12 +7,37 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:templateselectors="using:OMDb.WinUI3.TemplateSelectors"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     Background="Transparent"
     mc:Ignorable="d">
     <Page.DataContext>
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>
+    <Page.Resources>
+        <templateselectors:LabelCollectionTemplateSelector x:Key="LabelCollectionTemplateSelector">
+            <templateselectors:LabelCollectionTemplateSelector.Template1>
+                <DataTemplate x:DataType="models:LabelCollection">
+                    <mycontrols:LabelCollection1
+                        Title="{Binding Title}"
+                        Margin="4,4"
+                        BgImageSource="{Binding ImageSource}"
+                        Description="{Binding Description}"
+                        ItemsSource="{Binding Entries}" />
+                </DataTemplate>
+            </templateselectors:LabelCollectionTemplateSelector.Template1>
+            <templateselectors:LabelCollectionTemplateSelector.Template2>
+                <DataTemplate x:DataType="models:LabelCollection">
+                    <mycontrols:LabelCollection2
+                        Title="{Binding Title}"
+                        Margin="4,4"
+                        BgImageSource="{Binding ImageSource}"
+                        Description="{Binding Description}"
+                        ItemsSource="{Binding Entries}" />
+                </DataTemplate>
+            </templateselectors:LabelCollectionTemplateSelector.Template2>
+        </templateselectors:LabelCollectionTemplateSelector>
+    </Page.Resources>
 
     <ScrollViewer Margin="0,0,8,0" CornerRadius="8,8,0,0">
         <StackPanel>
@@ -23,23 +48,16 @@
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
-            <ListView ItemsSource="{Binding LabelCollections}" SelectionMode="None">
+            <ListView
+                ItemTemplateSelector="{StaticResource LabelCollectionTemplateSelector}"
+                ItemsSource="{Binding LabelCollections}"
+                SelectionMode="None">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Padding" Value="0" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelCollection">
-                        <mycontrols:LabelCollection2
-                            Title="{Binding Title}"
-                            Margin="4,4"
-                            BgImageSource="{Binding ImageSource}"
-                            Description="{Binding Description}"
-                            ItemsSource="{Binding Entries}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
             </ListView>
         </StackPanel>
     </ScrollViewer>

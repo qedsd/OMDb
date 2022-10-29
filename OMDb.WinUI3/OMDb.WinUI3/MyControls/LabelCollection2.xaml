@@ -8,24 +8,28 @@
     xmlns:local="using:OMDb.WinUI3.MyControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.Core.Models"
-    MaxHeight="490"
+    Height="460"
+    Foreground="White"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:EntryCoverImgConverter x:Key="EntryCoverImgConverter" />
     </UserControl.Resources>
     <Grid x:Name="MainGrid" CornerRadius="8">
+        <Grid.Background>
+            <SolidColorBrush Opacity="0.5" Color="Black" />
+        </Grid.Background>
         <Grid x:Name="ContentGrid">
             <Grid.Background>
                 <ImageBrush
                     x:Name="BgImage"
-                    Opacity="0.5"
+                    Opacity="0.3"
                     Stretch="UniformToFill" />
             </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Margin="20,20,20,10">
+            <Grid Margin="32,20,20,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -44,34 +48,40 @@
                     FontSize="14"
                     FontWeight="Thin"
                     Text="备注" />
-                <Button
+                <HyperlinkButton
                     Grid.Column="2"
                     Width="100"
-                    Margin="10,0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Click="Button_Click"
+                    Foreground="White"
                     Content="查看全部"
                     FontSize="14" />
             </Grid>
             <controls:AdaptiveGridView
                 x:Name="ItemsList"
                 Grid.Row="1"
-                Margin="20,0,20,20"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                ItemHeight="200"
+                Margin="20,0,20,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center"
+                DesiredWidth="200"
+                ItemHeight="310"
+                OneRowModeEnabled="True"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 SelectionChanged="ItemsList_SelectionChanged"
-                StretchContentForSingleRow="False">
+                StretchContentForSingleRow="True">
+                <controls:AdaptiveGridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Padding" Value="10,0,10,8" />
+                    </Style>
+                </controls:AdaptiveGridView.ItemContainerStyle>
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate x:DataType="models:Entry">
                         <Grid
-                            Width="117"
-                            Margin="4,10,4,-10"
+                            Width="180"
+                            Margin="0,0,0,-8"
+                            HorizontalAlignment="Center"
                             Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
-                            CornerRadius="4,4,0,0"
                             PointerEntered="Item_PointerEntered"
                             PointerExited="Item_PointerExited">
                             <Grid Margin="0,0,0,4">
@@ -79,13 +89,13 @@
                                     <RowDefinition />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <Grid CornerRadius="0">
+                                <Grid Margin="0,0,0,0" HorizontalAlignment="Stretch">
                                     <Image Source="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext, Converter={StaticResource EntryCoverImgConverter}}" Stretch="UniformToFill" />
                                 </Grid>
                                 <Grid
                                     Grid.Row="1"
-                                    Margin="0,4,0,10"
-                                    VerticalAlignment="Bottom">
+                                    Margin="0,10"
+                                    VerticalAlignment="Center">
                                     <StackPanel>
                                         <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
                                         <TextBlock

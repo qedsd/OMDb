@@ -52,31 +52,7 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ClassificationViewModel()
         {
-            //var items = new List<BannerItem>();
-            //items.Add(new BannerItem()
-            //{
-            //    Title = "标题1",
-            //    Description = "描述",
-            //    Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
-            //    PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
-            //});
-            //items.Add(new BannerItem()
-            //{
-            //    Title = "标题2",
-            //    Description = "描述",
-            //    Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
-            //    PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
-            //});
-            //items.Add(new BannerItem()
-            //{
-            //    Title = "标题3",
-            //    Description = "描述",
-            //    Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
-            //    PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
-            //});
-
             Init();
-            //BannerItemSource = items;
         }
 
         private async void Init()
@@ -275,7 +251,8 @@ namespace OMDb.WinUI3.ViewModels
             foreach (var label in Labels)
             {
                 var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
-                var result = Core.Helpers.RandomHelper.RandomList(queryResults, 5);
+                int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
+                var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                 if (result?.Any() == true)
                 {
                     var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
@@ -287,7 +264,8 @@ namespace OMDb.WinUI3.ViewModels
                             Title = label.LabelDb.Name,
                             Description = label.LabelDb.Description,
                             Entries = entrys,
-                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream)
+                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                            Template = entrys.Count <= 6 ? 1 : 2
                         });
                     }
                 }

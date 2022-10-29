@@ -9,16 +9,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.Core.Models"
     Height="400"
+    Foreground="White"
     mc:Ignorable="d">
     <UserControl.Resources>
         <converters:EntryCoverImgConverter x:Key="EntryCoverImgConverter" />
     </UserControl.Resources>
     <Grid x:Name="MainGrid" CornerRadius="8">
+        <Grid.Background>
+            <SolidColorBrush Opacity="0.5" Color="Black" />
+        </Grid.Background>
         <Grid>
             <Grid.Background>
                 <ImageBrush
                     x:Name="BgImage"
-                    Opacity="0.5"
+                    Opacity="0.3"
                     Stretch="UniformToFill" />
             </Grid.Background>
             <Grid.ColumnDefinitions>
