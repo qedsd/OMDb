@@ -135,6 +135,9 @@
   <data name="Shell_Classification.Content" xml:space="preserve">
     <value>分类</value>
   </data>
+  <data name="Shell_Collections.Content" xml:space="preserve">
+    <value>集锦</value>
+  </data>
   <data name="Shell_Entry.Content" xml:space="preserve">
     <value>词条</value>
   </data>

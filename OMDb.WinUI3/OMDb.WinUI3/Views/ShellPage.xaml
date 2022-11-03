@@ -105,26 +105,25 @@
                     <NavigationViewItem
                         x:Uid="Shell_Home"
                         helpers:NavHelper.NavigateTo="views:HomePage"
-                        IsSelected="True"
-                        Tag="Collapsed">
+                        IsSelected="True">
                         <NavigationViewItem.Icon>
                             <SymbolIcon Symbol="Home" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem
-                        x:Uid="Shell_Classification"
-                        helpers:NavHelper.NavigateTo="views:ClassificationPage"
-                        Tag="Collapsed">
+                    <NavigationViewItem x:Uid="Shell_Classification" helpers:NavHelper.NavigateTo="views:ClassificationPage">
                         <NavigationViewItem.Icon>
                             <SymbolIcon Symbol="AlignCenter" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem
-                        x:Uid="Shell_Entry"
-                        helpers:NavHelper.NavigateTo="views:EntryPage"
-                        Tag="Collapsed">
+                    <NavigationViewItem x:Uid="Shell_Collections" helpers:NavHelper.NavigateTo="views:CollectionsPage">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="List" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+
+                    <NavigationViewItem x:Uid="Shell_Entry" helpers:NavHelper.NavigateTo="views:EntryPage">
                         <NavigationViewItem.Icon>
                             <SymbolIcon Symbol="ViewAll" />
                         </NavigationViewItem.Icon>
@@ -137,8 +136,6 @@
                     </NavigationViewItem>
                 </NavigationView.MenuItems>
                 <NavigationView.FooterMenuItems>
-
-
                     <NavigationViewItem x:Uid="Shell_Tools" helpers:NavHelper.NavigateTo="views:ToolsPage">
                         <NavigationViewItem.Icon>
                             <SymbolIcon Symbol="Repair" />

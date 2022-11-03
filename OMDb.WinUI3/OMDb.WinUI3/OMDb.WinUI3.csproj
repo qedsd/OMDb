@@ -54,6 +54,7 @@
     <None Remove="Styles\Custom.xaml" />
     <None Remove="Styles\Thickness.xaml" />
     <None Remove="Views\ClassificationPage.xaml" />
+    <None Remove="Views\CollectionsPage.xaml" />
     <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -254,6 +255,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\CollectionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
