@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OMDb.Core.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,11 @@ namespace OMDb.Core
         public static bool RemoveDb(string key)
         {
             return Services.DbService.Dbs.Remove(key);
+        }
+
+        public static bool InitLocalDb(string filePath)
+        {
+            return DbService.SetLocalDb($"DataSource={filePath}");
         }
     }
 }

@@ -7,22 +7,21 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    /// <summary>
-    /// 每个数据库的LabelDb、EntryLabelDb表数据都统一
-    /// 添加、删除标签相关数据时需要每个仓库的表都添加
-    /// 查询时查询任意一个均可
-    /// </summary>
     public static class LabelService
     {
+        private static bool IsLocalDbValid()
+        {
+            return DbService.LocalDb != null;
+        }
         /// <summary>
         /// 获取全部标签
         /// </summary>
         /// <returns></returns>
         public static async Task<List<LabelDb>> GetAllLabelAsync()
         {
-            if(DbService.Dbs.Count>0)
+            if(IsLocalDbValid())
             {
-                return await Task.Run(() => DbService.Dbs.First().Value.Queryable<LabelDb>().ToList());
+                return await DbService.LocalDb.Queryable<LabelDb>().ToListAsync();
             }
             else
             {
@@ -36,9 +35,9 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<LabelDb> GetLabel(string labelId)
         {
-            if (DbService.Dbs.Count > 0)
+            if (IsLocalDbValid())
             {
-                return await DbService.Dbs.First().Value.Queryable<LabelDb>().FirstAsync(p => p.Id == labelId);
+                return await DbService.LocalDb.Queryable<LabelDb>().FirstAsync(p => p.Id == labelId);
             }
             else
             {
@@ -52,9 +51,9 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static List<LabelDb> GetLabels(List<string> labelIds)
         {
-            if (DbService.Dbs.Count > 0)
+            if (IsLocalDbValid())
             {
-                return DbService.Dbs.First().Value.Queryable<LabelDb>().In(labelIds).ToList();
+                return DbService.LocalDb.Queryable<LabelDb>().In(labelIds).ToList();
             }
             else
             {
@@ -68,7 +67,14 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<LabelDb>> GetLabelsAsync(List<string> labelIds)
         {
-            return await Task.Run(()=> GetLabels(labelIds));
+            if (IsLocalDbValid())
+            {
+                return await DbService.LocalDb.Queryable<LabelDb>().In(labelIds).ToListAsync();
+            }
+            else
+            {
+                return null;
+            }
         }
         /// <summary>
         /// 获取标签下所有的词条id
@@ -78,8 +84,15 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static List<string> GetEntrys(List<string> labelIds)
         {
-            var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().Where(p => labelIds.Contains(p.LabelId)).ToList().Select(p=>p.EntryId).ToList();
-            return all.ToHashSet().ToList();
+            if (IsLocalDbValid())
+            {
+                var all = DbService.LocalDb.Queryable<EntryLabelDb>().Where(p => labelIds.Contains(p.LabelId)).ToList().Select(p => p.EntryId).ToList();
+                return all.ToHashSet().ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -90,8 +103,15 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static List<string> GetEntrys(string labelId)
         {
-            var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().Where(p => p.LabelId == labelId).ToList().Select(p => p.EntryId).ToList();
-            return all.ToHashSet().ToList();
+            if (IsLocalDbValid())
+            {
+                var all = DbService.LocalDb.Queryable<EntryLabelDb>().Where(p => p.LabelId == labelId).ToList().Select(p => p.EntryId).ToList();
+                return all.ToHashSet().ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -100,29 +120,40 @@ namespace OMDb.Core.Services
         /// <returns>结果已去重</returns>
         public static List<string> GetAllEntryIds()
         {
-            var all = DbService.Dbs.First().Value.Queryable<EntryLabelDb>().GroupBy(p => p.EntryId).ToList();
-            return all.Select(p => p.EntryId).ToList();
+            if (IsLocalDbValid())
+            {
+                var all = DbService.LocalDb.Queryable<EntryLabelDb>().GroupBy(p => p.EntryId).ToList();
+                return all.Select(p => p.EntryId).ToList();
+            }
+            else
+            {
+                return null;
+            }
         }
         /// <summary>
-        /// 获取标签下所有的词条id
-        /// 已去重
+        /// 获取词条的标签
         /// </summary>
-        /// <param name="labelIds"></param>
+        /// <param name="dbid"></param>
+        /// <param name="entryId"></param>
         /// <returns></returns>
-        public static async Task<List<LabelDb>> GetLabelOfEntryAsync(string dbid, string entryId)
+        public static async Task<List<LabelDb>> GetLabelOfEntryAsync(string entryId)
         {
-            return await Task.Run(() =>
+            if (IsLocalDbValid())
             {
-                var labelIds = DbService.GetConnection(dbid).Queryable<EntryLabelDb>().Where(p => p.EntryId == entryId).Select(p => p.LabelId).ToList();
+                var labelIds = await DbService.LocalDb.Queryable<EntryLabelDb>().Where(p => p.EntryId == entryId).Select(p => p.LabelId).ToListAsync();
                 if (labelIds.Count != 0)
                 {
-                    return GetLabels(labelIds);
+                    return await GetLabelsAsync(labelIds);
                 }
                 else
                 {
                     return null;
                 }
-            });
+            }
+            else
+            {
+                return null;
+            }
         }
         /// <summary>
         /// 清空词条绑定的标签
@@ -146,10 +177,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void ClearEntryLabel(string entryId)
         {
-            foreach (var db in DbService.Dbs.Values)
-            {
-                db.Deleteable<EntryLabelDb>(p => p.EntryId == entryId).ExecuteCommand();
-            }
+            DbService.LocalDb.Deleteable<EntryLabelDb>(p => p.EntryId == entryId).ExecuteCommand();
         }
         public static async Task AddEntryLabelAsync(List<EntryLabelDb> entryLabeles)
         {
@@ -161,19 +189,13 @@ namespace OMDb.Core.Services
         }
         public static void AddEntryLabel(List<EntryLabelDb> entryLabeles)
         {
-            foreach (var db in DbService.Dbs.Values)
-            {
-                db.Insertable(entryLabeles).ExecuteCommand();
-            }
+            DbService.LocalDb.Insertable(entryLabeles).ExecuteCommand();
         }
         public static async Task AddEntryLabelAsyn(EntryLabelDb entryLabel)
         {
             await Task.Run(() =>
             {
-                foreach (var db in DbService.Dbs.Values)
-                {
-                    db.Insertable(entryLabel).ExecuteCommand();
-                }
+                DbService.LocalDb.Insertable(entryLabel).ExecuteCommand();
             });
         }
         public static void AddLabel(LabelDb labelDb)
@@ -182,10 +204,7 @@ namespace OMDb.Core.Services
             {
                 labelDb.Id = Guid.NewGuid().ToString(); 
             }
-            foreach (var db in DbService.Dbs.Values)
-            {
-                db.Insertable(labelDb).ExecuteCommand();
-            }
+            DbService.LocalDb.Insertable(labelDb).ExecuteCommand();
         }
         public static void RemoveLabel(string labelId)
         {
@@ -193,21 +212,15 @@ namespace OMDb.Core.Services
         }
         public static void RemoveLabel(List<string> labelIds)
         {
-            foreach (var db in DbService.Dbs.Values)
-            {
-                db.Deleteable<LabelDb>().In(labelIds).ExecuteCommand();
-                //清空关联的子分类
-                db.Updateable<LabelDb>().SetColumns(p=> p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
-                db.Deleteable<EntryLabelDb>().Where(p=> labelIds.Contains(p.LabelId));//EntryLabelDb表是没有主键的，不能用in
-            }
+            DbService.LocalDb.Deleteable<LabelDb>().In(labelIds).ExecuteCommand();
+            //清空关联的子分类
+            DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
+            DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => labelIds.Contains(p.LabelId));//EntryLabelDb表是没有主键的，不能用in
         }
 
         public static void UpdateLabel(LabelDb labelDb)
         {
-            foreach (var db in DbService.Dbs.Values)
-            {
-                db.Updateable(labelDb).ExecuteCommand();
-            }
+            DbService.LocalDb.Updateable(labelDb).ExecuteCommand();
         }
     }
 }

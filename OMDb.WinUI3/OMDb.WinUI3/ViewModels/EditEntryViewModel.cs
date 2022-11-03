@@ -162,7 +162,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             else
             {
-                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.DbId,entry.Id);
+                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.Id);
                 if (labels != null)
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>

@@ -137,7 +137,7 @@ namespace OMDb.WinUI3.Models
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(labels.Count);
-                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.Id, LabelId = p.Id }));
+                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.Id, LabelId = p.Id,DbId = Entry.DbId }));
                         Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
@@ -157,7 +157,7 @@ namespace OMDb.WinUI3.Models
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
             await UpdateWatchHistoryAsync();
-            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.DbId, Entry.Id);
+            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.Id);
             if(Labels == null)
             {
                 Labels = new List<Core.DbModels.LabelDb>();

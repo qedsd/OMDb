@@ -13,6 +13,10 @@ namespace OMDb.Core.DbModels
     [SugarTable("EntryLabel")]
     public class EntryLabelDb
     {
+        /// <summary>
+        /// 词条所在的dbid
+        /// </summary>
+        public string DbId { get; set; }
         public string EntryId { get; set; }
         public string LabelId { get; set; }
     }

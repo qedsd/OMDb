@@ -55,6 +55,7 @@ namespace OMDb.WinUI3.Services
                     });
                 }
             }
+            Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
         }
         public static void Save()
         {

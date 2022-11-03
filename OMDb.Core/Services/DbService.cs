@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace OMDb.Core.Services
 {
     public static class DbService
     {
         /// <summary>
-        /// 管理所有数据库连接
+        /// 管理所有仓库数据库连接
         /// </summary>
         internal static readonly Dictionary<string,SqlSugarScope> Dbs = new();
         /// <summary>
@@ -22,12 +23,16 @@ namespace OMDb.Core.Services
         {
             get=>Dbs.Count ==0;
         }
+        /// <summary>
+        /// 保存标签、集锦等需要关联多个仓库的数据
+        /// </summary>
+        internal static SqlSugarScope LocalDb;
         static DbService()
         {
             
         }
         /// <summary>
-        /// 按数据库连接字符串创建多数据库
+        /// 按数据库连接字符串创建多仓库数据库
         /// </summary>
         /// <param name="connet"></param>
         /// <param name="configId"></param>
@@ -80,7 +85,7 @@ namespace OMDb.Core.Services
             }
         }
         /// <summary>
-        /// 自动建表建库
+        /// 仓库数据库自动建表建库
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
@@ -88,8 +93,11 @@ namespace OMDb.Core.Services
         {
             if (GetConnection(dbId).DbMaintenance.CreateDatabase())
             {
-                var types = typeof(Entry).Assembly.GetTypes().Where(p => p.FullName.Contains("DbModels")).ToArray();
-                GetConnection(dbId).CodeFirst.InitTables(types);
+                List<Type> types = new List<Type>();
+                types.Add(typeof(EntryDb));
+                types.Add(typeof(EntryNameDb));
+                types.Add(typeof(WatchHistoryDb));
+                GetConnection(dbId).CodeFirst.InitTables(types.ToArray());
                 return true;
             }
             else
@@ -98,7 +106,7 @@ namespace OMDb.Core.Services
             }
         }
         /// <summary>
-        /// 获取Scope实例
+        /// 获取仓库数据库Scope实例
         /// 不要自己到Dbs拿，统一使用此方法，避免以后改回ORM的多租户模式
         /// </summary>
         /// <param name="dbId"></param>
@@ -112,6 +120,46 @@ namespace OMDb.Core.Services
             else
             {
                 return null;
+            }
+        }
+
+        internal static bool SetLocalDb(string connet)
+        {
+            try
+            {
+                LocalDb = new SqlSugarScope(new ConnectionConfig()
+                {
+                    ConnectionString = connet,
+                    DbType = DbType.Sqlite,
+                    IsAutoCloseConnection = true,
+                    ConfigId = Guid.NewGuid(),
+                    ConfigureExternalServices = new ConfigureExternalServices
+                    {
+                        EntityService = (c, p) =>
+                        {
+                            if (c.PropertyType.IsGenericType && c.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+                            {
+                                p.IsNullable = true;
+                            }
+                        }
+                    },
+                    MoreSettings = new ConnMoreSettings()
+                    {
+                        IsAutoRemoveDataCache = true
+                    }
+                });
+                LocalDb.DbMaintenance.CreateDatabase();
+                List<Type> types = new List<Type>();
+                types.Add(typeof(LabelDb));
+                types.Add(typeof(EntryLabelDb));
+                types.Add(typeof(EntryCollectionDb));
+                types.Add(typeof(EntryCollectionsDb));
+                LocalDb.CodeFirst.InitTables(types.ToArray());
+                return true;
+            }
+            catch(Exception)
+            {
+                return false;
             }
         }
     }

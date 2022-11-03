@@ -113,7 +113,7 @@
                                     PointerEntered="Item_PointerEntered"
                                     PointerExited="Item_PointerExited">
                                     <Grid.Background>
-                                        <ImageBrush ImageSource="{x:Bind PreviewImg}" Stretch="UniformToFill"/>
+                                        <ImageBrush ImageSource="{x:Bind PreviewImg}" Stretch="UniformToFill" />
                                     </Grid.Background>
                                 </Grid>
                                 <TextBlock
