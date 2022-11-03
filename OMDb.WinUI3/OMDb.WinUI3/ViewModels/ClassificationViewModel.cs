@@ -150,7 +150,7 @@ namespace OMDb.WinUI3.ViewModels
         private async Task<BannerItem> GetAllBannerItem()
         {
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelDb.Id).ToList());
-            if(queryResults.Count > 2)
+            if(queryResults?.Count > 2)
             {
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults, 40);
                 if (result?.Any() == true)
