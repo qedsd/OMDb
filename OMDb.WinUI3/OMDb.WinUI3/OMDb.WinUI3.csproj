@@ -58,8 +58,10 @@
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\LabelPage.xaml" />
+    <None Remove="Views\ManagementPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\StoragePage.xaml" />
+    <None Remove="Views\ToolsPage.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -252,6 +254,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ToolsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\ManagementPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -144,4 +144,10 @@
   <data name="Shell_Label.Content" xml:space="preserve">
     <value>Label</value>
   </data>
+  <data name="Shell_Management.Content" xml:space="preserve">
+    <value>Management</value>
+  </data>
+  <data name="Shell_Tools.Content" xml:space="preserve">
+    <value>Tools</value>
+  </data>
 </root>

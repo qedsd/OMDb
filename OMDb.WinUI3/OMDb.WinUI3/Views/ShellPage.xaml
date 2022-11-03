@@ -117,7 +117,7 @@
                         helpers:NavHelper.NavigateTo="views:ClassificationPage"
                         Tag="Collapsed">
                         <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="AlignRight" />
+                            <SymbolIcon Symbol="AlignCenter" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
@@ -126,25 +126,25 @@
                         helpers:NavHelper.NavigateTo="views:EntryPage"
                         Tag="Collapsed">
                         <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="AlignLeft" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem
-                        x:Uid="Shell_Storage"
-                        helpers:NavHelper.NavigateTo="views:StoragePage"
-                        Tag="Collapsed">
-                        <NavigationViewItem.Icon>
                             <SymbolIcon Symbol="ViewAll" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem x:Uid="Shell_Label" helpers:NavHelper.NavigateTo="views:LabelPage">
+                    <NavigationViewItem x:Uid="Shell_Management" helpers:NavHelper.NavigateTo="views:ManagementPage">
                         <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="Flag" />
+                            <SymbolIcon Symbol="Library" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
                 </NavigationView.MenuItems>
+                <NavigationView.FooterMenuItems>
+
+
+                    <NavigationViewItem x:Uid="Shell_Tools" helpers:NavHelper.NavigateTo="views:ToolsPage">
+                        <NavigationViewItem.Icon>
+                            <SymbolIcon Symbol="Repair" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.FooterMenuItems>
                 <Frame x:Name="shellFrame" Background="Transparent" />
             </NavigationView>
         </Grid>

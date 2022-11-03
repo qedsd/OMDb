@@ -144,7 +144,13 @@
   <data name="Shell_Label.Content" xml:space="preserve">
     <value>标签</value>
   </data>
+  <data name="Shell_Management.Content" xml:space="preserve">
+    <value>管理</value>
+  </data>
   <data name="Shell_Storage.Content" xml:space="preserve">
     <value>仓库</value>
+  </data>
+  <data name="Shell_Tools.Content" xml:space="preserve">
+    <value>工具</value>
   </data>
 </root>
