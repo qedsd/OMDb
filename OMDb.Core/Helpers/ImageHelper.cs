@@ -137,7 +137,8 @@ namespace OMDb.Core.Helpers
                 int height = (int)(width / 0.68);
                 foreach (Image coverImage in images)
                 {
-                    coverImage.Mutate(x => x.Resize(width, height));
+                    var cutRect = CalPerfectResizeRectangle(coverImage.Width, coverImage.Height, width, height);
+                    coverImage.Mutate(x => x.Resize(width, height, KnownResamplers.Bicubic, cutRect, new Rectangle(0, 0, width, height), true));
                 }
                 int columCount = (int)Math.Ceiling(image.Width / (float)width);
                 int rowCount = (int)Math.Ceiling(image.Height / (float)height) + 1;
@@ -180,7 +181,8 @@ namespace OMDb.Core.Helpers
                 int height = (int)(width / 0.68);
                 foreach (Image coverImage in images)
                 {
-                    coverImage.Mutate(x => x.Resize(width, height));
+                    var cutRect = CalPerfectResizeRectangle(coverImage.Width, coverImage.Height, width, height);
+                    coverImage.Mutate(x => x.Resize(width, height, KnownResamplers.Bicubic, cutRect,new Rectangle(0,0,width,height),true));
                 }
                 int columCount = (int)Math.Ceiling(image.Width / (float)width);
                 int rowCount = (int)Math.Ceiling(image.Height / (float)height) + 1;
@@ -308,6 +310,42 @@ namespace OMDb.Core.Helpers
                 image.Mutate(x => x.GaussianBlur(sigma));
                 return await ToMemoryStreamAsync(image);
             }
+        }
+
+        /// <summary>
+        /// 计算保持原比例裁剪图片时对应的原图区域
+        /// </summary>
+        /// <param name="srcWidth"></param>
+        /// <param name="srcHeight"></param>
+        /// <param name="targetWidth"></param>
+        /// <param name="targetHeight"></param>
+        /// <returns></returns>
+        private static Rectangle CalPerfectResizeRectangle(int srcWidth,int srcHeight,int targetWidth,int targetHeight)
+        {
+            Rectangle resultRect;
+            //宽高比越大，图片越矮胖
+            //宽高比越小，图片越高瘦
+            double srcP = srcWidth / (float)srcHeight;
+            double targetP = targetWidth / (float)targetHeight;
+            if (srcP == targetP)
+            {
+                resultRect = new Rectangle(0, 0, srcWidth, srcHeight);
+            }
+            else if (srcP > targetP)
+            {
+                //原图宽高比大于目标宽高比，说明目标图片要变高瘦
+                //保留Y，X要裁剪
+                double srcCutWidth = targetWidth * srcHeight / targetHeight;//原图参与缩放的宽
+                resultRect = new Rectangle((int)(srcWidth / 2 - srcCutWidth / 2), 0, (int)srcCutWidth, srcHeight);
+            }
+            else
+            {
+                //原图宽高比小于目标宽高比，说明目标图片要变矮胖
+                //保留X，Y要裁剪
+                double srcCutHeight = targetHeight * srcWidth / targetWidth;
+                resultRect = new Rectangle(0,(int)(srcHeight / 2 - srcCutHeight / 2),srcWidth, (int)srcCutHeight);
+            }
+            return resultRect;
         }
     }
 }
