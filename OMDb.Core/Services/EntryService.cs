@@ -353,23 +353,20 @@ namespace OMDb.Core.Services
         {
             if (queryItem != null)
             {
-                return await Task.Run(() =>
+                var result = await DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().FirstAsync(p => p.Id == queryItem.Id);
+                if (result != null)
                 {
-                    var result = DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().First(p => p.Id == queryItem.DbId);
-                    if (result == null)
+                    var entry = Entry.Create(result, queryItem.DbId);
+                    if (withName)
                     {
-                        var entry = Entry.Create(result, queryItem.DbId);
-                        if (withName)
-                        {
-                            entry.Name = EntryNameSerivce.QueryName(entry.Id, queryItem.DbId);
-                        }
-                        return entry;
+                        entry.Name = EntryNameSerivce.QueryName(entry.Id, queryItem.DbId);
                     }
-                    else
-                    {
-                        return null;
-                    }
-                });
+                    return entry;
+                }
+                else
+                {
+                    return null;
+                }
             }
             else
             {

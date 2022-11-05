@@ -36,6 +36,8 @@ namespace OMDb.WinUI3.Services
             {
                 Values = new Dictionary<string, string>();
             }
+            ThemeSelectorService.Initialize();
+            LabelCollectionStyleSelectorService.Initialize();
         }
         public static string GetValue(string key)
         {

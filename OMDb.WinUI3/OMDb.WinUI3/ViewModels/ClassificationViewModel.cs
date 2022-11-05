@@ -46,12 +46,24 @@ namespace OMDb.WinUI3.ViewModels
             get => labels;
             set => SetProperty(ref labels, value);
         }
+
+        private bool isList;
+        /// <summary>
+        /// 列表显示
+        /// </summary>
+        public bool IsList
+        {
+            get => isList;
+            set => SetProperty(ref isList, value);
+        }
+
         public ICommand CheckDetailBannerItemCommand => new RelayCommand<BannerItem>((item) =>
         {
 
         });
         public ClassificationViewModel()
         {
+            IsList = Services.LabelCollectionStyleSelectorService.IsList;
             Init();
         }
 
@@ -249,6 +261,17 @@ namespace OMDb.WinUI3.ViewModels
         #region LabelCollection
         private async Task InitLabelCollectionAsync()
         {
+            if(IsList)
+            {
+                await InitLabelCollection1Async();
+            }
+            else
+            {
+                await InitLabelCollection2Async();
+            }
+        }
+        private async Task InitLabelCollection1Async()
+        {
             var items = new List<LabelCollection>();
             foreach (var label in Labels)
             {
@@ -274,11 +297,46 @@ namespace OMDb.WinUI3.ViewModels
             }
             LabelCollections = items;
         }
+        private async Task InitLabelCollection2Async()
+        {
+            var items = new List<LabelCollection>();
+            foreach (var label in Labels)
+            {
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
+                var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
+                if (showItem != null)
+                {
+                    var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
+                    if (entry != null)
+                    {
+                        var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry),600,0);
+                        items.Add(new LabelCollection()
+                        {
+                            Title = label.LabelDb.Name,
+                            Description = label.LabelDb.Description,
+                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                        });
+                    }
+                }
+            }
+            LabelCollections = items;
+        }
         #endregion
 
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
+        });
+
+        public ICommand ChangeShowTypeCommand => new RelayCommand<string>(async(islistStr) =>
+        {
+            LabelCollections.Clear();
+            LabelCollections = null;
+            IsList = bool.Parse(islistStr);
+            Helpers.InfoHelper.ShowWaiting();
+            await InitLabelCollectionAsync();
+            await Services.LabelCollectionStyleSelectorService.SetAsync(IsList ? 0 : 1);
+            Helpers.InfoHelper.HideWaiting();
         });
     }
 }

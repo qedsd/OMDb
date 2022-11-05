@@ -43,6 +43,7 @@
     <None Remove="MyControls\ExplorerItemControl.xaml" />
     <None Remove="MyControls\LabelCollection1.xaml" />
     <None Remove="MyControls\LabelCollection2.xaml" />
+    <None Remove="MyControls\LabelCollection3.xaml" />
     <None Remove="MyControls\LabelsControl.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
@@ -255,6 +256,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\LabelCollection3.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

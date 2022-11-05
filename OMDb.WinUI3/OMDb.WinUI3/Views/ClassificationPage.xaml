@@ -9,6 +9,7 @@
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:templateselectors="using:OMDb.WinUI3.TemplateSelectors"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    xmlns:coverters="using:OMDb.WinUI3.Converters" xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -16,6 +17,8 @@
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>
     <Page.Resources>
+        <coverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True"/>
         <templateselectors:LabelCollectionTemplateSelector x:Key="LabelCollectionTemplateSelector">
             <templateselectors:LabelCollectionTemplateSelector.Template1>
                 <DataTemplate x:DataType="models:LabelCollection">
@@ -49,7 +52,38 @@
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
+            <Grid Margin="{StaticResource XSmallLeftTopRightBottomMargin}">
+                <TextBlock Text="所有" FontWeight="Thin"/>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <Button Command="{Binding ChangeShowTypeCommand}"
+                            CommandParameter="True">
+                        <Interactivity:Interaction.Behaviors>
+                            <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="True">
+                                <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource SystemAccentColor}" />
+                            </Core:DataTriggerBehavior>
+                            <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="False">
+                                <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource ForegroundBrush}" />
+                            </Core:DataTriggerBehavior>
+                        </Interactivity:Interaction.Behaviors>
+                        <FontIcon Glyph="&#xE1A2;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    </Button>
+                    <Button Margin="4,0"
+                            Command="{Binding ChangeShowTypeCommand}"
+                            CommandParameter="False">
+                        <Interactivity:Interaction.Behaviors>
+                            <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="False">
+                                <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource SystemAccentColor}" />
+                            </Core:DataTriggerBehavior>
+                            <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="True">
+                                <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource ForegroundBrush}" />
+                            </Core:DataTriggerBehavior>
+                        </Interactivity:Interaction.Behaviors>
+                        <FontIcon Glyph="&#xE154;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
             <ListView
+                Visibility="{Binding IsList,Converter={StaticResource BoolToVisibilityConverter},Mode=OneWay}"
                 ItemTemplateSelector="{StaticResource LabelCollectionTemplateSelector}"
                 ItemsSource="{Binding LabelCollections}"
                 SelectionMode="None">
@@ -60,6 +94,28 @@
                     </Style>
                 </ListView.ItemContainerStyle>
             </ListView>
+            <controls:AdaptiveGridView Visibility="{Binding IsList,Converter={StaticResource ReverseBoolToVisibilityConverter},Mode=OneWay}"
+                      ItemsSource="{Binding LabelCollections}"
+                      SelectionMode="None"
+                                       ItemHeight="240"
+                                       DesiredWidth="420"
+                                       StretchContentForSingleRow="True">
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="4,0,4,4" />
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollection">
+                        <mycontrols:LabelCollection3
+                        Title="{Binding Title}"
+                        Margin="4"
+                        BgImageSource="{Binding ImageSource}"
+                        Description="{Binding Description}"/>
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
         </StackPanel>
         <ScrollViewer.ContextFlyout>
             <MenuFlyout>
