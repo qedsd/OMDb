@@ -2,6 +2,10 @@
     x:Class="OMDb.WinUI3.Views.ClassificationPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:coverters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,7 +13,6 @@
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:templateselectors="using:OMDb.WinUI3.TemplateSelectors"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
-    xmlns:coverters="using:OMDb.WinUI3.Converters" xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -17,8 +20,8 @@
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>
     <Page.Resources>
-        <coverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True"/>
+        <coverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True" />
         <templateselectors:LabelCollectionTemplateSelector x:Key="LabelCollectionTemplateSelector">
             <templateselectors:LabelCollectionTemplateSelector.Template1>
                 <DataTemplate x:DataType="models:LabelCollection">
@@ -52,11 +55,10 @@
                 VerticalAlignment="Top"
                 DetailCommand="{Binding CheckDetailBannerItemCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
-            <Grid Margin="{StaticResource XSmallLeftTopRightBottomMargin}">
-                <TextBlock Text="所有" FontWeight="Thin"/>
+            <Grid Margin="{StaticResource SmallLeftTopRightBottomMargin}">
+                <!--<TextBlock FontWeight="Thin" Text="所有" />-->
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                    <Button Command="{Binding ChangeShowTypeCommand}"
-                            CommandParameter="True">
+                    <Button Command="{Binding ChangeShowTypeCommand}" CommandParameter="True">
                         <Interactivity:Interaction.Behaviors>
                             <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="True">
                                 <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource SystemAccentColor}" />
@@ -65,11 +67,15 @@
                                 <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource ForegroundBrush}" />
                             </Core:DataTriggerBehavior>
                         </Interactivity:Interaction.Behaviors>
-                        <FontIcon Glyph="&#xE1A2;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="12"
+                            Glyph="&#xE1A2;" />
                     </Button>
-                    <Button Margin="4,0"
-                            Command="{Binding ChangeShowTypeCommand}"
-                            CommandParameter="False">
+                    <Button
+                        Margin="4,0"
+                        Command="{Binding ChangeShowTypeCommand}"
+                        CommandParameter="False">
                         <Interactivity:Interaction.Behaviors>
                             <Core:DataTriggerBehavior Binding="{Binding IsList}" Value="False">
                                 <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource SystemAccentColor}" />
@@ -78,44 +84,108 @@
                                 <Core:ChangePropertyAction PropertyName="Foreground" Value="{ThemeResource ForegroundBrush}" />
                             </Core:DataTriggerBehavior>
                         </Interactivity:Interaction.Behaviors>
-                        <FontIcon Glyph="&#xE154;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                        <FontIcon
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="12"
+                            Glyph="&#xE154;" />
                     </Button>
                 </StackPanel>
             </Grid>
             <ListView
-                Visibility="{Binding IsList,Converter={StaticResource BoolToVisibilityConverter},Mode=OneWay}"
-                ItemTemplateSelector="{StaticResource LabelCollectionTemplateSelector}"
-                ItemsSource="{Binding LabelCollections}"
-                SelectionMode="None">
+                ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
+                SelectionMode="None"
+                Visibility="{Binding IsList, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,0,0,4" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
-            </ListView>
-            <controls:AdaptiveGridView Visibility="{Binding IsList,Converter={StaticResource ReverseBoolToVisibilityConverter},Mode=OneWay}"
-                      ItemsSource="{Binding LabelCollections}"
-                      SelectionMode="None"
-                                       ItemHeight="240"
-                                       DesiredWidth="420"
-                                       StretchContentForSingleRow="True">
-                <GridView.ItemContainerStyle>
-                    <Style TargetType="GridViewItem">
-                        <Setter Property="Margin" Value="4,0,4,4" />
-                        <Setter Property="Padding" Value="0" />
-                    </Style>
-                </GridView.ItemContainerStyle>
-                <controls:AdaptiveGridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelCollection">
-                        <mycontrols:LabelCollection3
-                        Title="{Binding Title}"
-                        Margin="4"
-                        BgImageSource="{Binding ImageSource}"
-                        Description="{Binding Description}"/>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollectionTree">
+                        <Expander
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            IsExpanded="True">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding LabelCollection.Title}" />
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        FontWeight="Thin"
+                                        Text="{Binding LabelCollection.Description}" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <ListView
+                                Grid.Row="1"
+                                ItemTemplateSelector="{StaticResource LabelCollectionTemplateSelector}"
+                                ItemsSource="{Binding Children}"
+                                SelectionMode="None">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Padding" Value="0" />
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                            </ListView>
+                        </Expander>
                     </DataTemplate>
-                </controls:AdaptiveGridView.ItemTemplate>
-            </controls:AdaptiveGridView>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ListView
+                ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
+                SelectionMode="None"
+                Visibility="{Binding IsList, Converter={StaticResource ReverseBoolToVisibilityConverter}, Mode=OneWay}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="Margin" Value="0,0,0,4" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollectionTree">
+                        <Expander
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            IsExpanded="True">
+                            <Expander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding LabelCollection.Title}" />
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        FontWeight="Thin"
+                                        Text="{Binding LabelCollection.Description}" />
+                                </StackPanel>
+                            </Expander.Header>
+                            <controls:AdaptiveGridView
+                                DesiredWidth="420"
+                                ItemHeight="240"
+                                ItemsSource="{Binding Children}"
+                                SelectionMode="None"
+                                StretchContentForSingleRow="True">
+                                <GridView.ItemContainerStyle>
+                                    <Style TargetType="GridViewItem">
+                                        <Setter Property="Margin" Value="4,0,4,4" />
+                                        <Setter Property="Padding" Value="0" />
+                                    </Style>
+                                </GridView.ItemContainerStyle>
+                                <controls:AdaptiveGridView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:LabelCollection">
+                                        <mycontrols:LabelCollection3
+                                            MaxWidth="500"
+                                            Title="{Binding Title}"
+                                            Margin="4"
+                                            BgImageSource="{Binding ImageSource}"
+                                            Description="{Binding Description}" />
+                                    </DataTemplate>
+                                </controls:AdaptiveGridView.ItemTemplate>
+                            </controls:AdaptiveGridView>
+                        </Expander>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
         <ScrollViewer.ContextFlyout>
             <MenuFlyout>

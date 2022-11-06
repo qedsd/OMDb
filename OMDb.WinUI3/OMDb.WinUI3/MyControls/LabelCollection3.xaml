@@ -51,7 +51,7 @@
         </Grid.Background>
         <Grid>
             <Grid.Background>
-                <SolidColorBrush Opacity="0.3" Color="Black" x:Name="BgBrush"/>
+                <SolidColorBrush Opacity="0.2" Color="Black" x:Name="BgBrush"/>
                 <!--<AcrylicBrush x:Name="BgBrush" TintOpacity="0.6" TintColor="Black" Opacity="0"/>-->
             </Grid.Background>
         </Grid>

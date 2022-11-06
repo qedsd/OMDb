@@ -37,6 +37,14 @@ namespace OMDb.WinUI3.ViewModels
             get => labelTrees;
             set => SetProperty(ref labelTrees, value);
         }
+
+        private List<LabelCollectionTree> labelCollectionTrees;
+        public List<LabelCollectionTree> LabelCollectionTrees
+        {
+            get => labelCollectionTrees;
+            set => SetProperty(ref labelCollectionTrees, value);
+        }
+
         private ObservableCollection<Label> labels;
         /// <summary>
         /// 只包括没有子类的
@@ -57,10 +65,6 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref isList, value);
         }
 
-        public ICommand CheckDetailBannerItemCommand => new RelayCommand<BannerItem>((item) =>
-        {
-
-        });
         public ClassificationViewModel()
         {
             IsList = Services.LabelCollectionStyleSelectorService.IsList;
@@ -73,10 +77,10 @@ namespace OMDb.WinUI3.ViewModels
             var labels = await Core.Services.LabelService.GetAllLabelAsync();
             if (labels != null)
             {
-                Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();
+                Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();//string为父节点id
                 Labels = new ObservableCollection<Label>();
                 var root = labels.Where(p => p.ParentId == null).ToList();
-                if (root != null)
+                if (root != null)//建立所有父节点
                 {
                     foreach (var label in root)
                     {
@@ -85,18 +89,18 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 foreach (var label in labels)
                 {
-                    if (label.ParentId != null)
+                    if (label.ParentId != null)//归类每个子节点
                     {
                         if (labelsDb.TryGetValue(label.ParentId, out var parent))
                         {
                             parent.Children.Add(label);
                         }
-                        Labels.Add(new Label(label));
+                        Labels.Add(new Label(label));//保存所有子节点
                     }
                 }
                 foreach (var item in labelsDb)
                 {
-                    if(item.Value.Children.Count == 0)
+                    if(item.Value.Children.Count == 0)//没有实际子节点的父节点也保存到Labels
                     {
                         Labels.Add(new Label(item.Value.Label));
                     }
@@ -263,11 +267,11 @@ namespace OMDb.WinUI3.ViewModels
         {
             if(IsList)
             {
-                await InitLabelCollection1Async();
+                await InitLabelCollection3Async();
             }
             else
             {
-                await InitLabelCollection2Async();
+                await InitLabelCollection4Async();
             }
         }
         private async Task InitLabelCollection1Async()
@@ -297,6 +301,84 @@ namespace OMDb.WinUI3.ViewModels
             }
             LabelCollections = items;
         }
+        private async Task InitLabelCollection3Async()
+        {
+            var items = new List<LabelCollectionTree>();
+            LabelCollectionTree otherCollectionTree = new LabelCollectionTree()
+            {
+                LabelCollection = new LabelCollection()
+                {
+                    Title = "未分类",
+                    Description = string.Empty,
+                },
+                Children = new List<LabelCollection>()
+            };
+            foreach (var labelTree in LabelTrees)
+            {
+                if(labelTree.Children.Any())
+                {
+                    LabelCollectionTree labelCollectionTree = new LabelCollectionTree()
+                    {
+                        LabelCollection = new LabelCollection()
+                        {
+                            Title = labelTree.Label.Name,
+                            Description = labelTree.Label.Description,
+                        },
+                        Children = new List<LabelCollection>()
+                    };
+                    foreach (var label in labelTree.Children)
+                    {
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Id });
+                        int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
+                        var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
+                        if (result?.Any() == true)
+                        {
+                            var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
+                            if (entrys?.Any() == true)
+                            {
+                                var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
+                                labelCollectionTree.Children.Add(new LabelCollection()
+                                {
+                                    Title = label.Name,
+                                    Description = label.Description,
+                                    Entries = entrys,
+                                    ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                                    Template = entryCount == 6 ? 1 : 2
+                                });
+                            }
+                        }
+                    }
+                    items.Add(labelCollectionTree);
+                }
+                else
+                {
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.Id });
+                    int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
+                    var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
+                    if (result?.Any() == true)
+                    {
+                        var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
+                        if (entrys?.Any() == true)
+                        {
+                            var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
+                            otherCollectionTree.Children.Add(new LabelCollection()
+                            {
+                                Title = labelTree.Label.Name,
+                                Description = labelTree.Label.Description,
+                                Entries = entrys,
+                                ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                                Template = entryCount == 6 ? 1 : 2
+                            });
+                        }
+                    }
+                }
+            }
+            if(otherCollectionTree.Children.Any())
+            {
+                items.Insert(0,otherCollectionTree);
+            }
+            LabelCollectionTrees = items;
+        }
         private async Task InitLabelCollection2Async()
         {
             var items = new List<LabelCollection>();
@@ -321,7 +403,85 @@ namespace OMDb.WinUI3.ViewModels
             }
             LabelCollections = items;
         }
+        private async Task InitLabelCollection4Async()
+        {
+            var items = new List<LabelCollectionTree>();
+            LabelCollectionTree otherCollectionTree = new LabelCollectionTree()
+            {
+                LabelCollection = new LabelCollection()
+                {
+                    Title = "未分类",
+                    Description = string.Empty,
+                },
+                Children = new List<LabelCollection>()
+            };
+            foreach (var labelTree in LabelTrees)
+            {
+                if (labelTree.Children.Any())
+                {
+                    LabelCollectionTree labelCollectionTree = new LabelCollectionTree()
+                    {
+                        LabelCollection = new LabelCollection()
+                        {
+                            Title = labelTree.Label.Name,
+                            Description = labelTree.Label.Description,
+                        },
+                        Children = new List<LabelCollection>()
+                    };
+                    foreach (var label in labelTree.Children)
+                    {
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Id });
+                        var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
+                        if (showItem != null)
+                        {
+                            var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
+                            if (entry != null)
+                            {
+                                var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry), 600, 0);
+                                labelCollectionTree.Children.Add(new LabelCollection()
+                                {
+                                    Title = label.Name,
+                                    Description = label.Description,
+                                    ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                                });
+                            }
+                        }
+                    }
+                    items.Add(labelCollectionTree);
+                }
+                else
+                {
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.Id });
+                    var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
+                    if (showItem != null)
+                    {
+                        var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
+                        if (entry != null)
+                        {
+                            var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry), 600, 0);
+                            otherCollectionTree.Children.Add(new LabelCollection()
+                            {
+                                Title = labelTree.Label.Name,
+                                Description = labelTree.Label.Description,
+                                ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                            });
+                        }
+                    }
+                }
+                    
+            }
+            if (otherCollectionTree.Children.Any())
+            {
+                items.Insert(0, otherCollectionTree);
+            }
+            LabelCollectionTrees = items;
+        }
         #endregion
+
+        public ICommand CheckDetailBannerItemCommand => new RelayCommand<BannerItem>((item) =>
+        {
+
+        });
 
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
@@ -330,7 +490,7 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand ChangeShowTypeCommand => new RelayCommand<string>(async(islistStr) =>
         {
-            LabelCollections.Clear();
+            LabelCollections?.Clear();
             LabelCollections = null;
             IsList = bool.Parse(islistStr);
             Helpers.InfoHelper.ShowWaiting();
