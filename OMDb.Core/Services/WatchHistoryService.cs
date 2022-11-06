@@ -29,6 +29,25 @@ namespace OMDb.Core.Services
             }
         }
 
+        /// <summary>
+        /// 查询词条所有观看记录
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static async Task<List<WatchHistory>> QueryWatchHistoriesAsync(List<string> ids, string dbId)
+        {
+            var entryNameDbs = await DbService.GetConnection(dbId).Queryable<WatchHistoryDb>().Where(p => ids.Contains(p.EntryId)).ToListAsync();
+            if (entryNameDbs.Any())
+            {
+                return entryNameDbs.Select(p => WatchHistory.Create(p, dbId)).ToList();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static void AddWatchHistory(Models.WatchHistory watchHistory)
         {
             DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();

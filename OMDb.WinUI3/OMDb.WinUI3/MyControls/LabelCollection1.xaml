@@ -54,8 +54,7 @@
                 Margin="20,0,20,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                SelectionChanged="ItemsList_SelectionChanged">
+                ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
                         <Setter Property="Margin" Value="12,10" />
@@ -70,7 +69,8 @@
                             Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                             CornerRadius="4,4,0,0"
                             PointerEntered="Item_PointerEntered"
-                            PointerExited="Item_PointerExited">
+                            PointerExited="Item_PointerExited"
+                            PointerPressed="Grid_PointerPressed">
                             <Grid>
                                 <Grid.Background>
                                     <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext, Converter={StaticResource EntryCoverImgConverter}}" Stretch="UniformToFill" />

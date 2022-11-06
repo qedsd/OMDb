@@ -37,6 +37,8 @@ namespace OMDb.WinUI3.MyControls
             "BgImageSource", typeof(ImageSource), typeof(LabelCollection1), new PropertyMetadata(null, new PropertyChangedCallback(OnBgImageSourceChanged)));
         public static readonly DependencyProperty ClickItemCommandProperty = DependencyProperty.Register(
             nameof(ClickItemCommand), typeof(ICommand), typeof(LabelCollection1), new PropertyMetadata(default(ICommand)));
+        public static readonly DependencyProperty IdProperty = DependencyProperty.Register(
+            nameof(Id), typeof(string), typeof(LabelCollection1), new PropertyMetadata(null));
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as LabelCollection1).ItemsList.ItemsSource = e.NewValue as IEnumerable<Entry>;
@@ -70,6 +72,12 @@ namespace OMDb.WinUI3.MyControls
             get { return (string)GetValue(DescriptionProperty); }
 
             set { SetValue(DescriptionProperty, value); }
+        }
+        public string Id
+        {
+            get { return (string)GetValue(IdProperty); }
+
+            set { SetValue(IdProperty, value); }
         }
         public ICommand DetailCommand
         {
@@ -113,17 +121,12 @@ namespace OMDb.WinUI3.MyControls
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            DetailCommand?.Execute(null);
+            DetailCommand?.Execute(Id);
         }
 
-        private void ItemsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            var ad = sender as AdaptiveGridView;
-            if(ad != null && ad.SelectedItem != null)
-            {
-                ClickItemCommand?.Execute(ad.SelectedItem);
-                ad.SelectedItem = null;
-            }
+            ClickItemCommand?.Execute((sender as FrameworkElement).DataContext);
         }
     }
 }

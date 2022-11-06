@@ -1,0 +1,72 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.LabelCollectionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    Background="Transparent"
+    mc:Ignorable="d"
+    NavigationCacheMode="Enabled">
+
+    <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                <TextBlock FontSize="24" Text="{x:Bind VM.Title,Mode=OneWay}" />
+                <TextBlock
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    FontWeight="Thin"
+                    Text="{x:Bind VM.Description,Mode=OneWay}" />
+            </StackPanel>
+            <Grid
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="排序:" />
+                    <ComboBox
+                        Width="140"
+                        VerticalAlignment="Center"
+                        ItemsSource="{x:Bind VM.SortTypeStrs, Mode=OneWay}"
+                        SelectedIndex="{x:Bind VM.SortTypeIndex, Mode=TwoWay}" />
+                    <ComboBox
+                        Width="100"
+                        Margin="10,0,0,0"
+                        ItemsSource="{x:Bind VM.SortWayStrs, Mode=OneWay}"
+                        SelectedIndex="{x:Bind VM.SortWayIndex, Mode=TwoWay}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Margin="{StaticResource SmallTopMargin}">
+            <controls:AdaptiveGridView
+                Padding="20"
+                DesiredWidth="160"
+                IsItemClickEnabled="True"
+                ItemClickCommand="{x:Bind VM.ItemClickCommand}"
+                ItemHeight="260"
+                ItemsSource="{x:Bind VM.ItemsSource, Mode=OneWay}"
+                SelectionMode="None"
+                StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <mycontrols:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </Grid>
+    </Grid>
+</Page>

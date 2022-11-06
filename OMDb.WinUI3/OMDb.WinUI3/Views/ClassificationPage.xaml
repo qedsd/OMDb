@@ -13,6 +13,7 @@
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:templateselectors="using:OMDb.WinUI3.TemplateSelectors"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    x:Name="page"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -29,7 +30,10 @@
                         Title="{Binding Title}"
                         Margin="4"
                         BgImageSource="{Binding ImageSource}"
+                        ClickItemCommand="{Binding ElementName=page, Path=DataContext.ItemClickCommand}"
                         Description="{Binding Description}"
+                        DetailCommand="{Binding ElementName=page, Path=DataContext.LabelDetailCommand}"
+                        Id="{Binding Id}"
                         ItemsSource="{Binding Entries}" />
                 </DataTemplate>
             </templateselectors:LabelCollectionTemplateSelector.Template1>
@@ -39,7 +43,10 @@
                         Title="{Binding Title}"
                         Margin="4"
                         BgImageSource="{Binding ImageSource}"
+                        ClickItemCommand="{Binding ElementName=page, Path=DataContext.ItemClickCommand}"
                         Description="{Binding Description}"
+                        DetailCommand="{Binding ElementName=page, Path=DataContext.LabelDetailCommand}"
+                        Id="{Binding Id}"
                         ItemsSource="{Binding Entries}" />
                 </DataTemplate>
             </templateselectors:LabelCollectionTemplateSelector.Template2>
@@ -53,10 +60,9 @@
                 Height="650"
                 Margin="4,4"
                 VerticalAlignment="Top"
-                DetailCommand="{Binding CheckDetailBannerItemCommand}"
+                DetailCommand="{Binding BannerDetailCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />
             <Grid Margin="{StaticResource SmallLeftTopRightBottomMargin}">
-                <!--<TextBlock FontWeight="Thin" Text="所有" />-->
                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                     <Button Command="{Binding ChangeShowTypeCommand}" CommandParameter="True">
                         <Interactivity:Interaction.Behaviors>
@@ -91,6 +97,7 @@
                     </Button>
                 </StackPanel>
             </Grid>
+            <!--  列表显示  -->
             <ListView
                 ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
                 SelectionMode="None"
@@ -133,6 +140,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <!--  大图显示  -->
             <ListView
                 ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
                 SelectionMode="None"
@@ -174,11 +182,13 @@
                                 <controls:AdaptiveGridView.ItemTemplate>
                                     <DataTemplate x:DataType="models:LabelCollection">
                                         <mycontrols:LabelCollection3
-                                            MaxWidth="500"
                                             Title="{Binding Title}"
+                                            MaxWidth="500"
                                             Margin="4"
                                             BgImageSource="{Binding ImageSource}"
-                                            Description="{Binding Description}" />
+                                            Description="{Binding Description}"
+                                            DetailCommand="{Binding ElementName=page, Path=DataContext.LabelDetailCommand}"
+                                            Id="{Binding Id}" />
                                     </DataTemplate>
                                 </controls:AdaptiveGridView.ItemTemplate>
                             </controls:AdaptiveGridView>

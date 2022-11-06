@@ -2,9 +2,11 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using MySqlX.XDevAPI.Common;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -48,7 +50,10 @@ namespace OMDb.WinUI3.ViewModels
             get => labels;
             set => SetProperty(ref labels, value);
         }
-
+        /// <summary>
+        /// 所有标签
+        /// </summary>
+        private Dictionary<string, Label> LabelsDic;
         private bool isList;
         /// <summary>
         /// 列表显示
@@ -68,9 +73,30 @@ namespace OMDb.WinUI3.ViewModels
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
+            await InitLabels();
+            await InitBannerAsync();
+            await InitLabelCollectionAsync();
+            Helpers.InfoHelper.HideWaiting();
+        }
+        
+        private async Task InitLabels()
+        {
+            if(LabelsDic == null)
+            {
+                LabelsDic = new Dictionary<string, Label>();
+            }
+            else
+            {
+                LabelsDic.Clear();
+            }
             var labels = await Core.Services.LabelService.GetAllLabelAsync();
             if (labels != null)
             {
+                foreach (var label in labels)
+                {
+                    LabelsDic.Add(label.Id, new Label(label));
+                }
+
                 Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();//string为父节点id
                 Labels = new ObservableCollection<Label>();
                 var root = labels.Where(p => p.ParentId == null).ToList();
@@ -94,7 +120,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 foreach (var item in labelsDb)
                 {
-                    if(item.Value.Children.Count == 0)//没有实际子节点的父节点也保存到Labels
+                    if (item.Value.Children.Count == 0)//没有实际子节点的父节点也保存到Labels
                     {
                         Labels.Add(new Label(item.Value.Label));
                     }
@@ -105,9 +131,6 @@ namespace OMDb.WinUI3.ViewModels
                     LabelTrees.Add(item.Value);
                 }
             }
-            await InitBannerAsync();
-            await InitLabelCollectionAsync();
-            Helpers.InfoHelper.HideWaiting();
         }
 
         #region Banner
@@ -135,6 +158,7 @@ namespace OMDb.WinUI3.ViewModels
                             var samllStream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 400, 0);
                             items.Add(new BannerItem()
                             {
+                                Id = item.LabelDb.Id,
                                 Title = item.LabelDb.Name,
                                 Description = item.LabelDb.Description,
                                 Img = new BitmapImage(new Uri(bg)),
@@ -146,6 +170,7 @@ namespace OMDb.WinUI3.ViewModels
                         {
                             items.Add(new BannerItem()
                             {
+                                Id = item.LabelDb.Id,
                                 Title = item.LabelDb.Name,
                                 Description = item.LabelDb.Description,
                                 Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
@@ -184,6 +209,7 @@ namespace OMDb.WinUI3.ViewModels
                             var bannerItem =  new BannerItem()
                             {
                                 Title = "全部",
+                                Tag = "All",
                                 Description = null,
                                 Img = await Helpers.ImgHelper.CreateBitmapImageAsync(savedStream),
                                 PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(smallStream)
@@ -199,6 +225,7 @@ namespace OMDb.WinUI3.ViewModels
             return new BannerItem()
             {
                 Title = "全部",
+                Tag = "All",
                 Description = null,
                 Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
                 PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
@@ -310,7 +337,8 @@ namespace OMDb.WinUI3.ViewModels
                                     Description = label.Description,
                                     Entries = entrys,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                    Template = entryCount == 6 ? 1 : 2
+                                    Template = entryCount == 6 ? 1 : 2,
+                                    Id = label.Id
                                 });
                             }
                         }
@@ -334,7 +362,8 @@ namespace OMDb.WinUI3.ViewModels
                                 Description = labelTree.Label.Description,
                                 Entries = entrys,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                Template = entryCount == 6 ? 1 : 2
+                                Template = entryCount == 6 ? 1 : 2,
+                                Id = labelTree.Label.Id
                             });
                         }
                     }
@@ -386,6 +415,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Title = label.Name,
                                     Description = label.Description,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                                    Id = label.Id,
                                 });
                             }
                         }
@@ -407,6 +437,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Title = labelTree.Label.Name,
                                 Description = labelTree.Label.Description,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
+                                Id = labelTree.Label.Id
                             });
                         }
                     }
@@ -421,9 +452,54 @@ namespace OMDb.WinUI3.ViewModels
         }
         #endregion
 
-        public ICommand CheckDetailBannerItemCommand => new RelayCommand<BannerItem>((item) =>
+        public ICommand BannerDetailCommand => new RelayCommand<BannerItem>(async(item) =>
         {
-
+            if(item.Tag == "All")
+            {
+                Helpers.InfoHelper.ShowWaiting();
+                if (LabelsDic != null && LabelsDic.Count != 0)
+                {
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, LabelsDic.Select(p => p.Value.LabelDb.Id).ToList());
+                    var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
+                    if (entrys?.Any() == true)
+                    {
+                        LabelCollection labelCollection = new LabelCollection()
+                        {
+                            Title = "所有",
+                            Description = String.Empty,
+                            Entries = entrys,
+                            Id = null
+                        };
+                        Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
+                    }
+                }
+                Helpers.InfoHelper.HideWaiting();
+            }
+            else
+            {
+                LabelDetailCommand.Execute(item.Id);
+            }
+        });
+        public ICommand LabelDetailCommand => new RelayCommand<string>(async(id) =>
+        {
+            if(LabelsDic.TryGetValue(id, out var label))
+            {
+                Helpers.InfoHelper.ShowWaiting();
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
+                var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
+                if (entrys?.Any() == true)
+                {
+                    LabelCollection labelCollection = new LabelCollection()
+                    {
+                        Title = label.LabelDb.Name,
+                        Description = label.LabelDb.Description,
+                        Entries = entrys,
+                        Id = label.LabelDb.Id
+                    };
+                    Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
+                }
+                Helpers.InfoHelper.HideWaiting();
+            }
         });
 
         public ICommand RefreshCommand => new RelayCommand(() =>
@@ -440,6 +516,10 @@ namespace OMDb.WinUI3.ViewModels
             await InitLabelCollectionAsync();
             await Services.LabelCollectionStyleSelectorService.SetAsync(IsList ? 0 : 1);
             Helpers.InfoHelper.HideWaiting();
+        });
+        public ICommand ItemClickCommand => new RelayCommand<Entry>((entry) =>
+        {
+            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
         });
     }
 }

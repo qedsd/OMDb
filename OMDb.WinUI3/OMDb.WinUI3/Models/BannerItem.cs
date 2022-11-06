@@ -21,6 +21,10 @@ namespace OMDb.WinUI3.Models
         public string Description { get; set; }
         public ImageSource Img { get; set; }
         public ImageSource PreviewImg { get; set; }
+        /// <summary>
+        /// 拓展标记
+        /// </summary>
+        public string Tag { get; set; }
 
         public BannerItem()
         {

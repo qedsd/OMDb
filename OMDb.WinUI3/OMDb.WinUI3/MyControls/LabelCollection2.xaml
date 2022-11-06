@@ -60,8 +60,7 @@
                 Margin="20,20,20,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                SelectionChanged="ItemsList_SelectionChanged">
+                ScrollViewer.VerticalScrollBarVisibility="Disabled">
                 <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
                         <Setter Property="Margin" Value="12,10" />
@@ -74,7 +73,8 @@
                             Margin="0,0,0,0"
                             HorizontalAlignment="Center"
                             PointerEntered="Item_PointerEntered"
-                            PointerExited="Item_PointerExited">
+                            PointerExited="Item_PointerExited"
+                            PointerPressed="Grid_PointerPressed">
                             <Grid
                                 Width="180"
                                 Height="300"

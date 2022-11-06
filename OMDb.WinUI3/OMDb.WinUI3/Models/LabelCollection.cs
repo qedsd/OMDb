@@ -15,5 +15,6 @@ namespace OMDb.WinUI3.Models
         public List<Entry> Entries { get; set; }
         public ImageSource ImageSource { get; set; }
         public int Template { get; set; } = 1;
+        public string Id { get; set; }
     }
 }

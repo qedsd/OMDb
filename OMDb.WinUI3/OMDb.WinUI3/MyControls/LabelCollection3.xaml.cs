@@ -34,7 +34,8 @@ namespace OMDb.WinUI3.MyControls
             nameof(DetailCommand), typeof(ICommand), typeof(LabelCollection3), new PropertyMetadata(default(ICommand)));
         public static readonly DependencyProperty BgImageSourceProperty = DependencyProperty.Register(
             "BgImageSource", typeof(ImageSource), typeof(LabelCollection3), new PropertyMetadata(null, new PropertyChangedCallback(OnBgImageSourceChanged)));
-
+        public static readonly DependencyProperty IdProperty = DependencyProperty.Register(
+            nameof(Id), typeof(string), typeof(LabelCollection3), new PropertyMetadata(null));
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             (d as LabelCollection3).TitleTextBlock.Text = e.NewValue as string;
@@ -58,6 +59,12 @@ namespace OMDb.WinUI3.MyControls
             get { return (string)GetValue(DescriptionProperty); }
 
             set { SetValue(DescriptionProperty, value); }
+        }
+        public string Id
+        {
+            get { return (string)GetValue(IdProperty); }
+
+            set { SetValue(IdProperty, value); }
         }
         public ICommand DetailCommand
         {
@@ -110,6 +117,11 @@ namespace OMDb.WinUI3.MyControls
         private void DesAnimation2()
         {
             Storyboard2.Begin();
+        }
+
+        private void Grid_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            DetailCommand?.Execute(Id);
         }
     }
 }
