@@ -24,12 +24,6 @@ namespace OMDb.WinUI3.ViewModels
             get => bannerItemsSource;
             set => SetProperty(ref bannerItemsSource, value);
         }
-        private List<LabelCollection> labelCollections;
-        public List<LabelCollection> LabelCollections
-        {
-            get => labelCollections;
-            set => SetProperty(ref labelCollections, value);
-        }
 
         private ObservableCollection<LabelTree> labelTrees;
         public ObservableCollection<LabelTree> LabelTrees
@@ -274,33 +268,6 @@ namespace OMDb.WinUI3.ViewModels
                 await InitLabelCollection4Async();
             }
         }
-        private async Task InitLabelCollection1Async()
-        {
-            var items = new List<LabelCollection>();
-            foreach (var label in Labels)
-            {
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
-                int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
-                var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
-                if (result?.Any() == true)
-                {
-                    var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
-                    if (entrys?.Any() == true)
-                    {
-                        var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
-                        items.Add(new LabelCollection()
-                        {
-                            Title = label.LabelDb.Name,
-                            Description = label.LabelDb.Description,
-                            Entries = entrys,
-                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                            Template = entryCount == 6 ? 1 : 2
-                        });
-                    }
-                }
-            }
-            LabelCollections = items;
-        }
         private async Task InitLabelCollection3Async()
         {
             var items = new List<LabelCollectionTree>();
@@ -378,30 +345,6 @@ namespace OMDb.WinUI3.ViewModels
                 items.Insert(0,otherCollectionTree);
             }
             LabelCollectionTrees = items;
-        }
-        private async Task InitLabelCollection2Async()
-        {
-            var items = new List<LabelCollection>();
-            foreach (var label in Labels)
-            {
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
-                var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
-                if (showItem != null)
-                {
-                    var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
-                    if (entry != null)
-                    {
-                        var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry),600,0);
-                        items.Add(new LabelCollection()
-                        {
-                            Title = label.LabelDb.Name,
-                            Description = label.LabelDb.Description,
-                            ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                        });
-                    }
-                }
-            }
-            LabelCollections = items;
         }
         private async Task InitLabelCollection4Async()
         {
@@ -490,8 +433,8 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand ChangeShowTypeCommand => new RelayCommand<string>(async(islistStr) =>
         {
-            LabelCollections?.Clear();
-            LabelCollections = null;
+            LabelCollectionTrees?.Clear();
+            LabelCollectionTrees = null;
             IsList = bool.Parse(islistStr);
             Helpers.InfoHelper.ShowWaiting();
             await InitLabelCollectionAsync();
