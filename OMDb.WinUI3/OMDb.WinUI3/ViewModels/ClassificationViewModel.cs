@@ -302,7 +302,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 LabelCollection = new LabelCollection()
                 {
-                    Title = "未分类",
+                    Title = "所有",
                     Description = string.Empty,
                 },
                 Children = new List<LabelCollection>()
@@ -371,7 +371,11 @@ namespace OMDb.WinUI3.ViewModels
             }
             if(otherCollectionTree.Children.Any())
             {
-                items.Insert(0,otherCollectionTree);
+                if(items.Count != 0)
+                {
+                    otherCollectionTree.LabelCollection.Title = "其他";
+                }
+                items.Add(otherCollectionTree);
             }
             LabelCollectionTrees = items;
         }
@@ -382,7 +386,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 LabelCollection = new LabelCollection()
                 {
-                    Title = "未分类",
+                    Title = "所有",
                     Description = string.Empty,
                 },
                 Children = new List<LabelCollection>()
@@ -446,7 +450,11 @@ namespace OMDb.WinUI3.ViewModels
             }
             if (otherCollectionTree.Children.Any())
             {
-                items.Insert(0, otherCollectionTree);
+                if (items.Count != 0)
+                {
+                    otherCollectionTree.LabelCollection.Title = "其他";
+                }
+                items.Add(otherCollectionTree);
             }
             LabelCollectionTrees = items;
         }

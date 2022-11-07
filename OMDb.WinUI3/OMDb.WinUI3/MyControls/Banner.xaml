@@ -38,7 +38,8 @@
                 Foreground="White" />
             <TextBlock
                 x:Name="DesTextBlock"
-                Margin="2,10,0,20"
+                Text="44"
+                Margin="2,4,0,10"
                 FontSize="18"
                 FontWeight="Thin"
                 Foreground="LightGray" />
