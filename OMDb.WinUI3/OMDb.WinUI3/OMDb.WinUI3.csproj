@@ -19,6 +19,9 @@
     <PRIResource Remove="Enums\**" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="Assets\FFmpeg\ffmpeg.exe" />
+    <Content Remove="Assets\FFmpeg\ffplay.exe" />
+    <Content Remove="Assets\FFmpeg\ffprobe.exe" />
     <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>
@@ -252,11 +255,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\FFmpeg\" />
+    <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+    <None Update="Assets\FFmpeg\ffmpeg.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FFmpeg\ffplay.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\FFmpeg\ffprobe.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
