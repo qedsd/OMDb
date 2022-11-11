@@ -29,5 +29,9 @@ namespace OMDb.Core.DbModels
         /// </summary>
         [SugarColumn(IsNullable = true)]
         public string Description { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public DateTime LastUpdateTime { get; set; }
     }
 }
