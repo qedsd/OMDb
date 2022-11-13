@@ -153,7 +153,7 @@ namespace OMDb.Core.Services
                 types.Add(typeof(LabelDb));
                 types.Add(typeof(EntryLabelDb));
                 types.Add(typeof(EntryCollectionDb));
-                types.Add(typeof(EntryCollectionsDb));
+                types.Add(typeof(EntryCollectionItemDb));
                 LocalDb.CodeFirst.InitTables(types.ToArray());
                 return true;
             }

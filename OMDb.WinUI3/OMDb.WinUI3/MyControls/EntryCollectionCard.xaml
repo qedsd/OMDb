@@ -1,0 +1,43 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.EntryCollectionCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.MyControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="Text2" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="Light" />
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Image x:Name="CoverImage" Width="100" />
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="TitleTextBlock" />
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <TextBlock x:Name="LastUpdateTextBlock" Style="{StaticResource Text2}" />
+                <TextBlock
+                    Margin="10,0"
+                    Style="{StaticResource Text2}"
+                    Text="更新" />
+                <TextBlock Style="{StaticResource Text2}" Text="看过" />
+                <TextBlock x:Name="WatchedCountTextBlock" Style="{StaticResource Text2}" />
+                <TextBlock Style="{StaticResource Text2}" Text="/" />
+                <TextBlock x:Name="TotalCountTextBlock" Style="{StaticResource Text2}" />
+                <TextBlock Style="{StaticResource Text2}" Text="部" />
+            </StackPanel>
+            <TextBlock x:Name="DescTextBlock" FontWeight="Thin" />
+        </Grid>
+    </Grid>
+</UserControl>

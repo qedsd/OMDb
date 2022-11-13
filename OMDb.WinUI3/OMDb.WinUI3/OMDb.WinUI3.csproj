@@ -40,6 +40,7 @@
     <None Remove="MyControls\DropArea.xaml" />
     <None Remove="MyControls\EditEntryName.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
+    <None Remove="MyControls\EntryCollectionCard.xaml" />
     <None Remove="MyControls\EntryStoragesControl.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
@@ -269,6 +270,9 @@
     <None Update="Assets\FFmpeg\ffprobe.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="MyControls\EntryCollectionCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Update="Views\Tools\SubToolPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

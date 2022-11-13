@@ -11,7 +11,7 @@ namespace OMDb.Core.DbModels
     /// 词条集锦关联的词条id
     /// </summary>
     [SugarTable("EntryCollections")]
-    public class EntryCollectionsDb
+    public class EntryCollectionItemDb
     {
         /// <summary>
         /// 本地唯一Id
