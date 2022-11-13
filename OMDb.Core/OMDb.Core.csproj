@@ -16,5 +16,6 @@
 		<PackageReference Include="System.Composition.Convention" Version="6.0.0" />
 		<PackageReference Include="System.Composition.TypedParts" Version="6.0.0" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.116" />
+		<PackageReference Include="Xabe.FFmpeg" Version="5.2.0" />
 	</ItemGroup>
 </Project>

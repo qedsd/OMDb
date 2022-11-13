@@ -1,4 +1,5 @@
-﻿using OMDb.Core.Services;
+﻿using OMDb.Core.Helpers;
+using OMDb.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,15 @@ namespace OMDb.Core
         public static bool InitLocalDb(string filePath)
         {
             return DbService.SetLocalDb($"DataSource={filePath}");
+        }
+
+        /// <summary>
+        /// 设置ffmpeg执行文件路径
+        /// </summary>
+        /// <param name="path"></param>
+        public static void SetFFmpegExecutablesPath(string path)
+        {
+            FFmpegHelper.SetExecutablesPath(path);
         }
     }
 }

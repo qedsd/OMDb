@@ -56,6 +56,7 @@ namespace OMDb.WinUI3.Services
                 }
             }
             Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
+            Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
         }
         public static void Save()
         {

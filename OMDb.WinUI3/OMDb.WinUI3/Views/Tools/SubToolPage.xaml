@@ -1,0 +1,125 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.Tools.SubToolPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views.Tools"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tools="using:OMDb.WinUI3.ViewModels.Tools"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <tools:SubToolViewModel />
+    </Page.DataContext>
+    <Page.Resources>
+        <converters:FileToNameConverter x:Key="FileToNameConverter" />
+        <converters:ByteSizeConverter x:Key="ByteSizeConverter" />
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
+        <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+        <Style x:Key="MediaInfoTitleTextBlock" TargetType="TextBlock">
+            <Setter Property="Width" Value="60" />
+            <Setter Property="Margin" Value="0,0,10,0" />
+            <Setter Property="TextAlignment" Value="Left" />
+        </Style>
+    </Page.Resources>
+    <Grid Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid Width="300" Margin="0,20,0,20">
+            <Button
+                Margin="0,10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Command="{Binding SelecteFileCommand}"
+                Content="选择文件"
+                Visibility="{Binding InfoPanelVisible, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}" />
+            <Grid Visibility="{Binding InfoPanelVisible, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
+                <StackPanel>
+                    <Button
+                        Margin="0,10"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding SelecteFileCommand}"
+                        ToolTipService.ToolTip="文件名">
+                        <Button.Content>
+                            <TextBlock Text="{Binding MediaInfo.Path, Converter={StaticResource FileToNameConverter}, Mode=OneWay}" TextWrapping="Wrap" />
+                        </Button.Content>
+                    </Button>
+                    <TextBox
+                        Margin="0,10"
+                        FontWeight="Thin"
+                        IsReadOnly="True"
+                        Text="{Binding MediaInfo.Path, Mode=OneWay}"
+                        TextWrapping="Wrap"
+                        ToolTipService.ToolTip="文件完整路径" />
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource MediaInfoTitleTextBlock}" Text="文件大小" />
+                        <TextBlock Width="100" Text="{Binding MediaInfo.Size, Mode=OneWay, Converter={StaticResource ByteSizeConverter}}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource MediaInfoTitleTextBlock}" Text="分辨率" />
+                        <TextBlock Text="{Binding MediaInfo.VideoInfo.Width, Mode=OneWay}" />
+                        <TextBlock
+                            Margin="2,0"
+                            VerticalAlignment="Center"
+                            Text="×" />
+                        <TextBlock Text="{Binding MediaInfo.VideoInfo.Height, Mode=OneWay}" />
+                    </StackPanel>
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource MediaInfoTitleTextBlock}" Text="时长" />
+                        <TextBlock Text="{Binding MediaInfo.Duration, Mode=OneWay}" />
+                    </StackPanel>
+                </StackPanel>
+                <Button
+                    Padding="24,6"
+                    Margin="10,20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Bottom"
+                    Content="详细属性" />
+            </Grid>
+        </Grid>
+        <ScrollViewer Grid.Column="1" Margin="20,0,0,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Expander
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Stretch"
+                    Header="内嵌字幕">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <controls:DataGrid
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding MediaInfo.SubtitleInfos, Mode=OneWay}">
+                            <controls:DataGrid.Columns>
+                                <controls:DataGridTextColumn Binding="{Binding Title}" Header="标题" />
+                                <controls:DataGridTextColumn Binding="{Binding Language}" Header="语言" />
+                                <controls:DataGridTextColumn Binding="{Binding Codec}" Header="格式" />
+                                <controls:DataGridTextColumn Binding="{Binding Default}" Header="默认" />
+                                <controls:DataGridTextColumn Binding="{Binding Forced}" Header="强制" />
+                            </controls:DataGrid.Columns>
+                        </controls:DataGrid>
+                        <StackPanel Grid.Column="1" Width="100">
+                            <Button Content="导出选中" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Expander>
+                <Expander
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    HorizontalContentAlignment="Stretch"
+                    Header="添加字幕" />
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</Page>
