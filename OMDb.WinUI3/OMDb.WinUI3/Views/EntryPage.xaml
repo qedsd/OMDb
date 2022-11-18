@@ -41,14 +41,14 @@
                     VerticalAlignment="Center"
                     Text="排序:" />
                 <ComboBox
-                    Width="140"
                     Grid.Column="1"
+                    Width="140"
                     VerticalAlignment="Center"
                     ItemsSource="{x:Bind VM.SortTypeStrs, Mode=OneWay}"
                     SelectedIndex="{x:Bind VM.SortTypeIndex, Mode=TwoWay}" />
                 <ComboBox
-                    Width="100"
                     Grid.Column="2"
+                    Width="100"
                     Margin="10,0,0,0"
                     ItemsSource="{x:Bind VM.SortWayStrs, Mode=OneWay}"
                     SelectedIndex="{x:Bind VM.SortWayIndex, Mode=TwoWay}" />

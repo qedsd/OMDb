@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.WinUI3.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,16 @@ namespace OMDb.WinUI3.Views
         public CollectionsPage()
         {
             this.InitializeComponent();
+        }
+
+        private void MenuFlyoutItem_Edit_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CollectionsViewModel).EditCommand.Execute((sender as FrameworkElement).DataContext);
+        }
+
+        private void MenuFlyoutItem_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as CollectionsViewModel).RemoveCommand.Execute((sender as FrameworkElement).DataContext);
         }
     }
 }

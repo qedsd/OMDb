@@ -17,18 +17,29 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image x:Name="CoverImage" Width="100" />
+        <Image
+            x:Name="CoverImage"
+            Width="100"
+            Margin="10,0" />
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="1.1*" />
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="TitleTextBlock" />
-            <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBlock
+                x:Name="TitleTextBlock"
+                FontSize="16"
+                FontWeight="Medium" />
+            <TextBlock
+                x:Name="DescTextBlock"
+                Grid.Row="1"
+                FontWeight="Thin" />
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <TextBlock x:Name="LastUpdateTextBlock" Style="{StaticResource Text2}" />
+
                 <TextBlock
-                    Margin="10,0"
+                    Margin="2,0,10,0"
                     Style="{StaticResource Text2}"
                     Text="更新" />
                 <TextBlock Style="{StaticResource Text2}" Text="看过" />
@@ -37,7 +48,6 @@
                 <TextBlock x:Name="TotalCountTextBlock" Style="{StaticResource Text2}" />
                 <TextBlock Style="{StaticResource Text2}" Text="部" />
             </StackPanel>
-            <TextBlock x:Name="DescTextBlock" FontWeight="Thin" />
         </Grid>
     </Grid>
 </UserControl>
