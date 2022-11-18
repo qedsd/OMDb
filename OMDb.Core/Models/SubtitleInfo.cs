@@ -19,6 +19,10 @@ namespace OMDb.Core.Models
 
         public string Codec { get; set; }
 
+        public string Path { get; set; }
+
+        public SubtitleInfo() { }
+
         public SubtitleInfo(ISubtitleStream subtitleStream)
         {
             Language = subtitleStream.Language;

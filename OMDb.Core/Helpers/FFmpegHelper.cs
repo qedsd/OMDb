@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OMDb.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace OMDb.Core.Helpers
 
         public static void Test()
         {
-            AddSubtitleAsync(@"F:\clear.mkv", @"F:\2.mkv", @"F:\1.ass", "fre");
+            //AddSubtitleAsync(@"F:\clear.mkv", @"F:\2.mkv", @"F:\1.ass", "fre");
         }
         public static async Task<Models.MediaInfo> GetMediaInfoAsync(string path)
         {
@@ -24,7 +25,12 @@ namespace OMDb.Core.Helpers
             return new Models.MediaInfo(info);
         }
 
-        public static async void AddSubtitleAsync(string inputVideo, string outputVideo, string subtitlePath, string lang = null)
+        public static async Task AddSubtitleAsync(string inputVideo, string outputVideo, SubtitleInfo newsubtitle)
+        {
+            await AddSubtitleAsync(inputVideo,outputVideo, new List<SubtitleInfo>() { newsubtitle });
+        }
+
+        public static async Task AddSubtitleAsync(string inputVideo, string outputVideo, List<SubtitleInfo> newsubtitles)
         {
             IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputVideo);
             IVideoStream videoStream = mediaInfo.VideoStreams.FirstOrDefault()
@@ -33,9 +39,6 @@ namespace OMDb.Core.Helpers
             IAudioStream audioStream = mediaInfo.AudioStreams.FirstOrDefault()
                 ?.SetCodec(AudioCodec.copy);
 
-            IMediaInfo subtitleInfo = await FFmpeg.GetMediaInfo(subtitlePath);
-
-            ISubtitleStream subtitleStream = subtitleInfo.SubtitleStreams.First().SetLanguage(lang);
             var conversion = FFmpeg.Conversions.New()
                 .AddStream(audioStream)
                 .AddStream(videoStream);
@@ -48,7 +51,16 @@ namespace OMDb.Core.Helpers
                 }
             }
 
-            conversion.AddStream(subtitleStream);
+            foreach (var newSubtitle in newsubtitles)
+            {
+                IMediaInfo subtitleInfo = await FFmpeg.GetMediaInfo(newSubtitle.Path);
+                var newSubStream = subtitleInfo.SubtitleStreams.First();
+                newSubStream.SetCodec(newSubtitle.Codec);
+                newSubStream.SetLanguage(newSubtitle.Language);
+                //TODO:title?
+                conversion.AddStream(newSubStream);
+            }
+
             conversion.SetOutput(outputVideo);
             conversion.OnProgress += Conversion_OnProgress;
             await conversion.Start();

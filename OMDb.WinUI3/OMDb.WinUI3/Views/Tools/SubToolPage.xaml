@@ -7,10 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views.Tools"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:tools="using:OMDb.WinUI3.ViewModels.Tools"
+    x:Name="page"
     mc:Ignorable="d">
     <Page.DataContext>
-        <tools:SubToolViewModel />
+        <tools:SubToolViewModel x:Name="ViewModel" />
     </Page.DataContext>
     <Page.Resources>
         <converters:FileToNameConverter x:Key="FileToNameConverter" />
@@ -28,7 +30,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Grid Width="300" Margin="0,20,0,20">
+        <Grid Width="280" Margin="0,20,0,20">
             <Button
                 Margin="0,10"
                 HorizontalAlignment="Stretch"
@@ -73,53 +75,125 @@
                     </StackPanel>
                 </StackPanel>
                 <Button
-                    Padding="24,6"
                     Margin="10,20"
+                    Padding="24,6"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
                     Content="详细属性" />
             </Grid>
         </Grid>
-        <ScrollViewer Grid.Column="1" Margin="20,0,0,0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Expander
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    HorizontalContentAlignment="Stretch"
-                    Header="内嵌字幕">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <controls:DataGrid
+        <Grid Grid.Column="1" Margin="10,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Expander
+                x:Name="InnerSubExpander"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Stretch"
+                Expanding="InnerSubExpander_Expanding"
+                Header="内嵌字幕">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <controls:DataGrid
                         AutoGenerateColumns="False"
                         IsReadOnly="True"
                         ItemsSource="{Binding MediaInfo.SubtitleInfos, Mode=OneWay}">
-                            <controls:DataGrid.Columns>
-                                <controls:DataGridTextColumn Binding="{Binding Title}" Header="标题" />
-                                <controls:DataGridTextColumn Binding="{Binding Language}" Header="语言" />
-                                <controls:DataGridTextColumn Binding="{Binding Codec}" Header="格式" />
-                                <controls:DataGridTextColumn Binding="{Binding Default}" Header="默认" />
-                                <controls:DataGridTextColumn Binding="{Binding Forced}" Header="强制" />
-                            </controls:DataGrid.Columns>
-                        </controls:DataGrid>
-                        <StackPanel Grid.Column="1" Width="100">
-                            <Button Content="导出选中" HorizontalAlignment="Center"/>
-                        </StackPanel>
-                    </Grid>
-                </Expander>
-                <Expander
-                    Grid.Row="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Top"
-                    HorizontalContentAlignment="Stretch"
-                    Header="添加字幕" />
-            </Grid>
-        </ScrollViewer>
+                        <controls:DataGrid.Columns>
+                            <controls:DataGridTextColumn Binding="{Binding Title}" Header="标题" />
+                            <controls:DataGridTextColumn Binding="{Binding Language}" Header="语言" />
+                            <controls:DataGridTextColumn Binding="{Binding Codec}" Header="格式" />
+                            <controls:DataGridTextColumn Binding="{Binding Default}" Header="默认" />
+                            <controls:DataGridTextColumn Binding="{Binding Forced}" Header="强制" />
+                        </controls:DataGrid.Columns>
+                    </controls:DataGrid>
+                    <StackPanel Grid.Column="1" Width="100">
+                        <Button HorizontalAlignment="Center" Content="导出选中" />
+                    </StackPanel>
+                </Grid>
+            </Expander>
+            <Expander
+                x:Name="NewSubExpander"
+                Grid.Row="1"
+                Margin="0,10,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                HorizontalContentAlignment="Stretch"
+                Expanding="NewSubExpander_Expanding"
+                Header="新增字幕">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <ListView
+                        x:Name="NewSubListView"
+                        ItemsSource="{Binding NewSubtitleInfos, Mode=OneWay}"
+                        SelectionMode="Extended">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Padding" Value="8" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:NewSubtitle">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox
+                                        Width="140"
+                                        Margin="4,0"
+                                        Text="{x:Bind Title, Mode=TwoWay}"
+                                        ToolTipService.ToolTip="标题" />
+                                    <ComboBox
+                                        Width="140"
+                                        Margin="4,0"
+                                        IsEditable="True"
+                                        ItemsSource="{x:Bind Langs}"
+                                        SelectedValue="{x:Bind Language, Mode=TwoWay}"
+                                        ToolTipService.ToolTip="语言" />
+                                    <ComboBox
+                                        Width="170"
+                                        Margin="4,0"
+                                        ItemsSource="{x:Bind Codecs}"
+                                        SelectedItem="{x:Bind Codec, Mode=TwoWay}"
+                                        ToolTipService.ToolTip="编码" />
+                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind Path, Mode=OneWay}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <StackPanel Grid.Column="1" Width="100">
+                        <Button
+                            Margin="0,10"
+                            HorizontalAlignment="Center"
+                            Command="{Binding AddSubCommand}">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Add" />
+                            </Button.Content>
+                        </Button>
+                        <Button
+                            Margin="0,10"
+                            HorizontalAlignment="Center"
+                            Click="Button_Click">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Remove" />
+                            </Button.Content>
+                        </Button>
+                        <Button
+                            Margin="0,10"
+                            HorizontalAlignment="Center"
+                            Command="{Binding StartAddSubComman}">
+                            <Button.Content>
+                                <SymbolIcon Symbol="Play" />
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Expander>
+        </Grid>
     </Grid>
 </Page>
