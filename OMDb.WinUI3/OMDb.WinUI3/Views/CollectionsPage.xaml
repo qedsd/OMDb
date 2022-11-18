@@ -2,12 +2,89 @@
     x:Class="OMDb.WinUI3.Views.CollectionsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
-
-    <Grid />
+    <Page.DataContext>
+        <viewmodels:CollectionsViewModel />
+    </Page.DataContext>
+    <Grid Margin="24,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="18"
+                Text="片单" />
+            <StackPanel
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <AutoSuggestBox Width="300" QueryIcon="Find" />
+                <Button Margin="4,0" ToolTipService.ToolTip="创建片单">
+                    <Button.Content>
+                        <FontIcon
+                            FontFamily="Segoe UI Symbol"
+                            FontSize="14"
+                            Glyph="&#xE109;" />
+                    </Button.Content>
+                    <Button.Flyout>
+                        <Flyout>
+                            <StackPanel Width="300">
+                                <TextBox
+                                    Margin="0,10"
+                                    PlaceholderText="标题"
+                                    Text="{Binding NewCollectionTitle, Mode=TwoWay}" />
+                                <TextBox
+                                    Margin="0,10"
+                                    PlaceholderText="描述"
+                                    Text="{Binding NewCollectionDesc, Mode=TwoWay}" />
+                                <Button
+                                    Margin="0,10"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding AddNewCollectionCommand}"
+                                    Content="确定" />
+                            </StackPanel>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <controls:AdaptiveGridView
+            Grid.Row="1"
+            Margin="0,10,0,0"
+            DesiredWidth="400"
+            IsItemClickEnabled="True"
+            ItemClickCommand="{Binding CollectionDetailCommand}"
+            ItemHeight="80"
+            ItemsSource="{Binding EntryCollections}"
+            SelectionMode="None"
+            StretchContentForSingleRow="True">
+            <controls:AdaptiveGridView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Click="MenuFlyoutItem_Edit_Click" Text="编辑" />
+                                <MenuFlyoutItem Click="MenuFlyoutItem_Remove_Click" Text="删除" />
+                            </MenuFlyout>
+                        </Grid.ContextFlyout>
+                        <mycontrols:EntryCollectionCard Margin="4" EntryCollection="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </controls:AdaptiveGridView.ItemTemplate>
+        </controls:AdaptiveGridView>
+    </Grid>
 </Page>

@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.WinUI3.Models;
 using System;
@@ -33,8 +34,15 @@ namespace OMDb.WinUI3.MyControls
             card.DescTextBlock.Text = collection.Description;
             card.LastUpdateTextBlock.Text = collection.LastUpdateTime.ToString();
             card.WatchedCountTextBlock.Text = collection.WatchedCount.ToString();
-            card.TotalCountTextBlock.Text = collection.Items?.Count.ToString();
-            card.CoverImage.Source = collection.CoverImage;
+            card.TotalCountTextBlock.Text = collection.Items == null? "0" : collection.Items.Count.ToString();
+            if(collection.CoverImage != null)
+            {
+                card.CoverImage.Source = collection.CoverImage;
+            }
+            else
+            {
+                card.CoverImage.Source = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")));
+            }
         }
 
         public EntryCollection EntryCollection

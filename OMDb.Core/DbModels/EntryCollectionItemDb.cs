@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OMDb.Core.Models;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,5 +31,10 @@ namespace OMDb.Core.DbModels
         /// 词条所在的dbid
         /// </summary>
         public string DbId { get; set; }
+
+        public QueryItem ToQueryItem()
+        {
+            return new QueryItem(EntryId, DbId);
+        }
     }
 }

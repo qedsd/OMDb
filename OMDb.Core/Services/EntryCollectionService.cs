@@ -42,6 +42,14 @@ namespace OMDb.Core.Services
                             }
                         }
                     }
+                    else
+                    {
+                        foreach (var collection in collectionDbs)
+                        {
+                            EntryCollection entryCollection = EntryCollection.Create(collection);
+                            entryCollections.Add(entryCollection);
+                        }
+                    }
                 });
                 return entryCollections;
             }
@@ -55,15 +63,32 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Insertable(entryCollectionDb);
+                if(string.IsNullOrWhiteSpace(entryCollectionDb.Id))
+                {
+                    entryCollectionDb.Id = Guid.NewGuid().ToString();
+                }
+                DbService.LocalDb.Insertable(entryCollectionDb).ExecuteCommand();
             }
         }
-
+        public static void RemoveCollection(string key)
+        {
+            if (IsLocalDbValid())
+            {
+                DbService.LocalDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
+            }
+        }
         public static void AddCollectionItem(EntryCollectionItemDb item)
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Insertable(item);
+                DbService.LocalDb.Insertable(item).ExecuteCommand();
+            }
+        }
+        public static void RemoveCollectionItem(string key)
+        {
+            if (IsLocalDbValid())
+            {
+                DbService.LocalDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
             }
         }
     }
