@@ -19,9 +19,6 @@
     <PRIResource Remove="Enums\**" />
   </ItemGroup>
   <ItemGroup>
-    <Content Remove="Assets\FFmpeg\ffmpeg.exe" />
-    <Content Remove="Assets\FFmpeg\ffplay.exe" />
-    <Content Remove="Assets\FFmpeg\ffprobe.exe" />
     <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>
@@ -261,15 +258,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\FFmpeg\ffmpeg.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\FFmpeg\ffplay.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Assets\FFmpeg\ffprobe.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <Page Update="MyControls\EntryCollectionCard.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -330,5 +318,9 @@
     <Page Update="Views\ClassificationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\FFmpeg\" />
   </ItemGroup>
 </Project>
