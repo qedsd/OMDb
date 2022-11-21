@@ -68,7 +68,7 @@
             DesiredWidth="400"
             IsItemClickEnabled="True"
             ItemClickCommand="{Binding CollectionDetailCommand}"
-            ItemHeight="80"
+            ItemHeight="180"
             ItemsSource="{Binding EntryCollections}"
             SelectionMode="None"
             StretchContentForSingleRow="True">
@@ -77,14 +77,22 @@
                     <Grid>
                         <Grid.ContextFlyout>
                             <MenuFlyout>
-                                <MenuFlyoutItem Click="MenuFlyoutItem_Edit_Click" Text="编辑" />
+                                <MenuFlyoutItem
+                                    Click="MenuFlyoutItem_Edit_Click"
+                                    Text="编辑"
+                                    Visibility="Collapsed" />
                                 <MenuFlyoutItem Click="MenuFlyoutItem_Remove_Click" Text="删除" />
                             </MenuFlyout>
                         </Grid.ContextFlyout>
-                        <mycontrols:EntryCollectionCard Margin="4" EntryCollection="{Binding}" />
+                        <mycontrols:EntryCollectionCard2 Margin="4" EntryCollection="{Binding}" />
                     </Grid>
                 </DataTemplate>
             </controls:AdaptiveGridView.ItemTemplate>
         </controls:AdaptiveGridView>
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{Binding RefreshCommand}" Text="刷新" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
     </Grid>
 </Page>

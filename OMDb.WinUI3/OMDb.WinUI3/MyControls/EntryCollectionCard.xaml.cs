@@ -38,6 +38,7 @@ namespace OMDb.WinUI3.MyControls
             if(collection.CoverImage != null)
             {
                 card.CoverImage.Source = collection.CoverImage;
+
             }
             else
             {

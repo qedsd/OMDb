@@ -70,7 +70,7 @@ namespace OMDb.WinUI3.ViewModels
         }
         public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>((item) =>
         {
-            if (item != null)
+            if (item != null && !string.IsNullOrEmpty(item.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
                 EntryViewModel.Current.UpdateEntryList();

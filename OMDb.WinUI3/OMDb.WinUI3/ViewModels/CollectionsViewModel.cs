@@ -89,38 +89,37 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-        public ICommand CollectionDetailCommand => new RelayCommand<EntryCollection>(async (selectedItem) =>
+        public ICommand CollectionDetailCommand => new RelayCommand<EntryCollection>((selectedItem) =>
         {
-            //TODO:借用LabelCollection，后续考虑将两者合并或单独实现
             if (selectedItem != null)
             {
-                Helpers.InfoHelper.ShowWaiting();
-                LabelCollection labelCollection = new LabelCollection()
-                {
-                    Title = selectedItem.Title,
-                    Description = selectedItem.Description,
-                };
-                if (selectedItem.Items != null)
-                {
-                    var entrys = await Core.Services.EntryService.QueryEntryAsync(selectedItem.Items.Select(p => p.ToQueryItem()).ToList());
-                    labelCollection.Entries = entrys;
-                }
-                Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
-                Helpers.InfoHelper.HideWaiting();
+                Services.NavigationService.Navigate(typeof(Views.EntryCollectionDetailPage), selectedItem);
             }
         });
 
-        public ICommand EditCommand => new RelayCommand<EntryCollection>(async (selectedItem) =>
+        public ICommand EditCommand => new RelayCommand<EntryCollection>((selectedItem) =>
         {
 
         });
-        public ICommand RemoveCommand => new RelayCommand<EntryCollection>((selectedItem) =>
+        public ICommand RemoveCommand => new RelayCommand<EntryCollection>(async(selectedItem) =>
         {
             if(selectedItem != null)
             {
-                Core.Services.EntryCollectionService.RemoveCollection(selectedItem.Id);
-                EntryCollections.Remove(selectedItem);
+                if(await Dialogs.QueryDialog.ShowDialog("删除片单", $"是否删除 {selectedItem.Title}"))
+                {
+                    Core.Services.EntryCollectionService.RemoveCollection(selectedItem.Id);
+                    EntryCollections.Remove(selectedItem);
+                    Helpers.InfoHelper.ShowSuccess("已删除");
+                }
+                else
+                {
+                    Helpers.InfoHelper.ShowSuccess("已取消");
+                }
             }
+        });
+        public ICommand RefreshCommand => new RelayCommand(() =>
+        {
+            InitAsync();
         });
     }
 }

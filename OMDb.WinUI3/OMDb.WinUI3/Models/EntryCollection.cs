@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace OMDb.WinUI3.Models
 {
-    internal class EntryCollection : ObservableObject
+    public class EntryCollection : ObservableObject
     {
         /// <summary>
         /// 数据库key
@@ -41,19 +41,22 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref lastUpdateTime, value);
         }
 
-        private ObservableCollection<Entry> entries;
-        public ObservableCollection<Entry> Entries
-        {
-            get => entries; 
-            set => SetProperty(ref entries, value);
-        }
-
         public List<Core.DbModels.EntryCollectionItemDb> Items;
+
+        public int TotalCount
+        {
+            get => Items == null ? 0 : Items.Count;
+        }
 
         /// <summary>
         /// 已观看数量
         /// </summary>
         public int WatchedCount { get; set; }
+
+        /// <summary>
+        /// 在看数量
+        /// </summary>
+        public int WatchingCount { get; set; }
 
         public ImageSource CoverImage { get; set; }
 
@@ -64,11 +67,24 @@ namespace OMDb.WinUI3.Models
 
         public EntryCollection(Core.Models.EntryCollection entryCollection)
         {
+            Id = entryCollection.Id;
             Title = entryCollection.Title;
             Description = entryCollection.Description;
             Items = entryCollection.Items;
             CreateTime = entryCollection.CreateTime;
             LastUpdateTime = entryCollection.LastUpdateTime;
+        }
+
+        public Core.DbModels.EntryCollectionDb ToEntryCollectionDb()
+        {
+            return new Core.DbModels.EntryCollectionDb()
+            {
+                Id = Id,
+                Title = Title,
+                Description = Description,
+                CreateTime = CreateTime,
+                LastUpdateTime = LastUpdateTime,
+            };
         }
 
         /// <summary>

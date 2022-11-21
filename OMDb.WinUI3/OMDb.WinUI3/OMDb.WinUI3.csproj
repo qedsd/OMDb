@@ -30,6 +30,7 @@
     <None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
     <None Remove="Dialogs\MyContentDialog.xaml" />
+    <None Remove="Dialogs\PickEntryCollectionDialog.xaml" />
     <None Remove="Dialogs\QueryDialog.xaml" />
     <None Remove="Dialogs\WatingDialog.xaml" />
     <None Remove="MyControls\AddLabelsControl.xaml" />
@@ -38,6 +39,7 @@
     <None Remove="MyControls\EditEntryName.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
     <None Remove="MyControls\EntryCollectionCard.xaml" />
+    <None Remove="MyControls\EntryCollectionCard2.xaml" />
     <None Remove="MyControls\EntryStoragesControl.xaml" />
     <None Remove="MyControls\ExpandableSettingControl.xaml" />
     <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
@@ -57,6 +59,7 @@
     <None Remove="Styles\Thickness.xaml" />
     <None Remove="Views\ClassificationPage.xaml" />
     <None Remove="Views\CollectionsPage.xaml" />
+    <None Remove="Views\EntryCollectionDetailPage.xaml" />
     <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
@@ -322,5 +325,23 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\PickEntryCollectionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\EntryCollectionDetailPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\EntryCollectionCard2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

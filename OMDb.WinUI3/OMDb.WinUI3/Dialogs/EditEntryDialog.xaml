@@ -9,7 +9,7 @@
     xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     x:Name="page"
-    MinWidth="600"
+    MinWidth="300"
     MaxWidth="800"
     Background="Transparent"
     mc:Ignorable="d">
@@ -62,9 +62,9 @@
                 <TextBox
                     Grid.Column="1"
                     Margin="4,0,12,0"
+                    PlaceholderText="词条名称"
                     Text="{x:Bind VM.EntryName, Mode=TwoWay}"
-                    TextChanged="TextBox_TextChanged" 
-                    PlaceholderText="词条名称"/>
+                    TextChanged="TextBox_TextChanged" />
                 <!--<CheckBox
                     Grid.Column="2"
                     Command="{x:Bind VM.CheckDefaultCommand}"

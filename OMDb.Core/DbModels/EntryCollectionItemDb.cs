@@ -32,6 +32,11 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public string DbId { get; set; }
 
+        /// <summary>
+        /// 添加时间
+        /// </summary>
+        public DateTime AddTime { get; set; }
+
         public QueryItem ToQueryItem()
         {
             return new QueryItem(EntryId, DbId);

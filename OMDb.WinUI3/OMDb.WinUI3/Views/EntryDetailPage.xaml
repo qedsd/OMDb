@@ -222,6 +222,11 @@
                 HorizontalAlignment="Center"
                 LabelDbs="{x:Bind VM.Entry.Labels, Mode=TwoWay}"
                 Mode="Add" />
+            <Button
+                Margin="0,24,0,0"
+                HorizontalAlignment="Center"
+                Command="{x:Bind VM.AddToCollectionCommand}"
+                Content="添加到片单" />
         </StackPanel>
         <!--  右侧滚动数据  -->
         <ScrollViewer Grid.Column="1">

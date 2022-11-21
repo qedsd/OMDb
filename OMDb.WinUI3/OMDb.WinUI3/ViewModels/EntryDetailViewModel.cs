@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
+using OMDb.Core.DbModels;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -472,6 +474,29 @@ namespace OMDb.WinUI3.ViewModels
                     Entry.LoadImgs();
                     Helpers.InfoHelper.ShowSuccess("复制完成");
                 }
+            }
+        });
+        #endregion
+
+        #region 片单
+        public ICommand AddToCollectionCommand => new RelayCommand(async() =>
+        {
+            var collections = await PickEntryCollectionDialog.ShowDialog();
+            if(collections != null)
+            {
+                foreach (var collection in collections)
+                {
+                    EntryCollectionItemDb entryCollectionItemDb = new EntryCollectionItemDb()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        EntryId = Entry.Entry.Id,
+                        DbId = Entry.Entry.DbId,
+                        CollectionId = collection.Id,
+                        AddTime = DateTime.Now
+                    };
+                    Core.Services.EntryCollectionService.AddCollectionItem(entryCollectionItemDb);
+                }
+                Helpers.InfoHelper.ShowSuccess("已添加");
             }
         });
         #endregion

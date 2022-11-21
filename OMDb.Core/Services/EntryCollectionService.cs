@@ -31,16 +31,32 @@ namespace OMDb.Core.Services
                     var group = items.GroupBy(p => p.CollectionId).ToList();
                     if (group != null && group.Count > 0)
                     {
-                        var dic = group.ToDictionary(p => p.Key);
-                        foreach (var collection in collectionDbs)
+                        var dic = group.ToDictionary(p => p.Key);//key为EntryCollectionDb.Id
+                        foreach (var item in group)
                         {
-                            if (dic.TryGetValue(collection.Id, out var g))
+                            var collection = collectionDbs.FirstOrDefault(p => p.Id == item.Key);
+                            if(collection != null)
                             {
                                 EntryCollection entryCollection = EntryCollection.Create(collection);
-                                entryCollection.Items = new List<EntryCollectionItemDb>(g);
+                                entryCollection.Items = new List<EntryCollectionItemDb>(item);
                                 entryCollections.Add(entryCollection);
+                                collectionDbs.Remove(collection);
                             }
                         }
+                        foreach(var emptyCollection in collectionDbs)
+                        {
+                            EntryCollection entryCollection = EntryCollection.Create(emptyCollection);
+                            entryCollections.Add(entryCollection);
+                        }
+                        //foreach (var collection in collectionDbs)
+                        //{
+                        //    if (dic.TryGetValue(collection.Id, out var g))
+                        //    {
+                        //        EntryCollection entryCollection = EntryCollection.Create(collection);
+                        //        entryCollection.Items = new List<EntryCollectionItemDb>(g);
+                        //        entryCollections.Add(entryCollection);
+                        //    }
+                        //}
                     }
                     else
                     {
@@ -89,6 +105,14 @@ namespace OMDb.Core.Services
             if (IsLocalDbValid())
             {
                 DbService.LocalDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
+            }
+        }
+
+        public static void UpdateCollection(EntryCollectionDb entryCollectionDb)
+        {
+            if (IsLocalDbValid())
+            {
+                DbService.LocalDb.Updateable(entryCollectionDb).ExecuteCommand();
             }
         }
     }

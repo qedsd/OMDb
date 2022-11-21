@@ -1,0 +1,202 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.EntryCollectionDetailPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    Background="Transparent"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewmodels:EntryCollectionDetailViewModel />
+    </Page.DataContext>
+    <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
+        <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+    </Page.Resources>
+
+    <Grid Margin="24,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.Background>
+                    <SolidColorBrush Opacity="0.01" Color="Transparent" />
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="PointerEntered">
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditButton}"
+                            Value="Visible" />
+                    </Core:EventTriggerBehavior>
+                    <Core:EventTriggerBehavior EventName="PointerExited">
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditButton}"
+                            Value="Collapsed" />
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock FontSize="24" Text="{Binding EntryCollection.Title, Mode=OneWay}" />
+                    <TextBlock
+                        Margin="4,4,0,0"
+                        VerticalAlignment="Center"
+                        FontWeight="Thin"
+                        Text="{Binding EntryCollection.Description, Mode=OneWay}" />
+                </StackPanel>
+                <Button
+                    x:Name="EditButton"
+                    Grid.Column="1"
+                    Width="50"
+                    Height="32"
+                    Padding="8,0"
+                    VerticalAlignment="Bottom"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Visibility="Collapsed">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontFamily="Segoe MDL2 Assets"
+                        Text="&#xE104;"
+                        ToolTipService.ToolTip="编辑" />
+                    <Button.Flyout>
+                        <Flyout x:Name="EditNameFlyout">
+                            <Grid Width="300">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBox
+                                        Margin="0,8"
+                                        PlaceholderText="标题"
+                                        Text="{Binding EditTitle, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                    <TextBox
+                                        Grid.Row="1"
+                                        Margin="0,8"
+                                        PlaceholderText="描述"
+                                        Text="{Binding EditDesc, Mode=TwoWay}"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+                                <Grid
+                                    Grid.Row="1"
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="64" />
+                                        <ColumnDefinition Width="64" />
+                                    </Grid.ColumnDefinitions>
+                                    <Button
+                                        HorizontalAlignment="Center"
+                                        Click="EditFlyout_Button_Click"
+                                        Command="{Binding ConfirmEditCommand}"
+                                        Content="确定" />
+                                    <Button
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Center"
+                                        Click="EditFlyout_Button_Click"
+                                        Command="{Binding CancelEditCommand}"
+                                        Content="取消" />
+                                </Grid>
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+            </Grid>
+            <Grid
+                Grid.Column="2"
+                HorizontalAlignment="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Margin="0,10,0,0"
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <TextBlock FontWeight="Thin" Text="看过" />
+                    <TextBlock
+                        Margin="2,0,0,0"
+                        FontWeight="Thin"
+                        Text="{Binding EntryCollection.WatchedCount, Mode=OneWay}" />
+
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        FontWeight="Thin"
+                        Text="在看" />
+                    <TextBlock
+                        Margin="2,0,0,0"
+                        FontWeight="Thin"
+                        Text="{Binding EntryCollection.WatchingCount, Mode=OneWay}" />
+
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        FontWeight="Thin"
+                        Text="总" />
+                    <TextBlock
+                        Margin="2,0,0,0"
+                        FontWeight="Thin"
+                        Text="{Binding EntryCollection.TotalCount, Mode=OneWay}" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock
+                        Margin="0,0,10,0"
+                        VerticalAlignment="Center"
+                        Text="排序:" />
+                    <ComboBox
+                        Width="140"
+                        VerticalAlignment="Center"
+                        ItemsSource="{Binding SortTypeStrs, Mode=OneWay}"
+                        SelectedIndex="{Binding SortTypeIndex, Mode=TwoWay}" />
+                    <ComboBox
+                        Width="100"
+                        Margin="10,0,0,0"
+                        ItemsSource="{Binding SortWayStrs, Mode=OneWay}"
+                        SelectedIndex="{Binding SortWayIndex, Mode=TwoWay}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1" Margin="{StaticResource SmallTopMargin}">
+            <controls:AdaptiveGridView
+                Padding="20"
+                DesiredWidth="160"
+                IsItemClickEnabled="True"
+                ItemClickCommand="{Binding ItemClickCommand}"
+                ItemHeight="260"
+                ItemsSource="{Binding ItemsSource, Mode=OneWay}"
+                SelectionMode="None"
+                StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <mycontrols:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </Grid>
+    </Grid>
+</Page>

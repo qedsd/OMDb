@@ -8,8 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     Background="Transparent"
-    mc:Ignorable="d"
-    NavigationCacheMode="Enabled">
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
 
     <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
         <Grid.RowDefinitions>
@@ -22,12 +22,12 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                <TextBlock FontSize="24" Text="{x:Bind VM.Title,Mode=OneWay}" />
+                <TextBlock FontSize="24" Text="{x:Bind VM.Title, Mode=OneWay}" />
                 <TextBlock
                     Margin="10,0,0,0"
                     VerticalAlignment="Center"
                     FontWeight="Thin"
-                    Text="{x:Bind VM.Description,Mode=OneWay}" />
+                    Text="{x:Bind VM.Description, Mode=OneWay}" />
             </StackPanel>
             <Grid
                 Grid.Column="1"
