@@ -17,7 +17,8 @@
         <AutoSuggestBox
             x:Name="AutoSuggestBox"
             QueryIcon="Find"
-            QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+            DisplayMemberPath="Title"
+            SuggestionChosen="AutoSuggestBox_SuggestionChosen"
             TextChanged="AutoSuggestBox_TextChanged"/>
         <ListBox x:Name="ItemsListBox" SelectionMode="Multiple" Grid.Row="1" Margin="0,4">
             <ListBox.ItemTemplate>

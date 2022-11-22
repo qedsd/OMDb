@@ -484,19 +484,31 @@ namespace OMDb.WinUI3.ViewModels
             var collections = await PickEntryCollectionDialog.ShowDialog();
             if(collections != null)
             {
+                int addCount = 0;
                 foreach (var collection in collections)
                 {
-                    EntryCollectionItemDb entryCollectionItemDb = new EntryCollectionItemDb()
+                    if(Core.Services.EntryCollectionService.QueryFirst(collection.Id, Entry.Entry.Id) == null)
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        EntryId = Entry.Entry.Id,
-                        DbId = Entry.Entry.DbId,
-                        CollectionId = collection.Id,
-                        AddTime = DateTime.Now
-                    };
-                    Core.Services.EntryCollectionService.AddCollectionItem(entryCollectionItemDb);
+                        addCount++;
+                        EntryCollectionItemDb entryCollectionItemDb = new EntryCollectionItemDb()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            EntryId = Entry.Entry.Id,
+                            DbId = Entry.Entry.DbId,
+                            CollectionId = collection.Id,
+                            AddTime = DateTime.Now
+                        };
+                        Core.Services.EntryCollectionService.AddCollectionItem(entryCollectionItemDb);
+                    }
                 }
-                Helpers.InfoHelper.ShowSuccess("已添加");
+                if(addCount == 0)
+                {
+                    Helpers.InfoHelper.ShowError("已存在");
+                }
+                else
+                {
+                    Helpers.InfoHelper.ShowSuccess($"已添加到{addCount}个片单");
+                }
             }
         });
         #endregion

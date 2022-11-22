@@ -115,5 +115,15 @@ namespace OMDb.Core.Services
                 DbService.LocalDb.Updateable(entryCollectionDb).ExecuteCommand();
             }
         }
+
+        public static async Task<EntryCollectionItemDb> QueryFirstAsync(string collectionId,string entryId)
+        {
+            return await DbService.LocalDb.Queryable<EntryCollectionItemDb>().FirstAsync(p=>p.CollectionId == collectionId && p.EntryId == entryId);
+        }
+
+        public static EntryCollectionItemDb QueryFirst(string collectionId, string entryId)
+        {
+            return DbService.LocalDb.Queryable<EntryCollectionItemDb>().First(p => p.CollectionId == collectionId && p.EntryId == entryId);
+        }
     }
 }

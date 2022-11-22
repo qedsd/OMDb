@@ -61,12 +61,25 @@ namespace OMDb.WinUI3.Dialogs
 
         private void AutoSuggestBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-
+            if(string.IsNullOrEmpty(sender.Text))
+            {
+                sender.ItemsSource = null;
+            }
+            else
+            {
+                var items = ItemsListBox.ItemsSource as List<Core.Models.EntryCollection>;
+                if (items != null && items.Count != 0)
+                {
+                    sender.ItemsSource = items.Where(p => p.Title.Contains(sender.Text, StringComparison.OrdinalIgnoreCase));
+                }
+            }
         }
 
-        private void AutoSuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-
+            ItemsListBox.ScrollIntoView(args.SelectedItem);
+            ItemsListBox.SelectedItem = args.SelectedItem;
+            sender.Text = (args.SelectedItem as Core.Models.EntryCollection).Title;
         }
     }
 }
