@@ -38,6 +38,7 @@
     <None Remove="MyControls\DropArea.xaml" />
     <None Remove="MyControls\EditEntryName.xaml" />
     <None Remove="MyControls\EntryCard.xaml" />
+    <None Remove="MyControls\EntryCard2.xaml" />
     <None Remove="MyControls\EntryCollectionCard.xaml" />
     <None Remove="MyControls\EntryCollectionCard2.xaml" />
     <None Remove="MyControls\EntryStoragesControl.xaml" />
@@ -325,6 +326,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MyControls\EntryCard2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

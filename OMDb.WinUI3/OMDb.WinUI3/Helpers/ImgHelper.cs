@@ -50,5 +50,20 @@ namespace OMDb.WinUI3.Helpers
                 return null;
             }
         }
+
+        public static BitmapImage CreateBitmapImage(MemoryStream stream)
+        {
+            try
+            {
+                var bitmapImage = new BitmapImage();
+                stream.Seek(0, SeekOrigin.Begin);
+                bitmapImage.SetSource(stream.AsRandomAccessStream());
+                return bitmapImage;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

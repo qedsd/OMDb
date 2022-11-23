@@ -14,14 +14,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace OMDb.WinUI3.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class CollectionsPage : Page
     {
         public CollectionsPage()
@@ -37,6 +31,11 @@ namespace OMDb.WinUI3.Views
         private void MenuFlyoutItem_Remove_Click(object sender, RoutedEventArgs e)
         {
             (DataContext as CollectionsViewModel).RemoveCommand.Execute((sender as FrameworkElement).DataContext);
+        }
+
+        private void AutoSuggestBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+        {
+            (DataContext as CollectionsViewModel).SuggestionChosenCommand.Execute(args.SelectedItem);
         }
     }
 }

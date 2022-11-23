@@ -96,12 +96,16 @@
                             x:Name="TitleTextBlock"
                             VerticalAlignment="Center"
                             FontSize="20"
+                            MaxLines="2"
+                            TextTrimming="CharacterEllipsis"
                             TextWrapping="Wrap" />
                         <TextBlock
                             x:Name="DescTextBlock"
                             Margin="0,4"
                             FontWeight="Thin"
                             Foreground="White"
+                            MaxLines="3"
+                            TextTrimming="CharacterEllipsis"
                             TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>

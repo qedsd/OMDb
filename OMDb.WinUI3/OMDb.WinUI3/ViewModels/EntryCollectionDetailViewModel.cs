@@ -5,6 +5,7 @@ using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -27,8 +28,8 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        private List<Core.Models.Entry> itemsSource;
-        public List<Core.Models.Entry> ItemsSource
+        private ObservableCollection<Core.Models.EntryCollectionItem> itemsSource;
+        public ObservableCollection<Core.Models.EntryCollectionItem> ItemsSource
         {
             get => itemsSource;
             set => SetProperty(ref itemsSource, value);
@@ -109,27 +110,29 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        private Dictionary<Core.DbModels.EntryCollectionItemDb, Core.Models.Entry> KeyValuePairs;
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
-            KeyValuePairs = new Dictionary<Core.DbModels.EntryCollectionItemDb, Core.Models.Entry>();
             if(EntryCollection.Items != null && EntryCollection.Items.Count != 0)
             {
-                var entrys = await Core.Services.EntryService.QueryEntryAsync(EntryCollection.Items.Select(p => p.ToQueryItem()).ToList());
-                if (entrys != null && entrys.Count != 0)
+                if(EntryCollection.Items.FirstOrDefault(p=>p.Entry == null) != null)
                 {
-                    await Task.Run(() =>
+                    //未赋值Entry，需要赋值
+                    var entrys = await Core.Services.EntryService.QueryEntryAsync(EntryCollection.Items.Select(p => p.ToQueryItem()).ToList());
+                    if (entrys != null && entrys.Count != 0)
                     {
-                        var dic = entrys.ToDictionary(p => p.Id);
-                        foreach (var item in EntryCollection.Items)
+                        await Task.Run(() =>
                         {
-                            if (dic.TryGetValue(item.EntryId, out var entry))
+                            var dic = entrys.ToDictionary(p => p.Id);
+                            foreach(var item in EntryCollection.Items)
                             {
-                                KeyValuePairs.Add(item, entry);
+                                if(dic.TryGetValue(item.EntryId,out var entry))
+                                {
+                                    item.Entry = entry;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
             EditTitle = EntryCollection.Title;
@@ -139,20 +142,29 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async void UpdateEntryList()
         {
+            Helpers.InfoHelper.ShowWaiting();
             ItemsSource?.Clear();
             ItemsSource = null;
             if (SortWay == Core.Enums.SortWay.Positive)
             {
                 ItemsSource = await Task.Run(() =>
                 {
-                    return KeyValuePairs.OrderBy(p => p.Key.AddTime).Select(p => p.Value).ToList();
+                    return EntryCollection.Items.OrderBy(p => p.AddTime).ToObservableCollection();
                 });
             }
+            else
+            {
+                ItemsSource = await Task.Run(() =>
+                {
+                    return EntryCollection.Items.OrderByDescending(p => p.AddTime).ToObservableCollection();
+                });
+            }
+            Helpers.InfoHelper.HideWaiting();
         }
 
-        public static ICommand ItemClickCommand => new RelayCommand<Core.Models.Entry>((entry) =>
+        public static ICommand ItemClickCommand => new RelayCommand<Core.Models.EntryCollectionItem>((item) =>
         {
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
+            NavigationService.Navigate(typeof(Views.EntryDetailPage), item.Entry);
         });
 
         public ICommand ConfirmEditCommand => new RelayCommand(() =>
@@ -167,6 +179,51 @@ namespace OMDb.WinUI3.ViewModels
         {
             EditTitle = EntryCollection.Title;
             EditDesc = EntryCollection.Description;
+        });
+
+        public ICommand RemoveCommand => new RelayCommand<List<Core.Models.EntryCollectionItem>>(async (list) =>
+        {
+            if(list != null && list.Count != 0)
+            {
+                if(await Dialogs.QueryDialog.ShowDialog("是否确认移除词条",$"将从此片单中移除{list.Count}个词条"))
+                {
+                    Core.Services.EntryCollectionService.RemoveCollectionItem(list.Select(p => p.Id).ToList());
+                    foreach(var item in list)
+                    {
+                        ItemsSource.Remove(item);
+                        EntryCollection.Items.Remove(item);
+                    }
+                    
+                    Helpers.InfoHelper.ShowSuccess($"已移除{list.Count}个词条");
+                }
+                else
+                {
+                    Helpers.InfoHelper.ShowSuccess("已取消");
+                }
+            }
+        });
+        public ICommand RemoveOneCommand => new RelayCommand<Core.Models.EntryCollectionItem>(async (item) =>
+        {
+            if (item != null)
+            {
+                if (await Dialogs.QueryDialog.ShowDialog("是否确认移除词条?", $"将从此片单中移除 {item.Entry.Name}"))
+                {
+                    if(Core.Services.EntryCollectionService.RemoveCollectionItem(item.Id))
+                    {
+                        ItemsSource.Remove(item);
+                        EntryCollection.Items.Remove(item);
+                        Helpers.InfoHelper.ShowSuccess($"已移除");
+                    }
+                    else
+                    {
+                        Helpers.InfoHelper.ShowSuccess("操作失败");
+                    }
+                }
+                else
+                {
+                    Helpers.InfoHelper.ShowSuccess("已取消");
+                }
+            }
         });
     }
 }

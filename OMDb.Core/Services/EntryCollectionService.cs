@@ -100,13 +100,29 @@ namespace OMDb.Core.Services
                 DbService.LocalDb.Insertable(item).ExecuteCommand();
             }
         }
-        public static void RemoveCollectionItem(string key)
+        public static bool RemoveCollectionItem(List<string> keys)
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
+                return DbService.LocalDb.Deleteable<EntryCollectionItemDb>().In(keys).ExecuteCommand() > 0;
+            }
+            else
+            {
+                return false;
             }
         }
+        public static bool RemoveCollectionItem(string key)
+        {
+            if (IsLocalDbValid())
+            {
+                return DbService.LocalDb.Deleteable<EntryCollectionItemDb>().In(key).ExecuteCommand() > 0;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         public static void UpdateCollection(EntryCollectionDb entryCollectionDb)
         {

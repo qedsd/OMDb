@@ -32,7 +32,13 @@
                 Grid.Column="1"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
-                <AutoSuggestBox Width="300" QueryIcon="Find" />
+                <AutoSuggestBox
+                    Width="300"
+                    DisplayMemberPath="Title"
+                    ItemsSource="{Binding Suggetions, Mode=OneWay}"
+                    QueryIcon="Find"
+                    SuggestionChosen="AutoSuggestBox_SuggestionChosen"
+                    Text="{Binding SuggestText, Mode=TwoWay}" />
                 <Button Margin="4,0" ToolTipService.ToolTip="创建片单">
                     <Button.Content>
                         <FontIcon

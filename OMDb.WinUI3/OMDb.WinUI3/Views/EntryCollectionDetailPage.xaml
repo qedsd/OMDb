@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.Core.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     Background="Transparent"
@@ -20,6 +21,10 @@
     <Page.Resources>
         <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
         <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+        <converters:EntryCoverImgConverter
+            x:Key="EntryCoverImgConverter"
+            Width="400"
+            CoverMode="Bitmap" />
     </Page.Resources>
 
     <Grid Margin="24,10">
@@ -126,18 +131,16 @@
                     </Button.Flyout>
                 </Button>
             </Grid>
-            <Grid
-                Grid.Column="2"
-                HorizontalAlignment="Right">
+            <Grid Grid.Column="2" HorizontalAlignment="Right">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
+                    <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel
-                    Margin="0,10,0,0"
                     Grid.Row="1"
-                    VerticalAlignment="Center"
+                    Margin="0,10,0,0"
                     HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
                     Orientation="Horizontal">
                     <TextBlock FontWeight="Thin" Text="看过" />
                     <TextBlock
@@ -183,17 +186,29 @@
         </Grid>
         <Grid Grid.Row="1" Margin="{StaticResource SmallTopMargin}">
             <controls:AdaptiveGridView
+                x:Name="AdaptiveGridView"
                 Padding="20"
-                DesiredWidth="160"
+                DesiredWidth="170"
                 IsItemClickEnabled="True"
                 ItemClickCommand="{Binding ItemClickCommand}"
                 ItemHeight="260"
                 ItemsSource="{Binding ItemsSource, Mode=OneWay}"
-                SelectionMode="None"
+                SelectionMode="Extended"
                 StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="8" />
+                    </Style>
+                </controls:AdaptiveGridView.ItemContainerStyle>
                 <controls:AdaptiveGridView.ItemTemplate>
-                    <DataTemplate>
-                        <mycontrols:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    <DataTemplate x:DataType="models:EntryCollectionItem">
+                        <mycontrols:EntryCard2 EntryCollectionItem="{Binding}">
+                            <mycontrols:EntryCard2.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Click="MenuFlyoutItem_Click" Text="从片单中移除" />
+                                </MenuFlyout>
+                            </mycontrols:EntryCard2.ContextFlyout>
+                        </mycontrols:EntryCard2>
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>

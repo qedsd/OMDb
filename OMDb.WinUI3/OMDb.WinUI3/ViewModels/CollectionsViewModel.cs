@@ -23,6 +23,24 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref entryCollections, value);
         }
 
+        private IList<EntryCollection> suggetions;
+        public IList<EntryCollection> Suggetions
+        {
+            get => suggetions;
+            set => SetProperty(ref suggetions, value);
+        }
+
+        private string suggestText;
+        public string SuggestText
+        {
+            get => suggestText;
+            set
+            {
+                SetProperty(ref suggestText, value);
+                UpdateSuggestions();
+            }
+        }
+
         private string newCollectionTitle;
         public string NewCollectionTitle
         {
@@ -51,22 +69,21 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     EntryCollections.Add(await EntryCollection.CreateBaseAsync(c));
                 }
-                //List<EntryCollectionItemDb> entryCollectionItems = new List<EntryCollectionItemDb>();
-                //foreach(var c in collections)
-                //{
-                //    entryCollectionItems.AddRange(c.Items);
-                //}
-                //var dbGroups = entryCollectionItems.GroupBy(p => p.DbId).ToList();
-                //foreach(var dbGroup in dbGroups)
-                //{
-                //    var entryIds = dbGroup.GroupBy(p => p.EntryId).Select(p => p.Key).ToList();
-                //    var histories = await WatchHistoryService.QueryWatchHistoriesAsync(entryIds, dbGroup.Key);
-                //    var dic = histories.ToDictionary(p => p.Id);
-                //    foreach(var item in dbGroup)
-                //    {
-                        
-                //    }
-                //}
+            }
+        }
+
+        private void UpdateSuggestions()
+        {
+            if(EntryCollections!= null)
+            {
+                if(!string.IsNullOrEmpty(SuggestText))
+                {
+                    Suggetions = EntryCollections.Where(p => p.Title.Contains(SuggestText)).ToList();
+                }
+                else
+                {
+                    Suggetions = null;
+                }
             }
         }
 
@@ -120,6 +137,11 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             InitAsync();
+        });
+        public ICommand SuggestionChosenCommand => new RelayCommand<EntryCollection>((item) =>
+        {
+            CollectionDetailCommand.Execute(item);
+            SuggestText = null;
         });
     }
 }

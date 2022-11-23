@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media;
+using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
 using System;
@@ -41,7 +42,7 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref lastUpdateTime, value);
         }
 
-        public List<Core.DbModels.EntryCollectionItemDb> Items;
+        public ObservableCollection<EntryCollectionItem> Items;
 
         public int TotalCount
         {
@@ -70,7 +71,10 @@ namespace OMDb.WinUI3.Models
             Id = entryCollection.Id;
             Title = entryCollection.Title;
             Description = entryCollection.Description;
-            Items = entryCollection.Items;
+            if(entryCollection.Items != null)
+            {
+                Items = entryCollection.Items.Select(p => EntryCollectionItem.Create(p)).ToObservableCollection();
+            }
             CreateTime = entryCollection.CreateTime;
             LastUpdateTime = entryCollection.LastUpdateTime;
         }
@@ -87,11 +91,6 @@ namespace OMDb.WinUI3.Models
             };
         }
 
-        /// <summary>
-        /// 创建不包含Entries详细信息的实例
-        /// </summary>
-        /// <param name="entryCollection"></param>
-        /// <returns></returns>
         public static async Task<EntryCollection> CreateBaseAsync(Core.Models.EntryCollection entryCollection)
         {
             EntryCollection result = new EntryCollection(entryCollection);
