@@ -20,130 +20,256 @@
         <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,0</CornerRadius>
         <converters:StrVisibilityConverter x:Key="StrVisibilityConverter" />
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <Style
+            x:Key="NavButtonStyle"
+            BasedOn="{StaticResource NavigationButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Width" Value="72" />
+            <Setter Property="Height" Value="56" />
+        </Style>
+        <Style x:Key="NavRectangleStyle" TargetType="Rectangle">
+            <Setter Property="Width" Value="2" />
+            <Setter Property="Margin" Value="-16,8,0,8" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="Fill" Value="{ThemeResource SystemAccentColor}" />
+        </Style>
     </Page.Resources>
 
-    <Grid>
-        <Grid x:Name="MainContentGrid" Background="Transparent">
-            <NavigationView
-                x:Name="NavigationView"
-                AlwaysShowHeader="True"
-                BackRequested="NavigationView_BackRequested"
-                CompactPaneLength="80"
-                IsBackButtonVisible="Visible"
-                IsBackEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
-                IsPaneToggleButtonVisible="False"
-                IsSettingsVisible="True"
-                IsTitleBarAutoPaddingEnabled="False"
-                OpenPaneLength="80"
-                PaneDisplayMode="Left"
-                SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}">
-                <NavigationView.MenuItemContainerStyle>
-                    <Style TargetType="NavigationViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="0,10" />
-                    </Style>
-                </NavigationView.MenuItemContainerStyle>
-                <NavigationView.MenuItemTemplate>
-                    <DataTemplate x:DataType="NavigationViewItem">
-                        <Grid HorizontalAlignment="Center">
-                            <!--  bug  -->
-                            <!--<Interactivity:Interaction.Behaviors>
-                            <Core:DataTriggerBehavior
-                                Binding="{Binding IsSelected,Mode=OneWay}"
-                                ComparisonCondition="Equal"
-                                Value="True">
-                                <Core:ChangePropertyAction
-                                    PropertyName="Foreground"
-                                    TargetObject="{Binding ElementName=MenuItemIcon}"
-                                    Value="{ThemeResource SystemAccentColor}" />
-                                <Core:ChangePropertyAction
-                                    PropertyName="Foreground"
-                                    TargetObject="{Binding ElementName=MenuItemContent}"
-                                    Value="{ThemeResource SystemAccentColor}" />
-                            </Core:DataTriggerBehavior>
-                            <Core:DataTriggerBehavior
-                                Binding="{Binding IsSelected,Mode=OneWay}"
-                                ComparisonCondition="Equal"
-                                Value="False">
-                                <Core:ChangePropertyAction
-                                    PropertyName="Foreground"
-                                    TargetObject="{Binding ElementName=MenuItemIcon}"
-                                    Value="{ThemeResource ForegroundBrush}" />
-                                <Core:ChangePropertyAction
-                                    PropertyName="Foreground"
-                                    TargetObject="{Binding ElementName=MenuItemContent}"
-                                    Value="{ThemeResource ForegroundBrush}" />
-                            </Core:DataTriggerBehavior>
-                        </Interactivity:Interaction.Behaviors>-->
-                            <StackPanel Orientation="Vertical">
-                                <ContentPresenter
-                                    x:Name="MenuItemIcon"
-                                    Width="24"
-                                    Height="24"
-                                    HorizontalAlignment="Center"
-                                    Content="{Binding Icon}">
-                                    <ContentPresenter.RenderTransform>
-                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                    </ContentPresenter.RenderTransform>
-                                </ContentPresenter>
-                                <TextBlock
-                                    x:Name="MenuItemContent"
-                                    HorizontalAlignment="Center"
-                                    FontSize="12"
-                                    Text="{Binding Content}" />
-                            </StackPanel>
-                            <Rectangle
-                                Width="2"
-                                Margin="-16,8,0,8"
-                                HorizontalAlignment="Left"
-                                Fill="{ThemeResource SystemAccentColor}"
-                                Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
-                        </Grid>
-                    </DataTemplate>
-                </NavigationView.MenuItemTemplate>
-                <NavigationView.MenuItems>
-                    <NavigationViewItem
-                        x:Uid="Shell_Home"
-                        helpers:NavHelper.NavigateTo="views:HomePage"
-                        IsSelected="True">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="Home" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+    <Grid x:Name="MainContentGrid">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="48" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Button
+                Height="36"
+                VerticalContentAlignment="Center"
+                Click="Button_Click"
+                IsEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
+                Style="{StaticResource NavButtonStyle}">
+                <SymbolIcon Symbol="Back">
+                    <SymbolIcon.RenderTransform>
+                        <ScaleTransform CenterY="12" ScaleX="0.6" ScaleY="0.6" />
+                    </SymbolIcon.RenderTransform>
+                </SymbolIcon>
+            </Button>
+            <Grid Grid.Row="1" Background="Transparent">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Margin="0,0,0,4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  主功能列表  -->
+                    <StackPanel>
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="Home">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="主页" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="AlignCenter">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="分类" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="List">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="片单" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="ViewAll">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="词条" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="Library">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="管理" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                    <!--  Foot  -->
+                    <StackPanel Grid.Row="1">
+                        <Button Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <SymbolIcon Symbol="Repair">
+                                        <SymbolIcon.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </SymbolIcon.RenderTransform>
+                                    </SymbolIcon>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="工具" />
+                                </StackPanel>
+                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </Button>
+                        <Button Height="38" Style="{StaticResource NavButtonStyle}">
+                            <Grid HorizontalAlignment="Center">
+                                <SymbolIcon Symbol="Setting" VerticalAlignment="Center">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                            </Grid>
+                        </Button>
+                    </StackPanel>
 
-                    <NavigationViewItem x:Uid="Shell_Classification" helpers:NavHelper.NavigateTo="views:ClassificationPage">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="AlignCenter" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                </Grid>
 
-                    <NavigationViewItem x:Uid="Shell_Collections" helpers:NavHelper.NavigateTo="views:CollectionsPage">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="List" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                <NavigationView
+                    x:Name="NavigationView"
+                    Grid.Column="1"
+                    AlwaysShowHeader="True"
+                    BackRequested="NavigationView_BackRequested"
+                    CompactPaneLength="80"
+                    IsBackButtonVisible="Visible"
+                    IsBackEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
+                    IsPaneToggleButtonVisible="False"
+                    IsSettingsVisible="True"
+                    IsTitleBarAutoPaddingEnabled="False"
+                    OpenPaneLength="80"
+                    PaneDisplayMode="Left"
+                    SelectedItem="{x:Bind ViewModel.Selected, Mode=TwoWay}">
+                    <NavigationView.MenuItemContainerStyle>
+                        <Style TargetType="NavigationViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0,10" />
+                        </Style>
+                    </NavigationView.MenuItemContainerStyle>
+                    <NavigationView.MenuItemTemplate>
+                        <DataTemplate x:DataType="NavigationViewItem">
+                            <Grid HorizontalAlignment="Center">
+                                <StackPanel Orientation="Vertical">
+                                    <ContentPresenter
+                                        x:Name="MenuItemIcon"
+                                        Width="24"
+                                        Height="24"
+                                        HorizontalAlignment="Center"
+                                        Content="{Binding Icon}">
+                                        <ContentPresenter.RenderTransform>
+                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                        </ContentPresenter.RenderTransform>
+                                    </ContentPresenter>
+                                    <TextBlock
+                                        x:Name="MenuItemContent"
+                                        HorizontalAlignment="Center"
+                                        FontSize="12"
+                                        Text="{Binding Content}" />
+                                </StackPanel>
+                                <Rectangle
+                                    Width="2"
+                                    Margin="-16,8,0,8"
+                                    HorizontalAlignment="Left"
+                                    Fill="{ThemeResource SystemAccentColor}"
+                                    Visibility="{Binding IsSelected, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </NavigationView.MenuItemTemplate>
+                    <NavigationView.MenuItems>
+                        <NavigationViewItem
+                            x:Uid="Shell_Home"
+                            helpers:NavHelper.NavigateTo="views:HomePage"
+                            IsSelected="True">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="Home" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
 
-                    <NavigationViewItem x:Uid="Shell_Entry" helpers:NavHelper.NavigateTo="views:EntryPage">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="ViewAll" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                        <NavigationViewItem x:Uid="Shell_Classification" helpers:NavHelper.NavigateTo="views:ClassificationPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="AlignCenter" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
 
-                    <NavigationViewItem x:Uid="Shell_Management" helpers:NavHelper.NavigateTo="views:ManagementPage">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="Library" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                </NavigationView.MenuItems>
-                <NavigationView.FooterMenuItems>
-                    <NavigationViewItem x:Uid="Shell_Tools" helpers:NavHelper.NavigateTo="views:ToolsPage">
-                        <NavigationViewItem.Icon>
-                            <SymbolIcon Symbol="Repair" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-                </NavigationView.FooterMenuItems>
-                <Frame x:Name="shellFrame" Background="Transparent" />
-            </NavigationView>
+                        <NavigationViewItem x:Uid="Shell_Collections" helpers:NavHelper.NavigateTo="views:CollectionsPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="List" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem x:Uid="Shell_Entry" helpers:NavHelper.NavigateTo="views:EntryPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="ViewAll" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+
+                        <NavigationViewItem x:Uid="Shell_Management" helpers:NavHelper.NavigateTo="views:ManagementPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="Library" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationView.MenuItems>
+                    <NavigationView.FooterMenuItems>
+                        <NavigationViewItem x:Uid="Shell_Tools" helpers:NavHelper.NavigateTo="views:ToolsPage">
+                            <NavigationViewItem.Icon>
+                                <SymbolIcon Symbol="Repair" />
+                            </NavigationViewItem.Icon>
+                        </NavigationViewItem>
+                    </NavigationView.FooterMenuItems>
+                    <Frame x:Name="shellFrame" Background="Transparent" />
+                </NavigationView>
+            </Grid>
         </Grid>
         <InfoBar
             x:Name="InfoBar"

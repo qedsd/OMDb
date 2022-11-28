@@ -27,5 +27,10 @@ namespace OMDb.WinUI3.Views
         {
             ViewModel.GoBack();
         }
+
+        private void Button_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            ViewModel.GoBack();
+        }
     }
 }
