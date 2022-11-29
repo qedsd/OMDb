@@ -13,14 +13,15 @@ namespace OMDb.WinUI3.Helpers
         //
         // Usage in code:
         // NavHelper.SetNavigateTo(navigationViewItem, typeof(MainPage));
-        public static Type GetNavigateTo(NavigationViewItem item)
-        {
-            return (Type)item.GetValue(NavigateToProperty);
-        }
 
-        public static void SetNavigateTo(NavigationViewItem item, Type value)
+        public static void SetNavigateTo(Button item, Type value)
         {
             item.SetValue(NavigateToProperty, value);
+        }
+
+        public static Type GetNavigateTo(Button item)
+        {
+            return (Type)item.GetValue(NavigateToProperty);
         }
 
         public static readonly DependencyProperty NavigateToProperty =

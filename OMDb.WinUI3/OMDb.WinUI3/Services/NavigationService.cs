@@ -72,11 +72,7 @@ namespace OMDb.WinUI3.Services
                 {
                     _lastParamUsed = parameter;
                 }
-                var targetType = ViewModels.ShellViewModel.Current.Selected.GetValue(Helpers.NavHelper.NavigateToProperty) as Type;
-                if (pageType != targetType)
-                {
-                    ViewModels.ShellViewModel.Current.SetSelected(targetType);
-                }
+                ViewModels.ShellViewModel.Current.SetSelected(pageType);
                 return navigationResult;
             }
             else
