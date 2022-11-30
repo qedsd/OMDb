@@ -16,50 +16,8 @@ using Xabe.FFmpeg.Streams.SubtitleStream;
 
 namespace OMDb.WinUI3.ViewModels.Tools
 {
-    internal class SubToolViewModel : ObservableObject
+    internal class SubToolViewModel : ToolBaseViewModel
     {
-        //private string filePath;
-        //public string FilePath
-        //{
-        //    get => filePath;
-        //    set => SetProperty(ref filePath, value);
-        //}
-
-        //private int width;
-        //public int Width
-        //{
-        //    get => width;
-        //    set => SetProperty(ref width, value);
-        //}
-
-        //private int height;
-        //public int Height
-        //{
-        //    get => height;
-        //    set => SetProperty(ref height, value);
-        //}
-
-        //private TimeSpan duration;
-        //public TimeSpan Duration
-        //{
-        //    get => duration;
-        //    set => SetProperty(ref duration, value);
-        //}
-
-        //private string pixelFormat;
-        //public string PixelFormat
-        //{
-        //    get => pixelFormat;
-        //    set => SetProperty(ref pixelFormat, value);
-        //}
-
-        //private long size;
-        //public long Size
-        //{
-        //    get => size;
-        //    set => SetProperty(ref size, value);
-        //}
-
         private bool infoPanelVisible;
         public bool InfoPanelVisible
         {
@@ -124,6 +82,8 @@ namespace OMDb.WinUI3.ViewModels.Tools
 
         public ICommand SelecteFileCommand => new RelayCommand(async() =>
         {
+            ShowWaiting();
+            return;
             var file = await Helpers.PickHelper.PickFileAsync();
             if(file != null)
             {

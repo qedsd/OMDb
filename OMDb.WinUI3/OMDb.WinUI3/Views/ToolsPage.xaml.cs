@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.WinUI3.Wins;
 using OMDb.WinUI3.Views.Tools;
 using System;
 using System.Collections.Generic;
@@ -25,27 +26,7 @@ namespace OMDb.WinUI3.Views
 
         private void SubButton_Click(object sender, RoutedEventArgs e)
         {
-            AddTabViewItem((sender as Button).Content, new SubToolPage());
-        }
-
-        private void AddTabViewItem(object header,object content)
-        {
-            TipTextBlock.Visibility = Visibility.Collapsed;
-            TabViewItem tabViewItem = new TabViewItem();
-            tabViewItem.Header = header;
-            tabViewItem.Content = content;
-            tabViewItem.CloseRequested += TabViewItem_CloseRequested;
-            TabView.TabItems.Add(tabViewItem);
-            TabView.SelectedItem = tabViewItem;
-        }
-
-        private void TabViewItem_CloseRequested(TabViewItem sender, TabViewTabCloseRequestedEventArgs args)
-        {
-            TabView.TabItems.Remove(sender);
-            if(TabView.TabItems.Count == 0)
-            {
-                TipTextBlock.Visibility = Visibility.Visible;
-            }
+            new SubToolPage((sender as Button).Content.ToString()).Show();
         }
     }
 }

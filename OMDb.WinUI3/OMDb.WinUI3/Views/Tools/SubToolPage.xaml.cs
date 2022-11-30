@@ -16,12 +16,13 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Views.Tools
 {
-    public sealed partial class SubToolPage : Page
+    public sealed partial class SubToolPage : ToolPageBase
     {
-        public SubToolPage()
+        public SubToolPage(string toolName) : base(toolName)
         {
             this.InitializeComponent();
             this.SizeChanged += SubToolPage_SizeChanged;
+            (DataContext as ToolBaseViewModel).Init(this);
         }
 
         private void SubToolPage_SizeChanged(object sender, SizeChangedEventArgs e)

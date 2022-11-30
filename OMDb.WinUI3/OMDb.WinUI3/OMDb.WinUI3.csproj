@@ -329,6 +329,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Update="Windows\ThemeWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <Page Update="MyControls\EntryCard2.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
