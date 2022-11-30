@@ -20,6 +20,7 @@ namespace OMDb.WinUI3.Wins
         public ToolWindow()
         {
             this.InitializeComponent();
+            this.Title = "OMDb";
             Helpers.WindowHelper.TrackWindow(this);
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);

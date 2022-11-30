@@ -13,7 +13,7 @@
 
   <Properties>
     <DisplayName>OMDb.WinUI3 (Package)</DisplayName>
-    <PublisherDisplayName>190826</PublisherDisplayName>
+    <PublisherDisplayName>QEDSD</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
@@ -31,7 +31,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="OMDb.WinUI3 (Package)"
+        DisplayName="OMDb"
         Description="OMDb.WinUI3 (Package)"
         BackgroundColor="transparent"
         Square150x150Logo="Images\Square150x150Logo.png"
