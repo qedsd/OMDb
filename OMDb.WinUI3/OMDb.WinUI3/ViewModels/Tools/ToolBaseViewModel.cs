@@ -11,7 +11,7 @@ namespace OMDb.WinUI3.ViewModels.Tools
 {
     public class ToolBaseViewModel : ObservableObject
     {
-        private ToolPageBase ToolPageBase;
+        public ToolPageBase ToolPageBase;
         public void Init(ToolPageBase toolPageBase)
         {
             ToolPageBase = toolPageBase;

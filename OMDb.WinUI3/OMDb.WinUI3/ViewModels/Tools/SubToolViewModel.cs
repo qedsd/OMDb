@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Shapes;
+using OMDb.WinUI3.Views.Tools;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -82,8 +83,8 @@ namespace OMDb.WinUI3.ViewModels.Tools
 
         public ICommand SelecteFileCommand => new RelayCommand(async() =>
         {
-            var file = await Helpers.PickHelper.PickFileAsync();
-            if(file != null)
+            var file = await Helpers.PickHelper.PickFileAsync(".mkv",ToolPageBase.Window);
+            if (file != null)
             {
                 try
                 {
@@ -99,7 +100,7 @@ namespace OMDb.WinUI3.ViewModels.Tools
         });
         public ICommand AddSubCommand => new RelayCommand(async () =>
         {
-            var file = await Helpers.PickHelper.PickFileAsync();
+            var file = await Helpers.PickHelper.PickFileAsync(string.Empty, ToolPageBase.Window);
             if (file != null)
             {
                 var info = await Core.Helpers.FFmpegHelper.GetMediaInfoAsync(file.Path);

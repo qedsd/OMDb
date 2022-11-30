@@ -6,6 +6,7 @@
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tools="using:OMDb.WinUI3.Views.Tools"
+    xmlns:tools1="using:OMDb.WinUI3.Models.Tools"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -16,64 +17,39 @@
         </Style>
     </Page.Resources>
 
-    <Grid Margin="{StaticResource MediumLeftRightMargin}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <ListView
-            Margin="0,48,0,48"
-            Padding="0,0,24,0"
-            BorderBrush="{ThemeResource SystemAccentColor}"
-            BorderThickness="0,0,1,0"
-            SelectionMode="None">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Width" Value="136" />
-                    <Setter Property="Margin" Value="0,4" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
+        <GridView x:Name="ItemsGridView" ItemClick="GridView_ItemClick"
+                  SelectionMode="None"
+                  IsItemClickEnabled="True">
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="4" />
                 </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.Items>
-                <ListViewItem>
-                    <Button
-                        x:Name="SubButton"
-                        Click="SubButton_Click"
-                        Content="视频字幕"
-                        Style="{StaticResource FunButton}" />
-                </ListViewItem>
-                <ListViewItem>
-                    <Button Content="字幕编辑" Style="{StaticResource FunButton}" />
-                </ListViewItem>
-                <ListViewItem>
-                    <Button Content="字幕翻译" Style="{StaticResource FunButton}" />
-                </ListViewItem>
-                <ListViewItem>
-                    <Button Content="视频转码" Style="{StaticResource FunButton}" />
-                </ListViewItem>
-                <ListViewItem>
-                    <Button Content="音频转码" Style="{StaticResource FunButton}" />
-                </ListViewItem>
-                <ListViewItem>
-                    <Button Content="图片转码" Style="{StaticResource FunButton}" />
-                </ListViewItem>
-
-
-            </ListView.Items>
-        </ListView>
-        <TextBlock
-            x:Name="TipTextBlock"
-            Grid.Column="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="16"
-            FontWeight="Thin"
-            Text="请从左边列表选择打开工具" />
-        <TabView
-            x:Name="TabView"
-            Grid.Column="1"
-            Margin="4,0"
-            VerticalAlignment="Stretch"
-            IsAddTabButtonVisible="False" />
+            </GridView.ItemContainerStyle>
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="tools1:ToolItem">
+                    <Grid
+                        Width="300"
+                        Height="70"
+                        Background="{ThemeResource ContentBackgroudBrush}"
+                        CornerRadius="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="0.8*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock
+                            Margin="10,0"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Title}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Margin="10,4"
+                            VerticalAlignment="Center"
+                            FontWeight="Thin"
+                            Text="{x:Bind Description}" />
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
     </Grid>
 </Page>
