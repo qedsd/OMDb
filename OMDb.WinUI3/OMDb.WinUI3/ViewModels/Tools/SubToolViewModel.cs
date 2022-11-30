@@ -82,8 +82,6 @@ namespace OMDb.WinUI3.ViewModels.Tools
 
         public ICommand SelecteFileCommand => new RelayCommand(async() =>
         {
-            ShowWaiting();
-            return;
             var file = await Helpers.PickHelper.PickFileAsync();
             if(file != null)
             {
