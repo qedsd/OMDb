@@ -155,6 +155,17 @@ namespace OMDb.Core.Services
                 return null;
             }
         }
+        public static List<string> GetLabelIdsOfEntry(string entryId)
+        {
+            if (IsLocalDbValid())
+            {
+                return DbService.LocalDb.Queryable<EntryLabelDb>().Where(p => p.EntryId == entryId).Select(p => p.LabelId).ToList();
+            }
+            else
+            {
+                return null;
+            }
+        }
         /// <summary>
         /// 清空词条绑定的标签
         /// </summary>

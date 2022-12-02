@@ -25,6 +25,10 @@ namespace OMDb.Core
         {
             return Services.DbService.Dbs.Remove(key);
         }
+        public static void ClearDb()
+        {
+            Services.DbService.Dbs.Clear();
+        }
 
         public static bool InitLocalDb(string filePath)
         {

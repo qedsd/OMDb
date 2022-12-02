@@ -38,10 +38,18 @@ namespace OMDb.WinUI3.Services
         /// </summary>
         public static string MetadataFileNmae { get; } = "metadata.json";
 
-        public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = new ObservableCollection<EnrtyStorage>();
+        public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; }
         private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
         public static void Load()
         {
+            LoadStorages();
+            Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
+            Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
+        }
+        public static void LoadStorages()
+        {
+            EnrtyStorages = new ObservableCollection<EnrtyStorage>();
+            Core.Config.ClearDb();
             if (System.IO.File.Exists(EnrtyStorageFile))
             {
                 string json = System.IO.File.ReadAllText(EnrtyStorageFile);
@@ -55,8 +63,6 @@ namespace OMDb.WinUI3.Services
                     });
                 }
             }
-            Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
-            Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
         }
         public static void Save()
         {

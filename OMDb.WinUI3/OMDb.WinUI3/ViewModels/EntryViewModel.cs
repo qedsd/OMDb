@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using OMDb.Core.Extensions;
+using OMDb.Core.Models;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
@@ -18,8 +19,8 @@ namespace OMDb.WinUI3.ViewModels
     {
         public static EntryViewModel Current { get;private set; }
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
-        private List<Core.Models.Entry> entries;
-        public List<Core.Models.Entry> Entries
+        private ObservableCollection<Core.Models.Entry> entries;
+        public ObservableCollection<Core.Models.Entry> Entries
         {
             get => entries;
             set
@@ -40,7 +41,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref sortType, value);
-                UpdateEntryList();
+                _=UpdateEntryListAsync();
             }
         }
         private Core.Enums.SortWay sortWay = Core.Enums.SortWay.Positive;
@@ -50,7 +51,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref sortWay, value);
-                UpdateEntryList();
+                _ = UpdateEntryListAsync();
             }
         }
         public List<string> SortTypeStrs { get; set; }
@@ -116,6 +117,20 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
+        private bool isFilterLabel = false;
+        /// <summary>
+        /// 是否按选择的标签进行筛选
+        /// </summary>
+        public bool IsFilterLabel
+        {
+            get => isFilterLabel;
+            set
+            {
+                SetProperty(ref isFilterLabel, value);
+                _ = UpdateEntryListAsync();
+            }
+        }
+
         public EntryViewModel()
         {
             InitEnumItemsource();
@@ -123,9 +138,14 @@ namespace OMDb.WinUI3.ViewModels
             sortWay = Core.Enums.SortWay.Positive;
             Init();
             Current = this;
+            Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
+            Events.GlobalEvent.AddEntryEvent += GlobalEvent_AddEntryEvent;
+            Events.GlobalEvent.RemoveEntryEvent += GlobalEvent_RemoveEntryEvent;
         }
+
         private async void Init()
         {
+            Helpers.InfoHelper.ShowWaiting();
             var labelDbs = await Core.Services.LabelService.GetAllLabelAsync();
             List<Label> labels = null;
             if (labelDbs != null)
@@ -133,16 +153,13 @@ namespace OMDb.WinUI3.ViewModels
                 labels = labelDbs.Select(p => new Label(p)).ToList();
                 Labels = new ObservableCollection<Label>(labels);
             }
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay,null, labels is null?null: labels.Select(p=>p.LabelDb.Id).ToList());
-            if (queryResults?.Count > 0)
-            {
-                Entries = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
-            }
-            else
-            {
-                Entries = null;
-            }
             EntryStorages = ConfigService.EnrtyStorages;
+            foreach(var item in EntryStorages)
+            {
+                item.IsChecked = true;
+            }
+            await UpdateEntryListAsync();
+            Helpers.InfoHelper.HideWaiting();
         }
         private void InitEnumItemsource()
         {
@@ -157,10 +174,11 @@ namespace OMDb.WinUI3.ViewModels
                 SortWayStrs.Add(p.GetDescription());
             }
         }
-        public async void UpdateEntryList()
+        public async Task UpdateEntryListAsync()
         {
+            Helpers.InfoHelper.ShowWaiting();
             List<string> filterLabel = null;
-            if (Labels != null)
+            if (IsFilterLabel && Labels != null)
             {
                 filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelDb.Id).ToList();
             }
@@ -170,7 +188,7 @@ namespace OMDb.WinUI3.ViewModels
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
-                    Entries = newList;
+                    Entries = newList.ToObservableCollection();
                 });
             }
             else
@@ -180,6 +198,7 @@ namespace OMDb.WinUI3.ViewModels
                     Entries = null;
                 });
             }
+            Helpers.InfoHelper.HideWaiting();
         }
         private async void UpdateSuggest(string input)
         {
@@ -205,12 +224,12 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
-                    Entries = items;
+                    Entries = items.ToObservableCollection();
                 });
             }
             else
             {
-                UpdateEntryList();
+                _ = UpdateEntryListAsync();
             }
         }
         public ICommand RefreshCommand => new RelayCommand(() =>
@@ -224,11 +243,11 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
         {
-            UpdateEntryList();
+            _ = UpdateEntryListAsync();
         });
         public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>((items) =>
         {
-            UpdateEntryList();
+            _ = UpdateEntryListAsync();
         });
         public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async(item) =>
         {
@@ -236,7 +255,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if(string.IsNullOrEmpty(AutoSuggestText))
                 {
-                    UpdateEntryList();
+                    _ = UpdateEntryListAsync();
                 }
                 else
                 {
@@ -248,7 +267,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        Entries = items;
+                        Entries = items.ToObservableCollection();
                     });
                 }
             }
@@ -257,5 +276,83 @@ namespace OMDb.WinUI3.ViewModels
                 AutoSuggestItem = item;
             }
         });
+
+        public ICommand AddEntryCommand => new RelayCommand(async () =>
+        {
+            if (Services.ConfigService.EnrtyStorages.Count == 0)
+            {
+                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
+            }
+            else
+            {
+                await Services.EntryService.AddEntryAsync();
+            }
+        });
+
+
+        private void GlobalEvent_RemoveEntryEvent(object sender, Events.EntryEventArgs e)
+        {
+            if (Entries != null)
+            {
+                var item = Entries.FirstOrDefault(p => p.Id == e.Entry.Id);
+                if (item != null)
+                {
+                    Entries.Remove(item);
+                }
+            }
+        }
+
+        private void GlobalEvent_AddEntryEvent(object sender, Events.EntryEventArgs e)
+        {
+            if(IsFitFilter(e.Entry))
+            {
+                if (Entries == null)
+                {
+                    Entries = new ObservableCollection<Entry>();
+                }
+                Entries.Add(e.Entry);
+            }
+        }
+
+        private void GlobalEvent_UpdateEntryEvent(object sender, Events.EntryEventArgs e)
+        {
+            if (Entries != null)
+            {
+                var item = Entries.FirstOrDefault(p => p.Id == e.Entry.Id);
+                if (item != null)
+                {
+                    int index = Entries.IndexOf(item);
+                    Entries.Remove(item);
+                    Entries.Insert(index, item);
+                }
+            }
+        }
+        private bool IsFitFilter(Entry entry)
+        {
+            var s = EntryStorages.Where(p => p.IsChecked).ToList();
+            if(s != null && s.Count != 0)
+            {
+                if(s.FirstOrDefault(p=>p.StorageName == entry.DbId) != null)
+                {
+                    if(!IsFilterLabel)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        var labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.Id);
+                        if(labelIds != null && labelIds.Count != 0)
+                        {
+                            var l = Labels.Where(p => p.IsChecked).ToList();
+                            if(l != null && l.Count != 0)
+                            {
+                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelDb.Id)) != null;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 }
