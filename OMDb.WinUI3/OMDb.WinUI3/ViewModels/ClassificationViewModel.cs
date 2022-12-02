@@ -465,21 +465,18 @@ namespace OMDb.WinUI3.ViewModels
             if(item.Tag == "All")
             {
                 Helpers.InfoHelper.ShowWaiting();
-                if (LabelsDic != null && LabelsDic.Count != 0)
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, null);
+                var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
+                if (entrys?.Any() == true)
                 {
-                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, LabelsDic.Select(p => p.Value.LabelDb.Id).ToList());
-                    var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
-                    if (entrys?.Any() == true)
+                    LabelCollection labelCollection = new LabelCollection()
                     {
-                        LabelCollection labelCollection = new LabelCollection()
-                        {
-                            Title = "所有",
-                            Description = String.Empty,
-                            Entries = entrys,
-                            Id = null
-                        };
-                        Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
-                    }
+                        Title = "所有",
+                        Description = String.Empty,
+                        Entries = entrys,
+                        Id = null
+                    };
+                    Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
                 }
                 Helpers.InfoHelper.HideWaiting();
             }
