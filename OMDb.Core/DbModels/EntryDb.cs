@@ -45,7 +45,7 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 观看次数
         /// </summary>
-        public int WatchTimes { get; set; }
+        public int WatchTimes { get; set; } = 0;
         /// <summary>
         /// 上映日期
         /// </summary>
