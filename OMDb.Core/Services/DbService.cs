@@ -62,21 +62,14 @@ namespace OMDb.Core.Services
                     }
                 }
                 ));
-                if (needCodeFirst)
+                if (CodeFirst(configId))
                 {
-                    if (CodeFirst(configId))
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        Dbs.Remove(configId);
-                        return false;
-                    }
+                    return true;
                 }
                 else
                 {
-                    return true;
+                    Dbs.Remove(configId);
+                    return false;
                 }
             }
             else

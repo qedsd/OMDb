@@ -437,5 +437,17 @@ namespace OMDb.Core.Services
         {
             return await QueryEntryAsync(entryIds.Select(p => new QueryItem(p, dbId)).ToList());
         }
+
+        /// <summary>
+        /// 更新词条观看次数
+        /// </summary>
+        /// <param name="entryId"></param>
+        /// <param name="dbId"></param>
+        /// <param name="increment">变化量，可用正负来表示增加减少</param>
+        /// <returns></returns>
+        public static bool UpdateWatchTime(string entryId,string dbId,int increment)
+        {
+            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
+        }
     }
 }
