@@ -5,16 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="Transparent"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
     mc:Ignorable="d">
 
-    <Grid>
-        <Button
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Command="{x:Bind VM.AddEntryCommand}"
-            ToolTipService.ToolTip="新增词条">
-            <SymbolIcon Symbol="Add" />
-        </Button>
-    </Grid>
+    <Grid />
 </Page>

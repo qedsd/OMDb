@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tools="using:OMDb.WinUI3.Views.Tools"
     xmlns:tools1="using:OMDb.WinUI3.Models.Tools"
-    Background="Transparent"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.Resources>
@@ -18,9 +18,11 @@
     </Page.Resources>
 
     <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
-        <GridView x:Name="ItemsGridView" ItemClick="GridView_ItemClick"
-                  SelectionMode="None"
-                  IsItemClickEnabled="True">
+        <GridView
+            x:Name="ItemsGridView"
+            IsItemClickEnabled="True"
+            ItemClick="GridView_ItemClick"
+            SelectionMode="None">
             <GridView.ItemContainerStyle>
                 <Style TargetType="GridViewItem">
                     <Setter Property="Margin" Value="4" />

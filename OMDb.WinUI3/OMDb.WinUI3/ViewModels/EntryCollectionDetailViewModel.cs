@@ -142,6 +142,10 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async void UpdateEntryList()
         {
+            if(EntryCollection.Items == null || EntryCollection.Items.Count == 0)
+            {
+                return;
+            }
             Helpers.InfoHelper.ShowWaiting();
             ItemsSource?.Clear();
             ItemsSource = null;

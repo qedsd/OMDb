@@ -12,7 +12,7 @@
     xmlns:models="using:OMDb.Core.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
-    Background="Transparent"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
     <Page.DataContext>

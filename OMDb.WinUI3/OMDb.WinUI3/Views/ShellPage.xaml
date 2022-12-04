@@ -217,7 +217,8 @@
                 <Frame
                     x:Name="shellFrame"
                     Grid.Column="1"
-                    Background="{ThemeResource LayerFillColorDefaultBrush}" />
+                    Background="Transparent"
+                    CornerRadius="8" />
             </Grid>
         </Grid>
         <InfoBar

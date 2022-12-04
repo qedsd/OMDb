@@ -24,7 +24,7 @@
         <Style x:Key="ItemOutStackPanel" TargetType="StackPanel">
             <Setter Property="Margin" Value="0,0,0,10" />
             <Setter Property="Padding" Value="0,0,0,16" />
-            <Setter Property="Background" Value="{ThemeResource EntryDetailContantBrush}" />
+            <Setter Property="Background" Value="{ThemeResource LayerFillColorDefaultBrush}" />
             <Setter Property="BorderBrush" Value="{ThemeResource EntryDetailBorderBrush}" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="CornerRadius" Value="8" />
@@ -54,7 +54,7 @@
             Width="360"
             Margin="0,0,10,0"
             Padding="40,0"
-            Background="{ThemeResource EntryDetailContantBrush}"
+            Background="{ThemeResource LayerFillColorDefaultBrush}"
             BorderBrush="{ThemeResource EntryDetailBorderBrush}"
             BorderThickness="0,0,1,0"
             CornerRadius="8">
