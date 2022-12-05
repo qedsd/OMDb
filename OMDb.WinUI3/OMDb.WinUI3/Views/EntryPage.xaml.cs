@@ -17,10 +17,11 @@ namespace OMDb.WinUI3.Views
 {
     public sealed partial class EntryPage : Page
     {
-        public ViewModels.EntryViewModel VM { get; set; } = new ViewModels.EntryViewModel();
+        public ViewModels.EntryViewModel VM { get; set; }
         public EntryPage()
         {
             this.InitializeComponent();
+            VM = new ViewModels.EntryViewModel();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

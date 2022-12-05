@@ -36,6 +36,7 @@ namespace OMDb.WinUI3.ViewModels
             EnrtyStorages.Remove(enrtyStorage);
             Core.Config.RemoveDb(enrtyStorage.StorageName);
             Services.ConfigService.Save();
+            Services.ConfigService.LoadStorages();
         }
 
         private async void StorageCard_AddStorageEvent(EnrtyStorage enrtyStorage)
@@ -83,6 +84,7 @@ namespace OMDb.WinUI3.ViewModels
                             }
                             EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
                             Services.ConfigService.Save();
+                            Services.ConfigService.LoadStorages();
                         }
                         else
                         {
@@ -92,12 +94,12 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         }
-        public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>((item) =>
+        public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>(async(item) =>
         {
             if (item != null && !string.IsNullOrEmpty(item.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
-                EntryViewModel.Current.UpdateEntryList();
+                await EntryViewModel.Current.UpdateEntryListAsync();
             }
         });
     }

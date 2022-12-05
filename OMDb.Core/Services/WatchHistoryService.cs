@@ -48,18 +48,80 @@ namespace OMDb.Core.Services
             }
         }
 
-        public static void AddWatchHistory(Models.WatchHistory watchHistory)
+        /// <summary>
+        /// 添加观看历史
+        /// 会同步更新词条的观看次数
+        /// </summary>
+        /// <param name="watchHistory"></param>
+        public static bool AddWatchHistory(Models.WatchHistory watchHistory)
         {
-            DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+            if(DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0)
+            {
+                if (watchHistory.Done)
+                {
+                    return EntryService.UpdateWatchTime(watchHistory.EntryId, watchHistory.DbId, 1);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
-
-        public static void UpdateWatchHistory(Models.WatchHistory watchHistory)
+        /// <summary>
+        /// 更新观看记录
+        /// 会同步更新词条的观看次数
+        /// </summary>
+        /// <param name="watchHistory"></param>
+        /// <returns></returns>
+        public static bool UpdateWatchHistory(Models.WatchHistory watchHistory)
         {
-            DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+            //需要判断是否修改了观看完成
+            var source = DbService.GetConnection(watchHistory.DbId).Queryable<WatchHistoryDb>().In(watchHistory.Id).First();
+            if(source != null)
+            {
+                var update = DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0;
+                if(!update)
+                {
+                    return false;
+                }
+                else
+                {
+                    if (watchHistory.Done != source.Done)
+                    {
+                        return EntryService.UpdateWatchTime(watchHistory.EntryId, watchHistory.DbId, source.Done ? 1 : -1);
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
-        public static void DeleteWatchHistory(Models.WatchHistory watchHistory)
+        /// <summary>
+        /// 删除观看记录
+        /// 会同步更新词条的观看次数
+        /// </summary>
+        /// <param name="watchHistory"></param>
+        /// <returns></returns>
+        public static bool DeleteWatchHistory(Models.WatchHistory watchHistory)
         {
-            DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand();
+            if(DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0)
+            {
+                if (watchHistory.Done)
+                {
+                    return EntryService.UpdateWatchTime(watchHistory.EntryId, watchHistory.DbId, -1);
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

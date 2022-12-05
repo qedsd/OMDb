@@ -19,14 +19,20 @@ namespace OMDb.Core.DbModels
         /// 词条本地唯一Id
         /// </summary>
         public string EntryId { get; set; }
+        /// <summary>
+        /// 观看时间
+        /// </summary>
         public DateTime Time { get; set; }
+        /// <summary>
+        /// 观看时长
+        /// </summary>
+        public long Duration { get; set; }
         /// <summary>
         /// 观看完毕，作为有效观看次数进行统计
         /// </summary>
         public bool Done { get; set; }
         /// <summary>
         /// 观看备注
-        /// 可以用来记录本次看到了哪
         /// 写给自己看的
         /// </summary>
         [SugarColumn(IsNullable = true)]

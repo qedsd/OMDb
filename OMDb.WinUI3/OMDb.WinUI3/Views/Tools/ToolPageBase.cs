@@ -21,7 +21,7 @@ namespace OMDb.WinUI3.Views.Tools
         public void Show()
         {
             ToolWindow window = new ToolWindow();
-            window.Content = this;
+            window.MainContent = this;
             window.Head = ToolName;
             Window = window;
             window.Activate();

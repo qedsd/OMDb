@@ -43,6 +43,10 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public DateTime LastUpdateTime { get; set; }
         /// <summary>
+        /// 观看次数
+        /// </summary>
+        public int WatchTimes { get; set; } = 0;
+        /// <summary>
         /// 上映日期
         /// </summary>
         public DateTimeOffset? ReleaseDate { get; set; }

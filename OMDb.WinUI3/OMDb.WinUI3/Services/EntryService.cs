@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OMDb.WinUI3.Events;
+using OMDb.WinUI3.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -38,6 +40,7 @@ namespace OMDb.WinUI3.Services
                 await SaveToDbAsync(entryDetail);
                 //这时已经是相对路径
                 Helpers.InfoHelper.ShowSuccess("创建成功");
+                GlobalEvent.NotifyAddEntry(null,new EntryEventArgs(entryDetail.Entry));
                 return entryDetail.Entry.Id;
             }
             else
@@ -136,15 +139,17 @@ namespace OMDb.WinUI3.Services
                 InitFile(entryDetail);
                 await UpdateDbAsync(entryDetail);
                 Helpers.InfoHelper.ShowSuccess("已保存");
+                GlobalEvent.NotifyUpdateEntry(null, new EntryEventArgs(entryDetail.Entry));
             }
         }
 
         public static async Task RemoveEntryAsync(Core.Models.Entry entry)
         {
-            if(await Dialogs.QueryDialog.ShowDialog("删除",$"是否删除 {entry.Name} 词条?\\n\\r不会删除本地文件"))
+            if(await Dialogs.QueryDialog.ShowDialog("删除",$"是否删除 {entry.Name} 词条?不会删除本地文件"))
             {
                 Core.Services.EntryService.RemoveEntry(entry);
                 Helpers.InfoHelper.ShowSuccess("已删除");
+                GlobalEvent.NotifyRemoveEntry(null, new EntryEventArgs(entry));
             }
         }
     }

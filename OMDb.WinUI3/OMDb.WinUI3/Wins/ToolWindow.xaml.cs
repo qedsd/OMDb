@@ -36,7 +36,7 @@ namespace OMDb.WinUI3.Wins
                 ThemeSelectorService_OnChangedTheme(ThemeSelectorService.Theme);
             }
         }
-        public new object Content
+        public object MainContent
         {
             get => ContentFrame.Content;
 

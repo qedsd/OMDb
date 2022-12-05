@@ -40,7 +40,7 @@
     <Grid x:Name="MainContentGrid">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="48" />
+                <RowDefinition Height="42" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Button

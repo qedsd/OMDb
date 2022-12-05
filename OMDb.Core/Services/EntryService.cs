@@ -45,6 +45,11 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
+            List<string> inLabelEntryIds = null;
+            if (labelIds != null && labelIds.Count != 0)
+            {
+                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+            }
             foreach (var item in DbService.Dbs)
             {
                 if (dbIds != null && !dbIds.Contains(item.Key))
@@ -52,9 +57,8 @@ namespace OMDb.Core.Services
                     continue;
                 }
                 var db = item.Value;
-                if (labelIds != null && labelIds.Count != 0)
+                if (inLabelEntryIds != null)
                 {
-                    var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                     var ls = db.Queryable<DbModels.EntryDb>()
                         .In(inLabelEntryIds)
                         .Select(p => new { p.Id, p.CreateTime })
@@ -66,9 +70,7 @@ namespace OMDb.Core.Services
                 }
                 else
                 {
-                    var inLabelEntryIds = LabelService.GetAllEntryIds();
                     var ls = db.Queryable<DbModels.EntryDb>()
-                        .Where(p=> !inLabelEntryIds.Contains(p.Id))
                         .Select(p => new { p.Id, p.CreateTime })
                         .ToList();
                     ls.ForEach(p =>
@@ -90,6 +92,11 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
+            List<string> inLabelEntryIds = null;
+            if (labelIds != null && labelIds.Count != 0)
+            {
+                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+            }
             foreach (var item in DbService.Dbs)
             {
                 if (dbIds != null && !dbIds.Contains(item.Key))
@@ -97,9 +104,8 @@ namespace OMDb.Core.Services
                     continue;
                 }
                 var db = item.Value;
-                if (labelIds != null && labelIds.Count != 0)
+                if (inLabelEntryIds != null)
                 {
-                    var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                     var ls = db.Queryable<DbModels.EntryDb>()
                         .In(inLabelEntryIds)
                         .Select(p => new { p.Id, p.LastWatchTime })
@@ -111,9 +117,7 @@ namespace OMDb.Core.Services
                 }
                 else
                 {
-                    var inLabelEntryIds = LabelService.GetAllEntryIds();
                     var ls = db.Queryable<DbModels.EntryDb>()
-                        .Where(p => !inLabelEntryIds.Contains(p.Id))
                         .Select(p => new { p.Id, p.LastWatchTime })
                         .ToList();
                     ls.ForEach(p =>
@@ -134,6 +138,11 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
+            List<string> inLabelEntryIds = null;
+            if (labelIds != null && labelIds.Count != 0)
+            {
+                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+            }
             foreach (var item in DbService.Dbs)
             {
                 if (dbIds != null && !dbIds.Contains(item.Key))
@@ -143,9 +152,8 @@ namespace OMDb.Core.Services
                 var db = item.Value;
                 if (db != null)
                 {
-                    if (labelIds != null && labelIds.Count != 0)
+                    if (inLabelEntryIds != null)
                     {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
                             .In(inLabelEntryIds)
                             .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
@@ -156,11 +164,8 @@ namespace OMDb.Core.Services
                     }
                     else
                     {
-                        var inLabelEntryIds = LabelService.GetAllEntryIds();
                         var ls = db.Queryable<DbModels.EntryDb>()
-                                .Where(p => !inLabelEntryIds.Contains(p.Id))
-                                .Select(p => new { p.Id, p.LastUpdateTime })
-                                .ToList();
+                           .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
                         ls.ForEach(p =>
                         {
                             queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, item.Key));
@@ -180,6 +185,11 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
+            List<string> inLabelEntryIds = null;
+            if (labelIds != null && labelIds.Count != 0)
+            {
+                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+            }
             foreach (var item in DbService.Dbs)
             {
                 if (dbIds != null && !dbIds.Contains(item.Key))
@@ -189,52 +199,25 @@ namespace OMDb.Core.Services
                 var db = item.Value;
                 if (db != null)
                 {
-                    if (labelIds != null && labelIds.Count != 0)
+                    if (inLabelEntryIds != null)
                     {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
-                        var allIds = db.Queryable<DbModels.WatchHistoryDb>()
-                            .Where(p => p.Done)
-                            .ToList();
-                        //分组key即为词条id
-                        //有观看记录的
-                        var orderGroups = allIds.GroupBy(p=>p.EntryId).OrderBy(p=>p.Count()).ToList();
-                        var orderKeys = orderGroups.Select(p => p.Key);
-                        orderGroups.ForEach(p =>
+                        var ls = db.Queryable<DbModels.EntryDb>()
+                        .In(inLabelEntryIds)
+                        .Select(p => new { p.Id, p.WatchTimes })
+                        .ToList();
+                        ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Key, p.Count(), item.Key));
-                        });
-                        //无观看记录的
-                        var noWatchedList = db.Queryable<DbModels.EntryDb>()
-                                .Where(p => !orderKeys.Contains(p.Id))
-                                .Select(p => p.Id);
-                        noWatchedList.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p, 0, item.Key));
+                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, item.Key));
                         });
                     }
                     else
                     {
-                        var inLabelEntryIds = LabelService.GetAllEntryIds();
-                        var allIds = db.Queryable<DbModels.WatchHistoryDb>()
-                                    .Where(p => !inLabelEntryIds.Contains(p.Id))
-                                    .Where(p => p.Done)
-                                    .ToList();
-                        //分组key即为词条id
-                        //有观看记录的
-                        var orderGroups = allIds.GroupBy(p => p.EntryId).OrderBy(p => p.Count()).ToList();
-                        var orderKeys = orderGroups.Select(p => p.Key);
-                        orderGroups.ForEach(p =>
+                        var ls = db.Queryable<DbModels.EntryDb>()
+                        .Select(p => new { p.Id, p.WatchTimes })
+                        .ToList();
+                        ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Key, p.Count(), item.Key));
-                        });
-                        //无观看记录的
-                        var noWatchedList = db.Queryable<DbModels.EntryDb>()
-                                            .Where(p => !inLabelEntryIds.Contains(p.Id))
-                                            .Where(p => !orderKeys.Contains(p.Id))
-                                            .Select(p => p.Id);
-                        noWatchedList.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p, 0, item.Key));
+                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, item.Key));
                         });
                     }
                 }
@@ -251,6 +234,11 @@ namespace OMDb.Core.Services
         private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
+            List<string> inLabelEntryIds = null;
+            if (labelIds != null && labelIds.Count != 0)
+            {
+                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+            }
             foreach (var item in DbService.Dbs)
             {
                 if (dbIds != null && !dbIds.Contains(item.Key))
@@ -260,9 +248,8 @@ namespace OMDb.Core.Services
                 var db = item.Value;
                 if (db != null)
                 {
-                    if (labelIds != null && labelIds.Count != 0)
+                    if (inLabelEntryIds != null)
                     {
-                        var inLabelEntryIds = LabelService.GetEntrys(labelIds);
                         var ls = db.Queryable<DbModels.EntryDb>()
                             .In(inLabelEntryIds)
                             .Select(p => new { p.Id, p.MyRating })
@@ -274,11 +261,9 @@ namespace OMDb.Core.Services
                     }
                     else
                     {
-                        var inLabelEntryIds = LabelService.GetAllEntryIds();
                         var ls = db.Queryable<DbModels.EntryDb>()
-                                .Where(p => !inLabelEntryIds.Contains(p.Id))
-                                .Select(p => new { p.Id, p.MyRating })
-                                .ToList();
+                            .Select(p => new { p.Id, p.MyRating })
+                            .ToList();
                         ls.ForEach(p =>
                         {
                             queryResults.Add(new QueryResult(p.Id, p.MyRating, item.Key));
@@ -407,7 +392,7 @@ namespace OMDb.Core.Services
             connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
             connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
             connet.Deleteable<WatchHistoryDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
-            connet.Deleteable<EntryLabelDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
+            DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => p.EntryId == entry.Id).ExecuteCommand();
             connet.CommitTran();
         }
 
@@ -422,9 +407,12 @@ namespace OMDb.Core.Services
               {
                   var ids = g.Select(p => p.Id);
                   var connet = DbService.GetConnection(g.Key);
+                  connet.BeginTran();
                   connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<EntryNameDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<WatchHistoryDb>().In(ids).ExecuteCommand();
+                  DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
+                  connet.CommitTran();
               });
         }
 
@@ -436,6 +424,18 @@ namespace OMDb.Core.Services
         public static async Task<List<Entry>> GetEntryByIdsAsync(IEnumerable<string> entryIds, string dbId)
         {
             return await QueryEntryAsync(entryIds.Select(p => new QueryItem(p, dbId)).ToList());
+        }
+
+        /// <summary>
+        /// 更新词条观看次数
+        /// </summary>
+        /// <param name="entryId"></param>
+        /// <param name="dbId"></param>
+        /// <param name="increment">变化量，可用正负来表示增加减少</param>
+        /// <returns></returns>
+        public static bool UpdateWatchTime(string entryId,string dbId,int increment)
+        {
+            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
         }
     }
 }
