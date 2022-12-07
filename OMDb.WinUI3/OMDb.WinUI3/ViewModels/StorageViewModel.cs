@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using ConsoleDemo.Helper;
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +43,29 @@ namespace OMDb.WinUI3.ViewModels
         {
             if(enrtyStorage != null)
             {
-                if(enrtyStorage.StoragePath.EndsWith(".db"))
+                try 
+                {
+                    var storagePathFolder = enrtyStorage.StoragePath.SubString02B(@"\", 1, false);
+                    bool isPathCorrect_Storage = Directory.Exists(storagePathFolder);
+                    if (!isPathCorrect_Storage)
+                    {
+                        await Dialogs.MsgDialog.ShowDialog("添加失败，仓库路径有误");
+                        return;
+                    }
+                }
+                catch(Exception ex) 
+                {
+                    await Dialogs.MsgDialog.ShowDialog("添加失败，仓库路径有误");
+                    return;
+                }
+                bool isPathCorrect_Cover=Directory.Exists(enrtyStorage.StoragePath);
+                if (!isPathCorrect_Cover)
+                {
+                    await Dialogs.MsgDialog.ShowDialog("添加失败，封面路径有误");
+                    return;
+                }
+
+                if (enrtyStorage.StoragePath.EndsWith(".db"))
                 {
                     //添加已有数据库
                     if (EnrtyStorages.FirstOrDefault(p => p.StorageName == enrtyStorage.StorageName) != null)
