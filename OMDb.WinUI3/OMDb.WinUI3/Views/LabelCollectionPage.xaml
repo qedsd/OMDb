@@ -7,7 +7,7 @@
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
-    Background="Transparent"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 

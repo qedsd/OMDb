@@ -114,6 +114,7 @@
                         <Expander
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}"
                             IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -157,6 +158,7 @@
                         <Expander
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Stretch"
+                            Background="{ThemeResource LayerFillColorDefaultBrush}"
                             IsExpanded="True">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
