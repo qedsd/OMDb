@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
 using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
@@ -109,7 +110,11 @@ namespace OMDb.WinUI3.ViewModels
 
         private async Task SetExtractsLine()
         {
-            Core.Services.EntryService
+            var entry = (await Core.Services.EntryService.RandomEntryAsync())?.FirstOrDefault();
+            if(entry != null)
+            {
+                ExtractsLine = entry.GetExtractsLines()?.FirstOrDefault();
+            }
         }
     }
 }

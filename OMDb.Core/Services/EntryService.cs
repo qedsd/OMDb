@@ -438,18 +438,32 @@ namespace OMDb.Core.Services
             return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
         }
 
-        public static async Task<Entry> RandomEntryAsync(int count = 1)
+        /// <summary>
+        /// 从所有的仓库中随机指定个数词条
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static async Task<List<Entry>> RandomEntryAsync(int count = 1)
         {
-            List<DbModels.EntryDb> firstRandoms = new List<DbModels.EntryDb>();
+            List<Tuple<DbModels.EntryDb,string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
             foreach(var dbId in DbService.Dbs.Keys)
             {
                 int max = await QueryEntryCountAsync(dbId);
-                int index = Helpers.RandomHelper.RandomInt(0, max - 1, count).First();
-                var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
-                firstRandoms.AddRange(result);
+                var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
+                foreach(var index in indexes)
+                {
+                    var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
+                    firstRandoms.Add((Tuple.Create(result.First(), dbId)));
+                }
             }
-            //return Core.Models.Entry.Create(firstRandoms[Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count).First()]);
-            return null;
+            var items = Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count);
+            List<Entry> entries = new List<Entry>();
+            foreach(var item in items)
+            {
+                var tuple = firstRandoms[item];
+                entries.Add(Models.Entry.Create(tuple.Item1, tuple.Item2));
+            }
+            return entries;
         }
     }
 }

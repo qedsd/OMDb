@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OMDb.Core.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,16 @@ namespace OMDb.Core.Models
         public string EntryName { get; set; }
         public string EntryId { get; set; }
         public string DbId { get; set; }
+        public static ExtractsLine Create(ExtractsLineBase extractsLineBase, Entry entry)
+        {
+            var extractsLine = extractsLineBase.DepthClone<ExtractsLine>();
+            if (extractsLine != null)
+            {
+                extractsLine.DbId = entry.DbId;
+                extractsLine.EntryName = entry.Name;
+                extractsLine.EntryId = entry.Id;
+            }
+            return extractsLine;
+        }
     }
 }

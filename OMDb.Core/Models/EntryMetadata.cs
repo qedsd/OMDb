@@ -27,6 +27,7 @@ namespace OMDb.Core.Models
         /// 描述
         /// </summary>
         public string Desc { get; set; }
+        public List<ExtractsLineBase> ExtractsLines { get; set; }
 
         public void Save(string file)
         {
