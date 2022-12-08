@@ -437,5 +437,19 @@ namespace OMDb.Core.Services
         {
             return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
         }
+
+        public static async Task<Entry> RandomEntryAsync(int count = 1)
+        {
+            List<DbModels.EntryDb> firstRandoms = new List<DbModels.EntryDb>();
+            foreach(var dbId in DbService.Dbs.Keys)
+            {
+                int max = await QueryEntryCountAsync(dbId);
+                int index = Helpers.RandomHelper.RandomInt(0, max - 1, count).First();
+                var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
+                firstRandoms.AddRange(result);
+            }
+            //return Core.Models.Entry.Create(firstRandoms[Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count).First()]);
+            return null;
+        }
     }
 }

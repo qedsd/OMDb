@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace OMDb.WinUI3.Views
         public HomePage()
         {
             this.InitializeComponent();
+            Img.Source = new BitmapImage(new Uri(@"D:\OMDb\图片\p2879947762.jpg"));
         }
     }
 }

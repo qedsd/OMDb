@@ -53,5 +53,16 @@ namespace OMDb.Core.Extensions
             if (source == null) return null;
             return new ObservableCollection<T>(source);
         }
+
+        /// <summary>
+        /// 既不为null也不为空
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ls"></param>
+        /// <returns></returns>
+        public static bool NotNullAndEmpty<T>(this IEnumerable<T> ls)
+        {
+            return ls != null && ls.Any();
+        }
     }
 }
