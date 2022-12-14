@@ -12,7 +12,8 @@ namespace OMDb.WinUI3.Helpers
         public static Grid WaitingGrid { get; set; }
         public static ProgressRing WaitingProgressRing { get; set; }
         public static InfoBar InfoBar { get; set; }
-        
+        public static Frame DialogFrame { get; set; }
+
         private static System.Timers.Timer Timer;
         private static void StartTimer()
         {
@@ -74,13 +75,22 @@ namespace OMDb.WinUI3.Helpers
 
         public static void ShowWaiting()
         {
-            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+            ShowWaitingGrid();
             WaitingProgressRing.IsActive = true;
         }
         public static void HideWaiting()
         {
-            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+            HideWaitingGrid();
             WaitingProgressRing.IsActive = false;
+        }
+
+        public static void ShowWaitingGrid()
+        {
+            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
+        }
+        public static void HideWaitingGrid()
+        {
+            WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         }
     }
 }

@@ -29,10 +29,19 @@ namespace OMDb.Core.Models
         public string Desc { get; set; }
         public List<ExtractsLineBase> ExtractsLines { get; set; }
 
-        public void Save(string file)
+        public bool Save(string file)
         {
-            var json = JsonConvert.SerializeObject(this);
-            System.IO.File.WriteAllText(file, json);
+            try
+            {
+                var json = JsonConvert.SerializeObject(this);
+                System.IO.File.WriteAllText(file, json);
+                return true;
+            }
+            catch(Exception ex)
+            {
+                //TODO:写入日志
+                return false;
+            }
         }
 
         public static EntryMetadata Read(string file)

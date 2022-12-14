@@ -449,11 +449,14 @@ namespace OMDb.Core.Services
             foreach(var dbId in DbService.Dbs.Keys)
             {
                 int max = await QueryEntryCountAsync(dbId);
-                var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
-                foreach(var index in indexes)
+                if (max > count)
                 {
-                    var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
-                    firstRandoms.Add((Tuple.Create(result.First(), dbId)));
+                    var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
+                    foreach (var index in indexes)
+                    {
+                        var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
+                        firstRandoms.Add((Tuple.Create(result.First(), dbId)));
+                    }
                 }
             }
             var items = Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count);

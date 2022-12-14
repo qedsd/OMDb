@@ -512,5 +512,31 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
         #endregion
+
+        #region 台词
+        private ObservableCollection<Core.Models.ExtractsLineBase> extractsLines;
+        public ObservableCollection<Core.Models.ExtractsLineBase> ExtractsLines
+        {
+            get => extractsLines;
+            set => SetProperty(ref extractsLines, value);
+        }
+        public ICommand AddLineCommand => new RelayCommand(async() =>
+        {
+            Dialogs.EditLineDialog editLineDialog = new EditLineDialog(null);
+            if(await editLineDialog.ShowAsync())
+            {
+                Core.Models.ExtractsLineBase line = new Core.Models.ExtractsLineBase()
+                {
+                    Line = editLineDialog.Line,
+                    CreateTime = DateTime.Now,
+                    UpdateTime = DateTime.Now
+                };
+                Entry.ExtractsLines.Add(line);
+                Entry.Metadata.ExtractsLines = Entry.ExtractsLines.ToList();
+                Entry.SaveMetadata();
+                Helpers.InfoHelper.ShowSuccess("添加成功");
+            }
+        });
+        #endregion
     }
 }

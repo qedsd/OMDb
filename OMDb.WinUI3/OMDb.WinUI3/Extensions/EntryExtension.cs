@@ -10,12 +10,12 @@ namespace OMDb.WinUI3.Extensions
 {
     public static class EntryExtension
     {
-        public static List<Core.Models.ExtractsLine> GetExtractsLines(this Core.Models.Entry entry)
+        public static List<Core.Models.ExtractsLineBase> GetExtractsLines(this Core.Models.Entry entry)
         {
             var metadata = entry.GetMetadata();
             if(metadata != null)
             {
-                return metadata.ExtractsLines.Select(p=> ExtractsLine.Create(p,entry)).ToList();
+                return metadata.ExtractsLines?.ToList();
             }
             else
             {

@@ -10,6 +10,7 @@
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:models1="using:OMDb.Core.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     x:Name="page"
     Background="Transparent"
@@ -546,6 +547,44 @@
                         </Grid>
                     </StackPanel>
                 </mycontrols:DropArea>
+
+                <!--  台词摘录  -->
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="台词摘录" />
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                    <Grid Margin="10,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ListView ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models1:ExtractsLineBase">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Line}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="10,0"
+                                            Text="{x:Bind From}" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind UpdateTime}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <StackPanel Grid.Column="1" Margin="10">
+                            <Button Command="{x:Bind VM.AddLineCommand}">
+                                <SymbolIcon Symbol="Add" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
 
                 <!--  其他信息  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">

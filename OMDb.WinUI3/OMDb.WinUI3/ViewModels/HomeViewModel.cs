@@ -68,6 +68,7 @@ namespace OMDb.WinUI3.ViewModels
             await InitRecentlyWatchedFiles();
             await InitRecentlyWatchedEntries();
             await InitRecentlyUpdatedEntries();
+            await SetExtractsLine();
             Helpers.InfoHelper.HideWaiting();
         }
         private async Task InitRecentlyWatchedFiles()
@@ -113,7 +114,7 @@ namespace OMDb.WinUI3.ViewModels
             var entry = (await Core.Services.EntryService.RandomEntryAsync())?.FirstOrDefault();
             if(entry != null)
             {
-                ExtractsLine = entry.GetExtractsLines()?.FirstOrDefault();
+                ExtractsLine = Core.Models.ExtractsLine.Create(entry.GetExtractsLines()?.FirstOrDefault(), entry);
             }
         }
     }

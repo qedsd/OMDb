@@ -229,14 +229,21 @@
             VerticalAlignment="Top"
             IsOpen="False"
             Severity="Informational" />
-        <Grid x:Name="WaitingGrid" Visibility="Collapsed">
+        <Grid x:Name="WaitingGrid" Visibility="Collapsed" Margin="0,0,0,0">
             <Grid.Background>
-                <SolidColorBrush Opacity="0.6" Color="{ThemeResource ControlFillColorDefault}" />
+                <SolidColorBrush Opacity="0.2" Color="{ThemeResource ForegroundColor}" />
             </Grid.Background>
             <ProgressRing
                 x:Name="WaitingProgressRing"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center" />
         </Grid>
+        <Frame
+            CornerRadius="8"
+            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+            x:Name="DialogFrame"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Visibility="Collapsed"/>
     </Grid>
 </Page>

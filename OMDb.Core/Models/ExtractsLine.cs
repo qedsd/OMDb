@@ -17,6 +17,10 @@ namespace OMDb.Core.Models
         public string DbId { get; set; }
         public static ExtractsLine Create(ExtractsLineBase extractsLineBase, Entry entry)
         {
+            if(extractsLineBase == null || entry == null)
+            {
+                return null;
+            }
             var extractsLine = extractsLineBase.DepthClone<ExtractsLine>();
             if (extractsLine != null)
             {

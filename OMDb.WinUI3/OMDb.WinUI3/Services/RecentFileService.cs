@@ -17,7 +17,7 @@ namespace OMDb.WinUI3.Services
                 Path = "C:\\Users\\chenzhaoji\\Videos1.mp4",
                 DbId = "仓库1",
                 EntryId = "ee4cee31-56e9-45c0-9179-861a082c25bd",
-                Time = DateTime.Now,
+                AccessTime = DateTime.Now,
                 Duration = 1000000,
                 MarkTime = 100000
             });
@@ -26,7 +26,7 @@ namespace OMDb.WinUI3.Services
                 Path = "C:\\Users\\chenzhaoji\\Videos1.mp4",
                 DbId = "仓库1",
                 EntryId = "df41f3af-d920-4a83-a0b5-bea4bc835fd3",
-                Time = DateTime.Now,
+                AccessTime = DateTime.Now,
                 Duration = 1000000,
                 MarkTime = 100000
             });

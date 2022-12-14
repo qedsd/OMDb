@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Utilities;
+﻿using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,7 @@ namespace OMDb.Core.Helpers
         /// <returns></returns>
         public static List<int> RandomInt(int min,int max,int count)
         {
-            if(min <= max || count < 1)
+            if(min > max || count < 1)
             {
                 return null;
             }

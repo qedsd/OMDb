@@ -26,6 +26,7 @@
     <None Remove="Assets\Img\defaultbanneritem.jpg" />
     <None Remove="Dialogs\EditEntryDialog.xaml" />
     <None Remove="Dialogs\EditLabelDialog.xaml" />
+    <None Remove="Dialogs\EditLineDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
     <None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
@@ -326,6 +327,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\EditLineDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
