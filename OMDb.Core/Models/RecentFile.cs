@@ -26,5 +26,10 @@ namespace OMDb.Core.Models
         /// 毫秒
         /// </summary>
         public long MarkTime { get; set; }
+
+        public double WatchedPrecent
+        {
+            get => Math.Round((double)MarkTime / Duration * 100,2);
+        }
     }
 }

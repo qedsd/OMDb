@@ -5,13 +5,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.Core.Models"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
     <ScrollViewer CornerRadius="8">
         <StackPanel>
-            <Grid Height="500" CornerRadius="8">
-                <Image x:Name="Img" Stretch="UniformToFill" />
+            <Grid
+                x:Name="CoverLineGrid"
+                Height="500"
+                CornerRadius="8">
+                <Image
+                    x:Name="Img"
+                    Source="{x:Bind VM.LineCover, Mode=OneWay}"
+                    Stretch="UniformToFill" />
                 <Grid>
                     <Grid.Background>
                         <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -23,26 +31,41 @@
                     </Grid.Background>
                 </Grid>
                 <StackPanel Margin="20,0,0,24" VerticalAlignment="Bottom">
-                    <TextBlock
-                        Width="400"
-                        Margin="0,10"
-                        HorizontalAlignment="Left"
-                        FontSize="20"
-                        Foreground="White"
-                        Text="生活就像一颗巧克力，你永远不知道下一颗什么味道"
-                        TextWrapping="Wrap" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.6*" />
+                            <ColumnDefinition Width="0.4*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Margin="0,10"
+                            HorizontalAlignment="Left"
+                            FontSize="18"
+                            Foreground="White"
+                            MaxLines="3"
+                            Text="{x:Bind VM.ExtractsLine.Line, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap" />
+                    </Grid>
                     <HyperlinkButton
                         Margin="0,10"
-                        Content="《阿甘正传》"
-                        FontSize="20"
-                        Foreground="White" />
+                        Command="{x:Bind VM.LineEntryDetailCommand}"
+                        FontSize="18"
+                        FontStyle="Oblique"
+                        Foreground="White">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="《" />
+                            <TextBlock Text="{x:Bind VM.ExtractsLine.EntryName, Mode=OneWay}" />
+                            <TextBlock Text="》" />
+                        </StackPanel>
+                    </HyperlinkButton>
                 </StackPanel>
                 <Button
                     Margin="0,0,0,4"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Background="Transparent"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    Command="{x:Bind VM.RefreshLineCommand}">
                     <SymbolIcon Symbol="Sync">
                         <SymbolIcon.RenderTransform>
                             <ScaleTransform CenterX="12" CenterY="12" ScaleX="0.6" ScaleY="0.6" />
@@ -50,6 +73,46 @@
                     </SymbolIcon>
                 </Button>
             </Grid>
+            <GridView Margin="10" ItemsSource="{x:Bind VM.RecentlyWatchedFiles, Mode=OneWay}">
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Background" Value="{ThemeResource ContentBackgroudBrush}" />
+                        <Setter Property="Margin" Value="4,4" />
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:RecentFile">
+                        <Grid Width="300" Margin="8,4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{x:Bind Path}" />
+                            <Grid Grid.Row="1" Margin="0,4">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{x:Bind AccessTime}" ToolTipService.ToolTip="上次观看时间" />
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    ToolTipService.ToolTip="观看进度">
+                                    <TextBlock Text="{x:Bind WatchedPrecent}" />
+                                    <TextBlock Text="%" />
+                                </StackPanel>
+                            </Grid>
+                            <ProgressBar
+                                Grid.Row="2"
+                                Maximum="100"
+                                Minimum="0"
+                                ToolTipService.ToolTip="观看进度"
+                                Value="{x:Bind WatchedPrecent}" />
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
         </StackPanel>
     </ScrollViewer>
 </Page>

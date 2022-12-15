@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Height="300"
     Width="400"
-    Background="Transparent"
+    Height="300"
+    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
     mc:Ignorable="d">
 
     <Grid Margin="20">
@@ -16,7 +16,7 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <TextBlock x:Name="TitleTextBlock" FontSize="16"/>
+        <TextBlock x:Name="TitleTextBlock" FontSize="16" />
         <TextBox
             x:Name="InputTextBox"
             Grid.Row="1"
@@ -38,6 +38,7 @@
                 Grid.Column="1"
                 Margin="10,0,0,0"
                 HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemAccentColor}"
                 Click="ConfirmButton_Click"
                 Content="确认" />
         </Grid>

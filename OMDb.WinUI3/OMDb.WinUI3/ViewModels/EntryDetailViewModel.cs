@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.DbModels;
 using OMDb.Core.Extensions;
 using OMDb.WinUI3.Dialogs;
@@ -536,6 +537,33 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.SaveMetadata();
                 Helpers.InfoHelper.ShowSuccess("添加成功");
             }
+        });
+        public ICommand EditLineCommand => new RelayCommand<Core.Models.ExtractsLineBase>(async (item) =>
+        {
+            Dialogs.EditLineDialog editLineDialog = new EditLineDialog(item);
+            if (await editLineDialog.ShowAsync())
+            {
+                item.Line = editLineDialog.Line;
+                item.UpdateTime = DateTime.Now;
+                Entry.ExtractsLines.Remove(item);
+                Entry.ExtractsLines.Add(item);
+                Entry.Metadata.ExtractsLines = Entry.ExtractsLines.ToList();
+                Entry.SaveMetadata();
+            }
+        });
+        public ICommand DeleteLineCommand => new RelayCommand<Core.Models.ExtractsLineBase>(async (item) =>
+        {
+            if(await Helpers.InfoHelper.ShowQueryAsync("是否确认删除选中的台词", item.Line))
+            {
+                Entry.ExtractsLines.Remove(item);
+                Entry.Metadata.ExtractsLines = Entry.ExtractsLines.ToList();
+                Entry.SaveMetadata();
+            }
+        });
+        public ICommand LineDetailCommand => new RelayCommand<Core.Models.ExtractsLineBase>((item) =>
+        {
+            Dialogs.LineDetailDialog lineDetailDialog = new LineDetailDialog(item, Entry.Name);
+            lineDetailDialog.Show();
         });
         #endregion
     }

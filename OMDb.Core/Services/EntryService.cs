@@ -449,9 +449,9 @@ namespace OMDb.Core.Services
             foreach(var dbId in DbService.Dbs.Keys)
             {
                 int max = await QueryEntryCountAsync(dbId);
-                if (max > count)
+                var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
+                if (indexes.NotNullAndEmpty())
                 {
-                    var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
                     foreach (var index in indexes)
                     {
                         var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();

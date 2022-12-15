@@ -14,36 +14,38 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace OMDb.WinUI3.Dialogs
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class QueryDialog : Page
+    public sealed partial class QueryDialog : DialogBase
     {
-        public QueryDialog(string tip)
+        public QueryDialog(string title,string content)
         {
             this.InitializeComponent();
-            TextBlock_Query.Text = tip;
+            TitleTextBlock.Text = title;
+            TextBlock_Query.Text = content;
         }
-        public static async Task<bool> ShowDialog(string title = "是否确认",string content = null)
+        private bool clickConfirm = false;
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            MyContentDialog dialog = new MyContentDialog();
-            dialog.TitleTextBlock.Text = title;
-            dialog.PrimaryButton.Content = "确认";
-            dialog.CancelButton.Content = "取消";
-            dialog.ContentFrame.Content = new QueryDialog(content);
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            clickConfirm = false;
+            Close();
+        }
+
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            clickConfirm = true;
+            Close();
+        }
+
+        public override async Task<bool> ShowAsync()
+        {
+            await base.ShowAsync();
+            return clickConfirm;
+        }
+        public static async Task<bool> ShowDialog(string title, string content)
+        {
+            return await Helpers.InfoHelper.ShowQueryAsync(title, content);
         }
     }
 }

@@ -29,6 +29,7 @@
     <None Remove="Dialogs\EditLineDialog.xaml" />
     <None Remove="Dialogs\EditStorageDialog.xaml" />
     <None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
+    <None Remove="Dialogs\LineDetailDialog.xaml" />
     <None Remove="Dialogs\MsgDialog.xaml" />
     <None Remove="Dialogs\MyContentDialog.xaml" />
     <None Remove="Dialogs\PickEntryCollectionDialog.xaml" />
@@ -327,6 +328,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\LineDetailDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

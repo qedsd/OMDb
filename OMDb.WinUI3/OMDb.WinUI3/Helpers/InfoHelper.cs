@@ -92,5 +92,11 @@ namespace OMDb.WinUI3.Helpers
         {
             WaitingGrid.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
         }
+
+        public static async Task<bool> ShowQueryAsync(string title, string content)
+        {
+            Dialogs.QueryDialog queryDialog = new Dialogs.QueryDialog(title, content);
+            return await queryDialog.ShowAsync();
+        }
     }
 }

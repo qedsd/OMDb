@@ -240,7 +240,6 @@
         </Grid>
         <Frame
             CornerRadius="8"
-            Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
             x:Name="DialogFrame"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"

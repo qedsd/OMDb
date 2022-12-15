@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.WinUI3.MyControls;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,7 +23,12 @@ namespace OMDb.WinUI3.Views
         public HomePage()
         {
             this.InitializeComponent();
-            Img.Source = new BitmapImage(new Uri(@"D:\OMDb\图片\p2879947762.jpg"));
+            SizeChanged += ClassificationPage_SizeChanged;
+            ClassificationPage_SizeChanged(null, null);
+        }
+        private void ClassificationPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            CoverLineGrid.Height = this.ActualHeight * 0.8;
         }
     }
 }

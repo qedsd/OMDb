@@ -89,10 +89,10 @@ namespace OMDb.Core.Helpers
             }
             List<int> results = new List<int>(count);
             HashSet<int> resoutHS = new HashSet<int>();
-            while (results.Count != count)
+            while (results.Count != count && results.Count != max + 1)
             {
                 Random random = new Random();
-                var index = random.Next(min, max++);//random.Next的max是不包含在内的
+                var index = random.Next(min, max + 1);//random.Next的max是不包含在内的
                 if (resoutHS.Add(index))
                 {
                     results.Add(index);

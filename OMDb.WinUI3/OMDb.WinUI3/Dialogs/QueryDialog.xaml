@@ -1,15 +1,51 @@
-﻿<Page
+﻿<local:DialogBase
     x:Class="OMDb.WinUI3.Dialogs.QueryDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="Transparent"
-    mc:Ignorable="d"
-    MinWidth="300">
-
-    <Grid>
-        <TextBlock x:Name="TextBlock_Query" TextWrapping="WrapWholeWords" />
+    MinWidth="300"
+    MinHeight="160"
+    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+    mc:Ignorable="d">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="TitleTextBlock" FontSize="16" />
+        <Rectangle
+            Grid.Row="1"
+            Height="1"
+            Margin="0,10"
+            Fill="{ThemeResource SystemAccentColor}" />
+        <TextBlock
+            x:Name="TextBlock_Query"
+            Grid.Row="2"
+            Margin="0,0"
+            TextWrapping="WrapWholeWords" />
+        <Grid Grid.Row="3" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button
+                x:Name="CancelButton"
+                Margin="0,0,10,0"
+                HorizontalAlignment="Stretch"
+                Click="CancelButton_Click"
+                Content="取消" />
+            <Button
+                x:Name="ConfirmButton"
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SystemAccentColor}"
+                Click="ConfirmButton_Click"
+                Content="确认" />
+        </Grid>
     </Grid>
-</Page>
+</local:DialogBase>
