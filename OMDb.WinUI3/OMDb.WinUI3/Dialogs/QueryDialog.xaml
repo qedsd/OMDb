@@ -6,6 +6,7 @@
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     MinWidth="300"
+    MaxWidth="600"
     MinHeight="160"
     Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
     mc:Ignorable="d">
@@ -25,7 +26,7 @@
         <TextBlock
             x:Name="TextBlock_Query"
             Grid.Row="2"
-            Margin="0,0"
+            Margin="0,10,0,20"
             TextWrapping="WrapWholeWords" />
         <Grid Grid.Row="3" Margin="0,10,0,0">
             <Grid.ColumnDefinitions>

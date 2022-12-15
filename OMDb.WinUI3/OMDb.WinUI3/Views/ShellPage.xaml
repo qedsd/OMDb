@@ -231,7 +231,7 @@
             Severity="Informational" />
         <Grid x:Name="WaitingGrid" Visibility="Collapsed" Margin="0,0,0,0">
             <Grid.Background>
-                <SolidColorBrush Opacity="0.2" Color="{ThemeResource ForegroundColor}" />
+                <SolidColorBrush Opacity="0.4" Color="{ThemeResource ForegroundColor}" />
             </Grid.Background>
             <ProgressRing
                 x:Name="WaitingProgressRing"

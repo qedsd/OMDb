@@ -2,20 +2,26 @@
     x:Class="OMDb.WinUI3.Views.HomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.Core.Models"
-    Background="{ThemeResource LayerFillColorDefaultBrush}"
+    Background="{ThemeResource LayerFillColorDefault}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToCollapsedConverter" />
+    </Page.Resources>
     <ScrollViewer CornerRadius="8">
         <StackPanel>
             <Grid
                 x:Name="CoverLineGrid"
                 Height="500"
-                CornerRadius="8">
+                CornerRadius="8"
+                Visibility="{x:Bind VM.ExtractsLine, Mode=OneWay, Converter={StaticResource NullToCollapsedConverter}}">
                 <Image
                     x:Name="Img"
                     Source="{x:Bind VM.LineCover, Mode=OneWay}"
@@ -39,7 +45,7 @@
                         <TextBlock
                             Margin="0,10"
                             HorizontalAlignment="Left"
-                            FontSize="18"
+                            FontSize="20"
                             Foreground="White"
                             MaxLines="3"
                             Text="{x:Bind VM.ExtractsLine.Line, Mode=OneWay}"
@@ -60,7 +66,8 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <Button
-                    Margin="0,0,0,4"
+                    Margin="0,0,10,4"
+                    Foreground="White"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Background="Transparent"
@@ -73,46 +80,62 @@
                     </SymbolIcon>
                 </Button>
             </Grid>
-            <GridView Margin="10" ItemsSource="{x:Bind VM.RecentlyWatchedFiles, Mode=OneWay}">
-                <GridView.ItemContainerStyle>
-                    <Style TargetType="GridViewItem">
-                        <Setter Property="Background" Value="{ThemeResource ContentBackgroudBrush}" />
-                        <Setter Property="Margin" Value="4,4" />
-                    </Style>
-                </GridView.ItemContainerStyle>
-                <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:RecentFile">
-                        <Grid Width="300" Margin="8,4">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind Path}" />
-                            <Grid Grid.Row="1" Margin="0,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{x:Bind AccessTime}" ToolTipService.ToolTip="上次观看时间" />
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    ToolTipService.ToolTip="观看进度">
-                                    <TextBlock Text="{x:Bind WatchedPrecent}" />
-                                    <TextBlock Text="%" />
-                                </StackPanel>
+            <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                      Background="Transparent"
+                      IsExpanded="True"
+                      Margin="10,20">
+                <Expander.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="最近观看视频" />
+                    </StackPanel>
+                </Expander.Header>
+                <GridView Margin="10" ItemsSource="{x:Bind VM.RecentlyWatchedFiles, Mode=OneWay}">
+                    <GridView.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <Setter Property="Background" Value="{ThemeResource ContentBackgroudBrush}" />
+                            <Setter Property="Margin" Value="4,4" />
+                        </Style>
+                    </GridView.ItemContainerStyle>
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="models:RecentFile">
+                            <Grid Width="300" Margin="8,4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{x:Bind Path}" />
+                                <Grid Grid.Row="1" Margin="0,4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind AccessTime}" ToolTipService.ToolTip="上次观看时间" />
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Orientation="Horizontal"
+                                        ToolTipService.ToolTip="观看进度">
+                                        <TextBlock Text="{x:Bind WatchedPrecent}" />
+                                        <TextBlock Text="%" />
+                                    </StackPanel>
+                                </Grid>
+                                <ProgressBar
+                                    Grid.Row="2"
+                                    Maximum="100"
+                                    Minimum="0"
+                                    ToolTipService.ToolTip="观看进度"
+                                    Value="{x:Bind WatchedPrecent}" />
                             </Grid>
-                            <ProgressBar
-                                Grid.Row="2"
-                                Maximum="100"
-                                Minimum="0"
-                                ToolTipService.ToolTip="观看进度"
-                                Value="{x:Bind WatchedPrecent}" />
-                        </Grid>
-                    </DataTemplate>
-                </GridView.ItemTemplate>
-            </GridView>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </Expander>
+
         </StackPanel>
+        <ScrollViewer.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Text="刷新" />
+            </MenuFlyout>
+        </ScrollViewer.ContextFlyout>
     </ScrollViewer>
 </Page>

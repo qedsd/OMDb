@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinWidth="300"
     Background="Transparent"
-    mc:Ignorable="d"
-    MinWidth="300">
+    mc:Ignorable="d">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,10 +16,10 @@
         </Grid.RowDefinitions>
         <TextBox x:Name="TextBox_Name" Header="标签名" />
         <TextBox
-            Margin="0,20,0,0"
             x:Name="TextBox_Desc"
             Grid.Row="1"
-            Header="标签描述" 
-            Height="100"/>
+            Height="100"
+            Margin="0,20,0,0"
+            Header="标签描述" />
     </Grid>
 </Page>

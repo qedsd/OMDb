@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using OMDb.Core.DbModels;
 using OMDb.Core.Extensions;
@@ -56,14 +57,17 @@ namespace OMDb.WinUI3.ViewModels
         public ExtractsLine ExtractsLine
         {
             get => extractsLine;
-            set => SetProperty(ref extractsLine, value);
+            set
+            {
+                SetProperty(ref extractsLine, value);
+            }
         }
 
         public HomeViewModel()
         {
-            Init();
+            _=Init();
         }
-        private async void Init()
+        private async Task Init()
         {
             Helpers.InfoHelper.ShowWaiting();
             await InitRecentlyWatchedFiles();
@@ -112,34 +116,33 @@ namespace OMDb.WinUI3.ViewModels
 
         private async Task SetExtractsLine()
         {
-            while(true)
+            var ls = await Core.Services.EntryService.RandomEntryAsync(50);
+            foreach (var entry in ls)
             {
-                var ls = await Core.Services.EntryService.RandomEntryAsync(10);
-                foreach (var entry in ls)
+                var lines = entry.GetExtractsLines();
+                if (lines.NotNullAndEmpty())
                 {
-                    var lines = entry.GetExtractsLines();
-                    if (lines.NotNullAndEmpty())
+                    entry.Name = Core.Services.EntryNameSerivce.QueryName(entry.Id, entry.DbId);
+                    int lineIndex = Core.Helpers.RandomHelper.RandomInt(0, lines.Count - 1, 1).First();
+                    ExtractsLine = Core.Models.ExtractsLine.Create(lines[lineIndex], entry);
+                    var imgs = entry.GetBestImg(true);
+                    if (imgs.NotNullAndEmpty())
                     {
-                        entry.Name = Core.Services.EntryNameSerivce.QueryName(entry.Id, entry.DbId);
-                        int lineIndex = Core.Helpers.RandomHelper.RandomInt(0, lines.Count - 1, 1).First();
-                        ExtractsLine = Core.Models.ExtractsLine.Create(lines[lineIndex], entry);
-                        var imgs = entry.GetBestImg(true);
-                        if(imgs.NotNullAndEmpty())
+                        Core.Helpers.ImageHelper.GetImageSize(imgs.First(), out var w, out var h);
+                        if (w > 1080)
                         {
-                            Core.Helpers.ImageHelper.GetImageSize(imgs.First(), out var w, out var h);
-                            if(w > 1080)
-                            {
-                                LineCover = await Helpers.ImgHelper.CreateBitmapImageAsync(await Core.Helpers.ImageHelper.ResetSizeAsync(imgs.First(), 1080, 0));
-                            }
-                            else
-                            {
-                                LineCover = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imgs.First()));
-                            }
+                            LineCover = await Helpers.ImgHelper.CreateBitmapImageAsync(await Core.Helpers.ImageHelper.ResetSizeAsync(imgs.First(), 1080, 0));
                         }
-                        return;
+                        else
+                        {
+                            LineCover = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imgs.First()));
+                        }
                     }
+                    return;
                 }
             }
+            ExtractsLine = null;
+            LineCover = null;
         }
 
         public ICommand RefreshLineCommand => new RelayCommand(async() =>
@@ -155,6 +158,10 @@ namespace OMDb.WinUI3.ViewModels
             var entry = await Core.Services.EntryService.QueryEntryAsync(new QueryItem(ExtractsLine.EntryId, ExtractsLine.DbId));
             NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
             Helpers.InfoHelper.HideWaiting();
+        });
+        public ICommand RefreshCommand => new RelayCommand(async () =>
+        {
+            await Init();
         });
     }
 }
