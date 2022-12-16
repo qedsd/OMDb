@@ -54,6 +54,7 @@ namespace OMDb.WinUI3.ViewModels
         public void SetSelected(Type type)
         {
             SelectedPage = type.Name;
+            CanGoBack = NavigationService.CanGoBack;
         }
 
         public ICommand NavClickCommand => new RelayCommand<Button>((item) =>

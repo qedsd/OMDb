@@ -66,6 +66,10 @@
     <None Remove="Views\EntryDetailPage.xaml" />
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
+    <None Remove="Views\Homes\ExtractLinePage.xaml" />
+    <None Remove="Views\Homes\RecentlyUpdatedEntryPage.xaml" />
+    <None Remove="Views\Homes\RecentlyWatchedEntryPage.xaml" />
+    <None Remove="Views\Homes\RecentlyWatchedFilesPage.xaml" />
     <None Remove="Views\LabelCollectionPage.xaml" />
     <None Remove="Views\LabelPage.xaml" />
     <None Remove="Views\ManagementPage.xaml" />
@@ -328,6 +332,30 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\RecentlyUpdatedEntryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\RecentlyWatchedEntryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\RecentlyWatchedFilesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\ExtractLinePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>
