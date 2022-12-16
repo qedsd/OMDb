@@ -56,13 +56,13 @@
                 Text="{Binding ElementName=page, Path=EnrtyStorage.StoragePath, Mode=OneWay, Converter={StaticResource FileToDirConverter}}"
                 TextWrapping="Wrap" />
         </Grid>
-        <Grid x:Name="AddGrid" Visibility="Collapsed">
+        <!--<Grid x:Name="AddGrid" Visibility="Collapsed">
             <Button
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Click="Add_Click">
                 <SymbolIcon Symbol="Add" />
             </Button>
-        </Grid>
+        </Grid>-->
     </Grid>
 </UserControl>

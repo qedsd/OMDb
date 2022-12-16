@@ -45,7 +45,7 @@ namespace OMDb.WinUI3.Helpers
                 }
             });
         }
-        public static void ShowError(string msg, bool autoClose = true)
+        public static void ShowError(string msg, bool autoClose = false)
         {
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {

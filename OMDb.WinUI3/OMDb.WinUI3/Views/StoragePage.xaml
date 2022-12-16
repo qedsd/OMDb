@@ -13,22 +13,58 @@
     mc:Ignorable="d">
 
     <Grid>
-        <controls:AdaptiveGridView
+        <StackPanel Orientation="Vertical">
+            <CommandBar OverflowButtonVisibility="Collapsed">
+
+                <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle"  />
+                <AppBarToggleButton Icon="RepeatAll" Label="Repeat" />
+                <AppBarSeparator/>-->
+
+                <!--<AppBarButton IsCompact="False"  Icon="Back" Label="Back"/>
+                <AppBarButton Icon="Stop" Label="Stop"/>
+                <AppBarButton Icon="Play" Label="Play"/>
+                <AppBarButton Icon="Forward" Label="Forward"/>-->
+                <AppBarButton Icon="Add" Command="{x:Bind VM.AddCommand}"/>
+                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}"/>
+
+
+                <!--<CommandBar.SecondaryCommands>
+                    <AppBarButton Label="Like" />
+                    <AppBarButton Label="Dislike" />
+                </CommandBar.SecondaryCommands>-->
+
+                <!--<CommandBar.Content>
+                    <TextBlock Text="Now playing..." Margin="12,14"/>
+                </CommandBar.Content>-->
+
+            </CommandBar>
+
+            <!--<Button 
+            Width="50" Height="40"
+                HorizontalAlignment="Stretch"
+                Command="{x:Bind VM.RefreshCommand}">
+                <StackPanel>
+                    <SymbolIcon Symbol="Refresh"></SymbolIcon>
+                </StackPanel>
+            </Button>-->
+
+            <controls:AdaptiveGridView
             Padding="20"
             DesiredWidth="160"
             IsItemClickEnabled="True"
             ItemHeight="240"
-            ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
+            ItemsSource="{x:Bind VM.EnrtyStorages, Mode=TwoWay}"
             OneRowModeEnabled="False"
-            SelectedItem="{x:Bind VM.EnrtyStorage, Mode=TwoWay}"
+
             ItemClickCommand="{x:Bind VM.ItemClickCommand}"
             SelectionMode="None"
             StretchContentForSingleRow="False">
-            <controls:AdaptiveGridView.ItemTemplate>
-                <DataTemplate>
-                    <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
-                </DataTemplate>
-            </controls:AdaptiveGridView.ItemTemplate>
-        </controls:AdaptiveGridView>
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </StackPanel>
     </Grid>
 </Page>

@@ -145,16 +145,16 @@ namespace OMDb.WinUI3.MyControls
             {
                 card.EnrtyStorage = e.NewValue as EnrtyStorage;
                 var es = card.EnrtyStorage;
-                if (es == null || string.IsNullOrEmpty(es.StoragePath))
-                {
-                    card.AddGrid.Visibility = Visibility.Visible;
-                    card.ShowGrid.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    card.AddGrid.Visibility = Visibility.Collapsed;
-                    card.ShowGrid.Visibility = Visibility.Visible;
-                }
+                //if (es == null || string.IsNullOrEmpty(es.StoragePath))
+                //{
+                //    card.AddGrid.Visibility = Visibility.Visible;
+                //    card.ShowGrid.Visibility = Visibility.Collapsed;
+                //}
+                //else
+                //{
+                //    card.AddGrid.Visibility = Visibility.Collapsed;
+                //    card.ShowGrid.Visibility = Visibility.Visible;
+                //}
             }
         }
         public EnrtyStorage EnrtyStorage

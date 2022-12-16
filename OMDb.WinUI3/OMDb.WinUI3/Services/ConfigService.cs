@@ -50,19 +50,21 @@ namespace OMDb.WinUI3.Services
         {
             EnrtyStorages = new ObservableCollection<EnrtyStorage>();
             Core.Config.ClearDb();
-            if (System.IO.File.Exists(EnrtyStorageFile))
-            {
-                string json = System.IO.File.ReadAllText(EnrtyStorageFile);
-                var items = JsonConvert.DeserializeObject<List<EnrtyStorage>>(json);
-                if (items != null)
-                {
-                    items.ForEach(p =>
-                    {
-                        EnrtyStorages.Add(p);
-                        Core.Config.AddDbFile(p.StoragePath, p.StorageName, false);
-                    });
-                }
-            }
+            Core.Services.StorageService.GetAllStorageAsync().Wait();
+
+            //if (System.IO.File.Exists(EnrtyStorageFile))
+            //{
+            //    string json = System.IO.File.ReadAllText(EnrtyStorageFile);
+            //    var items = JsonConvert.DeserializeObject<List<EnrtyStorage>>(json);
+            //    if (items != null)
+            //    {
+            //        items.ForEach(p =>
+            //        {
+            //            EnrtyStorages.Add(p);
+            //            Core.Config.AddDbFile(p.StoragePath, p.StorageName, false);
+            //        });
+            //    }
+            //}
         }
         public static void Save()
         {
