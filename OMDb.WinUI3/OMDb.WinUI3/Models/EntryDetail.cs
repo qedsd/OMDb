@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
+using OMDb.Core.Models;
+using OMDb.WinUI3.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -158,19 +160,14 @@ namespace OMDb.WinUI3.Models
             }
             await UpdateWatchHistoryAsync();
             labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.Id);
-            if(Labels == null)
-            {
-                Labels = new List<Core.DbModels.LabelDb>();
-            }
-            if (WatchHistory == null)
-            {
-                WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
-            }
+            Labels ??= new List<Core.DbModels.LabelDb>();
+            WatchHistory ??= new ObservableCollection<Core.Models.WatchHistory>();
             LoadImgs();
             LoadMetaData();
             LoadVideos();
             LoadSubs();
             LoadRes();
+            LoadLines();
         }
         public async Task UpdateWatchHistoryAsync()
         {
@@ -267,7 +264,19 @@ namespace OMDb.WinUI3.Models
             }
         }
 
-        
+        private ObservableCollection<Core.Models.ExtractsLineBase> extractsLines;
+        public ObservableCollection<Core.Models.ExtractsLineBase> ExtractsLines
+        {
+            get => extractsLines;
+            set => SetProperty(ref extractsLines, value);
+        }
+
+        public void LoadLines()
+        {
+            ExtractsLines = Entry.GetExtractsLines().ToObservableCollection();
+            ExtractsLines ??= new ObservableCollection<Core.Models.ExtractsLineBase>();
+        }
+
         /// <summary>
         /// 修改词条存储路径
         /// </summary>
@@ -301,6 +310,11 @@ namespace OMDb.WinUI3.Models
         public string GetImgFolder()
         {
             return System.IO.Path.Combine(FullEntryPath, Services.ConfigService.ImgFolder);
+        }
+
+        public bool SaveMetadata()
+        {
+            return Metadata.Save(System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
     }
 }

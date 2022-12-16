@@ -2,6 +2,7 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <Color x:Key="ForegroundColor">White</Color>
+            <Color x:Key="ThemeMainColor">Black</Color>
             <SolidColorBrush x:Key="ForegroundBrush" Color="White" />
             <SolidColorBrush x:Key="ContentBackgroudBrush" Color="#323232" />
             <SolidColorBrush x:Key="MainBackgroudBrush" Color="#202020" />
@@ -18,6 +19,7 @@
             <SolidColorBrush x:Key="WindowCaptionForegroundDisabled">White</SolidColorBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
+            <Color x:Key="ThemeMainColor">White</Color>
             <Color x:Key="ForegroundColor">Black</Color>
             <SolidColorBrush x:Key="ForegroundBrush" Color="Black" />
             <SolidColorBrush x:Key="ContentBackgroudBrush" Color="#fdfdfe" />

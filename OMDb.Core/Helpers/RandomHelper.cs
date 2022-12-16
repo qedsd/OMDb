@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using Org.BouncyCastle.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -67,6 +69,33 @@ namespace OMDb.Core.Helpers
                 {
                     T entiy = items.ElementAt(wlist[i].Key);
                     results.Add(entiy);
+                }
+            }
+            return results;
+        }
+
+        /// <summary>
+        /// 从指定的范围内获取指定不重复个数的int
+        /// </summary>
+        /// <param name="min">最小值，可取此值</param>
+        /// <param name="max">最大值，可取此值</param>
+        /// <param name="count">个数，大于等于1</param>
+        /// <returns></returns>
+        public static List<int> RandomInt(int min,int max,int count)
+        {
+            if(min > max || count < 1)
+            {
+                return null;
+            }
+            List<int> results = new List<int>(count);
+            HashSet<int> resoutHS = new HashSet<int>();
+            while (results.Count != count && results.Count != max + 1)
+            {
+                Random random = new Random();
+                var index = random.Next(min, max + 1);//random.Next的max是不包含在内的
+                if (resoutHS.Add(index))
+                {
+                    results.Add(index);
                 }
             }
             return results;

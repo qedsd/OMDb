@@ -10,6 +10,7 @@
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:models1="using:OMDb.Core.Models"
     xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
     x:Name="page"
     Background="Transparent"
@@ -42,6 +43,12 @@
             <Setter Property="Height" Value="1" />
             <Setter Property="Margin" Value="0,0,0,24" />
             <Setter Property="Fill" Value="{ThemeResource EntryDetailSplitBrush}" />
+        </Style>
+        <Style x:Key="ItemHeaderButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Margin" Value="8,0,0,0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="4" />
         </Style>
     </Page.Resources>
     <Grid>
@@ -149,7 +156,7 @@
                 <StackPanel
                     x:Name="RatingPanel"
                     VerticalAlignment="Center"
-                    Background="{ThemeResource EntryDetailContantBrush}">
+                    Background="Transparent">
                     <Interactivity:Interaction.Behaviors>
                         <Core:EventTriggerBehavior EventName="PointerEntered">
                             <Core:ChangePropertyAction
@@ -237,15 +244,12 @@
                         <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
                             <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
                             <Button
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
                                 Command="{x:Bind VM.OpenImgFolderCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
                                 ToolTipService.ToolTip="打开文件夹">
                                 <TextBlock
-                                    Margin="16,0,0,0"
                                     VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
+                                    FontFamily="Segoe UI Symbol"
                                     Text="&#xE169;" />
                             </Button>
                         </StackPanel>
@@ -310,7 +314,7 @@
                                 BorderThickness="0"
                                 Command="{x:Bind VM.EditDescCommand}">
                                 <TextBlock
-                                    FontFamily="Segoe MDL2 Assets"
+                                    FontFamily="Segoe UI Symbol"
                                     Text="&#xE104;"
                                     ToolTipService.ToolTip="编辑" />
                             </Button>
@@ -328,7 +332,7 @@
                                     BorderThickness="0"
                                     Command="{x:Bind VM.SaveDescCommand}">
                                     <TextBlock
-                                        FontFamily="Segoe MDL2 Assets"
+                                        FontFamily="Segoe UI Symbol"
                                         Text="&#xE105;"
                                         ToolTipService.ToolTip="保存" />
                                 </Button>
@@ -338,7 +342,7 @@
                                     BorderThickness="0"
                                     Command="{x:Bind VM.CancelEditDescCommand}">
                                     <TextBlock
-                                        FontFamily="Segoe MDL2 Assets"
+                                        FontFamily="Segoe UI Symbol"
                                         Text="&#xE10A;"
                                         ToolTipService.ToolTip="取消" />
                                 </Button>
@@ -387,8 +391,9 @@
                                         <TextBlock VerticalAlignment="Center" Text="{x:Bind Time}" />
                                         <TextBlock
                                             Grid.Column="1"
+                                            Margin="4,0,0,0"
                                             VerticalAlignment="Center"
-                                            FontFamily="Segoe MDL2 Assets"
+                                            FontFamily="Segoe UI Symbol"
                                             FontSize="10"
                                             Foreground="MediumSeaGreen"
                                             Text="&#xE082;"
@@ -441,7 +446,7 @@
                                     BorderThickness="0"
                                     Command="{x:Bind VM.SaveHistoryCommand}">
                                     <TextBlock
-                                        FontFamily="Segoe MDL2 Assets"
+                                        FontFamily="Segoe UI Symbol"
                                         Text="&#xE105;"
                                         ToolTipService.ToolTip="保存" />
                                 </Button>
@@ -451,7 +456,7 @@
                                     BorderThickness="0"
                                     Command="{x:Bind VM.CancelEditHistoryCommand}">
                                     <TextBlock
-                                        FontFamily="Segoe MDL2 Assets"
+                                        FontFamily="Segoe UI Symbol"
                                         Text="&#xE10A;"
                                         ToolTipService.ToolTip="取消编辑" />
                                 </Button>
@@ -465,7 +470,7 @@
                             Command="{x:Bind VM.AddHistoryCommand}"
                             Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
                             <TextBlock
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="Segoe UI Symbol"
                                 Text="&#xE109;"
                                 ToolTipService.ToolTip="新增" />
                         </Button>
@@ -478,15 +483,12 @@
                         <StackPanel Style="{StaticResource ItemHeaderGrid}">
                             <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频文件" />
                             <Button
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
                                 Command="{x:Bind VM.OpenVideoFolderCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
                                 ToolTipService.ToolTip="打开文件夹">
                                 <TextBlock
-                                    Margin="16,0,0,0"
                                     VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
+                                    FontFamily="Segoe UI Symbol"
                                     Text="&#xE169;" />
                             </Button>
                         </StackPanel>
@@ -503,15 +505,12 @@
                         <StackPanel Style="{StaticResource ItemHeaderGrid}">
                             <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
                             <Button
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
                                 Command="{x:Bind VM.OpenSubFolderCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
                                 ToolTipService.ToolTip="打开文件夹">
                                 <TextBlock
-                                    Margin="16,0,0,0"
                                     VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
+                                    FontFamily="Segoe UI Symbol"
                                     Text="&#xE169;" />
                             </Button>
                         </StackPanel>
@@ -528,15 +527,12 @@
                         <StackPanel Style="{StaticResource ItemHeaderGrid}">
                             <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />
                             <Button
-                                Padding="0"
-                                Background="Transparent"
-                                BorderThickness="0"
                                 Command="{x:Bind VM.OpenResFolderCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
                                 ToolTipService.ToolTip="打开文件夹">
                                 <TextBlock
-                                    Margin="16,0,0,0"
                                     VerticalAlignment="Center"
-                                    FontFamily="Segoe MDL2 Assets"
+                                    FontFamily="Segoe UI Symbol"
                                     Text="&#xE169;" />
                             </Button>
                         </StackPanel>
@@ -546,6 +542,62 @@
                         </Grid>
                     </StackPanel>
                 </mycontrols:DropArea>
+
+                <!--  台词摘录  -->
+                <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="台词摘录" />
+                        <Button
+                            Command="{x:Bind VM.AddLineCommand}"
+                            Style="{StaticResource ItemHeaderButton}"
+                            ToolTipService.ToolTip="新增">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe UI Symbol"
+                                Text="&#xE109;" />
+                        </Button>
+                    </StackPanel>
+                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                    <Grid Margin="10,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ListView ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}"
+                                  ItemClick="LineListView_ItemClick"
+                                  DoubleTapped="LineListView_DoubleTapped">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="models1:ExtractsLineBase">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Line}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="10,0"
+                                            Text="{x:Bind From}" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind UpdateTime}" />
+                                        <Grid.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem
+                                                    Command="{Binding ElementName=page, Path=VM.EditLineCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                    Text="编辑" />
+                                                <MenuFlyoutItem
+                                                    Command="{Binding ElementName=page, Path=VM.DeleteLineCommand}"
+                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                    Text="删除" />
+                                            </MenuFlyout>
+                                        </Grid.ContextFlyout>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </StackPanel>
 
                 <!--  其他信息  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">

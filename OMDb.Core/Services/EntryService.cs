@@ -437,5 +437,36 @@ namespace OMDb.Core.Services
         {
             return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
         }
+
+        /// <summary>
+        /// 从所有的仓库中随机指定个数词条
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static async Task<List<Entry>> RandomEntryAsync(int count = 1)
+        {
+            List<Tuple<DbModels.EntryDb,string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
+            foreach(var dbId in DbService.Dbs.Keys)
+            {
+                int max = await QueryEntryCountAsync(dbId);
+                var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
+                if (indexes.NotNullAndEmpty())
+                {
+                    foreach (var index in indexes)
+                    {
+                        var result = await DbService.GetConnection(dbId).Queryable<DbModels.EntryDb>().Skip(index).Take(1).ToListAsync();
+                        firstRandoms.Add((Tuple.Create(result.First(), dbId)));
+                    }
+                }
+            }
+            var items = Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count);
+            List<Entry> entries = new List<Entry>();
+            foreach(var item in items)
+            {
+                var tuple = firstRandoms[item];
+                entries.Add(Models.Entry.Create(tuple.Item1, tuple.Item2));
+            }
+            return entries;
+        }
     }
 }

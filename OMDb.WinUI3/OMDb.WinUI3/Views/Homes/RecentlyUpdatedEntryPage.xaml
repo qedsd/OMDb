@@ -1,0 +1,45 @@
+﻿<local:HomeItemBasePage
+    x:Class="OMDb.WinUI3.Views.Homes.RecentlyUpdatedEntryPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views.Homes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.Core.Models"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Expander
+            Margin="10,10,10,0"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Background="Transparent"
+            IsExpanded="True">
+            <Expander.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="最近更新词条" />
+                </StackPanel>
+            </Expander.Header>
+            <GridView Margin="10" ItemsSource="{x:Bind VM.RecentlyUpdatedEntries, Mode=OneWay}"
+                      ItemClick="GridView_ItemClick"
+                      IsItemClickEnabled="True">
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="Background" Value="{ThemeResource ContentBackgroudBrush}" />
+                        <Setter Property="Margin" Value="8" />
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Entry">
+                        <mycontrols:EntryCard
+                            Width="160"
+                            Height="260"
+                            Entry="{Binding}" />
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </Expander>
+    </Grid>
+</local:HomeItemBasePage>

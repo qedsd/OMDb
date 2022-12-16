@@ -50,5 +50,16 @@ namespace OMDb.WinUI3.Views
         {
             ImgScrollViewer.ScrollToHorizontalOffset(ImgScrollViewer.HorizontalOffset+300);
         }
+
+
+        private void LineListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            VM.LineDetailCommand.Execute(e.ClickedItem);
+        }
+
+        private void LineListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            VM.LineDetailCommand.Execute((sender as ListView).SelectedItem);
+        }
     }
 }

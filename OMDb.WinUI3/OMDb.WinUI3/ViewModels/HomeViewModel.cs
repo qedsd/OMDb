@@ -1,6 +1,15 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
+using OMDb.Core.DbModels;
+using OMDb.Core.Extensions;
+using OMDb.Core.Models;
+using OMDb.WinUI3.Extensions;
+using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,19 +18,39 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public class HomeViewModel
+    public class HomeViewModel: ObservableObject
     {
-        public ICommand AddEntryCommand => new RelayCommand(async() =>
+
+        public HomeViewModel()
         {
-            if (Services.ConfigService.EnrtyStorages.Count == 0)
+        }
+        private void InitShowItem()
+        {
+            Views.HomePage.Current.ClearItem();
+            Views.HomePage.Current.AddItem(new Views.Homes.ExtractLinePage());
+            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedFilesPage());
+            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedEntryPage());
+            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyUpdatedEntryPage());
+        }
+        private async Task ItemInitAsync()
+        {
+            foreach (var item in Views.HomePage.Current.HomeItems)
             {
-                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
+                await item.InitAsync();
             }
-            else
-            {
-                await Services.EntryService.AddEntryAsync();
-            }
+        }
+        public async void Init()
+        {
+            Helpers.InfoHelper.ShowWaiting();
+            InitShowItem();
+            await ItemInitAsync();
+            Helpers.InfoHelper.HideWaiting();
+        }
+        public ICommand RefreshCommand => new RelayCommand(async () =>
+        {
+            Helpers.InfoHelper.ShowWaiting();
+            await ItemInitAsync();
+            Helpers.InfoHelper.HideWaiting();
         });
-        
     }
 }

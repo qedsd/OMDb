@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -16,13 +17,24 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Dialogs
 {
-    public sealed partial class QueryDialog : DialogBase
+    public sealed partial class EditLineDialog : DialogBase
     {
-        public QueryDialog(string title,string content)
+        public string Line
+        {
+            get => InputTextBox.Text;
+        }
+        public EditLineDialog(Core.Models.ExtractsLineBase line)
         {
             this.InitializeComponent();
-            TitleTextBlock.Text = title;
-            TextBlock_Query.Text = content;
+            if(line == null)
+            {
+                TitleTextBlock.Text = "新摘录台词";
+            }
+            else
+            {
+                TitleTextBlock.Text = "编辑摘录台词";
+                InputTextBox.Text = line.Line;
+            }
         }
         private bool clickConfirm = false;
 
@@ -42,10 +54,6 @@ namespace OMDb.WinUI3.Dialogs
         {
             await base.ShowAsync();
             return clickConfirm;
-        }
-        public static async Task<bool> ShowDialog(string title, string content)
-        {
-            return await Helpers.InfoHelper.ShowQueryAsync(title, content);
         }
     }
 }
