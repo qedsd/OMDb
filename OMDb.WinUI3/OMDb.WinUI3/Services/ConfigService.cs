@@ -41,30 +41,29 @@ namespace OMDb.WinUI3.Services
         public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; }
         private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
         public static void Load()
-        {
-            LoadStorages();
+        {    
             Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
             Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
+            LoadStorages();
         }
-        public static void LoadStorages()
+        public static async void LoadStorages()
         {
             EnrtyStorages = new ObservableCollection<EnrtyStorage>();
             Core.Config.ClearDb();
-            Core.Services.StorageService.GetAllStorageAsync().Wait();
-
-            //if (System.IO.File.Exists(EnrtyStorageFile))
-            //{
-            //    string json = System.IO.File.ReadAllText(EnrtyStorageFile);
-            //    var items = JsonConvert.DeserializeObject<List<EnrtyStorage>>(json);
-            //    if (items != null)
-            //    {
-            //        items.ForEach(p =>
-            //        {
-            //            EnrtyStorages.Add(p);
-            //            Core.Config.AddDbFile(p.StoragePath, p.StorageName, false);
-            //        });
-            //    }
-            //}
+            var lstStorage=await Core.Services.StorageService.GetAllStorageAsync();
+            if (EnrtyStorages != null) { EnrtyStorages.Clear(); } else { EnrtyStorages = new ObservableCollection<EnrtyStorage>(); }
+            if (lstStorage != null)
+            {
+                foreach (var item in lstStorage)
+                {
+                    EnrtyStorage enrtyStorage = new EnrtyStorage();
+                    enrtyStorage.StorageName = item.StorageName;
+                    enrtyStorage.StoragePath = item.StoragePath;
+                    enrtyStorage.CoverImg = item.CoverImg;
+                    enrtyStorage.EntryCount = (int)item.EntryCount;
+                    EnrtyStorages.Add(enrtyStorage);
+                }
+            }
         }
         public static void Save()
         {

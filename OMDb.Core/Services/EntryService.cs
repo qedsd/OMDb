@@ -461,10 +461,13 @@ namespace OMDb.Core.Services
             }
             var items = Helpers.RandomHelper.RandomInt(0, firstRandoms.Count - 1, count);
             List<Entry> entries = new List<Entry>();
-            foreach(var item in items)
+            if (!(items == null))
             {
-                var tuple = firstRandoms[item];
-                entries.Add(Models.Entry.Create(tuple.Item1, tuple.Item2));
+                foreach (var item in items)
+                {
+                    var tuple = firstRandoms[item];
+                    entries.Add(Models.Entry.Create(tuple.Item1, tuple.Item2));
+                }
             }
             return entries;
         }

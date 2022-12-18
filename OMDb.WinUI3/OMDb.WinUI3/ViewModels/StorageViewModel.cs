@@ -121,7 +121,8 @@ namespace OMDb.WinUI3.ViewModels
                             if (!needCodeFirst)
                             {
                                 enrtyStorage.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.StorageName);
-                                EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
+                                if (!(EnrtyStorages.Count > 0)) EnrtyStorages.Insert(EnrtyStorages.Count, enrtyStorage);
+                                else EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
                                 StorageDb storageDb = new StorageDb()
                                 {
                                     StorageName = enrtyStorage.StorageName,
@@ -135,7 +136,8 @@ namespace OMDb.WinUI3.ViewModels
                             //添加新仓库
                             else
                             {
-                                EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
+                                if(!(EnrtyStorages.Count>0)) EnrtyStorages.Insert(EnrtyStorages.Count, enrtyStorage);
+                                else EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
                                 StorageDb storageDb = new StorageDb()
                                 {
                                     StorageName = enrtyStorage.StorageName,
