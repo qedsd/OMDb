@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -62,7 +63,11 @@ namespace OMDb.WinUI3.Services
                     enrtyStorage.CoverImg = item.CoverImg;
                     enrtyStorage.EntryCount = (int)item.EntryCount;
                     EnrtyStorages.Add(enrtyStorage);
+
+                    Core.Config.AddDbFile(item.StoragePath, item.StorageName, false);
+
                 }
+
             }
         }
         public static void Save()
