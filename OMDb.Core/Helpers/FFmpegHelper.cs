@@ -10,14 +10,11 @@ namespace OMDb.Core.Helpers
 {
     public static class FFmpegHelper
     {
+        //TODO:目前的音频、视频流都假设为只有一个
+
         internal static void SetExecutablesPath(string path)
         {
             FFmpeg.SetExecutablesPath(path);
-        }
-
-        public static void Test()
-        {
-            //AddSubtitleAsync(@"F:\clear.mkv", @"F:\2.mkv", @"F:\1.ass", "fre");
         }
         public static async Task<Models.MediaInfo> GetMediaInfoAsync(string path)
         {
@@ -70,6 +67,45 @@ namespace OMDb.Core.Helpers
         {
             var percent = (int)(Math.Round(args.Duration.TotalSeconds / args.TotalLength.TotalSeconds, 2) * 100);
             Console.WriteLine($"[{args.Duration} / {args.TotalLength}] {percent}%");
+        }
+
+
+        /// <summary>
+        /// 视频、音频编码转换
+        /// </summary>
+        /// <param name="inputVideo"></param>
+        /// <param name="outputVideo"></param>
+        /// <param name="vcodec"></param>
+        /// <param name="acodec"></param>
+        /// <param name="progressCallback"></param>
+        /// <returns></returns>
+        public static async Task ConverAVCodecAsync(string inputVideo, string outputVideo, string vcodec, string acodec, Xabe.FFmpeg.Events.ConversionProgressEventHandler progressCallback = null)
+        {
+            IMediaInfo mediaInfo = await FFmpeg.GetMediaInfo(inputVideo);
+            IVideoStream videoStream = mediaInfo.VideoStreams.FirstOrDefault()
+                ?.SetCodec(vcodec);
+
+            IAudioStream audioStream = mediaInfo.AudioStreams.FirstOrDefault()
+                ?.SetCodec(acodec);
+
+            var conversion = FFmpeg.Conversions.New()
+                .AddStream(audioStream)
+                .AddStream(videoStream);
+
+            if (mediaInfo.SubtitleStreams.Count() != 0)
+            {
+                foreach (var subStream in mediaInfo.SubtitleStreams)
+                {
+                    conversion.AddStream(subStream);
+                }
+            }
+
+            conversion.SetOutput(outputVideo);
+            if(progressCallback != null)
+            {
+                conversion.OnProgress += progressCallback;
+            }
+            await conversion.Start();
         }
     }
 }

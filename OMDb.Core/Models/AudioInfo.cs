@@ -25,6 +25,8 @@ namespace OMDb.Core.Models
 
         public int? Forced { get; set; }
 
+        public string Codec { get; set; }
+
         public AudioInfo(IAudioStream audioStream)
         {
             Duration = audioStream.Duration;
@@ -35,6 +37,7 @@ namespace OMDb.Core.Models
             Title = audioStream.Title;
             Default = audioStream.Default;
             Forced = audioStream.Forced;
+            Codec = audioStream.Codec;
         }
     }
 }

@@ -76,6 +76,7 @@
     <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\StoragePage.xaml" />
     <None Remove="Views\ToolsPage.xaml" />
+    <None Remove="Views\Tools\AVCodecToolPage.xaml" />
     <None Remove="Views\Tools\SubToolPage.xaml" />
   </ItemGroup>
 
@@ -332,6 +333,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Tools\AVCodecToolPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -25,6 +25,10 @@ namespace OMDb.Core.Models
         {
             get => VideoInfos?.FirstOrDefault();
         }
+        public AudioInfo AudioInfo
+        {
+            get => AudioInfos?.FirstOrDefault();
+        }
 
         public MediaInfo() { }
 
