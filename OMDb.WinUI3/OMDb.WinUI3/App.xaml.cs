@@ -39,6 +39,8 @@ namespace OMDb.WinUI3
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             e.Handled = true;
+            Helpers.InfoHelper.HideWaiting();
+            Helpers.InfoHelper.ShowError(e.Message);
         }
 
         /// <summary>
