@@ -23,16 +23,27 @@ namespace OMDb.WinUI3.ViewModels.Homes
         public async Task InitAsync()
         {
             var files = await RecentFileService.GetRecentFilesAsync();
-            var list = new List<Core.Models.RecentEntry>();
-            var groupByEntry = files.GroupBy(p => p.EntryId).ToList();
-            foreach (var entryGroup in groupByEntry)
+            if(files.NotNullAndEmpty())
             {
-                Core.Models.RecentEntry recentEntry = new Core.Models.RecentEntry();
-                recentEntry.RecentFile = entryGroup.OrderByDescending(p => p.AccessTime).First();
-                recentEntry.Entry = await Core.Services.EntryService.QueryEntryAsync(new QueryItem(entryGroup.Key, entryGroup.First().DbId));
-                list.Add(recentEntry);
+                var list = new List<Core.Models.RecentEntry>();
+                var groupByEntry = files.GroupBy(p => p.EntryId).ToList();
+                foreach (var entryGroup in groupByEntry)
+                {
+                    var entry = await Core.Services.EntryService.QueryEntryAsync(new QueryItem(entryGroup.Key, entryGroup.First().DbId));
+                    if(entry != null)
+                    {
+                        Core.Models.RecentEntry recentEntry = new Core.Models.RecentEntry();
+                        recentEntry.RecentFile = entryGroup.OrderByDescending(p => p.AccessTime).First();
+                        recentEntry.Entry = entry;
+                        list.Add(recentEntry);
+                    }
+                }
+                RecentlyWatchedEntries = list.ToObservableCollection();
             }
-            RecentlyWatchedEntries = list.ToObservableCollection();
+            else
+            {
+                RecentlyWatchedEntries = null;
+            }
         }
     }
 }

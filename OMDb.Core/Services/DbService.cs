@@ -112,7 +112,7 @@ namespace OMDb.Core.Services
             }
             else
             {
-                return null;
+                throw new Exception("Database does not exist");
             }
         }
 

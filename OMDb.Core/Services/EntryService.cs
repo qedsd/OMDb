@@ -289,6 +289,10 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<Entry>> QueryEntryAsync(List<QueryItem> queryItems, bool withName = true)
         {
+            if (DbService.IsEmpty)
+            {
+                return null;
+            }
             if (queryItems != null)
             {
                 return await Task.Run(() =>
@@ -336,6 +340,10 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<Entry> QueryEntryAsync(QueryItem queryItem, bool withName = true)
         {
+            if (DbService.IsEmpty)
+            {
+                return null;
+            }
             if (queryItem != null)
             {
                 var result = await DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().FirstAsync(p => p.Id == queryItem.Id);
@@ -445,6 +453,10 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<Entry>> RandomEntryAsync(int count = 1)
         {
+            if (DbService.IsEmpty)
+            {
+                return null;
+            }
             List<Tuple<DbModels.EntryDb,string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
             foreach(var dbId in DbService.Dbs.Keys)
             {

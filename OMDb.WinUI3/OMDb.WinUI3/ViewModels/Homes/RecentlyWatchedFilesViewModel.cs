@@ -25,9 +25,13 @@ namespace OMDb.WinUI3.ViewModels.Homes
         private async Task InitRecentlyWatchedFiles()
         {
             var files = await RecentFileService.GetRecentFilesAsync();
-            if (files != null && files.Any())
+            if (files.NotNullAndEmpty())
             {
                 RecentlyWatchedFiles = files.ToObservableCollection();
+            }
+            else
+            {
+                RecentlyWatchedFiles = null;
             }
         }
     }
