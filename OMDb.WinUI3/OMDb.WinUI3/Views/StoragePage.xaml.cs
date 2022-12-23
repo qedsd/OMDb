@@ -21,10 +21,6 @@ namespace OMDb.WinUI3.Views
         public StoragePage()
         {
             this.InitializeComponent();
-            //VM.EnrtyStorages.Add(new Models.EnrtyStorage()
-            //{
-            //    StoragePath = null
-            //});
         }
     }
 }
