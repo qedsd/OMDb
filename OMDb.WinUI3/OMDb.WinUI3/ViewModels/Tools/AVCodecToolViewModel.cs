@@ -41,6 +41,8 @@ namespace OMDb.WinUI3.ViewModels.Tools
             set => SetProperty(ref vCodecs, value);
         }
 
+        public List<string> BitstreamFilteres { get; set; }
+
         public AVCodecToolViewModel()
         {
             ConversionItems = new ObservableCollection<AVCodecConversionItem>();
@@ -50,12 +52,20 @@ namespace OMDb.WinUI3.ViewModels.Tools
                 items1.Add(p.ToString());
             }
             VCodecs = items1;
+
             var items2 = new List<string>();
             foreach (var p in Enum.GetValues(typeof(Xabe.FFmpeg.AudioCodec)))
             {
                 items2.Add(p.ToString());
             }
             ACodecs = items2;
+
+            var items3 = new List<string>();
+            foreach (var p in Enum.GetValues(typeof(Xabe.FFmpeg.BitstreamFilter)))
+            {
+                items3.Add(p.ToString());
+            }
+            BitstreamFilteres = items3;
         }
 
         public ICommand AddCommand => new RelayCommand(async () =>
@@ -68,13 +78,21 @@ namespace OMDb.WinUI3.ViewModels.Tools
                     var mediaInfo = await Core.Helpers.FFmpegHelper.GetMediaInfoAsync(file.Path);
                     if(mediaInfo != null)
                     {
-                        ConversionItems.Add(new AVCodecConversionItem(mediaInfo,aCodecs,vCodecs));
+                        ConversionItems.Add(new AVCodecConversionItem(mediaInfo,aCodecs, vCodecs, BitstreamFilteres));
                     }
                 }
                 catch (Exception ex)
                 {
                     Helpers.InfoHelper.ShowError(ex.Message);
                 }
+            }
+        });
+        public ICommand PickSaveFileCommand => new RelayCommand<AVCodecConversionItem>(async (item) =>
+        {
+            var file = await Helpers.PickHelper.PickSaveFileAsync(System.IO.Path.GetFileName(item.OutputPath), ToolPageBase.Window);
+            if (file != null)
+            {
+                item.OutputPath = file.Path;
             }
         });
 
@@ -85,7 +103,9 @@ namespace OMDb.WinUI3.ViewModels.Tools
                 ShowWaiting();
                 foreach(var item in ConversionItems)
                 {
-                    await Core.Helpers.FFmpegHelper.ConverAVCodecAsync(item.MediaInfo.Path, item.OutputPath, item.VideoCodec, item.AudioCodec, Conversion_OnProgress);
+                    var vcodecs = item.VCodecs.Select(p => p.ToVCodecConversionValue()).ToList();
+                    var acodecs = item.ACodecs.Select(p => p.ToACodecConversionValue()).ToList();
+                    await Core.Helpers.FFmpegHelper.ConverAVCodecAsync(item.MediaInfo.Path, item.OutputPath, acodecs, vcodecs, Conversion_OnProgress);
                 }
                 HideWaiting();
             }
@@ -93,8 +113,16 @@ namespace OMDb.WinUI3.ViewModels.Tools
         private void Conversion_OnProgress(object sender, Xabe.FFmpeg.Events.ConversionProgressEventArgs args)
         {
             var percent = (int)(Math.Round(args.Duration.TotalSeconds / args.TotalLength.TotalSeconds, 2) * 100);
-            var p = ($"[{args.Duration} / {args.TotalLength}] {percent}%");
-            ShowMsg(p);
+            string msg;
+            if(percent == 100)
+            {
+                msg = $"{percent}% {DateTime.Now}";
+            }
+            else
+            {
+                msg = $"{percent}% ({args.Duration} / {args.TotalLength})";
+            }
+            ShowMsg(msg, false);
         }
     }
 }

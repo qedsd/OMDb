@@ -23,5 +23,10 @@ namespace OMDb.WinUI3.Views.Tools
             this.InitializeComponent();
             (DataContext as ToolBaseViewModel).Init(this);
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            (DataContext as AVCodecToolViewModel).PickSaveFileCommand.Execute((sender as FrameworkElement).DataContext);
+        }
     }
 }

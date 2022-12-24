@@ -9,11 +9,12 @@ namespace OMDb.WinUI3.Converters
 {
     internal class FileToNameConverter : IValueConverter
     {
+        public bool WithExtension { get; set; } = false;
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (value != null && !string.IsNullOrEmpty(value.ToString()))
             {
-                return System.IO.Path.GetFileNameWithoutExtension(value.ToString());
+                return WithExtension ? System.IO.Path.GetFileName(value.ToString()): System.IO.Path.GetFileNameWithoutExtension(value.ToString());
             }
             else
             {
