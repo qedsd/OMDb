@@ -22,6 +22,10 @@ namespace OMDb.WinUI3.Models
             get => storagePath;
             set { SetProperty(ref storagePath, value); }
         }
+        public string StorageDirectory
+        {
+            get => System.IO.Path.GetDirectoryName(StoragePath);
+        }
         private int entryCount;
         public int EntryCount
         {

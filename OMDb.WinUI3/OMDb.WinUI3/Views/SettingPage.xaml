@@ -27,5 +27,17 @@
                 </ComboBox>
             </StackPanel>
         </controls:ExpandableSettingControl>
+        <controls:ExpandableSettingControl x:Uid="Setting_PotplayerPlaylist">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox MinWidth="400" Text="{x:Bind VM.PotPlayerPlaylistPath, Mode=TwoWay}" PlaceholderText="PotPlayerMini64.dpl"/>
+                <Button Grid.Column="1" Command="{x:Bind VM.PickPotPlayerPlaylistFileCommand}">
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE28F;" />
+                </Button>
+            </Grid>
+        </controls:ExpandableSettingControl>
     </StackPanel>
 </Page>

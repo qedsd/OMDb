@@ -106,7 +106,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         internal static SqlSugarScope GetConnection(string dbId)
         {
-            if(Dbs.TryGetValue(dbId, out SqlSugarScope scope))
+            if(!string.IsNullOrEmpty(dbId) && Dbs.TryGetValue(dbId, out SqlSugarScope scope))
             {
                 return scope;
             }

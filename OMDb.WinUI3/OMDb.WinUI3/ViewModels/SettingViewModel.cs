@@ -1,11 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using OMDb.WinUI3.Services;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -32,5 +35,25 @@ namespace OMDb.WinUI3.ViewModels
                 _ = ThemeSelectorService.SetThemeAsync(ElementTheme);
             }
         }
+
+        private string potPlayerPlaylistPath = PotPlayerPlaylistSelectorService.PlaylistPath;
+        public string PotPlayerPlaylistPath
+        {
+            get => potPlayerPlaylistPath;
+            set
+            {
+                SetProperty(ref potPlayerPlaylistPath, value);
+                _ = PotPlayerPlaylistSelectorService.SetAsync(value);
+            }
+        }
+
+        public ICommand PickPotPlayerPlaylistFileCommand => new RelayCommand(async() =>
+        {
+            var file = await Helpers.PickHelper.PickFileAsync(".dpl");
+            if(file != null && !string.IsNullOrEmpty(file.Path))
+            {
+                PotPlayerPlaylistPath = file.Path;
+            }
+        });
     }
 }

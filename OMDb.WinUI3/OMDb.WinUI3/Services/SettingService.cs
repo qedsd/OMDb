@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace OMDb.WinUI3.Services
             }
             ThemeSelectorService.Initialize();
             LabelCollectionStyleSelectorService.Initialize();
+            PotPlayerPlaylistSelectorService.Initialize();
         }
         public static string GetValue(string key)
         {
