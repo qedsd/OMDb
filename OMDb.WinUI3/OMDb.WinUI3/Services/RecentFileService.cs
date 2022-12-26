@@ -31,8 +31,8 @@ namespace OMDb.WinUI3.Services
             {
                 RecentFiles.Clear();
             }
-            InitRecentFiles();//本地已记录的文件
-
+            InitRecentFiles();//读取本地已记录的文件
+            ResetRecentFiles();
             UpdateRecentFiles();
 
             MonitorPotPlayer();
@@ -47,11 +47,28 @@ namespace OMDb.WinUI3.Services
                     var files = JsonConvert.DeserializeObject<List<Core.Models.RecentFile>>(json);
                     if (files.NotNullAndEmpty())
                     {
-                        foreach(var file in files)
+                        foreach (var file in files.OrderByDescending(p => p.AccessTime))//最新的排前面
                         {
                             RecentFiles.Add(file);
                         }
                     }
+                }
+            }
+        }
+        /// <summary>
+        /// 删除太久、过多文件记录
+        /// </summary>
+        private static void ResetRecentFiles()
+        {
+            if(RecentFiles.NotNullAndEmpty())
+            {
+                List<RecentFile> keepFiles = RecentFiles.Where(p => Math.Abs((DateTime.Now - p.AccessTime).TotalDays) < 10).ToList();
+                keepFiles = keepFiles.Take(20).ToList();
+                if(RecentFiles.Count != keepFiles.Count)
+                {
+                    RecentFiles.Clear();
+                    keepFiles.ForEach(p => RecentFiles.Add(p));
+                    SaveRecentFiles();
                 }
             }
         }
@@ -75,15 +92,17 @@ namespace OMDb.WinUI3.Services
                             if (markedFile.MarkTime != file.MarkTime)
                             {
                                 markedFile.MarkTime = file.MarkTime;
+                                markedFile.AccessTime = DateTime.Now;
                                 RecentFiles.Remove(markedFile);
-                                RecentFiles.Add(markedFile);
+                                RecentFiles.Insert(0, markedFile);
                                 needUpdateConfig = true;
                             }
                         }
                         else
                         {
                             //本地无记录，添加
-                            RecentFiles.Add(file);
+                            file.AccessTime = DateTime.Now;
+                            RecentFiles.Insert(0, file);
                             needUpdateConfig = true;
                         }
                     }
@@ -92,6 +111,7 @@ namespace OMDb.WinUI3.Services
                 {
                     foreach (var file in currentFiles)
                     {
+                        file.AccessTime = DateTime.Now;
                         RecentFiles.Add(file);
                     }
                     needUpdateConfig = true;

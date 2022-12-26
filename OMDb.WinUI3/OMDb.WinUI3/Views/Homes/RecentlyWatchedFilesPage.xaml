@@ -25,7 +25,11 @@
                     <TextBlock Text="最近观看视频" />
                 </StackPanel>
             </Expander.Header>
-            <GridView Margin="10" ItemsSource="{x:Bind VM.RecentlyWatchedFiles, Mode=OneWay}">
+            <GridView
+                Margin="10"
+                IsItemClickEnabled="True"
+                ItemClick="GridView_ItemClick"
+                ItemsSource="{x:Bind VM.RecentlyWatchedFiles, Mode=OneWay}">
                 <GridView.ItemContainerStyle>
                     <Style TargetType="GridViewItem">
                         <Setter Property="Background" Value="{ThemeResource ContentBackgroudBrush}" />
@@ -34,13 +38,13 @@
                 </GridView.ItemContainerStyle>
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="models:RecentFile">
-                        <Grid Width="300" Margin="8,4">
+                        <Grid Width="360" Margin="10,8">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind Path, Converter={StaticResource FileToNameConverter}}" />
+                            <TextBlock Text="{x:Bind Path, Converter={StaticResource FileToNameConverter}}" TextWrapping="Wrap"/>
                             <Grid Grid.Row="1" Margin="0,4">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
@@ -61,6 +65,12 @@
                                 Minimum="0"
                                 ToolTipService.ToolTip="观看进度"
                                 Value="{x:Bind WatchedPrecent}" />
+                            <Grid.ContextFlyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Click="MenuFlyoutItem1_Click" Text="打开文件" />
+                                    <MenuFlyoutItem Click="MenuFlyoutItem2_Click" Text="打开文件夹" />
+                                </MenuFlyout>
+                            </Grid.ContextFlyout>
                         </Grid>
                     </DataTemplate>
                 </GridView.ItemTemplate>

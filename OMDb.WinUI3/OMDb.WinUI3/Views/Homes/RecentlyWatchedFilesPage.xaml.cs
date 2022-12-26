@@ -31,5 +31,20 @@ namespace OMDb.WinUI3.Views.Homes
         {
             await VM.InitAsync();
         }
+
+        private void GridView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            VM.ItemClickCommand.Execute(e.ClickedItem);
+        }
+
+        private void MenuFlyoutItem1_Click(object sender, RoutedEventArgs e)
+        {
+            VM.ItemClickCommand.Execute((sender as FrameworkElement).DataContext);
+        }
+
+        private void MenuFlyoutItem2_Click(object sender, RoutedEventArgs e)
+        {
+            VM.ItemFolderCommand.Execute((sender as FrameworkElement).DataContext);
+        }
     }
 }
