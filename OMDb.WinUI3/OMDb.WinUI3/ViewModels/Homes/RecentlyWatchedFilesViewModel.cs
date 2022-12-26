@@ -18,21 +18,15 @@ namespace OMDb.WinUI3.ViewModels.Homes
             get => recentlyWatchedFiles;
             set => SetProperty(ref recentlyWatchedFiles, value);
         }
-        public async Task InitAsync()
+        public Task InitAsync()
         {
-            await InitRecentlyWatchedFiles();
+            InitRecentlyWatchedFiles();
+            return Task.CompletedTask;
         }
-        private async Task InitRecentlyWatchedFiles()
+
+        private void InitRecentlyWatchedFiles()
         {
-            var files = await RecentFileService.GetRecentFilesAsync();
-            if (files.NotNullAndEmpty())
-            {
-                RecentlyWatchedFiles = files.ToObservableCollection();
-            }
-            else
-            {
-                RecentlyWatchedFiles = null;
-            }
+            RecentlyWatchedFiles = RecentFileService.RecentFiles;
         }
     }
 }

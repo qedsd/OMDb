@@ -53,6 +53,7 @@ namespace OMDb.WinUI3.ViewModels
             if(file != null && !string.IsNullOrEmpty(file.Path))
             {
                 PotPlayerPlaylistPath = file.Path;
+                RecentFileService.Init();
             }
         });
     }

@@ -22,7 +22,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
 
         public async Task InitAsync()
         {
-            var files = await RecentFileService.GetRecentFilesAsync();
+            var files = RecentFileService.RecentFiles;
             if(files.NotNullAndEmpty())
             {
                 var list = new List<Core.Models.RecentEntry>();
