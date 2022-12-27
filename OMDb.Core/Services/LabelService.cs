@@ -236,7 +236,8 @@ namespace OMDb.Core.Services
         {
             DbService.LocalDb.Deleteable<LabelDb>().In(labelIds).ExecuteCommand();
             //清空关联的子分类
-            DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
+            //DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
+            DbService.LocalDb.Deleteable<LabelDb>().Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
             DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => labelIds.Contains(p.LabelId));//EntryLabelDb表是没有主键的，不能用in
         }
 

@@ -107,7 +107,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    result.CoverPath = result.CoverPath == null || result.CoverPath.Length <= 0 ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "LabelDefaultCover.jpg") : result.CoverPath;
+                    result.CoverPath = result.CoverPath == null || result.CoverPath.Length <= 0 ? System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultLabelCover.jpg") : result.CoverPath;
                     Core.Services.LabelService.AddLabel(result);
                     LabelTrees.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -125,7 +125,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    result.CoverPath= result.CoverPath==null|| result.CoverPath.Length<=0? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "LabelDefaultCover.jpg"): result.CoverPath;
+                    result.CoverPath= result.CoverPath==null|| result.CoverPath.Length<=0? System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultLabelCover.jpg") : result.CoverPath;
                     result.ParentId = parent.Label.Id;
                     Core.Services.LabelService.AddLabel(result);
                     parent.Children.Add(new LabelTree(result));

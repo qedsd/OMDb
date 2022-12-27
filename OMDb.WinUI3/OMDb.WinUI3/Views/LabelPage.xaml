@@ -25,7 +25,7 @@
             <AppBarButton Icon="List" Command="{x:Bind VM.ChangeShowTypeToTreeCommand}"/>
             <AppBarButton Icon="ViewAll" Command="{x:Bind VM.ChangeShowTypeToExpCommand}"/>
         </CommandBar>
-        <TreeView ItemsSource="{x:Bind VM.LabelTrees}"
+        <TreeView ItemsSource="{x:Bind VM.LabelTrees,Mode=OneWay}"
                   Visibility="{x:Bind VM.IsTreeShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelTree">
