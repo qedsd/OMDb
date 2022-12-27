@@ -70,6 +70,7 @@
     <None Remove="Views\Homes\RecentlyUpdatedEntryPage.xaml" />
     <None Remove="Views\Homes\RecentlyWatchedEntryPage.xaml" />
     <None Remove="Views\Homes\RecentlyWatchedFilesPage.xaml" />
+    <None Remove="Views\Homes\StatisticsPage.xaml" />
     <None Remove="Views\LabelCollectionPage.xaml" />
     <None Remove="Views\LabelPage.xaml" />
     <None Remove="Views\ManagementPage.xaml" />
@@ -333,6 +334,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\StatisticsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

@@ -28,6 +28,17 @@ namespace OMDb.Core.Services
                 return null;
             }
         }
+        public static async Task<int> GetLabelCountAsync()
+        {
+            if (IsLocalDbValid())
+            {
+                return await DbService.LocalDb.Queryable<LabelDb>().CountAsync();
+            }
+            else
+            {
+                return 0;
+            }
+        }
         /// <summary>
         /// 获取标签
         /// </summary>
