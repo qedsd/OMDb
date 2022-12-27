@@ -29,7 +29,7 @@ namespace OMDb.Core.Models
 
         public double WatchedPrecent
         {
-            get => Math.Round((double)MarkTime / Duration * 100,2);
+            get => Duration == 0 ? 0 : Math.Round((double)MarkTime / Duration * 100,2);
         }
     }
 }

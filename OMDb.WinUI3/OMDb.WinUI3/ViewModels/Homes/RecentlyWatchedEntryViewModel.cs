@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.WinUI.UI.Controls.TextToolbarSymbols;
 using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
@@ -42,7 +44,35 @@ namespace OMDb.WinUI3.ViewModels.Homes
             }
             else
             {
-                RecentlyWatchedEntries = null;
+                RecentlyWatchedEntries = new ObservableCollection<RecentEntry>();
+            }
+            GlobalEvent.RecentFileChangedEvent += GlobalEvent_RecentFileChangedEvent;
+        }
+
+        private async void GlobalEvent_RecentFileChangedEvent(object sender, RecentFileChangedEventArgs e)
+        {
+            foreach(var file in e.RecentFiles)
+            {
+                var existedFile = RecentlyWatchedEntries.FirstOrDefault(p => p.Entry.Id == file.EntryId);
+                if(existedFile != null)
+                {
+                    //已存在以前的观看记录里
+                    existedFile.RecentFile = file;//当前更新的file更新时间肯定比以前任意一个时间要更晚
+                    RecentlyWatchedEntries.Remove(existedFile);
+                    RecentlyWatchedEntries.Insert(0, existedFile);
+                }
+                else
+                {
+                    //新增的观看记录
+                    var entry = await Core.Services.EntryService.QueryEntryAsync(new QueryItem(file.EntryId, file.DbId));
+                    if (entry != null)
+                    {
+                        Core.Models.RecentEntry recentEntry = new Core.Models.RecentEntry();
+                        recentEntry.RecentFile = file;
+                        recentEntry.Entry = entry;
+                        RecentlyWatchedEntries.Insert(0, recentEntry);
+                    }
+                }
             }
         }
     }
