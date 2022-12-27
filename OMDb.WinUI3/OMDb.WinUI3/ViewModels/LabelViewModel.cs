@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,10 +23,41 @@ namespace OMDb.WinUI3.ViewModels
             get => labelTrees;
             set => SetProperty(ref labelTrees, value);
         }
+
+        private bool isTreeShow;
+        public bool IsTreeShow
+        {
+            get => isTreeShow;
+            set => SetProperty(ref isTreeShow, value);
+        }
+
+        private bool isExpShow;
+        public bool IsExpShow
+        {
+            get => isExpShow;
+            set => SetProperty(ref isExpShow, value);
+        }
+
         public LabelViewModel()
         {
+            IsExpShow = false;
+            IsTreeShow = true;
             Init();
         }
+
+        public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
+        {
+            IsExpShow = false;
+            IsTreeShow = true;
+        });
+
+        public ICommand ChangeShowTypeToExpCommand => new RelayCommand(() =>
+        {
+            IsExpShow = true;
+            IsTreeShow = false;
+        });
+
+
         private async void Init()
         {
             var labels = await Core.Services.LabelService.GetAllLabelAsync();
@@ -45,7 +78,7 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         if(labelsDb.TryGetValue(label.ParentId,out var parent))
                         {
-                            parent.Children.Add(label);
+                            parent.Children.Add(new LabelTree(label));
                         }
                     }
                 }
@@ -74,6 +107,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
+                    result.CoverPath = result.CoverPath == null || result.CoverPath.Length <= 0 ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "LabelDefaultCover.jpg") : result.CoverPath;
                     Core.Services.LabelService.AddLabel(result);
                     LabelTrees.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -91,18 +125,19 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
+                    result.CoverPath= result.CoverPath==null|| result.CoverPath.Length<=0? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "LabelDefaultCover.jpg"): result.CoverPath;
                     result.ParentId = parent.Label.Id;
                     Core.Services.LabelService.AddLabel(result);
-                    parent.Children.Add(result);
+                    parent.Children.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
             }
         });
-        public ICommand EditSubCommand => new RelayCommand<Core.DbModels.LabelDb>(async(item) =>
+        public ICommand EditSubCommand => new RelayCommand<LabelTree>(async(item) =>
         {
             if (item != null)
             {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(item);
+                var result = await Dialogs.EditLabelDialog.ShowDialog(item.Label);
                 if (result != null)
                 {
                     if (string.IsNullOrEmpty(result.Name))
@@ -115,9 +150,10 @@ namespace OMDb.WinUI3.ViewModels
                         var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == result.ParentId);
                         if(parent != null)
                         {
-                            var index = parent.Children.IndexOf(result);
-                            parent.Children.Remove(item);
-                            parent.Children.Insert(index, result);
+                            var removeWhere= parent.Children.FirstOrDefault(t=>t.Label==result);
+                            var index = parent.Children.IndexOf(removeWhere);
+                            parent.Children.Remove(removeWhere);
+                            parent.Children.Insert(index, new LabelTree(result));
                         }
                         Helpers.InfoHelper.ShowSuccess("已保存标签");
                     }
@@ -150,19 +186,21 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         });
-        public ICommand RemoveCommand => new RelayCommand<Core.DbModels.LabelDb>(async (item) =>
+        public ICommand RemoveCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
             {
-                if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Name}标签"))
+                if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Label.Name}标签"))
                 {
-                    Core.Services.LabelService.RemoveLabel(item.Id);
-                    if(item.ParentId != null)//子类
+                    Core.Services.LabelService.RemoveLabel(item.Label.Id);
+                    if(item.Label.ParentId != null)//子类
                     {
-                        var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == item.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == item.Label.ParentId);
                         if(parent != null)
                         {
-                            parent.Children.Remove(item);
+                            var removeWhere = parent.Children.FirstOrDefault(t => t == item);
+                            var index = parent.Children.IndexOf(removeWhere);
+                            parent.Children.Remove(removeWhere);
                         }
                     }
                     else//父类
