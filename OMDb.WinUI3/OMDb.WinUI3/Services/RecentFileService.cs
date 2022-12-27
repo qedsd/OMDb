@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,6 @@ namespace OMDb.WinUI3.Services
 {
     public static class RecentFileService
     {
-        public static async Task<List<Core.Models.RecentFile>> GetRecentFilesAsync()
-        {
-            List<Core.Models.RecentFile> recentFiles = await Task.Run(()=>ReadPotPlayer());
-            //TODO:本地记录、监控文件修改
-            return recentFiles;
-        }
         public static ObservableCollection<Core.Models.RecentFile> RecentFiles { get; set; }
         public static void Init()
         {
@@ -79,48 +74,64 @@ namespace OMDb.WinUI3.Services
             //合并potplayer最新到本地记录（如需要）
             if (currentFiles.NotNullAndEmpty())
             {
-                bool needUpdateConfig = false;
-                if (RecentFiles.Any())
+                var changedFiles = ChangedRecentFiles(currentFiles);
+                if (changedFiles.NotNullAndEmpty())
                 {
-                    //本地记录不应该过多，所以无需复杂查找算法
-                    foreach (var file in currentFiles)
+                    foreach(var file in changedFiles)
                     {
-                        var markedFile = RecentFiles.FirstOrDefault(p => p.Path == file.Path);
-                        if (markedFile != null)
+                        if(RecentFiles.Contains(file))
                         {
-                            //本地有记录，判断是否要更新
-                            if (markedFile.MarkTime != file.MarkTime)
-                            {
-                                markedFile.MarkTime = file.MarkTime;
-                                markedFile.AccessTime = DateTime.Now;
-                                RecentFiles.Remove(markedFile);
-                                RecentFiles.Insert(0, markedFile);
-                                needUpdateConfig = true;
-                            }
+                            RecentFiles.Remove(file);
                         }
-                        else
-                        {
-                            //本地无记录，添加
-                            file.AccessTime = DateTime.Now;
-                            RecentFiles.Insert(0, file);
-                            needUpdateConfig = true;
-                        }
+                        RecentFiles.Insert(0, file);
                     }
-                }
-                else
-                {
-                    foreach (var file in currentFiles)
-                    {
-                        file.AccessTime = DateTime.Now;
-                        RecentFiles.Add(file);
-                    }
-                    needUpdateConfig = true;
-                }
-                if (needUpdateConfig)
-                {
                     SaveRecentFiles();
+                    GlobalEvent.NotifyRecentFileChanged(null,new RecentFileChangedEventArgs(changedFiles));
                 }
             }
+        }
+        /// <summary>
+        /// 将最新读取出来的记录和本地记录对比，返回有变化、新增的记录
+        /// </summary>
+        /// <param name="currentFiles"></param>
+        /// <returns></returns>
+        private static List<Core.Models.RecentFile> ChangedRecentFiles(List<Core.Models.RecentFile> currentFiles)
+        {
+            List<Core.Models.RecentFile> changedFiles = new List<RecentFile>();
+            if (RecentFiles.Any())
+            {
+                //本地记录不应该过多，所以无需复杂查找算法
+                foreach (var file in currentFiles)
+                {
+                    var markedFile = RecentFiles.FirstOrDefault(p => p.Path == file.Path);
+                    if (markedFile != null)
+                    {
+                        //本地有记录，判断是否要更新
+                        if (markedFile.MarkTime != file.MarkTime || markedFile.Duration != file.Duration)
+                        {
+                            markedFile.MarkTime = file.MarkTime;
+                            markedFile.Duration = file.Duration;
+                            markedFile.AccessTime = DateTime.Now;
+                            changedFiles.Add(markedFile);
+                        }
+                    }
+                    else
+                    {
+                        //本地无记录，添加
+                        file.AccessTime = DateTime.Now;
+                        changedFiles.Add(file);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var file in currentFiles)
+                {
+                    file.AccessTime = DateTime.Now;
+                    changedFiles.Add(file);
+                }
+            }
+            return changedFiles;
         }
         private static List<Core.Models.RecentFile> ReadPotPlayer()
         {
@@ -257,6 +268,10 @@ namespace OMDb.WinUI3.Services
         /// </summary>
         private static void MonitorPotPlayer()
         {
+            if(FileSystemWatcher != null)
+            {
+                FileSystemWatcher.Dispose();
+            }
             string path = PotPlayerPlaylistSelectorService.PlaylistPath;
             if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
             {
