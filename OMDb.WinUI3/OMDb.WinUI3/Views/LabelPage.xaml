@@ -29,11 +29,8 @@
                   Visibility="{x:Bind VM.IsTreeShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelTree">
-                    <TreeViewItem AutomationProperties.Name="{x:Bind Label.Name}"
-                                  ItemsSource="{x:Bind Children}">
+                    <TreeViewItem ItemsSource="{x:Bind Children}" Height="36">
                         <StackPanel Orientation="Horizontal">
-                            <Image Width="45" Source="{x:Bind Label.CoverPath}"/>
-                            <TextBlock Margin="0,0,10,0"/>
                             <TextBlock Text="{x:Bind Label.Name}"/>
                         </StackPanel>
                     </TreeViewItem>

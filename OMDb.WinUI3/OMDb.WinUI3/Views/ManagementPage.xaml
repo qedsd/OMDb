@@ -15,11 +15,17 @@
             <Setter Property="Margin" Value="{StaticResource SmallBottomMargin}" />
         </Style>
     </Page.Resources>
-    <Pivot Title="管理">
-        <PivotItem Header="仓库">
+    <Pivot>
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock Text="仓库" FontSize="16"/>
+            </PivotItem.Header>
             <local:StoragePage />
         </PivotItem>
-        <PivotItem Header="标签">
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock Text="标签" FontSize="16"/>
+            </PivotItem.Header>
             <local:LabelPage />
         </PivotItem>
     </Pivot>
