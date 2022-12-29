@@ -23,8 +23,8 @@
                 </StackPanel>
             </Expander.Header>
             <GridView
-                IsItemClickEnabled="True"
                 Margin="10"
+                IsItemClickEnabled="True"
                 ItemClick="GridView_ItemClick"
                 ItemsSource="{x:Bind VM.RecentlyWatchedEntries, Mode=OneWay}">
                 <GridView.ItemContainerStyle>
@@ -39,7 +39,7 @@
                             Width="160"
                             Height="260"
                             Entry="{x:Bind Entry}"
-                            ToolTipService.ToolTip="{x:Bind RecentFile.AccessTime}"/>
+                            ToolTipService.ToolTip="{x:Bind RecentFile.AccessTime}" />
                     </DataTemplate>
                 </GridView.ItemTemplate>
             </GridView>

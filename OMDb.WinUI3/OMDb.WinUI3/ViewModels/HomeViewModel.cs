@@ -31,6 +31,7 @@ namespace OMDb.WinUI3.ViewModels
             Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedFilesPage());
             Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedEntryPage());
             Views.HomePage.Current.AddItem(new Views.Homes.RecentlyUpdatedEntryPage());
+            Views.HomePage.Current.AddItem(new Views.Homes.RandomEntryPage());
             Views.HomePage.Current.AddItem(new Views.Homes.StatisticsPage());
         }
         private async Task ItemInitAsync()
