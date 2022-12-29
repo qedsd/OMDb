@@ -22,6 +22,7 @@ namespace OMDb.WinUI3.Views.Homes
     public sealed partial class RandomEntryPage : HomeItemBasePage, IHomeItem
     {
         public RandomEntryViewModel VM { get; set; } = new RandomEntryViewModel();
+        public new static string ItemName = "随机词条";
         public RandomEntryPage()
         {
             this.InitializeComponent();

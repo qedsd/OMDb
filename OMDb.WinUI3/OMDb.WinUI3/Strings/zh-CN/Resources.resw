@@ -120,6 +120,9 @@
   <data name="AppDisplayNameTextBlock.Text" xml:space="preserve">
     <value>OMDb</value>
   </data>
+  <data name="Setting_HomeItemConfig.Title" xml:space="preserve">
+    <value>主页组件配置</value>
+  </data>
   <data name="Setting_PotplayerPlaylist.Description" xml:space="preserve">
     <value>PotPlayer播放列表文件路径</value>
   </data>

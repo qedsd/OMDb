@@ -33,11 +33,77 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox MinWidth="400" Text="{x:Bind VM.PotPlayerPlaylistPath, Mode=TwoWay}" PlaceholderText="PotPlayerMini64.dpl"/>
+                <TextBox
+                    MinWidth="400"
+                    PlaceholderText="PotPlayerMini64.dpl"
+                    Text="{x:Bind VM.PotPlayerPlaylistPath, Mode=TwoWay}" />
                 <Button Grid.Column="1" Command="{x:Bind VM.PickPotPlayerPlaylistFileCommand}">
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE28F;" />
                 </Button>
             </Grid>
+        </controls:ExpandableSettingControl>
+        <controls:ExpandableSettingControl x:Uid="Setting_HomeItemConfig">
+            <controls:ExpandableSettingControl.ExpandableContent>
+                <Grid Margin="20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="200" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ListView
+                            x:Name="ActiveListView"
+                            Width="300"
+                            VerticalAlignment="Stretch"
+                            AllowDrop="True"
+                            BorderBrush="{ThemeResource SystemAccentColor}"
+                            BorderThickness="1"
+                            CanDragItems="True"
+                            CanReorderItems="True"
+                            DisplayMemberPath="Name"
+                            DragEnter="ListView_DragEnter"
+                            DragItemsStarting="ListView_DragItemsStarting"
+                            DragOver="ListView_DragOver"
+                            Drop="ListView_Drop"
+                            ItemsSource="{x:Bind VM.ActiveHomeItems, Mode=OneWay}"
+                            SelectionMode="Single" />
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Text="激活组件" />
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="200" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <ListView
+                            x:Name="InactiveListView"
+                            Width="300"
+                            HorizontalAlignment="Left"
+                            AllowDrop="True"
+                            BorderBrush="Gray"
+                            BorderThickness="0,1,1,1"
+                            CanDragItems="True"
+                            CanReorderItems="True"
+                            DisplayMemberPath="Name"
+                            DragEnter="ListView_DragEnter"
+                            DragItemsStarting="ListView_DragItemsStarting"
+                            DragOver="ListView_DragOver"
+                            Drop="ListView_Drop"
+                            ItemsSource="{x:Bind VM.InactiveHomeItems, Mode=OneWay}"
+                            SelectionMode="Single" />
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Text="停用组件" />
+                    </Grid>
+
+                </Grid>
+            </controls:ExpandableSettingControl.ExpandableContent>
         </controls:ExpandableSettingControl>
     </StackPanel>
 </Page>
