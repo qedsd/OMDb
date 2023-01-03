@@ -17,8 +17,8 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref label, value);
         }
 
-        private ObservableCollection<LabelTree> children;
-        public ObservableCollection<LabelTree> Children
+        private ObservableCollection<Core.DbModels.LabelDb> children;
+        public ObservableCollection<Core.DbModels.LabelDb> Children
         {
             get => children;
             set => SetProperty(ref children, value);
@@ -28,14 +28,7 @@ namespace OMDb.WinUI3.Models
         public LabelTree(Core.DbModels.LabelDb labelDb) 
         { 
             label = labelDb;
-            Name = labelDb.Name;
-            Img = labelDb.Img;
-            children = new ObservableCollection<LabelTree>();
+            children = new ObservableCollection<Core.DbModels.LabelDb>();
         }
-
-
-        public string Name;
-        public string Img;
-
     }
 }
