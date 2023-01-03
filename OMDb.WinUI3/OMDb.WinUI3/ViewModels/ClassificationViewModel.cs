@@ -113,7 +113,7 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         if (labelsDb.TryGetValue(label.ParentId, out var parent))
                         {
-                            parent.Children.Add(label);
+                            parent.Children.Add(new LabelTree(label));
                         }
                         Labels.Add(new Label(label));//保存所有子节点
                     }
@@ -322,7 +322,7 @@ namespace OMDb.WinUI3.ViewModels
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Id });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.Id });
                         int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                         var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                         if (result?.Any() == true)
@@ -333,12 +333,12 @@ namespace OMDb.WinUI3.ViewModels
                                 var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
-                                    Title = label.Name,
-                                    Description = label.Description,
+                                    Title = label.Label.Name,
+                                    Description = label.Label.Description,
                                     Entries = entrys,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                     Template = entryCount == 6 ? 1 : 2,
-                                    Id = label.Id
+                                    Id = label.Label.Id
                                 });
                             }
                         }
@@ -406,7 +406,7 @@ namespace OMDb.WinUI3.ViewModels
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Id });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.Id });
                         var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                         if (showItem != null)
                         {
@@ -416,10 +416,10 @@ namespace OMDb.WinUI3.ViewModels
                                 var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry), 600, 0);
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
-                                    Title = label.Name,
-                                    Description = label.Description,
+                                    Title = label.Label.Name,
+                                    Description = label.Label.Description,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                    Id = label.Id,
+                                    Id = label.Label.Id,
                                 });
                             }
                         }

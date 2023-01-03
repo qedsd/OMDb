@@ -67,15 +67,18 @@
     <None Remove="Views\EntryPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\Homes\ExtractLinePage.xaml" />
+    <None Remove="Views\Homes\RandomEntryPage.xaml" />
     <None Remove="Views\Homes\RecentlyUpdatedEntryPage.xaml" />
     <None Remove="Views\Homes\RecentlyWatchedEntryPage.xaml" />
     <None Remove="Views\Homes\RecentlyWatchedFilesPage.xaml" />
+    <None Remove="Views\Homes\StatisticsPage.xaml" />
     <None Remove="Views\LabelCollectionPage.xaml" />
     <None Remove="Views\LabelPage.xaml" />
     <None Remove="Views\ManagementPage.xaml" />
     <None Remove="Views\ShellPage.xaml" />
     <None Remove="Views\StoragePage.xaml" />
     <None Remove="Views\ToolsPage.xaml" />
+    <None Remove="Views\Tools\AVCodecToolPage.xaml" />
     <None Remove="Views\Tools\SubToolPage.xaml" />
   </ItemGroup>
 
@@ -332,6 +335,24 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\RandomEntryPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Homes\StatisticsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Tools\AVCodecToolPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

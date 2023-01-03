@@ -15,7 +15,21 @@
             <Setter Property="Margin" Value="{StaticResource SmallBottomMargin}" />
         </Style>
     </Page.Resources>
-    <ScrollViewer Margin="{StaticResource MediumLeftTopRightBottomMargin}">
+    <Pivot>
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock FontSize="16" Text="仓库" />
+            </PivotItem.Header>
+            <local:StoragePage />
+        </PivotItem>
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock FontSize="16" Text="标签" />
+            </PivotItem.Header>
+            <local:LabelPage />
+        </PivotItem>
+    </Pivot>
+    <!--<ScrollViewer Margin="{StaticResource MediumLeftTopRightBottomMargin}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -28,5 +42,5 @@
                 <local:LabelPage />
             </Expander>
         </Grid>
-    </ScrollViewer>
+    </ScrollViewer>-->
 </Page>

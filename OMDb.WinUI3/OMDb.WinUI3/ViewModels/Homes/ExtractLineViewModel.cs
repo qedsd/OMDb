@@ -45,28 +45,31 @@ namespace OMDb.WinUI3.ViewModels.Homes
         private async Task SetExtractsLine()
         {
             var ls = await Core.Services.EntryService.RandomEntryAsync(50);
-            foreach (var entry in ls)
+            if (ls != null)
             {
-                var lines = entry.GetExtractsLines();
-                if (lines.NotNullAndEmpty())
+                foreach (var entry in ls)
                 {
-                    entry.Name = Core.Services.EntryNameSerivce.QueryName(entry.Id, entry.DbId);
-                    int lineIndex = Core.Helpers.RandomHelper.RandomInt(0, lines.Count - 1, 1).First();
-                    ExtractsLine = Core.Models.ExtractsLine.Create(lines[lineIndex], entry);
-                    var imgs = entry.GetBestImg(true);
-                    if (imgs.NotNullAndEmpty())
+                    var lines = entry.GetExtractsLines();
+                    if (lines.NotNullAndEmpty())
                     {
-                        Core.Helpers.ImageHelper.GetImageSize(imgs.First(), out var w, out var h);
-                        if (w > 1080)
+                        entry.Name = Core.Services.EntryNameSerivce.QueryName(entry.Id, entry.DbId);
+                        int lineIndex = Core.Helpers.RandomHelper.RandomInt(0, lines.Count - 1, 1).First();
+                        ExtractsLine = Core.Models.ExtractsLine.Create(lines[lineIndex], entry);
+                        var imgs = entry.GetBestImg(true);
+                        if (imgs.NotNullAndEmpty())
                         {
-                            LineCover = await Helpers.ImgHelper.CreateBitmapImageAsync(await Core.Helpers.ImageHelper.ResetSizeAsync(imgs.First(), 1080, 0));
+                            Core.Helpers.ImageHelper.GetImageSize(imgs.First(), out var w, out var h);
+                            if (w > 1080)
+                            {
+                                LineCover = await Helpers.ImgHelper.CreateBitmapImageAsync(await Core.Helpers.ImageHelper.ResetSizeAsync(imgs.First(), 1080, 0));
+                            }
+                            else
+                            {
+                                LineCover = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imgs.First()));
+                            }
                         }
-                        else
-                        {
-                            LineCover = new Microsoft.UI.Xaml.Media.Imaging.BitmapImage(new Uri(imgs.First()));
-                        }
+                        return;
                     }
-                    return;
                 }
             }
             ExtractsLine = null;

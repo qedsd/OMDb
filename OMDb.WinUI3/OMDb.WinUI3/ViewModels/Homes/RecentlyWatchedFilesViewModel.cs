@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
+using OMDb.Core.Models;
 using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
@@ -7,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels.Homes
 {
@@ -18,17 +21,28 @@ namespace OMDb.WinUI3.ViewModels.Homes
             get => recentlyWatchedFiles;
             set => SetProperty(ref recentlyWatchedFiles, value);
         }
-        public async Task InitAsync()
+        public Task InitAsync()
         {
-            await InitRecentlyWatchedFiles();
+            InitRecentlyWatchedFiles();
+            return Task.CompletedTask;
         }
-        private async Task InitRecentlyWatchedFiles()
+
+        private void InitRecentlyWatchedFiles()
         {
-            var files = await RecentFileService.GetRecentFilesAsync();
-            if (files != null && files.Any())
+            RecentlyWatchedFiles = RecentFileService.RecentFiles;
+        }
+
+        public ICommand ItemClickCommand => new RelayCommand<Core.Models.RecentFile>((file) =>
+        {
+            if (file != null)
             {
-                RecentlyWatchedFiles = files.ToObservableCollection();
+                Helpers.FileHelper.OpenBySystem(file.Path);
             }
-        }
+        });
+
+        public ICommand ItemFolderCommand => new RelayCommand<Core.Models.RecentFile>((file) =>
+        {
+            System.Diagnostics.Process.Start("explorer.exe", System.IO.Path.GetDirectoryName(file.Path));
+        });
     }
 }

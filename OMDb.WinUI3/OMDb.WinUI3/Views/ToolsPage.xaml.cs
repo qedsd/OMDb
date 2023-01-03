@@ -28,8 +28,7 @@ namespace OMDb.WinUI3.Views
                 new ToolItem("视频字幕","往视频文件导出、导入字幕",typeof(SubToolPage)),
                 new ToolItem("字幕编辑","对字幕文件进行编辑操作",null),
                 new ToolItem("字幕翻译","对已有字幕文件进行自动翻译",null),
-                new ToolItem("视频转码","",null),
-                new ToolItem("音频转码","",null),
+                new ToolItem("格式转换","视频、音频格式转换",typeof(AVCodecToolPage)),
                 new ToolItem("图片转码","",null),
             };
         }

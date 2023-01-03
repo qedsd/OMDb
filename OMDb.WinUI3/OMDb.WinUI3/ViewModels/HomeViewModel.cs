@@ -7,6 +7,8 @@ using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
+using OMDb.WinUI3.Services.Settings;
+using OMDb.WinUI3.Views.Homes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,10 +29,10 @@ namespace OMDb.WinUI3.ViewModels
         private void InitShowItem()
         {
             Views.HomePage.Current.ClearItem();
-            Views.HomePage.Current.AddItem(new Views.Homes.ExtractLinePage());
-            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedFilesPage());
-            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyWatchedEntryPage());
-            Views.HomePage.Current.AddItem(new Views.Homes.RecentlyUpdatedEntryPage());
+            foreach(var item in HomeItemConfigsService.ActiveItems)
+            {
+                Views.HomePage.Current.AddItem(Activator.CreateInstance(item.Type) as HomeItemBasePage);
+            }
         }
         private async Task ItemInitAsync()
         {
@@ -49,6 +51,7 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand RefreshCommand => new RelayCommand(async () =>
         {
             Helpers.InfoHelper.ShowWaiting();
+            InitShowItem();
             await ItemInitAsync();
             Helpers.InfoHelper.HideWaiting();
         });

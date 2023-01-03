@@ -67,5 +67,19 @@ namespace OMDb.WinUI3.Helpers
             WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
             return await openPicker.PickSingleFolderAsync();
         }
+        /// <summary>
+        /// 选择保存文件
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<StorageFile> PickSaveFileAsync(string suggestedFileName, Window window = null)
+        {
+            FileSavePicker savePicker = new FileSavePicker();
+            savePicker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
+            savePicker.FileTypeChoices.Add("视频文件", new List<string>() { System.IO.Path.GetExtension(suggestedFileName) });
+            savePicker.SuggestedFileName = suggestedFileName;
+            var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window ?? MainWindow.Instance);
+            WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
+            return await savePicker.PickSaveFileAsync();
+        }
     }
 }

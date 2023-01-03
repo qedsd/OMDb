@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.WinUI3.Interfaces;
+using OMDb.WinUI3.Services;
 using OMDb.WinUI3.ViewModels.Homes;
 using System;
 using System.Collections.Generic;
@@ -18,11 +19,11 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Views.Homes
 {
-    public sealed partial class RecentlyWatchedFilesPage : HomeItemBasePage,IHomeItem
+    public sealed partial class RandomEntryPage : HomeItemBasePage, IHomeItem
     {
-        public RecentlyWatchedFilesViewModel VM { get; set; } = new RecentlyWatchedFilesViewModel();
-        public new static string ItemName = "最近观看视频";
-        public RecentlyWatchedFilesPage()
+        public RandomEntryViewModel VM { get; set; } = new RandomEntryViewModel();
+        public new static string ItemName = "随机词条";
+        public RandomEntryPage()
         {
             this.InitializeComponent();
         }
@@ -34,17 +35,7 @@ namespace OMDb.WinUI3.Views.Homes
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            VM.ItemClickCommand.Execute(e.ClickedItem);
-        }
-
-        private void MenuFlyoutItem1_Click(object sender, RoutedEventArgs e)
-        {
-            VM.ItemClickCommand.Execute((sender as FrameworkElement).DataContext);
-        }
-
-        private void MenuFlyoutItem2_Click(object sender, RoutedEventArgs e)
-        {
-            VM.ItemFolderCommand.Execute((sender as FrameworkElement).DataContext);
+            NavigationService.Navigate(typeof(Views.EntryDetailPage), e.ClickedItem);
         }
     }
 }
