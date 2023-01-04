@@ -8,7 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:models="using:OMDb.WinUI3.Models" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     x:Name="page"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -16,15 +16,78 @@
     <Page.Resources>
         <coverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True" />
+        <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
+            <Border Margin="10, 0, 10 10" CornerRadius="5" BorderThickness="5" BorderBrush="#23CCFC">
+                <Grid Background="#23CCFC" Height="20" Width="100">
+                    <TextBlock Padding="10" Text="{x:Bind Label.Name}"
+                   HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Normal" FontFamily="Times new Roman"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
     </Page.Resources>
     <StackPanel>
+
         <CommandBar OverflowButtonVisibility="Collapsed">
             <AppBarButton Command="{x:Bind VM.AddRootCommand}" Icon="Add" />
             <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
             <AppBarSeparator />
             <AppBarButton Command="{x:Bind VM.ChangeShowTypeToTreeCommand}" Icon="List" />
             <AppBarButton Command="{x:Bind VM.ChangeShowTypeToExpCommand}" Icon="ViewAll" />
+            <AppBarButton Command="{x:Bind VM.ChangeShowTypeToRepeaterCommand}">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xECA5;"/>
+            </AppBarButton>
         </CommandBar>
+        <ScrollViewer HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <ItemsRepeater
+                VerticalAlignment="Top"
+                ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate  x:DataType="models:LabelTree">
+                        <StackPanel >
+                            <Border Margin="0, 0,10,10" CornerRadius="5" BorderThickness="5" BorderBrush="#21C8C8" Width="150" Height="40" HorizontalAlignment="Left">
+                                <Grid Background="#21C8C8">
+                                    <Interactivity:Interaction.Behaviors>
+                                        <Core:EventTriggerBehavior EventName="PointerEntered">
+                                            <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditNameButton}"
+                            Value="Visible" />
+                                        </Core:EventTriggerBehavior>
+                                        <Core:EventTriggerBehavior EventName="PointerExited">
+                                            <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditNameButton}"
+                            Value="Collapsed" />
+                                        </Core:EventTriggerBehavior>
+                                    </Interactivity:Interaction.Behaviors>
+                                    <TextBlock 
+                                        Text="{x:Bind Label.Name}" 
+                                        Padding="10" 
+                                        FontSize="18" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center" 
+                                        CharacterSpacing="100"
+                                        FontFamily="Comic Sans MS"
+                                        FontWeight="ExtraBold"
+                                        FontStretch="ExtraExpanded"/>
+                                </Grid>
+                            </Border>
+                            <ItemsRepeater
+                            ItemsSource="{x:Bind Children}"
+                            ItemTemplate="{StaticResource StringDataTemplateColor}">
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Orientation="Horizontal" />
+                                </ItemsRepeater.Layout>
+                            </ItemsRepeater>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+                <ItemsRepeater.Layout>
+                    <StackLayout Orientation="Vertical" />
+                </ItemsRepeater.Layout>
+            </ItemsRepeater>
+        </ScrollViewer>
+
         <TreeView ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}" Visibility="{x:Bind VM.IsTreeShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelTree">

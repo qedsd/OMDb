@@ -31,6 +31,14 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref isTreeShow, value);
         }
 
+        private bool isRepeaterShow;
+        public bool IsRepeaterShow
+        {
+            get => isRepeaterShow;
+            set => SetProperty(ref isRepeaterShow, value);
+        }
+        
+
         private bool isExpShow;
         public bool IsExpShow
         {
@@ -45,17 +53,29 @@ namespace OMDb.WinUI3.ViewModels
             Init();
         }
 
-        public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
-        {
-            IsExpShow = false;
-            IsTreeShow = true;
-        });
-
         public ICommand ChangeShowTypeToExpCommand => new RelayCommand(() =>
         {
             IsExpShow = true;
             IsTreeShow = false;
+            IsRepeaterShow = false;
         });
+
+
+
+        public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
+        {
+            IsExpShow = false;
+            IsTreeShow = true;
+            IsRepeaterShow = false;
+        });
+
+        public ICommand ChangeShowTypeToRepeaterCommand => new RelayCommand(() =>
+        {
+            IsExpShow = false;
+            IsTreeShow = false;
+            IsRepeaterShow = true;
+        });
+
 
 
         private async void Init()
