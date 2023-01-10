@@ -21,6 +21,7 @@ namespace OMDb.WinUI3.Views
         public LabelPage()
         {
             this.InitializeComponent();
+            DataContext = VM;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Media;
 using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
@@ -8,10 +9,15 @@ using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
+
+
 namespace OMDb.WinUI3.ViewModels
 {
     public class LabelViewModel : ObservableObject
@@ -37,7 +43,7 @@ namespace OMDb.WinUI3.ViewModels
             get => isRepeaterShow;
             set => SetProperty(ref isRepeaterShow, value);
         }
-        
+
 
         private bool isExpShow;
         public bool IsExpShow
@@ -49,7 +55,8 @@ namespace OMDb.WinUI3.ViewModels
         public LabelViewModel()
         {
             IsExpShow = false;
-            IsTreeShow = true;
+            IsTreeShow = false;
+            IsRepeaterShow = true;
             Init();
         }
 
@@ -85,18 +92,18 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();
                 var root = labels.Where(p => p.ParentId == null).ToList();
-                if(root != null)
+                if (root != null)
                 {
-                    foreach(var label in root)
+                    foreach (var label in root)
                     {
                         labelsDb.Add(label.Id, new LabelTree(label));
                     }
                 }
                 foreach (var label in labels)
                 {
-                    if(label.ParentId != null)
+                    if (label.ParentId != null)
                     {
-                        if(labelsDb.TryGetValue(label.ParentId,out var parent))
+                        if (labelsDb.TryGetValue(label.ParentId, out var parent))
                         {
                             parent.Children.Add(new LabelTree(label));
                         }
@@ -105,21 +112,21 @@ namespace OMDb.WinUI3.ViewModels
                 Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
                     LabelTrees = new ObservableCollection<LabelTree>();
-                    foreach(var item in labelsDb)
+                    foreach (var item in labelsDb)
                     {
                         LabelTrees.Add(item.Value);
                     }
                 });
             }
         }
-        public ICommand RefreshCommand => new RelayCommand( () =>
+        public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
         });
-        public ICommand AddRootCommand => new RelayCommand(async() =>
+        public ICommand AddRootCommand => new RelayCommand(async () =>
         {
             var result = await Dialogs.EditLabelDialog.ShowDialog();
-            if(result != null)
+            if (result != null)
             {
                 if (string.IsNullOrEmpty(result.Name))
                 {
@@ -151,7 +158,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         });
-        public ICommand EditSubCommand => new RelayCommand<LabelTree>(async(item) =>
+        public ICommand EditSubCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
             {
@@ -166,9 +173,9 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         Core.Services.LabelService.UpdateLabel(result);
                         var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == result.ParentId);
-                        if(parent != null)
+                        if (parent != null)
                         {
-                            var removeWhere= parent.Children.FirstOrDefault(t=>t.Label==result);
+                            var removeWhere = parent.Children.FirstOrDefault(t => t.Label == result);
                             var index = parent.Children.IndexOf(removeWhere);
                             parent.Children.Remove(removeWhere);
                             parent.Children.Insert(index, new LabelTree(result));
@@ -194,7 +201,7 @@ namespace OMDb.WinUI3.ViewModels
                         Core.Services.LabelService.UpdateLabel(result);
                         var index = LabelTrees.IndexOf(item);
                         LabelTrees.Remove(item);
-                        LabelTrees.Insert(index,new LabelTree()
+                        LabelTrees.Insert(index, new LabelTree()
                         {
                             Label = result,
                             Children = item.Children
@@ -204,6 +211,39 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         });
+
+        private Brush _brush;
+
+        public Brush Brush
+        {
+            get => _brush;
+            set => SetProperty(ref _brush, value);
+        }
+
+        private Windows.UI.Color _color1st = Windows.UI.Color.FromArgb(255, 20, 20, 90);
+        public Windows.UI.Color Color1st
+        {
+            get => _color1st;
+            set => SetProperty(ref _color1st, value);
+        }
+
+        private Double _fontSize1st=18;
+        public Double FontSize1st
+        {
+            get => _fontSize1st;
+            set => SetProperty(ref _fontSize1st, value);
+        }
+
+        public ICommand Select1stTagColorCommand => new RelayCommand(async () =>
+        {
+
+        });
+
+        public ICommand Select2ndTagColorCommand => new RelayCommand(async () =>
+        {
+
+        });
+
         public ICommand RemoveCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
@@ -211,10 +251,10 @@ namespace OMDb.WinUI3.ViewModels
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Label.Name}标签"))
                 {
                     Core.Services.LabelService.RemoveLabel(item.Label.Id);
-                    if(item.Label.ParentId != null)//子类
+                    if (item.Label.ParentId != null)//子类
                     {
                         var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == item.Label.ParentId);
-                        if(parent != null)
+                        if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t == item);
                             var index = parent.Children.IndexOf(removeWhere);
@@ -225,9 +265,20 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         Init();
                     }
+                    SolidColorBrush myBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 20, 20, 90));
                     Helpers.InfoHelper.ShowSuccess("已删除标签");
+
                 }
             }
         });
+
+        public ICommand ConfirmCommand => new RelayCommand(async () =>
+        {
+
+        });
+
+
+
+
     }
 }

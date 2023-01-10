@@ -8,7 +8,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:OMDb.WinUI3.Models" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:models="using:OMDb.WinUI3.Models" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     x:Name="page"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -16,36 +18,100 @@
     <Page.Resources>
         <coverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True" />
+        <coverters:ColorToBrush x:Key="ColorToBrush" />
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
-            <Border Margin="10, 0, 10 10" CornerRadius="5" BorderThickness="5" BorderBrush="#23CCFC">
-                <Grid Background="#23CCFC" Height="20" Width="100">
-                    <TextBlock Padding="10" Text="{x:Bind Label.Name}"
-                   HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Normal" FontFamily="Times new Roman"/>
+            <Border Margin="10, 0, 10 10" CornerRadius="3" BorderThickness="3" BorderBrush="#23CCFC">
+                <Grid Background="{Binding ElementName=page ,Path=VM.Color1st,Mode=TwoWay}" Height="20" Width="80">
+                    <TextBlock Padding="10" 
+                               Text="{x:Bind Label.Name}" 
+                               Foreground="White"
+                               HorizontalAlignment="Center" 
+                               TextWrapping="Wrap" 
+                               VerticalAlignment="Center" 
+                               FontWeight="Normal" 
+                               FontSize="12"
+                               FontFamily="Comic Sans MS"/>
+                    <!--FontFamily="Times new Roman"/>-->
                 </Grid>
             </Border>
         </DataTemplate>
     </Page.Resources>
-    <StackPanel>
-
-        <CommandBar OverflowButtonVisibility="Collapsed">
+    <Page.DataContext>
+        <viewmodels:LabelViewModel />
+    </Page.DataContext>
+    <StackPanel x:Name="xx">
+        <TextBlock Text="text" FontSize="{Binding ElementName=page,Path=DataContext.FontSize1st,Mode=OneWay}"></TextBlock>
+        <CommandBar OverflowButtonVisibility="Collapsed" Background="{x:Bind VM.Color1st,Converter={StaticResource ColorToBrush},Mode=OneWay}">
             <AppBarButton Command="{x:Bind VM.AddRootCommand}" Icon="Add" />
             <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
             <AppBarSeparator />
-            <AppBarButton Command="{x:Bind VM.ChangeShowTypeToTreeCommand}" Icon="List" />
-            <AppBarButton Command="{x:Bind VM.ChangeShowTypeToExpCommand}" Icon="ViewAll" />
-            <AppBarButton Command="{x:Bind VM.ChangeShowTypeToRepeaterCommand}">
+
+            <AppBarElementContainer>
+                <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
+            </AppBarElementContainer>
+
+            <AppBarToggleButton IsChecked="{x:Bind VM.IsTreeShow,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToTreeCommand}" Icon="List" />
+            <AppBarToggleButton IsChecked="{x:Bind VM.IsExpShow,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToExpCommand}" Icon="ViewAll" />
+            <AppBarToggleButton IsChecked="{x:Bind VM.IsRepeaterShow ,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToRepeaterCommand}">
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xECA5;"/>
+            </AppBarToggleButton>
+            <AppBarSeparator />
+            <AppBarButton Icon="SetTile">
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <RadioButtons Header="Options:">
+                                <RadioButton Content="First Tag"/>
+                                <RadioButton Content="Second Tag"/>
+                            </RadioButtons>
+                            <ColorPicker x:Name="cp"
+                                ColorSpectrumShape="Ring"
+                                IsMoreButtonVisible="False"
+                                IsColorSliderVisible="True"
+                                IsColorChannelTextInputVisible="True"
+                                IsHexInputVisible="True"
+                                IsAlphaEnabled="False"
+                                IsAlphaSliderVisible="True"
+                                IsAlphaTextInputVisible="True"
+                                Color="{x:Bind VM.Color1st,Mode=TwoWay}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="{Binding ElementName=ss ,Path=Value,Mode=TwoWay}">FontSize:</TextBlock>
+                                <TextBlock Text="{Binding ElementName=ss,Path=Value}"></TextBlock>
+                            </StackPanel>
+                            <Slider x:Name="ss" 
+                                AutomationProperties.Name="simple slider" 
+                                Width="200"
+                                HorizontalAlignment="Left"
+                                    Value="{x:Bind VM.FontSize1st,Mode=TwoWay}"/>
+                            <Button
+                                Content="Confirm"
+                                Command="{x:Bind VM.ConfirmCommand}">
+
+                            </Button>
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
             </AppBarButton>
         </CommandBar>
-        <ScrollViewer HorizontalScrollMode="Auto" HorizontalScrollBarVisibility="Auto" Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+        <ScrollViewer HorizontalScrollMode="Auto" 
+                      HorizontalScrollBarVisibility="Auto" 
+                      Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <!--Background="{x:Bind cp.Color,Converter={StaticResource ColorToBrush},Mode=TwoWay}"-->
+
             <ItemsRepeater
                 VerticalAlignment="Top"
                 ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}">
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate  x:DataType="models:LabelTree">
                         <StackPanel >
-                            <Border Margin="0, 0,10,10" CornerRadius="5" BorderThickness="5" BorderBrush="#21C8C8" Width="150" Height="40" HorizontalAlignment="Left">
-                                <Grid Background="#21C8C8">
+                            <Border Margin="0, 0,10,10" 
+                                    CornerRadius="3" 
+                                    BorderThickness="3" 
+                                    BorderBrush="{Binding ElementName=page,Path=WM.Color,Converter={StaticResource ColorToBrush},Mode=OneWay}" 
+                                    Width="150" Height="40" 
+                                    HorizontalAlignment="Left">
+                                <!--<Border Margin="0, 0,10,10" CornerRadius="3" BorderThickness="3" BorderBrush="#21C8C8" Width="150" Height="40" HorizontalAlignment="Left">-->
+                                <Grid Background="{Binding Path=cp.Color ,ElementName=page,Converter={StaticResource ColorToBrush},Mode=TwoWay}">
                                     <Interactivity:Interaction.Behaviors>
                                         <Core:EventTriggerBehavior EventName="PointerEntered">
                                             <Core:ChangePropertyAction
@@ -60,15 +126,15 @@
                             Value="Collapsed" />
                                         </Core:EventTriggerBehavior>
                                     </Interactivity:Interaction.Behaviors>
-                                    <TextBlock 
+                                    <TextBlock
                                         Text="{x:Bind Label.Name}" 
                                         Padding="10" 
-                                        FontSize="18" 
+                                        FontSize="{Binding Path=DataContext.FontSize1st,Mode=OneWay,ElementName=page}" 
                                         HorizontalAlignment="Center" 
                                         VerticalAlignment="Center" 
                                         CharacterSpacing="100"
                                         FontFamily="Comic Sans MS"
-                                        FontWeight="ExtraBold"
+                                        FontWeight="Normal"
                                         FontStretch="ExtraExpanded"/>
                                 </Grid>
                             </Border>
