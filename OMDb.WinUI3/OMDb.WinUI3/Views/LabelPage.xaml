@@ -2,14 +2,15 @@
     x:Class="OMDb.WinUI3.Views.LabelPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
     xmlns:DbModels="using:OMDb.Core.DbModels"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:coverters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:OMDb.WinUI3.Models" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" 
-    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity" 
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     x:Name="page"
     NavigationCacheMode="Enabled"
@@ -20,18 +21,26 @@
         <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True" />
         <coverters:ColorToBrush x:Key="ColorToBrush" />
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
-            <Border Margin="10, 0, 10 10" CornerRadius="3" BorderThickness="3" BorderBrush="#23CCFC">
-                <Grid Background="{Binding ElementName=page ,Path=VM.Color1st,Mode=TwoWay}" Height="20" Width="80">
-                    <TextBlock Padding="10" 
-                               Text="{x:Bind Label.Name}" 
-                               Foreground="White"
-                               HorizontalAlignment="Center" 
-                               TextWrapping="Wrap" 
-                               VerticalAlignment="Center" 
-                               FontWeight="Normal" 
-                               FontSize="12"
-                               FontFamily="Comic Sans MS"/>
-                    <!--FontFamily="Times new Roman"/>-->
+            <Border
+                Margin="10,0,10,10"
+                BorderBrush="#23CCFC"
+                BorderThickness="3"
+                CornerRadius="3">
+                <Grid
+                    Width="80"
+                    Height="20"
+                    Background="{Binding ElementName=page, Path=VM.Color1st, Mode=TwoWay}">
+                    <TextBlock
+                        Padding="10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontFamily="Comic Sans MS"
+                        FontSize="12"
+                        FontWeight="Normal"
+                        Foreground="White"
+                        Text="{x:Bind Label.Name}"
+                        TextWrapping="Wrap" />
+                    <!--  FontFamily="Times new Roman"/>  -->
                 </Grid>
             </Border>
         </DataTemplate>
@@ -40,8 +49,8 @@
         <viewmodels:LabelViewModel />
     </Page.DataContext>
     <StackPanel x:Name="xx">
-        <TextBlock Text="text" FontSize="{Binding ElementName=page,Path=DataContext.FontSize1st,Mode=OneWay}"></TextBlock>
-        <CommandBar OverflowButtonVisibility="Collapsed" Background="{x:Bind VM.Color1st,Converter={StaticResource ColorToBrush},Mode=OneWay}">
+        <TextBlock FontSize="{Binding ElementName=page, Path=DataContext.FontSize1st, Mode=OneWay}" Text="text" />
+        <CommandBar Background="{x:Bind VM.Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}" OverflowButtonVisibility="Collapsed">
             <AppBarButton Command="{x:Bind VM.AddRootCommand}" Icon="Add" />
             <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
             <AppBarSeparator />
@@ -50,10 +59,16 @@
                 <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
             </AppBarElementContainer>
 
-            <AppBarToggleButton IsChecked="{x:Bind VM.IsTreeShow,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToTreeCommand}" Icon="List" />
-            <AppBarToggleButton IsChecked="{x:Bind VM.IsExpShow,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToExpCommand}" Icon="ViewAll" />
-            <AppBarToggleButton IsChecked="{x:Bind VM.IsRepeaterShow ,Mode=TwoWay}" Command="{x:Bind VM.ChangeShowTypeToRepeaterCommand}">
-                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xECA5;"/>
+            <AppBarToggleButton
+                Command="{x:Bind VM.ChangeShowTypeToTreeCommand}"
+                Icon="List"
+                IsChecked="{x:Bind VM.IsTreeShow, Mode=TwoWay}" />
+            <AppBarToggleButton
+                Command="{x:Bind VM.ChangeShowTypeToExpCommand}"
+                Icon="ViewAll"
+                IsChecked="{x:Bind VM.IsExpShow, Mode=TwoWay}" />
+            <AppBarToggleButton Command="{x:Bind VM.ChangeShowTypeToRepeaterCommand}" IsChecked="{x:Bind VM.IsRepeaterShow, Mode=TwoWay}">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xECA5;" />
             </AppBarToggleButton>
             <AppBarSeparator />
             <AppBarButton Icon="SetTile">
@@ -61,86 +76,84 @@
                     <Flyout>
                         <StackPanel>
                             <RadioButtons Header="Options:">
-                                <RadioButton Content="First Tag"/>
-                                <RadioButton Content="Second Tag"/>
+                                <RadioButton Content="First Tag" />
+                                <RadioButton Content="Second Tag" />
                             </RadioButtons>
-                            <ColorPicker x:Name="cp"
+                            <ColorPicker
+                                x:Name="cp"
                                 ColorSpectrumShape="Ring"
-                                IsMoreButtonVisible="False"
-                                IsColorSliderVisible="True"
-                                IsColorChannelTextInputVisible="True"
-                                IsHexInputVisible="True"
                                 IsAlphaEnabled="False"
                                 IsAlphaSliderVisible="True"
                                 IsAlphaTextInputVisible="True"
-                                Color="{x:Bind VM.Color1st,Mode=TwoWay}"/>
+                                IsColorChannelTextInputVisible="True"
+                                IsColorSliderVisible="True"
+                                IsHexInputVisible="True"
+                                IsMoreButtonVisible="False"
+                                Color="{x:Bind VM.Color1st, Mode=TwoWay}" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontSize="{Binding ElementName=ss ,Path=Value,Mode=TwoWay}">FontSize:</TextBlock>
-                                <TextBlock Text="{Binding ElementName=ss,Path=Value}"></TextBlock>
+                                <TextBlock FontSize="{Binding ElementName=ss, Path=Value, Mode=TwoWay}">FontSize:</TextBlock>
+                                <TextBlock Text="{Binding ElementName=ss, Path=Value}" />
                             </StackPanel>
-                            <Slider x:Name="ss" 
-                                AutomationProperties.Name="simple slider" 
+                            <Slider
+                                x:Name="ss"
                                 Width="200"
                                 HorizontalAlignment="Left"
-                                    Value="{x:Bind VM.FontSize1st,Mode=TwoWay}"/>
-                            <Button
-                                Content="Confirm"
-                                Command="{x:Bind VM.ConfirmCommand}">
-
-                            </Button>
+                                AutomationProperties.Name="simple slider"
+                                Minimum="8"
+                                Value="{x:Bind VM.FontSize1st, Mode=TwoWay}" />
+                            <Button Command="{x:Bind VM.ConfirmCommand}" Content="Confirm" />
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
         </CommandBar>
-        <ScrollViewer HorizontalScrollMode="Auto" 
-                      HorizontalScrollBarVisibility="Auto" 
-                      Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-            <!--Background="{x:Bind cp.Color,Converter={StaticResource ColorToBrush},Mode=TwoWay}"-->
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Auto"
+            HorizontalScrollMode="Auto"
+            Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <!--  Background="{x:Bind cp.Color,Converter={StaticResource ColorToBrush},Mode=TwoWay}"  -->
 
-            <ItemsRepeater
-                VerticalAlignment="Top"
-                ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}">
+            <ItemsRepeater VerticalAlignment="Top" ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}">
                 <ItemsRepeater.ItemTemplate>
-                    <DataTemplate  x:DataType="models:LabelTree">
-                        <StackPanel >
-                            <Border Margin="0, 0,10,10" 
-                                    CornerRadius="3" 
-                                    BorderThickness="3" 
-                                    BorderBrush="{Binding ElementName=page,Path=WM.Color,Converter={StaticResource ColorToBrush},Mode=OneWay}" 
-                                    Width="150" Height="40" 
-                                    HorizontalAlignment="Left">
+                    <DataTemplate x:DataType="models:LabelTree">
+                        <StackPanel>
+                            <Border
+                                Width="150"
+                                Height="40"
+                                Margin="0,0,10,10"
+                                HorizontalAlignment="Left"
+                                BorderBrush="{Binding ElementName=page, Path=WM.Color, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                                BorderThickness="3"
+                                CornerRadius="3">
                                 <!--<Border Margin="0, 0,10,10" CornerRadius="3" BorderThickness="3" BorderBrush="#21C8C8" Width="150" Height="40" HorizontalAlignment="Left">-->
-                                <Grid Background="{Binding Path=cp.Color ,ElementName=page,Converter={StaticResource ColorToBrush},Mode=TwoWay}">
+                                <Grid Background="{Binding Path=cp.Color, ElementName=page, Converter={StaticResource ColorToBrush}, Mode=TwoWay}">
                                     <Interactivity:Interaction.Behaviors>
                                         <Core:EventTriggerBehavior EventName="PointerEntered">
                                             <Core:ChangePropertyAction
-                            PropertyName="Visibility"
-                            TargetObject="{Binding ElementName=EditNameButton}"
-                            Value="Visible" />
+                                                PropertyName="Visibility"
+                                                TargetObject="{Binding ElementName=EditNameButton}"
+                                                Value="Visible" />
                                         </Core:EventTriggerBehavior>
                                         <Core:EventTriggerBehavior EventName="PointerExited">
                                             <Core:ChangePropertyAction
-                            PropertyName="Visibility"
-                            TargetObject="{Binding ElementName=EditNameButton}"
-                            Value="Collapsed" />
+                                                PropertyName="Visibility"
+                                                TargetObject="{Binding ElementName=EditNameButton}"
+                                                Value="Collapsed" />
                                         </Core:EventTriggerBehavior>
                                     </Interactivity:Interaction.Behaviors>
                                     <TextBlock
-                                        Text="{x:Bind Label.Name}" 
-                                        Padding="10" 
-                                        FontSize="{Binding Path=DataContext.FontSize1st,Mode=OneWay,ElementName=page}" 
-                                        HorizontalAlignment="Center" 
-                                        VerticalAlignment="Center" 
+                                        Padding="10"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         CharacterSpacing="100"
                                         FontFamily="Comic Sans MS"
+                                        FontSize="{Binding FontSize1st, Mode=OneWay}"
+                                        FontStretch="ExtraExpanded"
                                         FontWeight="Normal"
-                                        FontStretch="ExtraExpanded"/>
+                                        Text="{x:Bind Label.Name}" />
                                 </Grid>
                             </Border>
-                            <ItemsRepeater
-                            ItemsSource="{x:Bind Children}"
-                            ItemTemplate="{StaticResource StringDataTemplateColor}">
+                            <ItemsRepeater ItemTemplate="{StaticResource StringDataTemplateColor}" ItemsSource="{x:Bind Children}">
                                 <ItemsRepeater.Layout>
                                     <StackLayout Orientation="Horizontal" />
                                 </ItemsRepeater.Layout>
