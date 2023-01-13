@@ -16,12 +16,18 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
-
+using System.Xml.Linq;
+using Microsoft.UI.Xaml;
+using System.IO;
 
 namespace OMDb.WinUI3.ViewModels
 {
     public class LabelViewModel : ObservableObject
     {
+        //Propriety
+        # region
+        XElement xe = null;
+        string ConfigPath = null;
 
         private ObservableCollection<LabelTree> labelTrees;
         public ObservableCollection<LabelTree> LabelTrees
@@ -44,7 +50,6 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref isRepeaterShow, value);
         }
 
-
         private bool isExpShow;
         public bool IsExpShow
         {
@@ -52,41 +57,94 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref isExpShow, value);
         }
 
-        public LabelViewModel()
+        private double _fontSizeCurrent = 18;
+        public double FontSizeCurrent
         {
-            IsExpShow = false;
-            IsTreeShow = false;
-            IsRepeaterShow = true;
-            Init();
+            get => _fontSizeCurrent;
+            set
+            {
+                SetProperty(ref _fontSizeCurrent, value);
+                if (TagSelector)
+                {
+                    FontSize1st = _fontSizeCurrent;
+                }
+                else
+                {
+                    FontSize2nd = _fontSizeCurrent;
+                }
+            }
         }
 
-        public ICommand ChangeShowTypeToExpCommand => new RelayCommand(() =>
+        private double _fontSize1st;
+        public double FontSize1st
         {
-            IsExpShow = true;
-            IsTreeShow = false;
-            IsRepeaterShow = false;
-        });
+            get => _fontSize1st;
+            set => SetProperty(ref _fontSize1st, value);
+        }
 
-
-
-        public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
+        private double _fontSize2nd;
+        public double FontSize2nd
         {
-            IsExpShow = false;
-            IsTreeShow = true;
-            IsRepeaterShow = false;
-        });
+            get => _fontSize2nd;
+            set => SetProperty(ref _fontSize2nd, value);
+        }
 
-        public ICommand ChangeShowTypeToRepeaterCommand => new RelayCommand(() =>
+        private Windows.UI.Color _colorCurrent;
+        public Windows.UI.Color ColorCurrent
         {
-            IsExpShow = false;
-            IsTreeShow = false;
-            IsRepeaterShow = true;
-        });
+            get => _colorCurrent;
+            set
+            {
+                SetProperty(ref _colorCurrent, value);
+                if (TagSelector)
+                {
+                    Color1st = _colorCurrent;
+                }
+                else
+                {
+                    Color2nd = _colorCurrent;
+                }
+            }
+        }
+
+        private Windows.UI.Color _color1st;
+        public Windows.UI.Color Color1st
+        {
+            get => _color1st;
+            set => SetProperty(ref _color1st, value);
+        }
+
+        private Windows.UI.Color _color2nd;
+        public Windows.UI.Color Color2nd
+        {
+            get => _color2nd;
+            set => SetProperty(ref _color2nd, value);
+        }
+
+
+        private Brush _brush;
+        public Brush Brush
+        {
+            get => _brush;
+            set => SetProperty(ref _brush, value);
+        }
 
 
 
+        private bool _tagSelector = true;
+        public bool TagSelector
+        {
+            get => _tagSelector;
+            set => SetProperty(ref _tagSelector, value);
+        }
+
+        #endregion
+        //初始化
         private async void Init()
         {
+            ConfigPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Assets/Config/LabelConfig.xml";
+            xe = XElement.Load(ConfigPath);
+
             var labels = await Core.Services.LabelService.GetAllLabelAsync();
             if (labels != null)
             {
@@ -118,7 +176,44 @@ namespace OMDb.WinUI3.ViewModels
                     }
                 });
             }
+            GetTag1stInfo();
+            GetTag2ndInfo();
+            ColorCurrent = TagSelector ? Color1st : Color2nd;
+            FontSizeCurrent = TagSelector ? FontSize1st : FontSize2nd;
         }
+
+        public LabelViewModel()
+        {
+            IsExpShow = false;
+            IsTreeShow = false;
+            IsRepeaterShow = true;
+            Init();
+        }
+
+        public ICommand ChangeShowTypeToExpCommand => new RelayCommand(() =>
+        {
+            IsExpShow = true;
+            IsTreeShow = false;
+            IsRepeaterShow = false;
+        });
+
+        public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
+        {
+            IsExpShow = false;
+            IsTreeShow = true;
+            IsRepeaterShow = false;
+        });
+
+        public ICommand ChangeShowTypeToRepeaterCommand => new RelayCommand(() =>
+        {
+            IsExpShow = false;
+            IsTreeShow = false;
+            IsRepeaterShow = true;
+        });
+
+
+
+
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
@@ -212,27 +307,7 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-        private Brush _brush;
 
-        public Brush Brush
-        {
-            get => _brush;
-            set => SetProperty(ref _brush, value);
-        }
-
-        private Windows.UI.Color _color1st = Windows.UI.Color.FromArgb(255, 20, 20, 90);
-        public Windows.UI.Color Color1st
-        {
-            get => _color1st;
-            set => SetProperty(ref _color1st, value);
-        }
-
-        private Double _fontSize1st=18;
-        public Double FontSize1st
-        {
-            get => _fontSize1st;
-            set => SetProperty(ref _fontSize1st, value);
-        }
 
         public ICommand Select1stTagColorCommand => new RelayCommand(async () =>
         {
@@ -265,20 +340,65 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         Init();
                     }
-                    SolidColorBrush myBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 20, 20, 90));
                     Helpers.InfoHelper.ShowSuccess("已删除标签");
 
                 }
             }
         });
 
-        public ICommand ConfirmCommand => new RelayCommand(async () =>
+        public ICommand StyleConfirmCommand => new RelayCommand(async () =>
         {
-
+            IEnumerable<XElement> t1Color = from element in xe.Elements("Color1st") select element;
+            IEnumerable<XElement> t2Color = from element in xe.Elements("Color2nd") select element;
+            xe.Element("FontSize1st").Value = FontSize1st.ToString();
+            xe.Element("FontSize2nd").Value = FontSize2nd.ToString();
+            t1Color.First().Element("ColorR").Value = Color1st.R.ToString();
+            t1Color.First().Element("ColorG").Value = Color1st.G.ToString();
+            t1Color.First().Element("ColorB").Value = Color1st.B.ToString();
+            t2Color.First().Element("ColorR").Value = Color2nd.R.ToString();
+            t2Color.First().Element("ColorG").Value = Color2nd.G.ToString();
+            t2Color.First().Element("ColorB").Value = Color2nd.B.ToString();
+            xe.Save(ConfigPath);
+            xe = XElement.Load(ConfigPath);
+            Init();
+        });
+        public ICommand StyleCancelCommand => new RelayCommand(async () =>
+        {
+            Init();
         });
 
 
+        public ICommand InitTag1stInfoCommand => new RelayCommand(async () =>
+        {
+            GetTag1stInfo();
+            ColorCurrent = Color1st;
+            FontSizeCurrent = FontSize1st;
+        });
 
+        public ICommand InitTag2ndInfoCommand => new RelayCommand(async () =>
+        {
+            GetTag2ndInfo();
+            ColorCurrent = Color2nd;
+            FontSizeCurrent = FontSize2nd;
+        });
 
+        private void GetTag1stInfo()
+        {
+            IEnumerable<XElement> t1Color = from element in xe.Elements("Color1st") select element;
+            var value_T1R = Convert.ToByte(t1Color.First().Element("ColorR").Value);
+            var value_T1G = Convert.ToByte(t1Color.First().Element("ColorG").Value);
+            var value_T1B = Convert.ToByte(t1Color.First().Element("ColorB").Value);
+            Color1st = Windows.UI.Color.FromArgb(255, value_T1R, value_T1G, value_T1B);
+            FontSize1st = Convert.ToDouble(xe.Element("FontSize1st").Value);
+        }
+        private void GetTag2ndInfo()
+        {
+            IEnumerable<XElement> t2Color = from element in xe.Elements("Color2nd") select element;
+            var value_T2R = Convert.ToByte(t2Color.First().Element("ColorR").Value);
+            var value_T2G = Convert.ToByte(t2Color.First().Element("ColorG").Value);
+            var value_T2B = Convert.ToByte(t2Color.First().Element("ColorB").Value);
+            Color2nd = Windows.UI.Color.FromArgb(255, value_T2R, value_T2G, value_T2B);
+            FontSize2nd = Convert.ToDouble(xe.Element("FontSize2nd").Value);
+        }
     }
 }

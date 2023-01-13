@@ -23,23 +23,21 @@
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
             <Border
                 Margin="10,0,10,10"
-                BorderBrush="#23CCFC"
+                BorderBrush="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
                 BorderThickness="3"
                 CornerRadius="3">
                 <Grid
                     Width="80"
                     Height="20"
-                    Background="{Binding ElementName=page, Path=VM.Color1st, Mode=TwoWay}">
+                    Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
                     <TextBlock
                         Padding="10"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontFamily="Comic Sans MS"
-                        FontSize="12"
+                        FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
                         FontWeight="Normal"
-                        Foreground="White"
-                        Text="{x:Bind Label.Name}"
-                        TextWrapping="Wrap" />
+                        Text="{x:Bind Label.Name}" />
                     <!--  FontFamily="Times new Roman"/>  -->
                 </Grid>
             </Border>
@@ -48,9 +46,8 @@
     <Page.DataContext>
         <viewmodels:LabelViewModel />
     </Page.DataContext>
-    <StackPanel x:Name="xx">
-        <TextBlock FontSize="{Binding ElementName=page, Path=DataContext.FontSize1st, Mode=OneWay}" Text="text" />
-        <CommandBar Background="{x:Bind VM.Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}" OverflowButtonVisibility="Collapsed">
+    <StackPanel>
+        <CommandBar OverflowButtonVisibility="Collapsed">
             <AppBarButton Command="{x:Bind VM.AddRootCommand}" Icon="Add" />
             <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" />
             <AppBarSeparator />
@@ -76,8 +73,11 @@
                     <Flyout>
                         <StackPanel>
                             <RadioButtons Header="Options:">
-                                <RadioButton Content="First Tag" />
-                                <RadioButton Content="Second Tag" />
+                                <RadioButton
+                                    Command="{Binding InitTag1stInfoCommand}"
+                                    Content="Tag1st"
+                                    IsChecked="{Binding TagSelector, Mode=TwoWay}" />
+                                <RadioButton Command="{Binding InitTag2ndInfoCommand}" Content="Tag2nd" />
                             </RadioButtons>
                             <ColorPicker
                                 x:Name="cp"
@@ -89,9 +89,12 @@
                                 IsColorSliderVisible="True"
                                 IsHexInputVisible="True"
                                 IsMoreButtonVisible="False"
-                                Color="{x:Bind VM.Color1st, Mode=TwoWay}" />
+                                Color="{x:Bind VM.ColorCurrent, Mode=TwoWay}" />
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock FontSize="{Binding ElementName=ss, Path=Value, Mode=TwoWay}">FontSize:</TextBlock>
+                                <TextBlock>
+                                    <!--  FontSize="{Binding ElementName=ss, Path=Value, Mode=TwoWay}">  -->
+                                    FontSize: 
+                                </TextBlock>
                                 <TextBlock Text="{Binding ElementName=ss, Path=Value}" />
                             </StackPanel>
                             <Slider
@@ -100,8 +103,11 @@
                                 HorizontalAlignment="Left"
                                 AutomationProperties.Name="simple slider"
                                 Minimum="8"
-                                Value="{x:Bind VM.FontSize1st, Mode=TwoWay}" />
-                            <Button Command="{x:Bind VM.ConfirmCommand}" Content="Confirm" />
+                                Value="{x:Bind VM.FontSizeCurrent, Mode=TwoWay}" />
+                            <StackPanel Orientation="Horizontal">
+                                <Button Command="{x:Bind VM.StyleConfirmCommand}" Content="Confirm" />
+                                <Button Command="{x:Bind VM.StyleCancelCommand}" Content="Cancel" Margin="20,0,0,0"/>
+                            </StackPanel>
                         </StackPanel>
                     </Flyout>
                 </AppBarButton.Flyout>
@@ -122,11 +128,12 @@
                                 Height="40"
                                 Margin="0,0,10,10"
                                 HorizontalAlignment="Left"
-                                BorderBrush="{Binding ElementName=page, Path=WM.Color, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                                BorderBrush="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
                                 BorderThickness="3"
-                                CornerRadius="3">
+                                CornerRadius="3"
+                                DataContextChanged="Border_DataContextChanged">
                                 <!--<Border Margin="0, 0,10,10" CornerRadius="3" BorderThickness="3" BorderBrush="#21C8C8" Width="150" Height="40" HorizontalAlignment="Left">-->
-                                <Grid Background="{Binding Path=cp.Color, ElementName=page, Converter={StaticResource ColorToBrush}, Mode=TwoWay}">
+                                <Grid Background="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
                                     <Interactivity:Interaction.Behaviors>
                                         <Core:EventTriggerBehavior EventName="PointerEntered">
                                             <Core:ChangePropertyAction
@@ -147,7 +154,7 @@
                                         VerticalAlignment="Center"
                                         CharacterSpacing="100"
                                         FontFamily="Comic Sans MS"
-                                        FontSize="{Binding FontSize1st, Mode=OneWay}"
+                                        FontSize="{Binding Path=FontSize1st, Mode=OneWay}"
                                         FontStretch="ExtraExpanded"
                                         FontWeight="Normal"
                                         Text="{x:Bind Label.Name}" />

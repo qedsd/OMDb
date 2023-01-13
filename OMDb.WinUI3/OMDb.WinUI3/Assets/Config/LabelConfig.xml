@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Style>
+  <Color1st>
+    <ColorR>18</ColorR>
+    <ColorG>77</ColorG>
+    <ColorB>150</ColorB>
+  </Color1st>
+  <Color2nd>
+    <ColorR>23</ColorR>
+    <ColorG>204</ColorG>
+    <ColorB>160</ColorB>
+  </Color2nd>
+  <FontSize1st>28</FontSize1st>
+  <FontSize2nd>30</FontSize2nd>
+  <FontFamily>Comic Sans MS</FontFamily>
+</Style>

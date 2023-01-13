@@ -148,6 +148,7 @@ namespace OMDb.Core.Services
                 types.Add(typeof(EntryCollectionDb));
                 types.Add(typeof(EntryCollectionItemDb));
                 types.Add(typeof(StorageDb));
+                types.Add(typeof(ConfigDb));
                 LocalDb.CodeFirst.InitTables(types.ToArray());
                 return true;
             }
