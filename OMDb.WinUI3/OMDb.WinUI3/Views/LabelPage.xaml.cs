@@ -25,20 +25,5 @@ namespace OMDb.WinUI3.Views
             this.InitializeComponent();
             DataContext = VM;
         }
-
-        private void Border_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
