@@ -1,16 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Style>
-  <Color1st>
-    <ColorR>18</ColorR>
-    <ColorG>77</ColorG>
-    <ColorB>150</ColorB>
-  </Color1st>
-  <Color2nd>
-    <ColorR>23</ColorR>
-    <ColorG>204</ColorG>
-    <ColorB>160</ColorB>
-  </Color2nd>
-  <FontSize1st>28</FontSize1st>
-  <FontSize2nd>30</FontSize2nd>
-  <FontFamily>Comic Sans MS</FontFamily>
+	<Color1st>
+		<ColorR>18</ColorR>
+		<ColorG>77</ColorG>
+		<ColorB>150</ColorB>
+	</Color1st>
+	<Color2nd>
+		<ColorR>23</ColorR>
+		<ColorG>204</ColorG>
+		<ColorB>160</ColorB>
+	</Color2nd>
+	<FontSize1st>28</FontSize1st>
+	<FontSize2nd>30</FontSize2nd>
+	<Width1st>150</Width1st>
+	<Width2nd>80</Width2nd>
+	<Height1st>40</Height1st>
+	<Height2nd>20</Height2nd>
+	<FontFamily>Comic Sans MS</FontFamily>
 </Style>

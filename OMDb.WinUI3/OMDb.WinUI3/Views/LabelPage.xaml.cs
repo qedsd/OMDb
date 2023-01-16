@@ -14,6 +14,7 @@ using System.Text;
 using System.Xml.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 
 namespace OMDb.WinUI3.Views
 {
@@ -24,6 +25,22 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
             DataContext = VM;
+        }
+
+
+        private void StackPanel_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            
+        }
+
+        private void StackPanel_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+
+        }
+
+        private void Combo2_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

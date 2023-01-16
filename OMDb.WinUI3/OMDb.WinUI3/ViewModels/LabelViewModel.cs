@@ -29,6 +29,13 @@ namespace OMDb.WinUI3.ViewModels
         XElement xe = null;
         string ConfigPath = null;
 
+        public ObservableCollection<FontFamily> fonts = new ObservableCollection<FontFamily>()
+        {
+            new FontFamily("Arial"),
+            new FontFamily("Courier New"),
+            new FontFamily("Times New Roman"),
+        };
+
         private ObservableCollection<LabelTree> labelTrees;
         public ObservableCollection<LabelTree> LabelTrees
         {
@@ -87,6 +94,77 @@ namespace OMDb.WinUI3.ViewModels
         {
             get => _fontSize2nd;
             set => SetProperty(ref _fontSize2nd, value);
+        }
+
+        private string _fontFamilyCurrent;
+        public string FontFamilyCurrent
+        {
+            get => _fontFamilyCurrent;
+            set => SetProperty(ref _fontFamilyCurrent, value);
+        }
+
+        private double _widthCurrent = 18;
+        public double WidthCurrent
+        {
+            get => _widthCurrent;
+            set
+            {
+                SetProperty(ref _widthCurrent, value);
+                if (TagSelector)
+                {
+                    Width1st = _widthCurrent;
+                }
+                else
+                {
+                    Width2nd = _widthCurrent;
+                }
+            }
+        }
+
+        private double _width1st;
+        public double Width1st
+        {
+            get => _width1st;
+            set => SetProperty(ref _width1st, value);
+        }
+
+        private double _width2nd;
+        public double Width2nd
+        {
+            get => _width2nd;
+            set => SetProperty(ref _width2nd, value);
+        }
+
+        private double _heightCurrent = 18;
+        public double HeightCurrent
+        {
+            get => _heightCurrent;
+            set
+            {
+                SetProperty(ref _heightCurrent, value);
+                if (TagSelector)
+                {
+                    Height1st = _heightCurrent;
+                }
+                else
+                {
+                    Height2nd = _heightCurrent;
+                }
+            }
+        }
+
+        private double _height1st;
+        public double Height1st
+        {
+            get => _height1st;
+            set => SetProperty(ref _height1st, value);
+        }
+
+        private double _height2nd;
+        public double Height2nd
+        {
+            get => _height2nd;
+            set => SetProperty(ref _height2nd, value);
         }
 
         private Windows.UI.Color _colorCurrent;
@@ -190,6 +268,10 @@ namespace OMDb.WinUI3.ViewModels
             Init();
         }
 
+        public ICommand TestMeCommand => new RelayCommand(() =>
+        {
+            Init();
+        });
         public ICommand ChangeShowTypeToExpCommand => new RelayCommand(() =>
         {
             IsExpShow = true;
@@ -352,6 +434,10 @@ namespace OMDb.WinUI3.ViewModels
             IEnumerable<XElement> t2Color = from element in xe.Elements("Color2nd") select element;
             xe.Element("FontSize1st").Value = FontSize1st.ToString();
             xe.Element("FontSize2nd").Value = FontSize2nd.ToString();
+            xe.Element("Width2nd").Value = Width2nd.ToString();
+            xe.Element("Height2nd").Value = Height2nd.ToString();
+            xe.Element("Width1st").Value = Width1st.ToString();
+            xe.Element("Height1st").Value = Height1st.ToString();
             t1Color.First().Element("ColorR").Value = Color1st.R.ToString();
             t1Color.First().Element("ColorG").Value = Color1st.G.ToString();
             t1Color.First().Element("ColorB").Value = Color1st.B.ToString();
@@ -373,6 +459,8 @@ namespace OMDb.WinUI3.ViewModels
             GetTag1stInfo();
             ColorCurrent = Color1st;
             FontSizeCurrent = FontSize1st;
+            WidthCurrent = Width1st;
+            HeightCurrent = Height1st;
         });
 
         public ICommand InitTag2ndInfoCommand => new RelayCommand(async () =>
@@ -380,6 +468,8 @@ namespace OMDb.WinUI3.ViewModels
             GetTag2ndInfo();
             ColorCurrent = Color2nd;
             FontSizeCurrent = FontSize2nd;
+            WidthCurrent = Width2nd;
+            HeightCurrent = Height2nd;
         });
 
         private void GetTag1stInfo()
@@ -390,6 +480,8 @@ namespace OMDb.WinUI3.ViewModels
             var value_T1B = Convert.ToByte(t1Color.First().Element("ColorB").Value);
             Color1st = Windows.UI.Color.FromArgb(255, value_T1R, value_T1G, value_T1B);
             FontSize1st = Convert.ToDouble(xe.Element("FontSize1st").Value);
+            Width1st = Convert.ToDouble(xe.Element("Width1st").Value);
+            Height1st = Convert.ToDouble(xe.Element("Height1st").Value);
         }
         private void GetTag2ndInfo()
         {
@@ -399,6 +491,10 @@ namespace OMDb.WinUI3.ViewModels
             var value_T2B = Convert.ToByte(t2Color.First().Element("ColorB").Value);
             Color2nd = Windows.UI.Color.FromArgb(255, value_T2R, value_T2G, value_T2B);
             FontSize2nd = Convert.ToDouble(xe.Element("FontSize2nd").Value);
+            Width2nd = Convert.ToDouble(xe.Element("Width2nd").Value);
+            Height2nd = Convert.ToDouble(xe.Element("Height2nd").Value);
         }
+
+
     }
 }
