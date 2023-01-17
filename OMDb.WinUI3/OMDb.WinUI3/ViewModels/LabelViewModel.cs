@@ -19,6 +19,8 @@ using Microsoft.UI;
 using System.Xml.Linq;
 using Microsoft.UI.Xaml;
 using System.IO;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -28,13 +30,6 @@ namespace OMDb.WinUI3.ViewModels
         # region
         XElement xe = null;
         string ConfigPath = null;
-
-        public ObservableCollection<FontFamily> fonts = new ObservableCollection<FontFamily>()
-        {
-            new FontFamily("Arial"),
-            new FontFamily("Courier New"),
-            new FontFamily("Times New Roman"),
-        };
 
         private ObservableCollection<LabelTree> labelTrees;
         public ObservableCollection<LabelTree> LabelTrees
@@ -254,10 +249,14 @@ namespace OMDb.WinUI3.ViewModels
                     }
                 });
             }
+
             GetTag1stInfo();
             GetTag2ndInfo();
             ColorCurrent = TagSelector ? Color1st : Color2nd;
             FontSizeCurrent = TagSelector ? FontSize1st : FontSize2nd;
+            WidthCurrent = TagSelector ? Width1st : Width2nd;
+            HeightCurrent = TagSelector ? Height1st : Height2nd;
+            FontFamilyCurrent = Convert.ToString(xe.Element("FontFamily").Value);
         }
 
         public LabelViewModel()
@@ -277,6 +276,11 @@ namespace OMDb.WinUI3.ViewModels
             IsExpShow = true;
             IsTreeShow = false;
             IsRepeaterShow = false;
+        });
+
+        public ICommand SetFontFamilyCommand => new RelayCommand<string>((string font) =>
+        {
+            FontFamilyCurrent = font;
         });
 
         public ICommand ChangeShowTypeToTreeCommand => new RelayCommand(() =>
@@ -438,6 +442,7 @@ namespace OMDb.WinUI3.ViewModels
             xe.Element("Height2nd").Value = Height2nd.ToString();
             xe.Element("Width1st").Value = Width1st.ToString();
             xe.Element("Height1st").Value = Height1st.ToString();
+            xe.Element("FontFamily").Value = FontFamilyCurrent;
             t1Color.First().Element("ColorR").Value = Color1st.R.ToString();
             t1Color.First().Element("ColorG").Value = Color1st.G.ToString();
             t1Color.First().Element("ColorB").Value = Color1st.B.ToString();

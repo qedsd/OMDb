@@ -5,50 +5,83 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:conventer="using:OMDb.WinUI3.Converters"
     x:Name="page"
     Background="Transparent"
     mc:Ignorable="d">
-
-    <StackPanel>
-        <TextBox
-            x:Name="StorageName"
-            Width="400"
-            Margin="10"
-            Header="名字"
-            Text="{x:Bind EnrtyStorage.StorageName, Mode=TwoWay}" />
-        <StackPanel Margin="10" Orientation="Horizontal">
-            <TextBox
-                x:Name="StoragePath"
-                Width="320"
-                Header="路径"
-                Text="{x:Bind EnrtyStorage.StoragePath, Mode=TwoWay}" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
             <Button
-                Margin="4,0,0,0"
-                VerticalAlignment="Bottom"
-                Click="Button_NewStoragePath_Click"
-                ToolTipService.ToolTip="新建">
-                <SymbolIcon Symbol="NewFolder" />
+                Height="256"
+                VerticalAlignment="Top"
+                Background="Transparent"
+                Click="Button_CoverImg_Click">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center">
+                        <SymbolIcon Symbol="Add" />
+                        <TextBlock Margin="0,10,0,0" Text="添加封面图" />
+                    </StackPanel>
+                    <Image
+                        x:Name="Image_CoverImg"
+                        Width="182"
+                        Stretch="UniformToFill" >
+                        <Image.Resources>
+                            <conventer:StringToImgSource x:Key="conventer"></conventer:StringToImgSource>
+                        </Image.Resources>
+                    </Image>
+                </Grid>
             </Button>
-            <Button
-                Margin="4,0,0,0"
-                VerticalAlignment="Bottom"
-                Click="Button_PickStorage_Click"
-                ToolTipService.ToolTip="已有">
-                <SymbolIcon Symbol="OpenFile" />
-            </Button>
-        </StackPanel>
-        <StackPanel Margin="10" Orientation="Horizontal">
-            <TextBox
+        </Grid>
+        <Grid Grid.Column="1">
+            <StackPanel Margin="10,0,0,0">
+                <TextBox                   
+                    x:Name="StorageName"
+                    Width="240"
+                    Header="仓库名称"
+                    HorizontalAlignment="Left"
+                    Text="{x:Bind EnrtyStorage.StorageName, Mode=TwoWay}" />
+                <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                    <TextBox
+                        x:Name="StoragePath"
+                        Width="240"
+                        Height="120"
+                        Header="仓库路径"
+                        HorizontalAlignment="Left"
+                        Text="{x:Bind EnrtyStorage.StoragePath, Mode=TwoWay}"
+                        TextWrapping="Wrap" />
+                    <Button
+                        Margin="4,30,0,0"
+                        VerticalAlignment="Top"
+                        Click="Button_NewStoragePath_Click"
+                        ToolTipService.ToolTip="选择文件夹">
+                        <SymbolIcon Symbol="NewFolder" />
+                    </Button>
+                    <!--<Button
+                        Margin="4,0,0,0"
+                        VerticalAlignment="Bottom"
+                        Click="Button_PickStorage_Click"
+                        ToolTipService.ToolTip="已有">
+                        <SymbolIcon Symbol="OpenFile" />
+                    </Button>-->
+                </StackPanel>
+                <!--<StackPanel Margin="10" Orientation="Horizontal">
+                <TextBox
                 x:Name="CoverImg"
                 Width="360"
                 Header="封面"
                 Text="{x:Bind Path=EnrtyStorage.CoverImg, Mode=TwoWay}" />
-            <Button
+                <Button
                 Margin="4,0,0,0"
                 VerticalAlignment="Bottom"
                 Click="Button_CoverImg_Click">
-                <SymbolIcon Symbol="OpenFile" />
-            </Button>
-        </StackPanel>
-    </StackPanel>
+                    <SymbolIcon Symbol="OpenFile" />
+                </Button>
+            </StackPanel>-->
+            </StackPanel>
+        </Grid>
+    </Grid>
 </Page>

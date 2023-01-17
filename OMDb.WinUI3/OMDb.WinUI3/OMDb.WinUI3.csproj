@@ -19,6 +19,9 @@
     <PRIResource Remove="Enums\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Converters\StringToObject - 复制.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Remove="Assets\Img\logo_32.png" />
   </ItemGroup>
   <ItemGroup>

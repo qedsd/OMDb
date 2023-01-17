@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.Extensions;
 using System;
@@ -31,6 +32,8 @@ namespace OMDb.WinUI3.Dialogs
                 EnrtyStorage = enrtyStorage.DepthClone<Models.EnrtyStorage>();
             }
             this.InitializeComponent();
+            if (EnrtyStorage.CoverImg != null)
+                Image_CoverImg.Source = new BitmapImage(new Uri(EnrtyStorage.CoverImg));
         }
         public static async Task<Models.EnrtyStorage> ShowDialog(Models.EnrtyStorage enrtyStorage = null)
         {
@@ -71,6 +74,14 @@ namespace OMDb.WinUI3.Dialogs
             if (file != null)
             {
                 EnrtyStorage.CoverImg = file.Path;
+
+                var bi = new BitmapImage(new Uri(file.Path));
+                Image_CoverImg.Source = bi;
+                /*//第一次不知道为啥要重新赋值
+                if (Image_CoverImg.Source != bi)
+                {
+                    Image_CoverImg.Source = bi;
+                }*/
             }
         }
 

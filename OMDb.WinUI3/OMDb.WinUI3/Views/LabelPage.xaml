@@ -22,6 +22,9 @@
         <coverters:BoolToVisibilityConverter x:Key="ReverseBoolToVisibilityConverter" IsReverse="True" />
         <coverters:ColorToBrush x:Key="ColorToBrush" />
         <coverters:StringToFontFamily x:Key="StringToFontFamily" />
+        <coverters:StringToObject x:Key="StringToObject" />
+
+        <!--  次级标签模板  -->
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
             <Border
                 Margin="10,0,10,10"
@@ -36,13 +39,17 @@
                         Padding="10"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontFamily="Comic Sans MS"
+                        FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
                         FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
                         FontWeight="Normal"
                         Text="{x:Bind Label.Name}" />
                 </Grid>
             </Border>
         </DataTemplate>
+
+
+
+
     </Page.Resources>
     <Page.DataContext>
         <viewmodels:LabelViewModel />
@@ -53,9 +60,7 @@
                 <Core:InvokeCommandAction Command="{Binding Path=TestMeCommand}" />
             </Core:EventTriggerBehavior>
         </Interactivity:Interaction.Behaviors>
-        <ComboBox x:Name="FontsCombo" Header="Fonts" Height="44" Width="296" 
-                                    ItemsSource="{x:Bind VM.fonts,Mode=TwoWay}" DisplayMemberPath="Source">
-        </ComboBox>
+
         <CommandBar
             KeyUp="StackPanel_KeyUp"
             OverflowButtonVisibility="Collapsed"
@@ -169,24 +174,84 @@
                                 Value="{x:Bind VM.HeightCurrent, Mode=TwoWay}" />
 
                             <!--  字体Family  -->
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock FontFamily="{Binding Path=FontFamilyCurrent, Converter={StaticResource StringToFontFamily},Mode=OneWay}" HorizontalAlignment="Center">
-                                    FontFamily:
-                                </TextBlock>
-                                <ComboBox Header="Fonts" Height="44" Width="296" 
-                                    ItemsSource="{x:Bind VM.fonts,Mode=TwoWay}" DisplayMemberPath="Source">
-                                </ComboBox>
+                            <StackPanel Height="40" Orientation="Horizontal">
+
+                                <TextBlock
+                                    Margin="0,5,0,0"
+                                    Width="100"
+                                    Height="32"
+                                    VerticalAlignment="Center"
+                                    FontFamily="{Binding Path=FontFamilyCurrent, Converter={StaticResource StringToFontFamily}, Mode=OneWay}"
+                                    Text="FontFamily:"/>
+
+                                <SplitButton
+                                    Width="200"
+                                    Height="32"
+                                    VerticalAlignment="Center">
+                                    <SplitButton.ContentTemplate>
+                                        <DataTemplate x:DataType="viewmodels:LabelViewModel">
+                                            <TextBlock FontFamily="{x:Bind FontFamilyCurrent, Mode=OneWay, Converter={StaticResource StringToFontFamily}}" Text="{x:Bind FontFamilyCurrent, Mode=OneWay, Converter={StaticResource StringToObject}}" />
+                                        </DataTemplate>
+                                    </SplitButton.ContentTemplate>
+                                    <SplitButton.Flyout>
+                                        <Flyout Placement="Bottom">
+                                            <StackPanel>
+                                                <Button Command="{x:Bind VM.SetFontFamilyCommand}" CommandParameter="Times New Roman">
+                                                    <TextBlock
+                                                        Width="130"
+                                                        Height="20"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Times New Roman"
+                                                        LineHeight="20"
+                                                        Text="Times New Roman"></TextBlock>
+                                                </Button>
+                                                <Button
+                                                    Margin="0,5,0,0"
+                                                    Command="{x:Bind VM.SetFontFamilyCommand}"
+                                                    CommandParameter="Courier New">
+                                                    <TextBlock
+                                                        Margin="0,3,0,0"
+                                                        Width="130"
+                                                        Height="20"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Courier New"
+                                                        LineHeight="20"
+                                                        Text="Courier New"></TextBlock>
+                                                </Button>
+                                                <Button
+                                                    Margin="0,5,0,0"
+                                                    Command="{x:Bind VM.SetFontFamilyCommand}"
+                                                    CommandParameter="Comic Sans MS">
+                                                    <TextBlock
+                                                        Width="130"
+                                                        Height="20"
+                                                        VerticalAlignment="Center"
+                                                        FontFamily="Comic Sans MS"
+                                                        LineHeight="20"
+                                                        Text="Comic Sans MS"></TextBlock>
+                                                </Button>
+                                            </StackPanel>
+                                            <!--  flyout content  -->
+                                        </Flyout>
+                                    </SplitButton.Flyout>
+                                </SplitButton>
+
+
                             </StackPanel>
 
 
+
+
                             <!--  确认/取消 按钮  -->
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
                                 <Button Command="{x:Bind VM.StyleConfirmCommand}" Content="Confirm" />
                                 <Button
                                     Margin="20,0,0,0"
                                     Command="{x:Bind VM.StyleCancelCommand}"
                                     Content="Cancel" />
                             </StackPanel>
+
+
 
 
                         </StackPanel>
@@ -233,7 +298,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         CharacterSpacing="100"
-                                        FontFamily="Comic Sans MS"
+                                        FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
                                         FontSize="{Binding Path=FontSize1st, Mode=OneWay}"
                                         FontStretch="ExtraExpanded"
                                         FontWeight="Normal"
