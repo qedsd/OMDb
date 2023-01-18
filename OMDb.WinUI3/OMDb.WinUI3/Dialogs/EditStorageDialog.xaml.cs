@@ -77,11 +77,6 @@ namespace OMDb.WinUI3.Dialogs
 
                 var bi = new BitmapImage(new Uri(file.Path));
                 Image_CoverImg.Source = bi;
-                /*//第一次不知道为啥要重新赋值
-                if (Image_CoverImg.Source != bi)
-                {
-                    Image_CoverImg.Source = bi;
-                }*/
             }
         }
 

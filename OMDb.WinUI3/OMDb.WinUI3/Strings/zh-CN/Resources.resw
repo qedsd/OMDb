@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+	<!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,110 +59,113 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AppDisplayNameTextBlock.Text" xml:space="preserve">
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" />
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string" />
+							<xsd:attribute name="name" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+							<xsd:attribute ref="xml:space" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="AppDisplayNameTextBlock.Text" xml:space="preserve">
     <value>OMDb</value>
   </data>
-  <data name="Setting_HomeItemConfig.Title" xml:space="preserve">
+	<data name="Setting_HomeItemConfig.Title" xml:space="preserve">
     <value>主页组件配置</value>
   </data>
-  <data name="Setting_PotplayerPlaylist.Description" xml:space="preserve">
+	<data name="Setting_DbSelectorConfig.Title" xml:space="preserve">
+	<value>Db选择器</value>
+  </data>
+	<data name="Setting_PotplayerPlaylist.Description" xml:space="preserve">
     <value>PotPlayer播放列表文件路径</value>
   </data>
-  <data name="Setting_PotplayerPlaylist.Title" xml:space="preserve">
+	<data name="Setting_PotplayerPlaylist.Title" xml:space="preserve">
     <value>PotPlayer</value>
   </data>
-  <data name="Setting_Theme.Title" xml:space="preserve">
+	<data name="Setting_Theme.Title" xml:space="preserve">
     <value>主题</value>
   </data>
-  <data name="Setting_Theme_Dark.Content" xml:space="preserve">
+	<data name="Setting_Theme_Dark.Content" xml:space="preserve">
     <value>暗</value>
   </data>
-  <data name="Setting_Theme_Default.Content" xml:space="preserve">
+	<data name="Setting_Theme_Default.Content" xml:space="preserve">
     <value>系统默认</value>
   </data>
-  <data name="Setting_Theme_Light.Content" xml:space="preserve">
+	<data name="Setting_Theme_Light.Content" xml:space="preserve">
     <value>亮</value>
   </data>
-  <data name="Shell_Classification.Content" xml:space="preserve">
+	<data name="Shell_Classification.Content" xml:space="preserve">
     <value>分类</value>
   </data>
-  <data name="Shell_Collections.Content" xml:space="preserve">
+	<data name="Shell_Collections.Content" xml:space="preserve">
     <value>片单</value>
   </data>
-  <data name="Shell_Entry.Content" xml:space="preserve">
+	<data name="Shell_Entry.Content" xml:space="preserve">
     <value>词条</value>
   </data>
-  <data name="Shell_Home.Content" xml:space="preserve">
+	<data name="Shell_Home.Content" xml:space="preserve">
     <value>主页</value>
   </data>
-  <data name="Shell_Label.Content" xml:space="preserve">
+	<data name="Shell_Label.Content" xml:space="preserve">
     <value>标签</value>
   </data>
-  <data name="Shell_Management.Content" xml:space="preserve">
+	<data name="Shell_Management.Content" xml:space="preserve">
     <value>管理</value>
   </data>
-  <data name="Shell_Storage.Content" xml:space="preserve">
+	<data name="Shell_Storage.Content" xml:space="preserve">
     <value>仓库</value>
   </data>
-  <data name="Shell_Tools.Content" xml:space="preserve">
+	<data name="Shell_Tools.Content" xml:space="preserve">
     <value>工具</value>
   </data>
 </root>

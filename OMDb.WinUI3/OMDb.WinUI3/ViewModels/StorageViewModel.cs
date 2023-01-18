@@ -92,7 +92,7 @@ namespace OMDb.WinUI3.ViewModels
                         return;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await Dialogs.MsgDialog.ShowDialog("添加失败，仓库路径有误");
                     return;

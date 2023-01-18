@@ -41,6 +41,7 @@ namespace OMDb.WinUI3.Services
             LabelCollectionStyleSelectorService.Initialize();
             PotPlayerPlaylistSelectorService.Initialize();
             HomeItemConfigsService.Initialize();
+            DbSelectorService.Initialize();
         }
         public static string GetValue(string key)
         {

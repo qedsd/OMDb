@@ -50,10 +50,10 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        public ICommand PickPotPlayerPlaylistFileCommand => new RelayCommand(async() =>
+        public ICommand PickPotPlayerPlaylistFileCommand => new RelayCommand(async () =>
         {
             var file = await Helpers.PickHelper.PickFileAsync(".dpl");
-            if(file != null && !string.IsNullOrEmpty(file.Path))
+            if (file != null && !string.IsNullOrEmpty(file.Path))
             {
                 PotPlayerPlaylistPath = file.Path;
                 RecentFileService.Init();
@@ -77,6 +77,7 @@ namespace OMDb.WinUI3.ViewModels
         public SettingViewModel()
         {
             ActiveHomeItems.CollectionChanged += ActiveHomeItems_CollectionChanged;
+            LoadDbs();
         }
 
         private async void ActiveHomeItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -92,5 +93,41 @@ namespace OMDb.WinUI3.ViewModels
         {
 
         });
+
+
+
+        public ICommand DbSelector_Refresh => new RelayCommand(() =>
+        {
+            LoadDbs();
+        });
+
+        public ICommand DbSelector_Add => new RelayCommand(() =>
+        {
+
+        });
+
+        public ICommand DbSelector_Save => new RelayCommand(() =>
+        {
+
+        });
+
+        private void LoadDbs()
+        {
+            Services.Settings.DbSelectorService.Initialize();
+            _ = DbSelectorService.dbCurrent;
+            DbsCollection = new ObservableCollection<string>();
+            foreach (var item in DbSelectorService.dbsCollection)
+            {
+                DbsCollection.Add(item);
+            }
+        }
+
+        public ObservableCollection<string> _dbsCollection;
+        public ObservableCollection<string> DbsCollection
+        {
+            get => _dbsCollection;
+            set => SetProperty(ref _dbsCollection, value);
+        }
+
     }
 }

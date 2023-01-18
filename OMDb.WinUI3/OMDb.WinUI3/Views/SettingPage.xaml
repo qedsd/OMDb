@@ -37,7 +37,10 @@
                     MinWidth="400"
                     PlaceholderText="PotPlayerMini64.dpl"
                     Text="{x:Bind VM.PotPlayerPlaylistPath, Mode=TwoWay}" />
-                <Button Grid.Column="1" Command="{x:Bind VM.PickPotPlayerPlaylistFileCommand}">
+                <Button
+                    Grid.Column="1"
+                    Margin="10,0,0,0"
+                    Command="{x:Bind VM.PickPotPlayerPlaylistFileCommand}">
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE28F;" />
                 </Button>
             </Grid>
@@ -102,6 +105,40 @@
                             Text="停用组件" />
                     </Grid>
 
+                </Grid>
+            </controls:ExpandableSettingControl.ExpandableContent>
+        </controls:ExpandableSettingControl>
+        <controls:ExpandableSettingControl x:Uid="Setting_DbSelectorConfig">
+            <controls:ExpandableSettingControl.ExpandableContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Margin="30,30,30,30">
+                        <RadioButtons
+                            Width="800"
+                            HorizontalAlignment="Left"
+                            Header="DbSelector:"
+                            ItemsSource="{x:Bind VM.DbsCollection, Mode=OneWay}"
+                            MaxColumns="5" />
+                    </Grid>
+
+                    <Grid Grid.Column="1">
+                        <StackPanel Orientation="Horizontal">
+                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Refresh}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72C;" />
+                            </Button>
+
+                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Add}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;" />
+                            </Button>
+
+                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Save}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE28F;" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </controls:ExpandableSettingControl.ExpandableContent>
         </controls:ExpandableSettingControl>

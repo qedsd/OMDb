@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Microsoft.UI.Xaml.Media;
+//using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using System.Xml.Linq;
 using Microsoft.UI.Xaml;
@@ -393,18 +393,6 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-
-
-        public ICommand Select1stTagColorCommand => new RelayCommand(async () =>
-        {
-
-        });
-
-        public ICommand Select2ndTagColorCommand => new RelayCommand(async () =>
-        {
-
-        });
-
         public ICommand RemoveCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
@@ -432,7 +420,7 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-        public ICommand StyleConfirmCommand => new RelayCommand(async () =>
+        public ICommand StyleConfirmCommand => new RelayCommand(() =>
         {
             IEnumerable<XElement> t1Color = from element in xe.Elements("Color1st") select element;
             IEnumerable<XElement> t2Color = from element in xe.Elements("Color2nd") select element;
@@ -453,13 +441,13 @@ namespace OMDb.WinUI3.ViewModels
             xe = XElement.Load(ConfigPath);
             Init();
         });
-        public ICommand StyleCancelCommand => new RelayCommand(async () =>
+        public ICommand StyleCancelCommand => new RelayCommand(() =>
         {
             Init();
         });
 
 
-        public ICommand InitTag1stInfoCommand => new RelayCommand(async () =>
+        public ICommand InitTag1stInfoCommand => new RelayCommand(() =>
         {
             GetTag1stInfo();
             ColorCurrent = Color1st;
@@ -468,7 +456,7 @@ namespace OMDb.WinUI3.ViewModels
             HeightCurrent = Height1st;
         });
 
-        public ICommand InitTag2ndInfoCommand => new RelayCommand(async () =>
+        public ICommand InitTag2ndInfoCommand => new RelayCommand(() =>
         {
             GetTag2ndInfo();
             ColorCurrent = Color2nd;
