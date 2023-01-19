@@ -101,24 +101,30 @@ namespace OMDb.WinUI3.ViewModels
             LoadDbs();
         });
 
-        public ICommand DbSelector_Add => new RelayCommand(() =>
+        public ICommand DbSelector_Add => new RelayCommand(async() =>
         {
-
+            await DbSelectorService.AddDbAsync("omdb4th");
+            LoadDbs();
         });
 
-        public ICommand DbSelector_Save => new RelayCommand(() =>
+        public ICommand DbSelector_Save => new RelayCommand(async() =>
         {
-
+            await DbSelectorService.SetAsync(DbCurrent);
+            LoadDbs();
         });
 
         private void LoadDbs()
         {
             Services.Settings.DbSelectorService.Initialize();
-            _ = DbSelectorService.dbCurrent;
+            DbCurrent = DbSelectorService.dbCurrent;
             DbsCollection = new ObservableCollection<string>();
+            DbsCollection.Clear();
             foreach (var item in DbSelectorService.dbsCollection)
             {
-                DbsCollection.Add(item);
+                if (!DbsCollection.Contains(item))
+                {
+                    DbsCollection.Add(item);
+                }
             }
         }
 
@@ -129,5 +135,12 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _dbsCollection, value);
         }
 
+        private string _dbCurrent;
+
+        public string DbCurrent
+        {
+            get => _dbCurrent;
+            set => SetProperty(ref _dbCurrent, value);
+        }
     }
 }

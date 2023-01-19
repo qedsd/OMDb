@@ -105,5 +105,15 @@ namespace OMDb.WinUI3.Views
             // We don't want to show the Move icon
             e.DragUIOverride.IsGlyphVisible = false;
         }
+
+        private void RadioButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
     }
 }

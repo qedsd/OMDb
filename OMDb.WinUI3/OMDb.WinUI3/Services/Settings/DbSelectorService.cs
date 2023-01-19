@@ -14,20 +14,19 @@ namespace OMDb.WinUI3.Services.Settings
     {
         private const string Key1 = "DbSelector";
         private const string Key2 = "DbsCollection";
-        public static string dbCurrent=string.Empty;
-        public static List<string> dbsCollection=new List<string>();
+        public static string dbCurrent = string.Empty;
+        public static List<string> dbsCollection = new List<string>();
         public static void Initialize()
         {
             LoadAllDbs();
             LoadFromSettings();
-            ;
         }
         public static async Task SetAsync(string dbSwich)
         {
             dbCurrent = dbSwich;
             await SaveInSettingsAsync(dbCurrent);
         }
-        private static void LoadFromSettings()
+        private static async void LoadFromSettings()
         {
             dbCurrent = SettingService.GetValue(Key1);
 
@@ -35,31 +34,45 @@ namespace OMDb.WinUI3.Services.Settings
             {
                 dbCurrent.ToString();
             }
-            /*else
+            else
             {
-                throw new Exception("db current null");
-            } */         
+                await Task.Run(() =>
+                    {
+                        LoadAllDbs();
+                    });
+                dbCurrent = dbsCollection[0];
+                await SetAsync(dbCurrent);
+            }
         }
-        private static void LoadAllDbs()
+        private static async void LoadAllDbs()
         {
             string dbsCollectionStr = SettingService.GetValue(Key2);
-            if (!string.IsNullOrEmpty(dbCurrent))
+            if (!string.IsNullOrEmpty(dbsCollectionStr))
             {
-                var jsonObj = JsonNode.Parse(dbsCollectionStr) as JsonArray;
-                
+                var jsonObj = JsonConvert.DeserializeObject<List<string>>(dbsCollectionStr);
+                dbsCollection.Clear();
                 foreach (var item in jsonObj)
                 {
-                    dbsCollection.Add(item["dbName"].ToString());
+                    dbsCollection.Add(item.ToString());
                 }
             }
-            /*else
+            else
             {
-                throw new Exception("dbs null");
-            }*/
+                await AddDbAsync("Default");
+            }
         }
         private static async Task SaveInSettingsAsync(string dbc)
         {
             await SettingService.SetValueAsync(Key1, dbc.ToString());
         }
+
+        public static async Task AddDbAsync(string DbName)
+        {
+            dbsCollection.Add(DbName);
+            var jsonObj = JsonConvert.SerializeObject(dbsCollection);
+            await SettingService.SetValueAsync(Key2, jsonObj);
+        }
+
+
     }
 }

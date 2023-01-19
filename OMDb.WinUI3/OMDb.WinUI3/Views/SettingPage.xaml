@@ -6,10 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:coverters="using:OMDb.WinUI3.Converters"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Margin="{StaticResource MediumLeftTopRightBottomMargin}" Spacing="4">
+    <Page.Resources>
+        <coverters:DbNameToBool x:Key="DbNameToBool"></coverters:DbNameToBool>
+    </Page.Resources>
+        <StackPanel Margin="{StaticResource MediumLeftTopRightBottomMargin}" Spacing="4">
         <StackPanel.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition FromVerticalOffset="50" IsStaggeringEnabled="True" />
@@ -115,13 +119,24 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="200" />
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0" Margin="30,30,30,30">
+                    <Grid Grid.Column="0" Margin="30,30,30,30" DataContextChanged="Grid_DataContextChanged">
                         <RadioButtons
+                            SelectedItem="{x:Bind VM.DbCurrent,Mode=TwoWay}"
                             Width="800"
                             HorizontalAlignment="Left"
                             Header="DbSelector:"
                             ItemsSource="{x:Bind VM.DbsCollection, Mode=OneWay}"
-                            MaxColumns="5" />
+                            MaxColumns="5">
+                            <RadioButtons.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <RadioButton 
+                                        DataContextChanged="RadioButton_DataContextChanged"
+                                        Content="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext}"
+                                        IsChecked="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext,Converter={StaticResource DbNameToBool},Mode=OneWay}">
+                                    </RadioButton>
+                                </DataTemplate>
+                            </RadioButtons.ItemTemplate>
+                        </RadioButtons>
                     </Grid>
 
                     <Grid Grid.Column="1">
