@@ -73,6 +73,13 @@ namespace OMDb.WinUI3.Services.Settings
             await SettingService.SetValueAsync(Key2, jsonObj);
         }
 
+        public static async Task RemoveDbAsync(string DbName)
+        {
+            dbsCollection.Remove(DbName);
+            var jsonObj = JsonConvert.SerializeObject(dbsCollection);
+            await SettingService.SetValueAsync(Key2, jsonObj);
+        }
+
 
     }
 }

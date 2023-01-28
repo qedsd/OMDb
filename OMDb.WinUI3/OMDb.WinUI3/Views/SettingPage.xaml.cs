@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.ApplicationModel.Contacts;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -40,7 +42,7 @@ namespace OMDb.WinUI3.Views
                 DragOperationDeferral def = e.GetDeferral();
                 string itemName = await e.DataView.GetTextAsync();
                 Models.HomeItemConfig homeItem = VM.ActiveHomeItems.FirstOrDefault(p => p.Name == itemName);
-                if(homeItem == null)
+                if (homeItem == null)
                 {
                     homeItem = VM.InactiveHomeItems.FirstOrDefault(p => p.Name == itemName);
                 }
@@ -114,6 +116,36 @@ namespace OMDb.WinUI3.Views
         private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
 
+        }
+
+        private void Button_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void TextBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void RadioButtonDeleteButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
+            if (flag)
+            {
+                var dbName=((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext.ToString();
+                await Services.Settings.DbSelectorService.RemoveDbAsync(dbName);
+                VM.DbSelector_Refresh.Execute(null);
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

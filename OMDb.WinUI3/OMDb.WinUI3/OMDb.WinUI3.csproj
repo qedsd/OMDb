@@ -27,6 +27,7 @@
   <ItemGroup>
     <None Remove="Assets\Img\defaultbanner.jpg" />
     <None Remove="Assets\Img\defaultbanneritem.jpg" />
+    <None Remove="Dialogs\EditDbSource.xaml" />
     <None Remove="Dialogs\EditEntryDialog.xaml" />
     <None Remove="Dialogs\EditLabelDialog.xaml" />
     <None Remove="Dialogs\EditLineDialog.xaml" />
@@ -338,6 +339,12 @@
 
   <ItemGroup>
     <Folder Include="Assets\FFmpeg\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Dialogs\EditDbSource.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <ItemGroup>

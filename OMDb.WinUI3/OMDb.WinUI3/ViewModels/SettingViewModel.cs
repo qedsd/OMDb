@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.Services.Settings;
 using OMDb.WinUI3.Views.Homes;
@@ -101,19 +102,70 @@ namespace OMDb.WinUI3.ViewModels
             LoadDbs();
         });
 
-        public ICommand DbSelector_Add => new RelayCommand(async() =>
+        public ICommand DbSelector_Add => new RelayCommand(async () =>
         {
-            await DbSelectorService.AddDbAsync("omdb4th");
-            LoadDbs();
+            var dbName = await EditDbSource.ShowDialog();
+
+            if (dbName == null || dbName.Count() == 0)
+            {
+                Helpers.InfoHelper.ShowError("请输入DbName");
+            }
+            else if (DbsCollection.Contains(dbName))
+            {
+                Helpers.InfoHelper.ShowError("已存在同名DbSource");
+            }
+            else
+            {
+                await DbSelectorService.AddDbAsync(dbName);
+                LoadDbs();
+            }
         });
 
-        public ICommand DbSelector_Save => new RelayCommand(async() =>
+        public ICommand DbSelector_Edit => new RelayCommand<string>(async (dbName) =>
+        {
+            dbName = await EditDbSource.ShowDialog(dbName);
+
+            if (dbName == null || dbName.Count() == 0)
+            {
+                Helpers.InfoHelper.ShowError("请输入DbName");
+            }
+            else if (DbsCollection.Contains(dbName))
+            {
+                Helpers.InfoHelper.ShowError("已存在同名DbSource");
+            }
+            else
+            {
+                await DbSelectorService.AddDbAsync(dbName);
+                LoadDbs();
+            }
+        });
+
+        public ICommand DbSelector_Delete => new RelayCommand(async () =>
+        {
+
+        });
+
+        /*public ICommand DbSelector_Delete => new RelayCommand<string>(async (dbName) =>
+        {
+            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
+            if (flag)
+            {
+                await DbSelectorService.RemoveDbAsync(dbName);
+            }
+            else
+            {
+                return;
+            }
+        });*/
+
+
+        public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
             await DbSelectorService.SetAsync(DbCurrent);
             LoadDbs();
         });
 
-        private void LoadDbs()
+        private async void LoadDbs()
         {
             Services.Settings.DbSelectorService.Initialize();
             DbCurrent = DbSelectorService.dbCurrent;
@@ -125,6 +177,11 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     DbsCollection.Add(item);
                 }
+            }
+            if (!DbsCollection.Contains(DbCurrent))
+            {
+                DbCurrent = DbsCollection[0];
+                await DbSelectorService.SetAsync(DbCurrent);
             }
         }
 

@@ -6,14 +6,17 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:coverters="using:OMDb.WinUI3.Converters"
+    xmlns:coverters="using:OMDb.WinUI3.Converters" 
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels" 
+    d:DataContext="{d:DesignInstance Type=viewmodels:SettingViewModel}"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
     mc:Ignorable="d">
 
     <Page.Resources>
         <coverters:DbNameToBool x:Key="DbNameToBool"></coverters:DbNameToBool>
+        <coverters:ObjecTotString x:Key="ObjecTotString"></coverters:ObjecTotString>
     </Page.Resources>
-        <StackPanel Margin="{StaticResource MediumLeftTopRightBottomMargin}" Spacing="4">
+    <StackPanel Margin="{StaticResource MediumLeftTopRightBottomMargin}" Spacing="4">
         <StackPanel.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition FromVerticalOffset="50" IsStaggeringEnabled="True" />
@@ -121,6 +124,8 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0" Margin="30,30,30,30" DataContextChanged="Grid_DataContextChanged">
                         <RadioButtons
+                            x:Name="RadioButtonss"
+                            Background="White"
                             SelectedItem="{x:Bind VM.DbCurrent,Mode=TwoWay}"
                             Width="800"
                             HorizontalAlignment="Left"
@@ -131,8 +136,51 @@
                                 <DataTemplate x:DataType="x:String">
                                     <RadioButton 
                                         DataContextChanged="RadioButton_DataContextChanged"
-                                        Content="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext}"
                                         IsChecked="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext,Converter={StaticResource DbNameToBool},Mode=OneWay}">
+                                        <Grid x:Name="RadioButtonGrid"
+                                            Width="120"
+                                            Height="24">
+                                            <TextBlock 
+                                                x:Name="RadioButtonText"
+                                                DataContextChanged="TextBlock_DataContextChanged"
+
+                                                Text="{Binding ElementName=RadioButtonText,Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">
+                                                <!--Text="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">-->
+                                            </TextBlock>
+                                            <Button 
+                                                x:Name="RadioButtonEditButton"
+                                                Padding="0"
+                                                BorderThickness="0"
+                                                Width="24"
+                                                Background="{Binding ElementName=RadioButtonGrid,Path=Background}"
+                                                DataContextChanged="Button_DataContextChanged"
+                                                Margin="0,0,30,0"
+                                                HorizontalAlignment="Right"
+                                                Command="{Binding ElementName=SettingPage,Path=VM.DbSelector_Edit}"
+                                                CommandParameter="{Binding ElementName=RadioButtonEditButton,Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">
+                                                <TextBlock 
+                                                    FontFamily="Segoe MDL2 Assets" 
+                                                    Text="&#xE70F;"
+                                                    TextAlignment="Center"/>
+                                            </Button>
+                                            <Button 
+                                                x:Name="RadioButtonDeleteButton"
+                                                Width="24"
+                                                Padding="0"
+                                                BorderThickness="0"
+                                                Background="{Binding ElementName=RadioButtonGrid,Path=Background}"
+                                                DataContextChanged="RadioButtonDeleteButton_DataContextChanged"
+                                                HorizontalAlignment="Right" 
+                                                Click="RadioButtonDeleteButton_Click"
+                                                Command="{Binding ElementName=page,Path=VM.DbSelector_Delete}"
+                                                CommandParameter="{Binding ElementName=RadioButtonDeleteButton,Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">
+                                                <TextBlock 
+                                                    FontFamily="Segoe MDL2 Assets" 
+                                                    Text="&#xE74D;"
+                                                    TextAlignment="Center"
+                                                    />
+                                            </Button>
+                                        </Grid>
                                     </RadioButton>
                                 </DataTemplate>
                             </RadioButtons.ItemTemplate>
@@ -141,16 +189,25 @@
 
                     <Grid Grid.Column="1">
                         <StackPanel Orientation="Horizontal">
-                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Refresh}">
+                            <Button 
+                                x:Name="DbSelector_Refresh"
+                                Margin="15,0,0,0" 
+                                Command="{x:Bind VM.DbSelector_Refresh}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72C;" />
                             </Button>
 
-                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Add}">
+                            <Button 
+                                x:Name="DbSelector_Add"
+                                Margin="15,0,0,0" 
+                                Command="{x:Bind VM.DbSelector_Add}">
                                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;" />
                             </Button>
 
-                            <Button Margin="15,0,0,0" Command="{x:Bind VM.DbSelector_Save}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE28F;" />
+                            <Button 
+                                x:Name="DbSelector_Save"
+                                Margin="15,0,0,0" 
+                                Command="{x:Bind VM.DbSelector_Save}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74E;" />
                             </Button>
                         </StackPanel>
                     </Grid>
