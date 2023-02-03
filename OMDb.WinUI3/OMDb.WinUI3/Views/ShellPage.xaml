@@ -229,7 +229,10 @@
             VerticalAlignment="Top"
             IsOpen="False"
             Severity="Informational" />
-        <Grid x:Name="WaitingGrid" Visibility="Collapsed" Margin="0,0,0,0">
+        <Grid
+            x:Name="WaitingGrid"
+            Margin="0,0,0,0"
+            Visibility="Collapsed">
             <Grid.Background>
                 <SolidColorBrush Opacity="0.4" Color="{ThemeResource ForegroundColor}" />
             </Grid.Background>
@@ -239,10 +242,10 @@
                 VerticalAlignment="Center" />
         </Grid>
         <Frame
-            CornerRadius="8"
             x:Name="DialogFrame"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="Collapsed"/>
+            CornerRadius="8"
+            Visibility="Collapsed" />
     </Grid>
 </Page>

@@ -42,5 +42,20 @@ namespace OMDb.WinUI3.Views
         {
 
         }
+
+        private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void RadioButtonEditButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void RadioButtonDeleteButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
     }
 }

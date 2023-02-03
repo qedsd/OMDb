@@ -43,6 +43,35 @@
                         FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
                         FontWeight="Normal"
                         Text="{x:Bind Label.Name}" />
+                    <Button
+                        Width="24"
+                        Margin="0,0,30,0"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                        BorderThickness="0"
+                        Command="{Binding Path=EditSubCommand}"
+                        CommandParameter="{x:Bind}"
+                        DataContextChanged="RadioButtonEditButton_DataContextChanged">
+                        <TextBlock
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE70F;"
+                            TextAlignment="Center" />
+                    </Button>
+                    <Button
+                        Width="24"
+                        Padding="0"
+                        HorizontalAlignment="Right"
+                        Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                        BorderThickness="0"
+                        Command="{Binding Path=RemoveCommand}"
+                        CommandParameter="{x:Bind}"
+                        DataContextChanged="RadioButtonDeleteButton_DataContextChanged">
+                        <TextBlock
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE74D;"
+                            TextAlignment="Center" />
+                    </Button>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -61,9 +90,7 @@
             </Core:EventTriggerBehavior>
         </Interactivity:Interaction.Behaviors>
 
-        <CommandBar
-            OverflowButtonVisibility="Collapsed"
-            XYFocusKeyboardNavigation="Enabled">
+        <CommandBar OverflowButtonVisibility="Collapsed" XYFocusKeyboardNavigation="Enabled">
             <AppBarButton
                 Command="{x:Bind VM.AddRootCommand}"
                 Icon="Add"
@@ -175,12 +202,12 @@
                             <StackPanel Height="40" Orientation="Horizontal">
 
                                 <TextBlock
-                                    Margin="0,5,0,0"
                                     Width="100"
                                     Height="32"
+                                    Margin="0,5,0,0"
                                     VerticalAlignment="Center"
                                     FontFamily="{Binding Path=FontFamilyCurrent, Converter={StaticResource StringToFontFamily}, Mode=OneWay}"
-                                    Text="FontFamily:"/>
+                                    Text="FontFamily:" />
 
                                 <SplitButton
                                     Width="200"
@@ -201,20 +228,20 @@
                                                         VerticalAlignment="Center"
                                                         FontFamily="Times New Roman"
                                                         LineHeight="20"
-                                                        Text="Times New Roman"></TextBlock>
+                                                        Text="Times New Roman" />
                                                 </Button>
                                                 <Button
                                                     Margin="0,5,0,0"
                                                     Command="{x:Bind VM.SetFontFamilyCommand}"
                                                     CommandParameter="Courier New">
                                                     <TextBlock
-                                                        Margin="0,3,0,0"
                                                         Width="130"
                                                         Height="20"
+                                                        Margin="0,3,0,0"
                                                         VerticalAlignment="Center"
                                                         FontFamily="Courier New"
                                                         LineHeight="20"
-                                                        Text="Courier New"></TextBlock>
+                                                        Text="Courier New" />
                                                 </Button>
                                                 <Button
                                                     Margin="0,5,0,0"
@@ -226,7 +253,7 @@
                                                         VerticalAlignment="Center"
                                                         FontFamily="Comic Sans MS"
                                                         LineHeight="20"
-                                                        Text="Comic Sans MS"></TextBlock>
+                                                        Text="Comic Sans MS" />
                                                 </Button>
                                             </StackPanel>
                                             <!--  flyout content  -->
@@ -268,41 +295,97 @@
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelTree">
                         <StackPanel>
-                            <Border
-                                Width="{Binding Path=Width1st, Mode=OneWay}"
-                                Height="{Binding Path=Height1st, Mode=OneWay}"
-                                Margin="0,0,10,10"
-                                HorizontalAlignment="Left"
-                                BorderBrush="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
-                                BorderThickness="3"
-                                CornerRadius="3">
-                                <Grid Background="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
-                                    <Interactivity:Interaction.Behaviors>
-                                        <Core:EventTriggerBehavior EventName="PointerEntered">
-                                            <Core:ChangePropertyAction
-                                                PropertyName="Visibility"
-                                                TargetObject="{Binding ElementName=EditNameButton}"
-                                                Value="Visible" />
-                                        </Core:EventTriggerBehavior>
-                                        <Core:EventTriggerBehavior EventName="PointerExited">
-                                            <Core:ChangePropertyAction
-                                                PropertyName="Visibility"
-                                                TargetObject="{Binding ElementName=EditNameButton}"
-                                                Value="Collapsed" />
-                                        </Core:EventTriggerBehavior>
-                                    </Interactivity:Interaction.Behaviors>
-                                    <TextBlock
-                                        Padding="10"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        CharacterSpacing="100"
-                                        FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
-                                        FontSize="{Binding Path=FontSize1st, Mode=OneWay}"
-                                        FontStretch="ExtraExpanded"
-                                        FontWeight="Normal"
-                                        Text="{x:Bind Label.Name}" />
+                            <Grid>
+                                <Interactivity:Interaction.Behaviors>
+                                    <Core:EventTriggerBehavior EventName="PointerEntered">
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=EditButton}"
+                                            Value="Visible" />
+                                    </Core:EventTriggerBehavior>
+                                    <Core:EventTriggerBehavior EventName="PointerExited">
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=EditButton}"
+                                            Value="Collapsed" />
+                                    </Core:EventTriggerBehavior>
+                                    <Core:EventTriggerBehavior EventName="PointerEntered">
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=DeleteButton}"
+                                            Value="Visible" />
+                                    </Core:EventTriggerBehavior>
+                                    <Core:EventTriggerBehavior EventName="PointerExited">
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=DeleteButton}"
+                                            Value="Collapsed" />
+                                    </Core:EventTriggerBehavior>
+                                </Interactivity:Interaction.Behaviors>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="50" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Border
+                                        Width="{Binding Path=Width1st, Mode=OneWay}"
+                                        Height="{Binding Path=Height1st, Mode=OneWay}"
+                                        Margin="0,0,0,0"
+                                        HorizontalAlignment="Left"
+                                        BorderBrush="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                                        BorderThickness="3"
+                                        CornerRadius="3">
+                                        <Grid Background="{Binding Path=Color1st, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
+                                            <TextBlock
+                                                Padding="10"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                CharacterSpacing="100"
+                                                FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
+                                                FontSize="{Binding Path=FontSize1st, Mode=OneWay}"
+                                                FontStretch="ExtraExpanded"
+                                                FontWeight="Normal"
+                                                Text="{x:Bind Label.Name}" />
+                                        </Grid>
+                                    </Border>
                                 </Grid>
-                            </Border>
+                                <Grid Grid.Column="1">
+                                    <Button
+                                        x:Name="EditButton"
+                                        Width="24"
+                                        Height="24"
+                                        Margin="0,0,25,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        BorderThickness="0"
+                                        Command="{Binding Path=EditRootCommand}"
+                                        CommandParameter="{x:Bind}"
+                                        DataContextChanged="RadioButtonEditButton_DataContextChanged"
+                                        Visibility="Collapsed">
+                                        <TextBlock
+                                            FontFamily="Segoe MDL2 Assets"
+                                            Text="&#xE70F;"
+                                            TextAlignment="Center" />
+                                    </Button>
+                                    <Button
+                                        x:Name="DeleteButton"
+                                        Width="24"
+                                        Height="24"
+                                        Margin="0,0,0,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        BorderThickness="0"
+                                        Command="{Binding Path=RemoveCommand}"
+                                        CommandParameter="{x:Bind}"
+                                        DataContextChanged="RadioButtonDeleteButton_DataContextChanged"
+                                        Visibility="Collapsed">
+                                        <TextBlock
+                                            FontFamily="Segoe MDL2 Assets"
+                                            Text="&#xE74D;"
+                                            TextAlignment="Center" />
+                                    </Button>
+                                </Grid>
+                            </Grid>
                             <ItemsRepeater ItemTemplate="{StaticResource StringDataTemplateColor}" ItemsSource="{x:Bind Children}">
                                 <ItemsRepeater.Layout>
                                     <StackLayout Orientation="Horizontal" />
@@ -369,7 +452,10 @@
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate x:DataType="models:LabelTree">
-                                                <Grid Height="32" ToolTipService.ToolTip="{x:Bind Label.Description}">
+                                                <Grid
+                                                    Height="32"
+                                                    DataContextChanged="Grid_DataContextChanged"
+                                                    ToolTipService.ToolTip="{x:Bind Label.Description}">
                                                     <Grid.ContextFlyout>
                                                         <MenuFlyout>
                                                             <MenuFlyoutItem

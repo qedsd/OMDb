@@ -147,5 +147,15 @@ namespace OMDb.WinUI3.Views
                 return;
             }
         }
+
+        private void sp_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
+
+        private void RadioButtonss_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+
+        }
     }
 }
