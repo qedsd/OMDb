@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using ConsoleDemo.Helper;
 using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models.Tools;
 using System;
@@ -70,7 +71,7 @@ namespace OMDb.WinUI3.ViewModels.Tools
 
         public ICommand AddCommand => new RelayCommand(async () =>
         {
-            var file = await Helpers.PickHelper.PickFileAsync(".mkv", ToolPageBase.Window);
+            var file = await Helpers.PickHelper.PickFileAsync(string.Empty, ToolPageBase.Window);
             if (file != null)
             {
                 try

@@ -33,7 +33,7 @@ namespace OMDb.WinUI3.Helpers
         /// <returns></returns>
         public static async Task<StorageFile> PickFileAsync(string filter, Window window = null)
         {
-            return await PickFileAsync(new List<string>() { filter }, window);
+            return await PickFileAsync(string.IsNullOrEmpty(filter) ? null : new List<string>() { filter }, window);
         }
         /// <summary>
         /// 选择文件
