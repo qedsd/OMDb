@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OMDb.WinUI3.Services.Settings
 {
     internal static class DbSelectorService
     {
-        private const string Key1 = "DbSelector";
-        private const string Key2 = "DbsCollection";
+        private const string Key = "DbSelector";
         public static string dbCurrent = string.Empty;
-        public static List<string> dbsCollection = new List<string>();
+        public static Dictionary<string,string> dbsCollection = new Dictionary<string, string>();
         public static void Initialize()
         {
             LoadAllDbs();
@@ -28,7 +28,7 @@ namespace OMDb.WinUI3.Services.Settings
         }
         private static async void LoadFromSettings()
         {
-            dbCurrent = SettingService.GetValue(Key1);
+            dbCurrent = SettingService.GetValue(Key);
 
             if (!string.IsNullOrEmpty(dbCurrent))
             {
@@ -40,11 +40,12 @@ namespace OMDb.WinUI3.Services.Settings
                     {
                         LoadAllDbs();
                     });
-                dbCurrent = dbsCollection[0];
+                dbCurrent = dbsCollection.FirstOrDefault().Key;
                 await SetAsync(dbCurrent);
             }
         }
-        private static async void LoadAllDbs()
+
+        /*private static async void LoadAllDbs()
         {
             string dbsCollectionStr = SettingService.GetValue(Key2);
             if (!string.IsNullOrEmpty(dbsCollectionStr))
@@ -60,25 +61,36 @@ namespace OMDb.WinUI3.Services.Settings
             {
                 await AddDbAsync("Default");
             }
-        }
+        }*/
+
         private static async Task SaveInSettingsAsync(string dbc)
         {
-            await SettingService.SetValueAsync(Key1, dbc.ToString());
+            await SettingService.SetValueAsync(Key, dbc.ToString());
         }
 
         public static async Task AddDbAsync(string DbName)
         {
-            dbsCollection.Add(DbName);
-            var jsonObj = JsonConvert.SerializeObject(dbsCollection);
-            await SettingService.SetValueAsync(Key2, jsonObj);
+            Core.Services.DbSourceService.AddDbSource(DbName);
         }
 
-        public static async Task RemoveDbAsync(string DbName)
+        public static async Task RemoveDbAsync(string DbId)
         {
-            dbsCollection.Remove(DbName);
-            var jsonObj = JsonConvert.SerializeObject(dbsCollection);
-            await SettingService.SetValueAsync(Key2, jsonObj);
+            Core.Services.DbSourceService.RemoveDbSource(DbId);
         }
+
+        /// <summary>
+        /// 获取所有Db源
+        /// </summary>
+        private static async void LoadAllDbs()
+        {
+            var result =await Core.Services.DbSourceService.GetAllDbSource();
+            dbsCollection.Clear();
+            foreach (var item in result)
+            {
+                dbsCollection.Add(item.Id,item.DbName);
+            }
+        }
+
 
 
     }

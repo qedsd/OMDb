@@ -23,78 +23,103 @@
         <coverters:ColorToBrush x:Key="ColorToBrush" />
         <coverters:StringToFontFamily x:Key="StringToFontFamily" />
         <coverters:StringToObject x:Key="StringToObject" />
-
         <!--  次级标签模板  -->
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
-            <Border
-                Margin="10,0,10,10"
-                BorderBrush="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
-                BorderThickness="3"
-                CornerRadius="3">
-                <Grid
-                    Width="{Binding Path=Width2nd, Mode=OneWay}"
-                    Height="{Binding Path=Height2nd, Mode=OneWay}"
-                    Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
-                    <TextBlock
-                        Padding="10"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
-                        FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
-                        FontWeight="Normal"
-                        Text="{x:Bind Label.Name}" />
+            <StackPanel x:Name="Grid_Tag2nd">
+                <Interactivity:Interaction.Behaviors>
+                    <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=Grid_Tag2nd}">
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditSubButton}"
+                            Value="Visible" />
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=DeleteSubButton}"
+                            Value="Visible" />
+                    </Core:EventTriggerBehavior>
+                    <Core:EventTriggerBehavior EventName="PointerExited" SourceObject="{Binding ElementName=Grid_Tag2nd}">
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=EditSubButton}"
+                            Value="Collapsed" />
+                        <Core:ChangePropertyAction
+                            PropertyName="Visibility"
+                            TargetObject="{Binding ElementName=DeleteSubButton}"
+                            Value="Collapsed" />
+                    </Core:EventTriggerBehavior>
+                </Interactivity:Interaction.Behaviors>
+                <StackPanel
+                    Height="24"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
                     <Button
+                        x:Name="EditSubButton"
                         Width="24"
-                        Margin="0,0,30,0"
+                        Height="24"
+                        Margin="0,0,0,0"
                         Padding="0"
                         HorizontalAlignment="Right"
-                        Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
                         BorderThickness="0"
-                        Command="{Binding Path=EditSubCommand}"
+                        Command="{Binding Path=EditRootCommand}"
                         CommandParameter="{x:Bind}"
-                        DataContextChanged="RadioButtonEditButton_DataContextChanged">
+                        DataContextChanged="RadioButtonEditButton_DataContextChanged"
+                        Visibility="Collapsed">
                         <TextBlock
                             FontFamily="Segoe MDL2 Assets"
                             Text="&#xE70F;"
                             TextAlignment="Center" />
                     </Button>
                     <Button
+                        x:Name="DeleteSubButton"
                         Width="24"
+                        Height="24"
+                        Margin="0,0,0,0"
                         Padding="0"
                         HorizontalAlignment="Right"
-                        Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
                         BorderThickness="0"
                         Command="{Binding Path=RemoveCommand}"
                         CommandParameter="{x:Bind}"
-                        DataContextChanged="RadioButtonDeleteButton_DataContextChanged">
+                        DataContextChanged="RadioButtonDeleteButton_DataContextChanged"
+                        Visibility="Collapsed">
                         <TextBlock
                             FontFamily="Segoe MDL2 Assets"
                             Text="&#xE74D;"
                             TextAlignment="Center" />
                     </Button>
-                </Grid>
-            </Border>
+                </StackPanel>
+                <Border
+                    Margin="10,0,0,10"
+                    BorderBrush="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}"
+                    BorderThickness="3"
+                    CornerRadius="3">
+                    <Grid
+                        Width="{Binding Path=Width2nd, Mode=OneWay}"
+                        Height="{Binding Path=Height2nd, Mode=OneWay}"
+                        Background="{Binding Path=Color2nd, Converter={StaticResource ColorToBrush}, Mode=OneWay}">
+                        <TextBlock
+                            Padding="10"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
+                            FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
+                            FontWeight="Normal"
+                            Text="{x:Bind Label.Name}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
         </DataTemplate>
-
-
-
-
     </Page.Resources>
     <Page.DataContext>
         <viewmodels:LabelViewModel />
     </Page.DataContext>
     <StackPanel>
-        <Interactivity:Interaction.Behaviors>
-            <Core:EventTriggerBehavior EventName="PreviewKeyDown">
-                <Core:InvokeCommandAction Command="{Binding Path=TestMeCommand}" />
-            </Core:EventTriggerBehavior>
-        </Interactivity:Interaction.Behaviors>
 
+        <!--  导航栏按钮  -->
         <CommandBar OverflowButtonVisibility="Collapsed" XYFocusKeyboardNavigation="Enabled">
             <AppBarButton
                 Command="{x:Bind VM.AddRootCommand}"
                 Icon="Add"
-                ToolTipService.ToolTip="Add Tag1st(+)">
+                ToolTipService.ToolTip="Add Tag1st">
                 >
                 <AppBarButton.KeyboardAccelerators>
                     <KeyboardAccelerator Key="Add" />
@@ -118,6 +143,7 @@
                 Icon="List"
                 IsChecked="{x:Bind VM.IsTreeShow, Mode=TwoWay}" />
             <AppBarToggleButton
+                x:Name="RepeaterShowButton"
                 Command="{x:Bind VM.ChangeShowTypeToExpCommand}"
                 Icon="ViewAll"
                 IsChecked="{x:Bind VM.IsExpShow, Mode=TwoWay}" />
@@ -125,7 +151,8 @@
                 <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xECA5;" />
             </AppBarToggleButton>
             <AppBarSeparator />
-            <AppBarButton Icon="SetTile">
+            <AppBarButton Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE771;" />
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
@@ -286,7 +313,7 @@
         </CommandBar>
 
 
-
+        <!--  嵌套样式  -->
         <ScrollViewer
             HorizontalScrollBarVisibility="Auto"
             HorizontalScrollMode="Auto"
@@ -295,38 +322,50 @@
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelTree">
                         <StackPanel>
-                            <Grid>
+                            <Grid
+                                x:Name="Grid_Tag1st"
+                                Width="{Binding Path=Width1st, Mode=OneWay}"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left">
                                 <Interactivity:Interaction.Behaviors>
-                                    <Core:EventTriggerBehavior EventName="PointerEntered">
+                                    <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=Grid_Tag1st}">
                                         <Core:ChangePropertyAction
                                             PropertyName="Visibility"
                                             TargetObject="{Binding ElementName=EditButton}"
                                             Value="Visible" />
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=DeleteButton}"
+                                            Value="Visible" />
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=AddSubTagButton}"
+                                            Value="Visible" />
                                     </Core:EventTriggerBehavior>
-                                    <Core:EventTriggerBehavior EventName="PointerExited">
+                                    <Core:EventTriggerBehavior EventName="PointerExited" SourceObject="{Binding ElementName=Grid_Tag1st}">
                                         <Core:ChangePropertyAction
                                             PropertyName="Visibility"
                                             TargetObject="{Binding ElementName=EditButton}"
                                             Value="Collapsed" />
-                                    </Core:EventTriggerBehavior>
-                                    <Core:EventTriggerBehavior EventName="PointerEntered">
                                         <Core:ChangePropertyAction
                                             PropertyName="Visibility"
                                             TargetObject="{Binding ElementName=DeleteButton}"
-                                            Value="Visible" />
-                                    </Core:EventTriggerBehavior>
-                                    <Core:EventTriggerBehavior EventName="PointerExited">
+                                            Value="Collapsed" />
                                         <Core:ChangePropertyAction
                                             PropertyName="Visibility"
                                             TargetObject="{Binding ElementName=DeleteButton}"
+                                            Value="Collapsed" />
+                                        <Core:ChangePropertyAction
+                                            PropertyName="Visibility"
+                                            TargetObject="{Binding ElementName=AddSubTagButton}"
                                             Value="Collapsed" />
                                     </Core:EventTriggerBehavior>
                                 </Interactivity:Interaction.Behaviors>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="50" />
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="24" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="1">
                                     <Border
                                         Width="{Binding Path=Width1st, Mode=OneWay}"
                                         Height="{Binding Path=Height1st, Mode=OneWay}"
@@ -349,12 +388,15 @@
                                         </Grid>
                                     </Border>
                                 </Grid>
-                                <Grid Grid.Column="1">
+                                <Grid
+                                    Grid.Row="0"
+                                    Width="72"
+                                    HorizontalAlignment="Right">
                                     <Button
                                         x:Name="EditButton"
                                         Width="24"
                                         Height="24"
-                                        Margin="0,0,25,0"
+                                        Margin="0,0,24,0"
                                         Padding="0"
                                         HorizontalAlignment="Right"
                                         BorderThickness="0"
@@ -384,9 +426,29 @@
                                             Text="&#xE74D;"
                                             TextAlignment="Center" />
                                     </Button>
+                                    <Button
+                                        x:Name="AddSubTagButton"
+                                        Width="24"
+                                        Height="24"
+                                        Margin="0,0,48,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        BorderThickness="0"
+                                        Command="{Binding Path=AddSubCommand}"
+                                        CommandParameter="{x:Bind}"
+                                        DataContextChanged="RadioButtonDeleteButton_DataContextChanged"
+                                        Visibility="Collapsed">
+                                        <TextBlock
+                                            FontFamily="Segoe MDL2 Assets"
+                                            Text="&#xE710;"
+                                            TextAlignment="Center" />
+                                    </Button>
                                 </Grid>
                             </Grid>
-                            <ItemsRepeater ItemTemplate="{StaticResource StringDataTemplateColor}" ItemsSource="{x:Bind Children}">
+                            <ItemsRepeater
+                                Margin="0,5,0,5"
+                                ItemTemplate="{StaticResource StringDataTemplateColor}"
+                                ItemsSource="{x:Bind Children}">
                                 <ItemsRepeater.Layout>
                                     <StackLayout Orientation="Horizontal" />
                                 </ItemsRepeater.Layout>
@@ -398,10 +460,11 @@
                     <StackLayout Orientation="Vertical" />
                 </ItemsRepeater.Layout>
             </ItemsRepeater>
+            <ScrollViewer.Resources />
         </ScrollViewer>
 
 
-
+        <!--  树形样式  -->
         <TreeView ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}" Visibility="{x:Bind VM.IsTreeShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:LabelTree">
@@ -415,6 +478,7 @@
         </TreeView>
 
 
+        <!--  下拉样式  -->
         <Grid Visibility="{x:Bind VM.IsExpShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <Grid.ContextFlyout>
                 <MenuFlyout>
@@ -514,6 +578,7 @@
                 </GridView.ItemsPanel>
             </GridView>
         </Grid>
+
     </StackPanel>
 
 </Page>

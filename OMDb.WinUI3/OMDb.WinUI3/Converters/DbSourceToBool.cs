@@ -6,7 +6,7 @@ using System;
 
 namespace OMDb.WinUI3.Converters
 {
-    public sealed class DbNameToBool : IValueConverter
+    public sealed class DbSourceToBool : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, string language)

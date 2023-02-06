@@ -17,7 +17,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <coverters:DbNameToBool x:Key="DbNameToBool" />
+        <coverters:DbSourceToBool x:Key="DbSourceToBool" />
         <coverters:ObjecTotString x:Key="ObjecTotString" />
     </Page.Resources>
     <Page.DataContext>
@@ -145,7 +145,7 @@
                             MaxColumns="5"
                             SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
                             <RadioButtons.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="viewmodels:DbSource">
                                     <Interactivity:Interaction.Behaviors>
                                         <Core:EventTriggerBehavior EventName="PointerEntered">
                                             <Core:ChangePropertyAction
@@ -163,7 +163,7 @@
                                     <RadioButton
                                         Margin="5,0,10,0"
                                         DataContextChanged="RadioButton_DataContextChanged"
-                                        IsChecked="{Binding RelativeSource={RelativeSource Mode=Self}, Path=DataContext, Converter={StaticResource DbNameToBool}, Mode=OneWay}">
+                                        IsChecked="{x:Bind DbId, Converter={StaticResource DbSourceToBool}, Mode=OneWay}">
                                         <Grid
                                             x:Name="RadioButtonGrid"
                                             Width="120"
@@ -171,7 +171,7 @@
                                             <TextBlock
                                                 x:Name="RadioButtonText"
                                                 DataContextChanged="TextBlock_DataContextChanged"
-                                                Text="{Binding ElementName=RadioButtonText, Path=DataContext, Converter={StaticResource ObjecTotString}, Mode=OneWay}">
+                                                Text="{x:Bind DbName}">
                                                 <!--  Text="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">  -->
                                             </TextBlock>
                                             <Button
@@ -182,8 +182,8 @@
                                                 HorizontalAlignment="Right"
                                                 Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
                                                 BorderThickness="0"
-                                                Command="{Binding ElementName=SettingPage, Path=VM.DbSelector_Edit}"
-                                                CommandParameter="{Binding ElementName=RadioButtonEditButton, Path=DataContext, Converter={StaticResource ObjecTotString}, Mode=OneWay}"
+                                                Command="{Binding DbSelector_Edit}"
+                                                CommandParameter="{x:Bind}"
                                                 DataContextChanged="Button_DataContextChanged">
                                                 <TextBlock
                                                     FontFamily="Segoe MDL2 Assets"
@@ -198,7 +198,8 @@
                                                 Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
                                                 BorderThickness="0"
                                                 Click="RadioButtonDeleteButton_Click"
-                                                Command="{Binding ElementName=page, Path=VM.DbSelector_Delete}"
+                                                Command="{Binding DbSelector_Delete}"
+                                                CommandParameter="{x:Bind}"
                                                 DataContextChanged="RadioButtonDeleteButton_DataContextChanged">
                                                 <TextBlock
                                                     FontFamily="Segoe MDL2 Assets"

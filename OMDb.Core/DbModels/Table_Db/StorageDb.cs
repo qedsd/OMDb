@@ -42,5 +42,7 @@ namespace OMDb.Core.DbModels
         /// 词条数
         /// </summary>
         public int? EntryCount { get; set; }
+
+        public string DbSourceId { get; set; }
     }
 }

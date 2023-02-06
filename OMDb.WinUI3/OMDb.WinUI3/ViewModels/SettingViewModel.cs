@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -106,11 +107,11 @@ namespace OMDb.WinUI3.ViewModels
         {
             var dbName = await EditDbSource.ShowDialog();
 
-            if (dbName == null || dbName.Count() == 0)
+            if ((dbName == null || dbName.Count() == 0))
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
-            else if (DbsCollection.Contains(dbName))
+            else if (DbsCollection.Select(a => a.DbName).ToList().Contains(dbName))
             {
                 Helpers.InfoHelper.ShowError("已存在同名DbSource");
             }
@@ -129,7 +130,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
-            else if (DbsCollection.Contains(dbName))
+            else if (DbsCollection.Select(a => a.DbName).ToList().Contains(dbName))
             {
                 Helpers.InfoHelper.ShowError("已存在同名DbSource");
             }
@@ -140,64 +141,65 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-        public ICommand DbSelector_Delete => new RelayCommand(async () =>
-        {
-
-        });
-
-        /*public ICommand DbSelector_Delete => new RelayCommand<string>(async (dbName) =>
-        {
-            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
-            if (flag)
-            {
-                await DbSelectorService.RemoveDbAsync(dbName);
-            }
-            else
-            {
-                return;
-            }
-        });*/
 
 
         public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
-            await DbSelectorService.SetAsync(DbCurrent);
+            await DbSelectorService.SetAsync(DbCurrent.DbId);
             LoadDbs();
         });
 
         private async void LoadDbs()
         {
             Services.Settings.DbSelectorService.Initialize();
-            DbCurrent = DbSelectorService.dbCurrent;
-            DbsCollection = new ObservableCollection<string>();
+            if(DbsCollection==null) DbsCollection = new ObservableCollection<DbSource>();
             DbsCollection.Clear();
             foreach (var item in DbSelectorService.dbsCollection)
             {
-                if (!DbsCollection.Contains(item))
-                {
-                    DbsCollection.Add(item);
-                }
+                var dbSource = new DbSource() { DbId = item.Key, DbName = item.Value };
+                DbsCollection.Add(dbSource);
             }
-            if (!DbsCollection.Contains(DbCurrent))
+            DbCurrent = DbsCollection.Where(a=>a.DbId==DbSelectorService.dbCurrent).FirstOrDefault();
+            if (!(DbsCollection.Select(a => a.DbId).ToList().Contains(DbSelectorService.dbCurrent)))
             {
-                DbCurrent = DbsCollection[0];
-                await DbSelectorService.SetAsync(DbCurrent);
+                DbCurrent = DbsCollection.FirstOrDefault();
+                await DbSelectorService.SetAsync(DbCurrent.DbId);
             }
         }
 
-        public ObservableCollection<string> _dbsCollection;
-        public ObservableCollection<string> DbsCollection
+
+        public ObservableCollection<DbSource> _dbsCollection;
+        public ObservableCollection<DbSource> DbsCollection
         {
             get => _dbsCollection;
             set => SetProperty(ref _dbsCollection, value);
         }
 
-        private string _dbCurrent;
+        private DbSource _dbCurrent;
 
-        public string DbCurrent
+        public DbSource DbCurrent
         {
             get => _dbCurrent;
             set => SetProperty(ref _dbCurrent, value);
         }
+
+
+        public ICommand DbSelector_Delete => new RelayCommand<DbSource>(async (db) =>
+        {
+            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
+            if (flag)
+            {
+                await DbSelectorService.RemoveDbAsync(db.DbId);
+                DbsCollection.Remove(db);
+            }
+            else return;
+        });
+
+
+    }
+    public struct DbSource
+    {
+        public string DbId;
+        public string DbName;
     }
 }

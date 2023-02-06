@@ -148,7 +148,13 @@ namespace OMDb.Core.Services
                 types.Add(typeof(EntryCollectionDb));
                 types.Add(typeof(EntryCollectionItemDb));
                 types.Add(typeof(StorageDb));
+                types.Add(typeof(DbSourceDb));
                 LocalDb.CodeFirst.InitTables(types.ToArray());
+                var Dbs=DbSourceService.GetAllDbSource();
+                if (Dbs.Result.Count==0)
+                {
+                    DbSourceService.AddDbSource("Default");
+                }
                 return true;
             }
             catch(Exception)
