@@ -54,7 +54,7 @@ namespace OMDb.Core.Services
         /// 移除仓库
         /// </summary>
         /// <param name="storageName"></param>
-        public static void RemoveDbSource(string dbId)
+        public  static void RemoveDbSource(string dbId)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Delete from DbSource where ID='{0}'", dbId);
@@ -65,7 +65,7 @@ namespace OMDb.Core.Services
         /// 批量移除仓库
         /// </summary>
         /// <param name="storageNameCollection"></param>
-        public static void RemoveDbSource(List<string> storageNameCollection)
+        public  static void RemoveDbSource(List<string> storageNameCollection)
         {
             StringBuilder sb = new StringBuilder();
             var storageNameCollectionStr=string.Join(",", storageNameCollection);

@@ -14,8 +14,8 @@ namespace OMDb.WinUI3.Services.Settings
     internal static class DbSelectorService
     {
         private const string Key = "DbSelector";
-        public static string dbCurrent = string.Empty;
-        public static Dictionary<string,string> dbsCollection = new Dictionary<string, string>();
+        public static string dbCurrentId = string.Empty;
+        public static List<DbSource> dbsCollection = new List<DbSource>();
         public static void Initialize()
         {
             LoadAllDbs();
@@ -23,57 +23,43 @@ namespace OMDb.WinUI3.Services.Settings
         }
         public static async Task SetAsync(string dbSwich)
         {
-            dbCurrent = dbSwich;
-            await SaveInSettingsAsync(dbCurrent);
+            dbCurrentId = dbSwich;
+            await SaveInSettingsAsync(dbCurrentId);
         }
+
+
+        //配置Json获取当前Db源Id
         private static async void LoadFromSettings()
         {
-            dbCurrent = SettingService.GetValue(Key);
+            dbCurrentId = Convert.ToString(SettingService.GetValue(Key));
 
-            if (!string.IsNullOrEmpty(dbCurrent))
+            //数据库读取所有Db源
+            LoadAllDbs();
+
+            //找不到 或 未配置 -> 抽一个赋值
+            if ((!dbsCollection.Select(a => a.DbSourceDb.Id).ToList().Contains(dbCurrentId)) || string.IsNullOrEmpty(dbCurrentId))
             {
-                dbCurrent.ToString();
+                dbCurrentId = dbsCollection.FirstOrDefault().DbSourceDb.Id;
             }
-            else
-            {
-                await Task.Run(() =>
-                    {
-                        LoadAllDbs();
-                    });
-                dbCurrent = dbsCollection.FirstOrDefault().Key;
-                await SetAsync(dbCurrent);
-            }
+
+            dbsCollection.Where(a => a.DbSourceDb.Id == dbCurrentId).FirstOrDefault().IsChecked = true;
+            await SetAsync(dbCurrentId);
         }
 
-        /*private static async void LoadAllDbs()
-        {
-            string dbsCollectionStr = SettingService.GetValue(Key2);
-            if (!string.IsNullOrEmpty(dbsCollectionStr))
-            {
-                var jsonObj = JsonConvert.DeserializeObject<List<string>>(dbsCollectionStr);
-                dbsCollection.Clear();
-                foreach (var item in jsonObj)
-                {
-                    dbsCollection.Add(item.ToString());
-                }
-            }
-            else
-            {
-                await AddDbAsync("Default");
-            }
-        }*/
-
+        //保存
         private static async Task SaveInSettingsAsync(string dbc)
         {
             await SettingService.SetValueAsync(Key, dbc.ToString());
         }
 
-        public static async Task AddDbAsync(string DbName)
+        //添加
+        public static void AddDbAsync(string DbName)
         {
             Core.Services.DbSourceService.AddDbSource(DbName);
         }
 
-        public static async Task RemoveDbAsync(string DbId)
+        //移除
+        public static void RemoveDbAsync(string DbId)
         {
             Core.Services.DbSourceService.RemoveDbSource(DbId);
         }
@@ -83,11 +69,12 @@ namespace OMDb.WinUI3.Services.Settings
         /// </summary>
         private static async void LoadAllDbs()
         {
-            var result =await Core.Services.DbSourceService.GetAllDbSource();
+            var result = await Core.Services.DbSourceService.GetAllDbSource();
             dbsCollection.Clear();
             foreach (var item in result)
             {
-                dbsCollection.Add(item.Id,item.DbName);
+                var db = new DbSource(item);
+                dbsCollection.Add(db);
             }
         }
 

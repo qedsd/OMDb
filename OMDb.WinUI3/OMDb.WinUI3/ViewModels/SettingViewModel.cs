@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using OMDb.Core.Extensions;
 using OMDb.WinUI3.Dialogs;
+using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.Services.Settings;
 using OMDb.WinUI3.Views.Homes;
@@ -111,13 +112,13 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
-            else if (DbsCollection.Select(a => a.DbName).ToList().Contains(dbName))
+            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
             {
                 Helpers.InfoHelper.ShowError("已存在同名DbSource");
             }
             else
             {
-                await DbSelectorService.AddDbAsync(dbName);
+                DbSelectorService.AddDbAsync(dbName);
                 LoadDbs();
             }
         });
@@ -130,13 +131,13 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
-            else if (DbsCollection.Select(a => a.DbName).ToList().Contains(dbName))
+            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
             {
                 Helpers.InfoHelper.ShowError("已存在同名DbSource");
             }
             else
             {
-                await DbSelectorService.AddDbAsync(dbName);
+                DbSelectorService.AddDbAsync(dbName);
                 LoadDbs();
             }
         });
@@ -145,26 +146,20 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
-            await DbSelectorService.SetAsync(DbCurrent.DbId);
+            await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
             LoadDbs();
         });
 
-        private async void LoadDbs()
+        private void LoadDbs()
         {
             Services.Settings.DbSelectorService.Initialize();
             if(DbsCollection==null) DbsCollection = new ObservableCollection<DbSource>();
             DbsCollection.Clear();
             foreach (var item in DbSelectorService.dbsCollection)
             {
-                var dbSource = new DbSource() { DbId = item.Key, DbName = item.Value };
-                DbsCollection.Add(dbSource);
+                DbsCollection.Add(item);
             }
-            DbCurrent = DbsCollection.Where(a=>a.DbId==DbSelectorService.dbCurrent).FirstOrDefault();
-            if (!(DbsCollection.Select(a => a.DbId).ToList().Contains(DbSelectorService.dbCurrent)))
-            {
-                DbCurrent = DbsCollection.FirstOrDefault();
-                await DbSelectorService.SetAsync(DbCurrent.DbId);
-            }
+            DbCurrent = DbsCollection.Where(a=>a.DbSourceDb.Id==DbSelectorService.dbCurrentId).FirstOrDefault();
         }
 
 
@@ -189,17 +184,13 @@ namespace OMDb.WinUI3.ViewModels
             var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
             if (flag)
             {
-                await DbSelectorService.RemoveDbAsync(db.DbId);
+                DbSelectorService.RemoveDbAsync(db.DbSourceDb.Id);
                 DbsCollection.Remove(db);
+                LoadDbs();
             }
             else return;
         });
 
 
-    }
-    public struct DbSource
-    {
-        public string DbId;
-        public string DbName;
     }
 }

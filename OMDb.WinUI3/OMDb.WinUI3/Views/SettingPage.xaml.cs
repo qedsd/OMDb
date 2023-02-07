@@ -135,17 +135,7 @@ namespace OMDb.WinUI3.Views
 
         private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            /*var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
-            if (flag)
-            {
-                var dbName=((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext.ToString();
-                await Services.Settings.DbSelectorService.RemoveDbAsync(dbName);
-                VM.DbSelector_Refresh.Execute(null);
-            }
-            else
-            {
-                return;
-            }*/
+            VM.DbSelector_Refresh.Execute(null);
         }
 
         private void sp_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)

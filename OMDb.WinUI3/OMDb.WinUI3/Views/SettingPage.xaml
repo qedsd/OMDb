@@ -9,6 +9,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
     x:Name="sp"
     d:DataContext="{d:DesignInstance Type=viewmodels:SettingViewModel}"
@@ -141,19 +142,19 @@
                             Background="White"
                             DataContextChanged="RadioButtonss_DataContextChanged"
                             Header="DbSelector:"
-                            ItemsSource="{x:Bind VM.DbsCollection, Mode=OneWay}"
+                            ItemsSource="{x:Bind VM.DbsCollection, Mode=TwoWay}"
                             MaxColumns="5"
                             SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
                             <RadioButtons.ItemTemplate>
-                                <DataTemplate x:DataType="viewmodels:DbSource">
+                                <DataTemplate x:DataType="models:DbSource">
                                     <Interactivity:Interaction.Behaviors>
-                                        <Core:EventTriggerBehavior EventName="PointerEntered">
+                                        <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=RB}">
                                             <Core:ChangePropertyAction
                                                 PropertyName="Visibility"
                                                 TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
                                                 Value="Visible" />
                                         </Core:EventTriggerBehavior>
-                                        <Core:EventTriggerBehavior EventName="PointerExited">
+                                        <Core:EventTriggerBehavior EventName="PointerExited" SourceObject="{Binding ElementName=RB}">
                                             <Core:ChangePropertyAction
                                                 PropertyName="Visibility"
                                                 TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
@@ -161,9 +162,10 @@
                                         </Core:EventTriggerBehavior>
                                     </Interactivity:Interaction.Behaviors>
                                     <RadioButton
+                                        x:Name="RB"
                                         Margin="5,0,10,0"
                                         DataContextChanged="RadioButton_DataContextChanged"
-                                        IsChecked="{x:Bind DbId, Converter={StaticResource DbSourceToBool}, Mode=OneWay}">
+                                        IsChecked="{x:Bind IsChecked, Mode=TwoWay}">
                                         <Grid
                                             x:Name="RadioButtonGrid"
                                             Width="120"
@@ -171,9 +173,8 @@
                                             <TextBlock
                                                 x:Name="RadioButtonText"
                                                 DataContextChanged="TextBlock_DataContextChanged"
-                                                Text="{x:Bind DbName}">
-                                                <!--  Text="{Binding RelativeSource={RelativeSource Mode=Self},Path=DataContext,Converter={StaticResource ObjecTotString},Mode=OneWay}">  -->
-                                            </TextBlock>
+                                                Text="{x:Bind DbSourceDb.DbName}" />
+                                            <!--  编辑按钮  -->
                                             <Button
                                                 x:Name="RadioButtonEditButton"
                                                 Width="24"
@@ -190,6 +191,7 @@
                                                     Text="&#xE70F;"
                                                     TextAlignment="Center" />
                                             </Button>
+                                            <!--  删除按钮  -->
                                             <Button
                                                 x:Name="RadioButtonDeleteButton"
                                                 Width="24"
@@ -206,11 +208,6 @@
                                                     Text="&#xE74D;"
                                                     TextAlignment="Center" />
                                             </Button>
-                                            <Grid.ContextFlyout>
-                                                <MenuFlyout>
-                                                    <MenuFlyoutItem Command="{Binding ElementName=page, Path=VM.DbSelector_Delete}" Text="删除" />
-                                                </MenuFlyout>
-                                            </Grid.ContextFlyout>
                                         </Grid>
                                     </RadioButton>
                                 </DataTemplate>

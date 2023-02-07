@@ -13,7 +13,7 @@ namespace OMDb.WinUI3.Converters
         {
             if (value != null && !string.IsNullOrEmpty(value.ToString()))
             {
-                if (value.ToString() == Services.Settings.DbSelectorService.dbCurrent)
+                if (value.ToString() == Services.Settings.DbSelectorService.dbCurrentId)
                 {
                     return true;
                 }
