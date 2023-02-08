@@ -151,7 +151,7 @@ namespace OMDb.Core.Services
                 types.Add(typeof(DbSourceDb));
                 LocalDb.CodeFirst.InitTables(types.ToArray());
                 var Dbs=DbSourceService.GetAllDbSource();
-                if (Dbs.Result.Count==0)
+                if (Dbs.Count==0)
                 {
                     DbSourceService.AddDbSource("Default");
                 }

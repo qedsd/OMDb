@@ -133,10 +133,6 @@ namespace OMDb.WinUI3.Views
 
         }
 
-        private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            VM.DbSelector_Refresh.Execute(null);
-        }
 
         private void sp_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
@@ -146,6 +142,21 @@ namespace OMDb.WinUI3.Views
         private void RadioButtonss_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
 
+        }
+
+        private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
+            if (flag)
+            {
+                var dbId = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.Id; ;
+                Services.Settings.DbSelectorService.RemoveDbAsync(dbId);
+                VM.DbSelector_Refresh.Execute(null);
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }

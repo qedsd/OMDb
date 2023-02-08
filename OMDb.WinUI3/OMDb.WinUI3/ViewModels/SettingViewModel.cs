@@ -146,7 +146,8 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
-            await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
+            //await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
+            await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbSourceDb.Id == DbSelectorService.dbCurrentId).FirstOrDefault().DbSourceDb.Id);
             LoadDbs();
         });
 
@@ -159,7 +160,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 DbsCollection.Add(item);
             }
-            DbCurrent = DbsCollection.Where(a=>a.DbSourceDb.Id==DbSelectorService.dbCurrentId).FirstOrDefault();
+            DbCurrent = DbsCollection.Where(a=>a.DbSourceDb.Id==DbSelectorService.dbCurrentId).FirstOrDefault().DepthClone<DbSource>();
         }
 
 
@@ -181,14 +182,20 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand DbSelector_Delete => new RelayCommand<DbSource>(async (db) =>
         {
-            var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
+            /*var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
             if (flag)
             {
                 DbSelectorService.RemoveDbAsync(db.DbSourceDb.Id);
-                DbsCollection.Remove(db);
+                foreach (var item in DbsCollection)
+                {
+                    if (item.DbSourceDb.Id== db.DbSourceDb.Id)
+                    {
+                        DbsCollection.Remove(db);
+                    }
+                }            
                 LoadDbs();
             }
-            else return;
+            else return;*/
         });
 
 

@@ -67,9 +67,9 @@ namespace OMDb.WinUI3.Services.Settings
         /// <summary>
         /// 获取所有Db源
         /// </summary>
-        private static async void LoadAllDbs()
+        private static void LoadAllDbs()
         {
-            var result = await Core.Services.DbSourceService.GetAllDbSource();
+            var result = Core.Services.DbSourceService.GetAllDbSource();
             dbsCollection.Clear();
             foreach (var item in result)
             {

@@ -20,11 +20,11 @@ namespace OMDb.Core.Services
         /// 获取DbSource
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<DbSourceDb>> GetAllDbSource()
+        public static  List<DbSourceDb> GetAllDbSource()
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<DbSourceDb>().ToListAsync();
+                return  DbService.LocalDb.Queryable<DbSourceDb>().ToList();
             }
             else
             {
