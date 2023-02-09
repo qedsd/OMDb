@@ -22,13 +22,23 @@ namespace OMDb.WinUI3.Helpers
             //timer.Elapsed += Timer_Elapsed;
         }
 
-        //private static void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        //{
-        //    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
-        //    {
-                
-        //    });
-        //}
+        public static void ShowSuccess(string msg)
+        {
+            InfoBar.Severity = InfoBarSeverity.Success;
+            InfoBar.Message = msg;
+            InfoBar.IsOpen = true;
+            //System.Timers.Timer timer = new System.Timers.Timer(3000);
+            //timer.AutoReset = false;
+            //timer.Elapsed += Timer_Elapsed;
+        }
+
+        /*private static void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+            {
+
+            });
+        }*/
 
         public static void ShowError(string msg)
         {

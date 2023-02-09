@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.DbModels;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,14 @@ namespace OMDb.Core.Services
         {
             return DbService.LocalDb != null;
         }
+
         /// <summary>
         /// 获取全部标签
         /// </summary>
         /// <returns></returns>
         public static async Task<List<LabelDb>> GetAllLabelAsync()
         {
-            if(IsLocalDbValid())
+            if (IsLocalDbValid())
             {
                 return await DbService.LocalDb.Queryable<LabelDb>().ToListAsync();
             }
@@ -28,6 +30,15 @@ namespace OMDb.Core.Services
                 return null;
             }
         }
+
+
+        public static async Task<List<LabelDb>> GetAllLabelAsync(string currentDb)
+        {
+            if (IsLocalDbValid()) return await DbService.LocalDb.Queryable<LabelDb>().Where(a=>a.DbSourceId== currentDb).ToListAsync();
+            else return null;
+        }
+
+
         public static async Task<int> GetLabelCountAsync()
         {
             if (IsLocalDbValid())
@@ -222,9 +233,9 @@ namespace OMDb.Core.Services
         }
         public static void AddLabel(LabelDb labelDb)
         {
-            if(string.IsNullOrEmpty(labelDb.Id))
+            if (string.IsNullOrEmpty(labelDb.Id))
             {
-                labelDb.Id = Guid.NewGuid().ToString(); 
+                labelDb.Id = Guid.NewGuid().ToString();
             }
             DbService.LocalDb.Insertable(labelDb).ExecuteCommand();
         }

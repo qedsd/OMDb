@@ -16,37 +16,13 @@
         <StackPanel Orientation="Vertical">
             <CommandBar OverflowButtonVisibility="Collapsed">
 
-                <!--<AppBarToggleButton Icon="Shuffle" Label="Shuffle"  />
-                <AppBarToggleButton Icon="RepeatAll" Label="Repeat" />
-                <AppBarSeparator/>-->
-
-                <!--<AppBarButton IsCompact="False"  Icon="Back" Label="Back"/>
-                <AppBarButton Icon="Stop" Label="Stop"/>
-                <AppBarButton Icon="Play" Label="Play"/>
-                <AppBarButton Icon="Forward" Label="Forward"/>-->
                 <AppBarButton Icon="Add" Command="{x:Bind VM.AddCommand}"/>
-                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}"/>
-
-
-                <!--<CommandBar.SecondaryCommands>
-                    <AppBarButton Label="Like" />
-                    <AppBarButton Label="Dislike" />
-                </CommandBar.SecondaryCommands>-->
-
-                <!--<CommandBar.Content>
-                    <TextBlock Text="Now playing..." Margin="12,14"/>
-                </CommandBar.Content>-->
-
+                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
             </CommandBar>
-
-            <!--<Button 
-            Width="50" Height="40"
-                HorizontalAlignment="Stretch"
-                Command="{x:Bind VM.RefreshCommand}">
-                <StackPanel>
-                    <SymbolIcon Symbol="Refresh"></SymbolIcon>
-                </StackPanel>
-            </Button>-->
 
             <controls:AdaptiveGridView
             Padding="20"
@@ -61,7 +37,7 @@
             StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>
-                        <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                        <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext,Mode=TwoWay}" />
                     </DataTemplate>
                 </controls:AdaptiveGridView.ItemTemplate>
             </controls:AdaptiveGridView>

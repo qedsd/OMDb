@@ -42,15 +42,7 @@ namespace OMDb.WinUI3.Dialogs
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 dbName = content.DbName.Text;
-                if (dbName == null)
-                {
-                    Helpers.DialogHelper.ShowError("请输入DbName");
-                    return null;
-                }
-                else
-                {
-                    return dbName;
-                }
+                return dbName;
             }
             else
             {

@@ -60,7 +60,7 @@
                         Padding="0"
                         HorizontalAlignment="Right"
                         BorderThickness="0"
-                        Command="{Binding Path=EditRootCommand}"
+                        Command="{Binding Path=EditSubCommand}"
                         CommandParameter="{x:Bind}"
                         DataContextChanged="RadioButtonEditButton_DataContextChanged"
                         Visibility="Collapsed">

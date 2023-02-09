@@ -120,35 +120,20 @@ namespace OMDb.WinUI3.ViewModels
             {
                 DbSelectorService.AddDbAsync(dbName);
                 LoadDbs();
+                Helpers.InfoHelper.ShowSuccess("添加成功");
             }
         });
 
-        public ICommand DbSelector_Edit => new RelayCommand<string>(async (dbName) =>
-        {
-            dbName = await EditDbSource.ShowDialog(dbName);
 
-            if (dbName == null || dbName.Count() == 0)
-            {
-                Helpers.InfoHelper.ShowError("请输入DbName");
-            }
-            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
-            {
-                Helpers.InfoHelper.ShowError("已存在同名DbSource");
-            }
-            else
-            {
-                DbSelectorService.AddDbAsync(dbName);
-                LoadDbs();
-            }
-        });
 
 
 
         public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
             //await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
-            await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbSourceDb.Id == DbSelectorService.dbCurrentId).FirstOrDefault().DbSourceDb.Id);
+            await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbSourceDb.Id == DbCurrent.DbSourceDb.Id).FirstOrDefault().DbSourceDb.Id);
             LoadDbs();
+            Helpers.InfoHelper.ShowSuccess("保存成功");
         });
 
         private void LoadDbs()
@@ -196,6 +181,25 @@ namespace OMDb.WinUI3.ViewModels
                 LoadDbs();
             }
             else return;*/
+        });
+
+        public ICommand DbSelector_Edit => new RelayCommand<DbSource>(async (db) =>
+        {
+            /*dbName = await EditDbSource.ShowDialog(dbName);
+
+            if (dbName == null || dbName.Count() == 0)
+            {
+                Helpers.InfoHelper.ShowError("请输入DbName");
+            }
+            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
+            {
+                Helpers.InfoHelper.ShowError("已存在同名DbSource");
+            }
+            else
+            {
+                DbSelectorService.AddDbAsync(dbName);
+                LoadDbs();
+            }*/
         });
 
 

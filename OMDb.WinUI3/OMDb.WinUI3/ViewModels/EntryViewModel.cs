@@ -146,7 +146,7 @@ namespace OMDb.WinUI3.ViewModels
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
-            var labelDbs = await Core.Services.LabelService.GetAllLabelAsync();
+            var labelDbs = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
             List<Label> labels = null;
             if (labelDbs != null)
             {

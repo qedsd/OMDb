@@ -33,7 +33,7 @@ namespace OMDb.Core.Services
         }
 
         /// <summary>
-        /// 新增仓库
+        /// 新增Db源
         /// </summary>
         /// <param name="dbSourceDb"></param>
         public static void AddDbSource(DbSourceDb dbSourceDb)
@@ -51,7 +51,7 @@ namespace OMDb.Core.Services
         }
 
         /// <summary>
-        /// 移除仓库
+        /// 移除Db源
         /// </summary>
         /// <param name="storageName"></param>
         public  static void RemoveDbSource(string dbId)
@@ -61,11 +61,22 @@ namespace OMDb.Core.Services
             DbService.LocalDb.Ado.ExecuteCommand(sb.ToString());
         }
 
+
         /// <summary>
-        /// 批量移除仓库
+        /// 修改Db源名称
+        /// </summary>
+        /// <param name="storageName"></param>
+        public static void EditDbSource(DbSourceDb db)
+        {
+            db.ModifyTime= DateTime.Now;
+            DbService.LocalDb.Updateable<DbSourceDb>(db).Where(a=>a.Id== db.Id).ExecuteCommand();
+        }
+
+        /// <summary>
+        /// 批量移除Db源
         /// </summary>
         /// <param name="storageNameCollection"></param>
-        public  static void RemoveDbSource(List<string> storageNameCollection)
+        public static void RemoveDbSource(List<string> storageNameCollection)
         {
             StringBuilder sb = new StringBuilder();
             var storageNameCollectionStr=string.Join(",", storageNameCollection);

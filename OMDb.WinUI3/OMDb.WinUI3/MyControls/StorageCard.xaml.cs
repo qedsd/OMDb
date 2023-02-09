@@ -26,111 +26,7 @@ namespace OMDb.WinUI3.MyControls
         {
             this.InitializeComponent();
         }
-        //#region 词条数
-        //public static readonly DependencyProperty EntryCountProperty = DependencyProperty.Register
-        //    (
-        //    "EntryCount",
-        //    typeof(int),
-        //    typeof(UserControl),
-        //    new PropertyMetadata(0, new PropertyChangedCallback(SetEntryCount))
-        //    );
-        //private static void SetEntryCount(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var card = d as StorageCard;
-        //    if (card != null)
-        //    {
-        //        card.TextBlock_EntryCount.Text = e.NewValue.ToString();
-        //    }
-        //}
-        //public int EntryCount
-        //{
-        //    get { return (int)GetValue(EntryCountProperty); }
 
-        //    set { SetValue(EntryCountProperty, value); }
-        //}
-        //#endregion
-        //#region 仓库名
-        //public static readonly DependencyProperty StorageNameProperty = DependencyProperty.Register
-        //    (
-        //    "StorageName",
-        //    typeof(string),
-        //    typeof(UserControl),
-        //    new PropertyMetadata(0, new PropertyChangedCallback(SetStorageName))
-        //    );
-        //private static void SetStorageName(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var card = d as StorageCard;
-        //    if (card != null)
-        //    {
-        //        card.TextBlock_StorageName.Text = e.NewValue.ToString();
-        //    }
-        //}
-        //public string StorageName
-        //{
-        //    get { return (string)GetValue(StorageNameProperty); }
-
-        //    set { SetValue(StorageNameProperty, value); }
-        //}
-        //#endregion
-        //#region 仓库路径
-        //public static readonly DependencyProperty StoragePathProperty = DependencyProperty.Register
-        //    (
-        //    "StoragePath",
-        //    typeof(string),
-        //    typeof(UserControl),
-        //    new PropertyMetadata(0, new PropertyChangedCallback(SetStoragePath))
-        //    );
-        //private static void SetStoragePath(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var card = d as StorageCard;
-        //    if (card != null)
-        //    {
-        //        if (string.IsNullOrEmpty(e.NewValue.ToString()))//空，显示添加按钮
-        //        {
-        //            card.AddGrid.Visibility = Visibility.Visible;
-        //            card.ShowGrid.Visibility = Visibility.Collapsed;
-        //        }
-        //        else
-        //        {
-        //            card.AddGrid.Visibility = Visibility.Collapsed;
-        //            card.ShowGrid.Visibility = Visibility.Visible;
-        //            card.TextBlock_StoragePath.Text = e.NewValue.ToString();
-        //        }
-        //    }
-        //}
-        //public string StoragePath
-        //{
-        //    get { return (string)GetValue(StoragePathProperty); }
-
-        //    set { SetValue(StoragePathProperty, value); }
-        //}
-        //#endregion
-        //#region 封面图片
-        //public static readonly DependencyProperty CoverImgProperty = DependencyProperty.Register
-        //    (
-        //    "CoverImg",
-        //    typeof(string),
-        //    typeof(UserControl),
-        //    new PropertyMetadata(0, new PropertyChangedCallback(SetCoverImg))
-        //    );
-        //private static void SetCoverImg(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    var card = d as StorageCard;
-        //    if (card != null)
-        //    {
-        //        if (!string.IsNullOrEmpty(e.NewValue.ToString()))
-        //        {
-        //            card.Image_Cover.Source = new BitmapImage(new Uri(e.NewValue.ToString()));
-        //        }
-        //    }
-        //}
-        //public string CoverImg
-        //{
-        //    get { return (string)GetValue(CoverImgProperty); }
-
-        //    set { SetValue(CoverImgProperty, value); }
-        //}
-        //#endregion
         public static readonly DependencyProperty EnrtyStorageProperty = DependencyProperty.Register
             (
             "EnrtyStorage",
@@ -187,7 +83,13 @@ namespace OMDb.WinUI3.MyControls
                 RemoveStorageEvent?.Invoke(EnrtyStorage);
             }
         }
+
+
         public delegate void RemoveStorage(Models.EnrtyStorage enrtyStorage);
         public static event RemoveStorage RemoveStorageEvent;
+
+        public delegate void RefreshStorage(Models.EnrtyStorage enrtyStorage);
+        public static event RefreshStorage RefreshStorageEvent;
+
     }
 }

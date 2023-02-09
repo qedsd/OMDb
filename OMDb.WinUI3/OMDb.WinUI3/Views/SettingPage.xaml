@@ -143,8 +143,8 @@
                             DataContextChanged="RadioButtonss_DataContextChanged"
                             Header="DbSelector:"
                             ItemsSource="{x:Bind VM.DbsCollection, Mode=TwoWay}"
-                            MaxColumns="5">
-                            <!--SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}"-->
+                            MaxColumns="5"
+                            SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
                             <RadioButtons.ItemTemplate>
                                 <DataTemplate x:DataType="models:DbSource">
                                     <Interactivity:Interaction.Behaviors>
@@ -183,6 +183,7 @@
                                                 HorizontalAlignment="Right"
                                                 Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
                                                 BorderThickness="0"
+                                                Click="RadioButtonEditButton_Click"
                                                 Command="{Binding DbSelector_Edit}"
                                                 CommandParameter="{x:Bind}"
                                                 DataContextChanged="Button_DataContextChanged">

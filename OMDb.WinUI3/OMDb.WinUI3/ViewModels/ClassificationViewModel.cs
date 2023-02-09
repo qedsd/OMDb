@@ -89,7 +89,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 LabelsDic.Clear();
             }
-            var labels = await Core.Services.LabelService.GetAllLabelAsync();
+            var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
             if (labels != null)
             {
                 foreach (var label in labels)

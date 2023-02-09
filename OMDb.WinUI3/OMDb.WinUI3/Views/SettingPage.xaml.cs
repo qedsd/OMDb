@@ -144,18 +144,48 @@ namespace OMDb.WinUI3.Views
 
         }
 
+        //删除Db源点击事件
         private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
             if (flag)
             {
-                var dbId = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.Id; ;
+                var dbId = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.Id; 
                 Services.Settings.DbSelectorService.RemoveDbAsync(dbId);
                 VM.DbSelector_Refresh.Execute(null);
+                Helpers.InfoHelper.ShowSuccess("删除完成");
             }
             else
             {
                 return;
+            }
+        }
+
+        //编辑Db源点击事件
+        private async void RadioButtonEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dbName = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName;
+            var dbName_New = await Dialogs.EditDbSource.ShowDialog(dbName);
+
+            if (dbName == null || dbName.Count() == 0)
+            {
+                Helpers.InfoHelper.ShowError("请输入DbName");
+            }
+            else if (dbName_New==dbName)
+            {
+                return;
+                VM.DbSelector_Refresh.Execute(null);
+            }
+            else if (Services.Settings.DbSelectorService.dbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName_New))
+            {
+                Helpers.InfoHelper.ShowError("已存在同名DbSource");
+            }
+            else
+            {
+                ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName = dbName_New;
+                Services.Settings.DbSelectorService.EditDbAsync(((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb);
+                Helpers.InfoHelper.ShowSuccess("编辑完成");
+                VM.DbSelector_Refresh.Execute(null);
             }
         }
     }

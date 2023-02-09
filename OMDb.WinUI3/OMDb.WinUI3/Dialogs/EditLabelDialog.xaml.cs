@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,6 +46,7 @@ namespace OMDb.WinUI3.Dialogs
             {
                 content.Label.Name = content.TextBox_Name.Text;
                 content.Label.Description = content.TextBox_Desc.Text;
+                content.Label.DbSourceId = DbSelectorService.dbCurrentId;
                 return content.Label;
             }
             else

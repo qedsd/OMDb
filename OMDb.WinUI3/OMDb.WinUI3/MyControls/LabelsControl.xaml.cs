@@ -171,7 +171,7 @@ namespace OMDb.WinUI3.MyControls
         {
             if(AllLabels == null)
             {
-                var labels = await Core.Services.LabelService.GetAllLabelAsync();
+                var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
                 if (labels != null)
                 {
                     AllLabels = labels.Select(p => new Models.Label(p)).ToList();

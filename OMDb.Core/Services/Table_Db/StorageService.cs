@@ -32,6 +32,23 @@ namespace OMDb.Core.Services
             }
         }
 
+
+        /// <summary>
+        /// 获取全部仓库
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<List<StorageDb>> GetAllStorageAsync(string dbSourceId)
+        {
+            if (IsLocalDbValid())
+            {
+                return await DbService.LocalDb.Queryable<StorageDb>().Where(a=>a.DbSourceId== dbSourceId).ToListAsync();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static void AddStorage(StorageDb storageDb)
         {
             if (string.IsNullOrEmpty(storageDb.Id))
@@ -40,9 +57,9 @@ namespace OMDb.Core.Services
             }
             DbService.LocalDb.Insertable(storageDb).ExecuteCommand();
         }
-        public static void RemoveStorage(string storageName)
+        public static void RemoveStorage(string dbSourceId,string storageName)
         {
-            RemoveStorage(new List<string>() { storageName });
+            DbService.LocalDb.Deleteable<StorageDb>().Where(a => a.DbSourceId == dbSourceId&&a.StorageName==storageName);
         }
 
         public static void RemoveStorage(List<string> storageName)

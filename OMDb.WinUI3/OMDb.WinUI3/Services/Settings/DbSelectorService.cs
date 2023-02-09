@@ -64,6 +64,13 @@ namespace OMDb.WinUI3.Services.Settings
             Core.Services.DbSourceService.RemoveDbSource(DbId);
         }
 
+        //修改Db名称源
+        public static void EditDbAsync(Core.DbModels.DbSourceDb db)
+        {
+            Core.Services.DbSourceService.EditDbSource(db);
+        }
+
+
         /// <summary>
         /// 获取所有Db源
         /// </summary>

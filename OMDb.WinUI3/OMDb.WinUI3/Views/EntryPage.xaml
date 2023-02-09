@@ -53,6 +53,14 @@
                 HorizontalAlignment="Right"
                 DefaultLabelPosition="Right">
                 <AppBarButton
+                    Command="{x:Bind VM.RefreshCommand}"
+                    Icon="Refresh"
+                    Label="刷新">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+                <AppBarButton
                     Command="{x:Bind VM.AddEntryCommand}"
                     Icon="Add"
                     Label="新增" />

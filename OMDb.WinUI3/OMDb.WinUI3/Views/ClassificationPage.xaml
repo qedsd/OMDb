@@ -17,6 +17,7 @@
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
+    <!--  分类页  -->
     <Page.DataContext>
         <viewmodels:ClassificationViewModel />
     </Page.DataContext>

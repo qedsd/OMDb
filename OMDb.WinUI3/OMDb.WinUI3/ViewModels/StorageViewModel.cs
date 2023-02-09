@@ -38,11 +38,12 @@ namespace OMDb.WinUI3.ViewModels
             Init();
             MyControls.StorageCard.AddStorageEvent += StorageCard_AddStorageEvent;
             MyControls.StorageCard.RemoveStorageEvent += StorageCard_RemoveStorageEvent;
+            //MyControls.StorageCard.RefreshStorageEvent += StorageCard_RemoveStorageEvent;
         }
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
-            Helpers.InfoHelper.ShowMsg("刷新完成");
+            Helpers.InfoHelper.ShowSuccess("刷新完成");
         });
         public ICommand AddCommand => new RelayCommand(async () =>
         {
@@ -56,13 +57,13 @@ namespace OMDb.WinUI3.ViewModels
             EnrtyStorages.Remove(enrtyStorage);
             Core.Config.RemoveDb(enrtyStorage.StorageName);
             Services.ConfigService.LoadStorages();
-            Core.Services.StorageService.RemoveStorage(enrtyStorage.StorageName);
+            Core.Services.StorageService.RemoveStorage(Services.Settings.DbSelectorService.dbCurrentId,enrtyStorage.StorageName);
             Init();
         }
 
         public async void Init()
         {
-            var lstStorage = await Core.Services.StorageService.GetAllStorageAsync();
+            var lstStorage = await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
             if (EnrtyStorages != null) { EnrtyStorages.Clear(); } else { enrtyStorages = new ObservableCollection<EnrtyStorage>(); }
             if (lstStorage != null)
             {
@@ -73,7 +74,7 @@ namespace OMDb.WinUI3.ViewModels
                     enrtyStorage.StoragePath = item.StoragePath;
                     enrtyStorage.CoverImg = item.CoverImg;
                     enrtyStorage.EntryCount = (int)item.EntryCount;
-                    enrtyStorages.Add(enrtyStorage);
+                    EnrtyStorages.Add(enrtyStorage);
                 }
             }
         }
@@ -128,7 +129,8 @@ namespace OMDb.WinUI3.ViewModels
                                     StorageName = enrtyStorage.StorageName,
                                     StoragePath = enrtyStorage.StoragePath,
                                     EntryCount = enrtyStorage.EntryCount,
-                                    CoverImg = enrtyStorage.CoverImg
+                                    CoverImg = enrtyStorage.CoverImg,
+                                    DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
                                 };
                                 Core.Services.StorageService.AddStorage(storageDb);
                             }
@@ -143,7 +145,8 @@ namespace OMDb.WinUI3.ViewModels
                                     StorageName = enrtyStorage.StorageName,
                                     StoragePath = enrtyStorage.StoragePath,
                                     EntryCount = 0,
-                                    CoverImg = enrtyStorage.CoverImg
+                                    CoverImg = enrtyStorage.CoverImg,
+                                    DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
                                 };
                                 Core.Services.StorageService.AddStorage(storageDb);
                             }

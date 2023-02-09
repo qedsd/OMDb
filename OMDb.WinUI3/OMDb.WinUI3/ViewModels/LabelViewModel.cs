@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml;
 using System.IO;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using OMDb.WinUI3.Services.Settings;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -218,7 +219,7 @@ namespace OMDb.WinUI3.ViewModels
             ConfigPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Assets/Config/LabelConfig.xml";
             xe = XElement.Load(ConfigPath);
 
-            var labels = await Core.Services.LabelService.GetAllLabelAsync();
+            var labels = await Core.Services.LabelService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
             if (labels != null)
             {
                 Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();
@@ -303,6 +304,7 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
+            Helpers.InfoHelper.ShowSuccess("刷新完成");
         });
         public ICommand AddRootCommand => new RelayCommand(async () =>
         {
@@ -339,6 +341,10 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         });
+
+        /// <summary>
+        /// 编辑二级标签 Edit 2nd Tag 
+        /// </summary>
         public ICommand EditSubCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
@@ -366,6 +372,10 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         });
+
+        /// <summary>
+        /// 编辑一级标签 Edit 1st Tag
+        /// </summary>
         public ICommand EditRootCommand => new RelayCommand<LabelTree>(async (item) =>
         {
             if (item != null)
