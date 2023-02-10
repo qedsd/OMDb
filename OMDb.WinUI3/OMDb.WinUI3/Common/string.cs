@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ConsoleDemo.Helper
+namespace OMDb.WinUI3 
 {
     public static class @string
     {
@@ -54,7 +54,16 @@ namespace ConsoleDemo.Helper
             return sourceStr.Substring(startIndex, endIndex - startIndex);
         }
 
-        public static string SubString02B(this string sourceStr, string str_End, int n_End, bool isForward_End = true)
+        /// <summary>
+        /// 字符串初始位置截取到指定位置
+        /// </summary>
+        /// <param name="sourceStr">原始字符串</param>
+        /// <param name="str_End">终止字符串</param>
+        /// <param name="n_End">第几个终止字符串</param>
+        /// <param name="isForward_End">终止字符串 是否从前往后数</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static string SubString_02B(this string sourceStr, string str_End, int n_End, bool isForward_End = true)
         {
             if (str_End == string.Empty) return sourceStr;
             if (!sourceStr.Contains(str_End)) throw new Exception(string.Format($@"Source string does not exist:[{str_End}]"));
@@ -63,7 +72,7 @@ namespace ConsoleDemo.Helper
             return sourceStr.SubStringByIndex(0, index_End) + str_End;
         }
 
-        public static string SubStringA21(this string sourceStr, string str_Start, int n_Start, bool isForward_Start = true)
+        public static string SubString_A21(this string sourceStr, string str_Start, int n_Start, bool isForward_Start = true)
         {
             if (str_Start == string.Empty) return sourceStr;
             if (!sourceStr.Contains(str_Start)) throw new Exception(string.Format($@"Source string does not exist:[{str_Start}]"));
@@ -72,7 +81,7 @@ namespace ConsoleDemo.Helper
             return sourceStr.SubStringByIndex(index_Start, sourceStr.Length);
         }
 
-        public static string SubStringA2B(this string sourceStr,
+        public static string SubString_A2B(this string sourceStr,
             string str_Start, string str_End, int n_Start, int n_End,
             bool isForward_Start = true, bool isForward_End = true)
         {

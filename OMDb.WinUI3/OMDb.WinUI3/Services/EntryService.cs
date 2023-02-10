@@ -55,7 +55,9 @@ namespace OMDb.WinUI3.Services
         /// <param name="entry"></param>
         private static void InitFile(Models.EntryDetail entry)
         {
-            string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.ImgFolder, Path.GetFileName(entry.FullCoverImgPath));
+            //string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder, Path.GetFileName(entry.FullCoverImgPath));
+            var coverType = Path.GetFileName(entry.FullCoverImgPath).SubString_A21(".",1);
+            string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder, "Cover"+ coverType);
             if(newImgCoverPath != entry.FullCoverImgPath)
             {
                 File.Copy(entry.FullCoverImgPath, newImgCoverPath, true);
@@ -80,10 +82,12 @@ namespace OMDb.WinUI3.Services
         private static void InitFolder(Models.EntryDetail entry)
         {
             Directory.CreateDirectory(entry.FullEntryPath);
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.AudioFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ImgFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.VideoFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ResourceFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
         }
         /// <summary>
         /// 保存至数据库
@@ -97,6 +101,8 @@ namespace OMDb.WinUI3.Services
             {
                 Core.Services.EntryService.AddEntry(entry.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.Id, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
+
+                //添加标签
                 if (entry.Labels?.Count != 0)
                 {
                     List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(entry.Labels.Count);

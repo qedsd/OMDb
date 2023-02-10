@@ -79,7 +79,7 @@ namespace OMDb.WinUI3.Dialogs
                     FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
                 };
-                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.ImgFolder,Path.GetFileName(entry.CoverImg));
+                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder,Path.GetFileName(entry.CoverImg));
                 entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
                 return entryDetail;
                 //return new Tuple<Core.Models.Entry, List<Models.EntryName>>(entry,content.VM.EntryNames);

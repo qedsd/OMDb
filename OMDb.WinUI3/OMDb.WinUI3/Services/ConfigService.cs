@@ -16,24 +16,40 @@ namespace OMDb.WinUI3.Services
         /// 默认词条路径
         /// 相对于仓库路径
         /// </summary>
-        public static string DefaultEntryFolder { get; } = "Entries";
+        public static string DefaultEntryFolder 
+        { 
+            get;
+            set;
+        }  
+
+
         /// <summary>
-        /// 字幕文件夹
+        /// 资源文件夹
         /// </summary>
-        public static string SubFolder { get; } = "Sub";
+        public static string ResourceFolder { get; } = @"Resource";
         /// <summary>
-        /// 图片文件夹
+        /// 资源文件夹->图片资源文件夹
         /// </summary>
-        public static string ImgFolder { get; } = "Img";
+        public static string ImgFolder { get; } = @"Resource\Img";
         /// <summary>
-        /// 视频文件夹
+        /// 资源文件夹->视频资源文件夹
         /// </summary>
-        public static string VideoFolder { get; } = "Video";
+        public static string AudioFolder { get; } = @"Resource\Audio";
         /// <summary>
-        /// 下载源文件夹
-        /// BT之类
+        /// 资源文件夹->视频资源文件夹
         /// </summary>
-        public static string ResourceFolder { get; } = "Resource";
+        public static string VideoFolder { get; } = @"Resource\Video";
+        /// <summary>
+        /// 资源文件夹->视频资源文件夹->字幕资源文件夹
+        /// </summary>
+        public static string SubFolder { get; } = @"Resource\Video\Sub";
+
+        /// <summary>
+        /// 资源文件夹->视频资源文件夹
+        /// </summary>
+        public static string InfoFolder { get; } = "Info";
+
+
         /// <summary>
         /// 元文件文件名
         /// </summary>

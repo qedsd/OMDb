@@ -173,8 +173,8 @@ namespace OMDb.WinUI3.Views
             }
             else if (dbName_New==dbName)
             {
-                return;
                 VM.DbSelector_Refresh.Execute(null);
+                return;                
             }
             else if (Services.Settings.DbSelectorService.dbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName_New))
             {

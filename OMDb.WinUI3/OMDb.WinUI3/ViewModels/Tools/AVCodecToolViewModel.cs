@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using ConsoleDemo.Helper;
 using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models.Tools;
 using System;

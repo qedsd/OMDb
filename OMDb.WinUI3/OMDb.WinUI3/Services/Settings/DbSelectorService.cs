@@ -50,6 +50,7 @@ namespace OMDb.WinUI3.Services.Settings
         private static async Task SaveInSettingsAsync(string dbc)
         {
             await SettingService.SetValueAsync(Key, dbc.ToString());
+            ConfigService.DefaultEntryFolder = @$".omdb\{dbsCollection.Where(a=>a.IsChecked=true).FirstOrDefault().DbSourceDb.DbName}";
         }
 
         //添加

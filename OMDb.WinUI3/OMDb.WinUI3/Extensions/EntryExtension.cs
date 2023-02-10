@@ -57,7 +57,7 @@ namespace OMDb.WinUI3.Extensions
         public static List<string> GetBestImg(this Core.Models.Entry entry,bool horizontalFirst)
         {
             var fullPath = entry.GetFullPath();
-            string imgFolder = Path.Combine(fullPath, Services.ConfigService.ImgFolder);
+            string imgFolder = Path.Combine(fullPath, Services.ConfigService.InfoFolder);
             if (Directory.Exists(imgFolder))
             {
                 var items = Helpers.FileHelper.GetAllFiles(imgFolder);

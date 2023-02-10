@@ -243,7 +243,7 @@ namespace OMDb.WinUI3.ViewModels
             foreach(var entry in entries)
             {
                 var fullPath = Helpers.PathHelper.EntryFullPath(entry);
-                string imgFolder = Path.Combine(fullPath, Services.ConfigService.ImgFolder);
+                string imgFolder = Path.Combine(fullPath, Services.ConfigService.InfoFolder);
                 if (Directory.Exists(imgFolder))
                 {
                     var items = Helpers.FileHelper.GetAllFiles(imgFolder);

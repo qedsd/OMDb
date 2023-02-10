@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using ConsoleDemo.Helper;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using OMDb.Core.DbModels;
@@ -85,7 +84,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 try
                 {
-                    var storagePathFolder = enrtyStorage.StoragePath.SubString02B(@"\", 1, false);
+                    var storagePathFolder = enrtyStorage.StoragePath.SubString_02B(@"\", 1, false);
                     bool isPathCorrect_Storage = Directory.Exists(storagePathFolder);
                     if (!isPathCorrect_Storage)
                     {
