@@ -53,10 +53,10 @@ namespace OMDb.WinUI3.Services
         /// <summary>
         /// 元文件文件名
         /// </summary>
-        public static string MetadataFileNmae { get; } = "metadata.json";
+        public static string MetadataFileNmae { get; } = "MetaData.json";
 
         public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; }
-        private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
+        
         public static void Load()
         {    
             Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
@@ -86,6 +86,8 @@ namespace OMDb.WinUI3.Services
 
             }
         }
+
+        /*private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
         public static void Save()
         {
             string json = JsonConvert.SerializeObject(EnrtyStorages.Take(EnrtyStorages.Count - 1));
@@ -95,8 +97,8 @@ namespace OMDb.WinUI3.Services
                 System.IO.Directory.CreateDirectory(entryStoragePath);
             }
             System.IO.File.WriteAllText(EnrtyStorageFile, json);
-        }
+        }*/
 
-        
+
     }
 }

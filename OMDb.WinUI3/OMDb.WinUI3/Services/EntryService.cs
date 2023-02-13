@@ -1,4 +1,6 @@
-﻿using OMDb.WinUI3.Events;
+﻿using OMDb.Core.DbModels;
+using OMDb.Core.Models;
+using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -33,11 +35,22 @@ namespace OMDb.WinUI3.Services
                         }
                     }
                 }
-                //此时的entry封面图、存储路径都是完整路径
-                //创建文件夹、元文件、复制封面、保存数据库
+
+                //创建词条文件夹
                 InitFolder(entryDetail);
+
+                //复制封面图(Cover)、并同步修改封面路径
+                var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1, false);
+                string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
+                if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }                
+                entryDetail.FullCoverImgPath = newImgCoverPath;
+
+                //创建元数据(MataData)
                 InitFile(entryDetail);
+
+                //保存至数据库
                 await SaveToDbAsync(entryDetail);
+
                 //这时已经是相对路径
                 Helpers.InfoHelper.ShowSuccess("创建成功");
                 GlobalEvent.NotifyAddEntry(null,new EntryEventArgs(entryDetail.Entry));
@@ -49,19 +62,11 @@ namespace OMDb.WinUI3.Services
             }
         }
         /// <summary>
-        /// 复制封面图、元数据
-        /// 会将entry.CoverImg修改为最终路径
+        /// 创建元数据(MataData)
         /// </summary>
         /// <param name="entry"></param>
         private static void InitFile(Models.EntryDetail entry)
         {
-            //string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder, Path.GetFileName(entry.FullCoverImgPath));
-            var coverType = Path.GetFileName(entry.FullCoverImgPath).SubString_A21(".",1);
-            string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder, "Cover"+ coverType);
-            if(newImgCoverPath != entry.FullCoverImgPath)
-            {
-                File.Copy(entry.FullCoverImgPath, newImgCoverPath, true);
-            }
             string metaDateFile = Path.Combine(entry.FullEntryPath, Services.ConfigService.MetadataFileNmae);
             Core.Models.EntryMetadata metadata;
             if (System.IO.File.Exists(metaDateFile))
@@ -79,6 +84,9 @@ namespace OMDb.WinUI3.Services
             }
             metadata.Save(metaDateFile);
         }
+
+
+        //创建词条(Entry)路径 (仓库 -> .omdb -> Db源 -> 词条)
         private static void InitFolder(Models.EntryDetail entry)
         {
             Directory.CreateDirectory(entry.FullEntryPath);
@@ -89,6 +97,8 @@ namespace OMDb.WinUI3.Services
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
         }
+
+
         /// <summary>
         /// 保存至数据库
         /// </summary>
@@ -111,6 +121,8 @@ namespace OMDb.WinUI3.Services
                 }
             });
         }
+
+
         /// <summary>
         /// 保存至数据库
         /// </summary>

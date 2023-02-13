@@ -8,6 +8,9 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Windows.Storage;
+using Windows.Storage.BulkAccess;
+using Windows.Storage.Search;
 
 namespace OMDb.WinUI3.Services.Settings
 {
@@ -16,10 +19,11 @@ namespace OMDb.WinUI3.Services.Settings
         private const string Key = "DbSelector";
         public static string dbCurrentId = string.Empty;
         public static List<DbSource> dbsCollection = new List<DbSource>();
-        public static void Initialize()
+        public static async void Initialize()
         {
             LoadAllDbs();
             LoadFromSettings();
+            ConfigService.DefaultEntryFolder = @$".omdb\{dbsCollection.Where(a => a.IsChecked = true).FirstOrDefault().DbSourceDb.DbName}";
         }
         public static async Task SetAsync(string dbSwich)
         {
@@ -32,7 +36,6 @@ namespace OMDb.WinUI3.Services.Settings
         private static async void LoadFromSettings()
         {
             dbCurrentId = Convert.ToString(SettingService.GetValue(Key));
-
             //数据库读取所有Db源
             LoadAllDbs();
 

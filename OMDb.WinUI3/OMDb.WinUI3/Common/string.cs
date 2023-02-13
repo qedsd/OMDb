@@ -63,21 +63,21 @@ namespace OMDb.WinUI3
         /// <param name="isForward_End">终止字符串 是否从前往后数</param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static string SubString_02B(this string sourceStr, string str_End, int n_End, bool isForward_End = true)
+        public static string SubString_02B(this string sourceStr, string str, int n, bool isForward = true)
         {
-            if (str_End == string.Empty) return sourceStr;
-            if (!sourceStr.Contains(str_End)) throw new Exception(string.Format($@"Source string does not exist:[{str_End}]"));
-            var index_End = sourceStr.NIndex(str_End, n_End, isForward_End);
-            if (index_End == -1) throw new Exception(string.Format($@"{str_End}[{n_End}] out of index!"));
-            return sourceStr.SubStringByIndex(0, index_End) + str_End;
+            if (str == string.Empty) return sourceStr;
+            if (!sourceStr.Contains(str)) throw new Exception(string.Format($@"Source string does not exist:[{str}]"));
+            var index = sourceStr.NIndex(str, n, isForward);
+            if (index == -1) throw new Exception(string.Format($@"{str}[{n}] out of index!"));
+            return sourceStr.SubStringByIndex(0, index) + str;
         }
 
-        public static string SubString_A21(this string sourceStr, string str_Start, int n_Start, bool isForward_Start = true)
+        public static string SubString_A21(this string sourceStr, string str, int n, bool isForward = true)
         {
-            if (str_Start == string.Empty) return sourceStr;
-            if (!sourceStr.Contains(str_Start)) throw new Exception(string.Format($@"Source string does not exist:[{str_Start}]"));
-            var index_Start = sourceStr.NIndex(str_Start, n_Start, isForward_Start);
-            if (index_Start == -1) throw new Exception(string.Format($@"{str_Start}[{n_Start}] out of index!"));
+            if (str == string.Empty) return sourceStr;
+            if (!sourceStr.Contains(str)) throw new Exception(string.Format($@"Source string does not exist:[{str}]"));
+            var index_Start = sourceStr.NIndex(str, n, isForward);
+            if (index_Start == -1) throw new Exception(string.Format($@"{str}[{n}] out of index!"));
             return sourceStr.SubStringByIndex(index_Start, sourceStr.Length);
         }
 

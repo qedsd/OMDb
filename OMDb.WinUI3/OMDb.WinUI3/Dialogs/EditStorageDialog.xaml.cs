@@ -80,21 +80,23 @@ namespace OMDb.WinUI3.Dialogs
             }
         }
 
-        private async void Button_PickStorage_Click(object sender, RoutedEventArgs e)
+        /*private async void Button_PickStorage_Click(object sender, RoutedEventArgs e)
         {
             var file = await Helpers.PickHelper.PickFileAsync(".db");
             if (file != null)
             {
                 EnrtyStorage.StoragePath = file.Path;
             }
-        }
+        }*/
 
         private async void Button_NewStoragePath_Click(object sender, RoutedEventArgs e)
         {
             var file = await Helpers.PickHelper.PickFolderAsync();
             if (file != null)
             {
-                EnrtyStorage.StoragePath = System.IO.Path.Combine(file.Path, "OMDb.db");
+                //EnrtyStorage.StoragePath = System.IO.Path.Combine(file.Path, "OMDb.db");
+                EnrtyStorage.StoragePath =file.Path;
+                EnrtyStorage.StorageName=file.Name;
             }
         }
     }
