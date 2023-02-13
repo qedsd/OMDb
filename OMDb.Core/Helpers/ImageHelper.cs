@@ -248,7 +248,7 @@ namespace OMDb.Core.Helpers
         /// <param name="height">如果为0则依据width等比例缩放</param>
         public static async Task<MemoryStream> ResetSizeAsync(string path, int width, int height)
         {
-            using (Image image = Image.Load(path+@"\Cover.Jpg"))
+            using (Image image = Image.Load(path))
             {
                 if (width != 0 && height != 0)
                 {

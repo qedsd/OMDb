@@ -30,7 +30,7 @@ namespace OMDb.WinUI3.Services
         /// <summary>
         /// 资源文件夹->图片资源文件夹
         /// </summary>
-        public static string ImgFolder { get; } = @"Resource\Img";
+        public static string ImgFolder { get; } = @"Resource\Image";
         /// <summary>
         /// 资源文件夹->视频资源文件夹
         /// </summary>
@@ -80,7 +80,7 @@ namespace OMDb.WinUI3.Services
                     enrtyStorage.EntryCount = (int)item.EntryCount;
                     EnrtyStorages.Add(enrtyStorage);
 
-                    Core.Config.AddDbFile(item.StoragePath, item.StorageName, false);
+                    Core.Config.AddDbFile(item.StoragePath+@"\omdb.db", item.StorageName, false);
 
                 }
 

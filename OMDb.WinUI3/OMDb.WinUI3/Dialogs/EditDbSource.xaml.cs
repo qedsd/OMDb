@@ -46,7 +46,7 @@ namespace OMDb.WinUI3.Dialogs
             }
             else
             {
-                return null;
+                return "04833378-22bb-465b-9582-fb1bab622de";
             }
         }
     }

@@ -104,7 +104,8 @@ namespace OMDb.WinUI3.ViewModels
                 var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, $@".omdb");
                 Directory.CreateDirectory(path_omdb);
                 var path_omdb_Cover = @$"{path_omdb}\Cover{enrtyStorage.CoverImg.SubString_A21(".", 1, false)}";
-                File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
+                if(!File.Exists(path_omdb_Cover))File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
+                var path_omdb_db = $@"{path_omdb}\omdb.db";
 
 
                 try
@@ -113,8 +114,8 @@ namespace OMDb.WinUI3.ViewModels
                     if (EnrtyStorages.FirstOrDefault(p => p.StorageName == enrtyStorage.StorageName) != null) { await Dialogs.MsgDialog.ShowDialog("存在重名仓库"); }
                     else
                     {
-                        bool needCodeFirst = !System.IO.File.Exists(enrtyStorage.StoragePath);
-                        if (Core.Config.AddDbFile(enrtyStorage.StoragePath, enrtyStorage.StorageName, needCodeFirst))
+                        bool needCodeFirst = !System.IO.File.Exists(path_omdb_db);
+                        if (Core.Config.AddDbFile(path_omdb_db, enrtyStorage.StorageName, needCodeFirst))
                         {
                             Helpers.InfoHelper.ShowSuccess("创建成功");
                             //添加旧仓库

@@ -167,7 +167,12 @@ namespace OMDb.WinUI3.Views
             var dbName = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName;
             var dbName_New = await Dialogs.EditDbSource.ShowDialog(dbName);
 
-            if (dbName == null || dbName.Count() == 0)
+            if (dbName_New == "04833378-22bb-465b-9582-fb1bab622de")
+            {
+                VM.DbSelector_Refresh.Execute(null);
+                return;
+            }
+            if (dbName_New == null || dbName_New.Count() == 0)
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
