@@ -33,7 +33,7 @@
             OneRowModeEnabled="False"
 
             ItemClickCommand="{x:Bind VM.ItemClickCommand}"
-            SelectionMode="None"
+            SelectionMode="Multiple"
             StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>
