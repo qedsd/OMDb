@@ -136,7 +136,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Id = Guid.NewGuid().ToString(),
                     DbId = Entry.Entry.DbId,
-                    EntryId = Entry.Entry.Id,
+                    EntryId = Entry.Entry.EntryId,
                     Done = NewHistorDone,
                     Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0),
                     Mark = NewHistorMark
@@ -220,8 +220,8 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand SaveNamesCommand => new RelayCommand(async() =>
         {
             Names = Names.Where(p=>!string.IsNullOrEmpty(p.Name)).ToObservableCollection();
-            await Core.Services.EntryNameSerivce.RemoveNamesAsync(Entry.Entry.Id,Entry.Entry.DbId);
-            await Core.Services.EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.Id)).ToList(), Entry.Entry.DbId);
+            await Core.Services.EntryNameSerivce.RemoveNamesAsync(Entry.Entry.EntryId, Entry.Entry.DbId);
+            await Core.Services.EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.EntryId)).ToList(), Entry.Entry.DbId);
             string oldEntryName = Entry.Name;
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
@@ -488,13 +488,13 @@ namespace OMDb.WinUI3.ViewModels
                 int addCount = 0;
                 foreach (var collection in collections)
                 {
-                    if(Core.Services.EntryCollectionService.QueryFirst(collection.Id, Entry.Entry.Id) == null)
+                    if(Core.Services.EntryCollectionService.QueryFirst(collection.Id, Entry.Entry.EntryId) == null)
                     {
                         addCount++;
                         EntryCollectionItemDb entryCollectionItemDb = new EntryCollectionItemDb()
                         {
                             Id = Guid.NewGuid().ToString(),
-                            EntryId = Entry.Entry.Id,
+                            EntryId = Entry.Entry.EntryId,
                             DbId = Entry.Entry.DbId,
                             CollectionId = collection.Id,
                             AddTime = DateTime.Now

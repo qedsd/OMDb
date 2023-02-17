@@ -22,5 +22,7 @@ namespace OMDb.Core.DbModels
         [SugarColumn(IsNullable = true)]
         public string ParentId { get; set; }
         public string DbSourceId { get; set; }
+        public bool IsShow { get; set; }
+        public bool IsProperty { get; set; }
     }
 }

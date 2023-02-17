@@ -17,7 +17,7 @@ namespace OMDb.Core.DbModels
         /// 本地唯一Id
         /// </summary>
         [SugarColumn(IsPrimaryKey = true)]
-        public string Id { get; set; }
+        public string EntryId { get; set; }
         /// <summary>
         /// 文件夹存储路径
         /// 当前数据库相对路径
@@ -54,5 +54,15 @@ namespace OMDb.Core.DbModels
         /// 我的评分
         /// </summary>
         public double? MyRating { get; set; }
+
+        /// <summary>
+        /// 类型 1:指向文件夹 2:指向文件 3:本地存储
+        /// </summary>
+        public string Type { get; set; }
+
+        //资源文件统计
+        public int CountVideo { get; set; } = 0;
+        public int CountImage { get; set; } = 0;
+        public int CountAudio { get; set; } = 0;
     }
 }

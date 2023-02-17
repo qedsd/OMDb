@@ -67,7 +67,7 @@ namespace OMDb.WinUI3.Services
         {
             EnrtyStorages = new ObservableCollection<EnrtyStorage>();
             Core.Config.ClearDb();
-            var lstStorage=await Core.Services.StorageService.GetAllStorageAsync();
+            var lstStorage=await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
             if (EnrtyStorages != null) { EnrtyStorages.Clear(); } else { EnrtyStorages = new ObservableCollection<EnrtyStorage>(); }
             if (lstStorage != null)
             {

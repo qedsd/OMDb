@@ -89,6 +89,7 @@ namespace OMDb.Core.Services
                 List<Type> types = new List<Type>();
                 types.Add(typeof(EntryDb));
                 types.Add(typeof(EntryNameDb));
+                types.Add(typeof(EntrySourceDb));
                 types.Add(typeof(WatchHistoryDb));
                 GetConnection(dbId).CodeFirst.InitTables(types.ToArray());
                 return true;

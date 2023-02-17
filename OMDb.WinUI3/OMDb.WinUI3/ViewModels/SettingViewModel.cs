@@ -132,7 +132,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             //await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
             await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbSourceDb.Id == DbCurrent.DbSourceDb.Id).FirstOrDefault().DbSourceDb.Id);
-            LoadDbs();
+            this.LoadDbs();
             Helpers.InfoHelper.ShowSuccess("保存成功");
         });
 

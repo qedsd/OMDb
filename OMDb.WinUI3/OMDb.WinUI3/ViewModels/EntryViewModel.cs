@@ -279,6 +279,7 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand AddEntryCommand => new RelayCommand(async () =>
         {
+            Services.ConfigService.LoadStorages();
             if (Services.ConfigService.EnrtyStorages.Count == 0)
             {
                 await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
@@ -294,7 +295,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (Entries != null)
             {
-                var item = Entries.FirstOrDefault(p => p.Id == e.Entry.Id);
+                var item = Entries.FirstOrDefault(p => p.EntryId == e.Entry.EntryId);
                 if (item != null)
                 {
                     Entries.Remove(item);
@@ -318,7 +319,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (Entries != null)
             {
-                var item = Entries.FirstOrDefault(p => p.Id == e.Entry.Id);
+                var item = Entries.FirstOrDefault(p => p.EntryId == e.Entry.EntryId);
                 if (item != null)
                 {
                     int index = Entries.IndexOf(item);
@@ -340,7 +341,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     else
                     {
-                        var labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.Id);
+                        var labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
                         if(labelIds != null && labelIds.Count != 0)
                         {
                             var l = Labels.Where(p => p.IsChecked).ToList();

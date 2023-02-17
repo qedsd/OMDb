@@ -26,7 +26,7 @@ namespace OMDb.Core.Models
             {
                 extractsLine.DbId = entry.DbId;
                 extractsLine.EntryName = entry.Name;
-                extractsLine.EntryId = entry.Id;
+                extractsLine.EntryId = entry.EntryId;
             }
             return extractsLine;
         }

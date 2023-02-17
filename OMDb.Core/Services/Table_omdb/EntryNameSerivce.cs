@@ -47,7 +47,7 @@ namespace OMDb.Core.Services
         /// <param name="entry"></param>
         public static void SetName(Entry entry)
         {
-            var names = DbService.GetConnection(entry.DbId).Queryable<EntryNameDb>().Where(p => p.EntryId == entry.Id).ToList();
+            var names = DbService.GetConnection(entry.DbId).Queryable<EntryNameDb>().Where(p => p.EntryId == entry.EntryId).ToList();
             if (names != null && names.Any())
             {
                 var name = names.FirstOrDefault(p => p.IsDefault);
@@ -87,12 +87,12 @@ namespace OMDb.Core.Services
         /// <param name="dbId"></param>
         public static void SetName(IEnumerable<Entry> entries, string dbId)
         {
-            var dic = QueryName(entries.Select(p => p.Id), dbId);
+            var dic = QueryName(entries.Select(p => p.EntryId), dbId);
             if (dic != null && dic.Any())
             {
                 foreach (var entry in entries)
                 {
-                    if (dic.TryGetValue(entry.Id, out string name))
+                    if (dic.TryGetValue(entry.EntryId, out string name))
                     {
                         entry.Name = name;
                     }

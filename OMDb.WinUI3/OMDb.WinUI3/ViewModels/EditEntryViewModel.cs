@@ -121,7 +121,7 @@ namespace OMDb.WinUI3.ViewModels
             if (entry == null)
             {
                 Entry = new Core.Models.Entry();
-                Entry.Id = Guid.NewGuid().ToString();
+                Entry.EntryId = Guid.NewGuid().ToString();
                 Entry.CreateTime = DateTime.Now;
                 Entry.LastUpdateTime = DateTime.Now;
                 Entry.ReleaseDate = DateTimeOffset.Now;
@@ -162,7 +162,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             else
             {
-                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.Id);
+                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.EntryId);
                 if (labels != null)
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -174,7 +174,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Labels = new List<Models.Label>();
                 }
-                var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.Id, entry.DbId);
+                var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.EntryId, entry.DbId);
                 if (names != null)
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>

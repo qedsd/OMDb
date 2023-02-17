@@ -18,12 +18,15 @@ namespace OMDb.WinUI3.Services.Settings
     {
         private const string Key = "DbSelector";
         public static string dbCurrentId = string.Empty;
+        public static string dbCurrentName = string.Empty;
         public static List<DbSource> dbsCollection = new List<DbSource>();
         public static async void Initialize()
         {
             LoadAllDbs();
             LoadFromSettings();
-            ConfigService.DefaultEntryFolder = @$".omdb\{dbsCollection.Where(a => a.IsChecked = true).FirstOrDefault().DbSourceDb.DbName}";
+            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
+            ConfigService.DefaultEntryFolder = @$".omdb\{dbCurrentName}";
+            ConfigService.LoadStorages();
         }
         public static async Task SetAsync(string dbSwich)
         {
@@ -53,7 +56,10 @@ namespace OMDb.WinUI3.Services.Settings
         private static async Task SaveInSettingsAsync(string dbc)
         {
             await SettingService.SetValueAsync(Key, dbc.ToString());
-            ConfigService.DefaultEntryFolder = @$".omdb\{dbsCollection.Where(a=>a.IsChecked=true).FirstOrDefault().DbSourceDb.DbName}";
+            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
+            ConfigService.DefaultEntryFolder = @$".omdb\{dbCurrentName}";
+            ConfigService.LoadStorages();
+
         }
 
         //添加

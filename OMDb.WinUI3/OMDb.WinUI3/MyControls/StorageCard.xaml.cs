@@ -88,8 +88,5 @@ namespace OMDb.WinUI3.MyControls
         public delegate void RemoveStorage(Models.EnrtyStorage enrtyStorage);
         public static event RemoveStorage RemoveStorageEvent;
 
-        public delegate void RefreshStorage(Models.EnrtyStorage enrtyStorage);
-        public static event RefreshStorage RefreshStorageEvent;
-
     }
 }

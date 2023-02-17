@@ -12,14 +12,32 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <TextBox x:Name="TextBox_Name" Header="标签名" />
         <TextBox
             x:Name="TextBox_Desc"
             Grid.Row="1"
+            Width="200"
             Height="100"
             Margin="0,20,0,0"
-            Header="标签描述" />
+            FontSize="12"
+            Header="描述"
+            TextWrapping="WrapWholeWords" />
+
+        <StackPanel Orientation="Horizontal">
+            <ToggleSwitch
+                x:Name="IsShowOnClassificationPage"
+                Header="IsShowOnClassificationPage"
+                OffContent="NoShow"
+                OnContent="Show" />
+            <ToggleSwitch
+                x:Name="IsProperty"
+                Header="IsProperty"
+                OffContent="NoProperty"
+                OnContent="Property" />
+        </StackPanel>
+
     </Grid>
 </Page>

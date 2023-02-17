@@ -61,21 +61,21 @@ namespace OMDb.Core.Services
                 {
                     var ls = db.Queryable<DbModels.EntryDb>()
                         .In(inLabelEntryIds)
-                        .Select(p => new { p.Id, p.CreateTime })
+                        .Select(p => new { p.EntryId, p.CreateTime })
                         .ToList();
                     ls.ForEach(p =>
                     {
-                        queryResults.Add(new QueryResult(p.Id, p.CreateTime, item.Key));
+                        queryResults.Add(new QueryResult(p.EntryId, p.CreateTime, item.Key));
                     });
                 }
                 else
                 {
                     var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.Id, p.CreateTime })
+                        .Select(p => new { p.EntryId, p.CreateTime })
                         .ToList();
                     ls.ForEach(p =>
                     {
-                        queryResults.Add(new QueryResult(p.Id, p.CreateTime, item.Key));
+                        queryResults.Add(new QueryResult(p.EntryId, p.CreateTime, item.Key));
                     });
                 }
                 
@@ -108,21 +108,21 @@ namespace OMDb.Core.Services
                 {
                     var ls = db.Queryable<DbModels.EntryDb>()
                         .In(inLabelEntryIds)
-                        .Select(p => new { p.Id, p.LastWatchTime })
+                        .Select(p => new { p.EntryId, p.LastWatchTime })
                         .ToList();
                     ls.ForEach(p =>
                     {
-                        queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, item.Key));
+                        queryResults.Add(new QueryResult(p.EntryId, p.LastWatchTime, item.Key));
                     });
                 }
                 else
                 {
                     var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.Id, p.LastWatchTime })
+                        .Select(p => new { p.EntryId, p.LastWatchTime })
                         .ToList();
                     ls.ForEach(p =>
                     {
-                        queryResults.Add(new QueryResult(p.Id, p.LastWatchTime, item.Key));
+                        queryResults.Add(new QueryResult(p.EntryId, p.LastWatchTime, item.Key));
                     });
                 }
             }
@@ -156,19 +156,19 @@ namespace OMDb.Core.Services
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
                             .In(inLabelEntryIds)
-                            .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
+                            .Select(p => new { p.EntryId, p.LastUpdateTime }).ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.LastUpdateTime, item.Key));
                         });
                     }
                     else
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
-                           .Select(p => new { p.Id, p.LastUpdateTime }).ToList();
+                           .Select(p => new { p.EntryId, p.LastUpdateTime }).ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.LastUpdateTime, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.LastUpdateTime, item.Key));
                         });
                     }
                 }
@@ -203,21 +203,21 @@ namespace OMDb.Core.Services
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
                         .In(inLabelEntryIds)
-                        .Select(p => new { p.Id, p.WatchTimes })
+                        .Select(p => new { p.EntryId, p.WatchTimes })
                         .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.WatchTimes, item.Key));
                         });
                     }
                     else
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.Id, p.WatchTimes })
+                        .Select(p => new { p.EntryId, p.WatchTimes })
                         .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.WatchTimes, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.WatchTimes, item.Key));
                         });
                     }
                 }
@@ -252,21 +252,21 @@ namespace OMDb.Core.Services
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
                             .In(inLabelEntryIds)
-                            .Select(p => new { p.Id, p.MyRating })
+                            .Select(p => new { p.EntryId, p.MyRating })
                             .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.MyRating, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.MyRating, item.Key));
                         });
                     }
                     else
                     {
                         var ls = db.Queryable<DbModels.EntryDb>()
-                            .Select(p => new { p.Id, p.MyRating })
+                            .Select(p => new { p.EntryId, p.MyRating })
                             .ToList();
                         ls.ForEach(p =>
                         {
-                            queryResults.Add(new QueryResult(p.Id, p.MyRating, item.Key));
+                            queryResults.Add(new QueryResult(p.EntryId, p.MyRating, item.Key));
                         });
                     }
                 }
@@ -301,7 +301,7 @@ namespace OMDb.Core.Services
                     var group = queryItems.GroupBy(p => p.DbId);
                     foreach (var item in group)
                     {
-                        var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.Id)).ToList();
+                        var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.EntryId)).ToList();
                         if (entryDbs.Any())
                         {
                             var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
@@ -312,7 +312,7 @@ namespace OMDb.Core.Services
                             //entries.AddRange(entriesTemp);
                             entriesTemp.ForEach(p =>
                             {
-                                dic.Add(p.Id, p);
+                                dic.Add(p.EntryId, p);
                             });
                         }
                     }
@@ -346,13 +346,13 @@ namespace OMDb.Core.Services
             }
             if (queryItem != null)
             {
-                var result = await DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().FirstAsync(p => p.Id == queryItem.Id);
+                var result = await DbService.GetConnection(queryItem.DbId).Queryable<DbModels.EntryDb>().FirstAsync(p => p.EntryId == queryItem.Id);
                 if (result != null)
                 {
                     var entry = Entry.Create(result, queryItem.DbId);
                     if (withName)
                     {
-                        entry.Name = EntryNameSerivce.QueryName(entry.Id, queryItem.DbId);
+                        entry.Name = EntryNameSerivce.QueryName(entry.EntryId, queryItem.DbId);
                     }
                     return entry;
                 }
@@ -374,9 +374,9 @@ namespace OMDb.Core.Services
         /// <param name="entry"></param>
         public static void AddEntry(Entry entry)
         {
-            if(string.IsNullOrEmpty(entry.Id))
+            if(string.IsNullOrEmpty(entry.EntryId))
             {
-                entry.Id = Guid.NewGuid().ToString();
+                entry.EntryId = Guid.NewGuid().ToString();
             }
             entry.CoverImg = entry.CoverImg.Replace(entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
             //EntryDb db = new EntryDb();
@@ -398,10 +398,10 @@ namespace OMDb.Core.Services
         {
             var connet = DbService.GetConnection(entry.DbId);
             connet.BeginTran();
-            connet.Deleteable<EntryDb>().In(entry.Id).ExecuteCommand();
-            connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
-            connet.Deleteable<WatchHistoryDb>().Where(p=>p.EntryId == entry.Id).ExecuteCommand();
-            DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => p.EntryId == entry.Id).ExecuteCommand();
+            connet.Deleteable<EntryDb>().In(entry.EntryId).ExecuteCommand();
+            connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
+            connet.Deleteable<WatchHistoryDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
+            DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             connet.CommitTran();
         }
 
@@ -414,7 +414,7 @@ namespace OMDb.Core.Services
         {
             entries.GroupBy(p => p.DbId).ToList().ForEach(g =>
               {
-                  var ids = g.Select(p => p.Id);
+                  var ids = g.Select(p => p.EntryId);
                   var connet = DbService.GetConnection(g.Key);
                   connet.BeginTran();
                   connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
@@ -444,7 +444,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static bool UpdateWatchTime(string entryId,string dbId,int increment)
         {
-            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.Id == entryId).ExecuteCommand() > 0;
+            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.EntryId == entryId).ExecuteCommand() > 0;
         }
 
         /// <summary>

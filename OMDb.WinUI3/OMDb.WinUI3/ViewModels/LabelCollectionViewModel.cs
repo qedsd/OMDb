@@ -177,12 +177,12 @@ namespace OMDb.WinUI3.ViewModels
         private async Task<IEnumerable<Entry>> SortByWatchTimes()
         {
             List<Entry> sortedEntries = new List<Entry>();
-            Dictionary<string, Entry> dic = Entries.ToDictionary(p => p.Id);
+            Dictionary<string, Entry> dic = Entries.ToDictionary(p => p.EntryId);
             List<QueryResult> queryResults = new List<QueryResult>();
             var groupEntries = Entries.GroupBy(p => p.DbId).ToList();
             foreach (var group in groupEntries)
             {
-                var allIds = await WatchHistoryService.QueryWatchHistoriesAsync(group.Select(p => p.Id).ToList(), group.Key);
+                var allIds = await WatchHistoryService.QueryWatchHistoriesAsync(group.Select(p => p.EntryId).ToList(), group.Key);
                 if(allIds != null && allIds.Count != 0)
                 {
                     //有观看记录的

@@ -123,7 +123,7 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         await Task.Run(() =>
                         {
-                            var dic = entrys.ToDictionary(p => p.Id);
+                            var dic = entrys.ToDictionary(p => p.EntryId);
                             foreach(var item in EntryCollection.Items)
                             {
                                 if(dic.TryGetValue(item.EntryId,out var entry))

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -101,7 +102,7 @@ namespace OMDb.WinUI3.ViewModels
                     return;
                 }
 
-                var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, $@".omdb");
+                var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.DefaultEntryFolder);
                 Directory.CreateDirectory(path_omdb);
                 var path_omdb_Cover = @$"{path_omdb}\Cover{enrtyStorage.CoverImg.SubString_A21(".", 1, false)}";
                 if(!File.Exists(path_omdb_Cover))File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
@@ -149,10 +150,7 @@ namespace OMDb.WinUI3.ViewModels
                                     DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
                                 };
                                 Core.Services.StorageService.AddStorage(storageDb);
-
                             }
-
-                            //Services.ConfigService.Save();
                         }
                         else
                         {

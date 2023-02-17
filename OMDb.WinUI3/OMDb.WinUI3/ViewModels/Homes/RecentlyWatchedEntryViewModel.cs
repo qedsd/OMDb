@@ -53,7 +53,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
         {
             foreach(var file in e.RecentFiles)
             {
-                var existedFile = RecentlyWatchedEntries.FirstOrDefault(p => p.Entry.Id == file.EntryId);
+                var existedFile = RecentlyWatchedEntries.FirstOrDefault(p => p.Entry.EntryId == file.EntryId);
                 if(existedFile != null)
                 {
                     //已存在以前的观看记录里

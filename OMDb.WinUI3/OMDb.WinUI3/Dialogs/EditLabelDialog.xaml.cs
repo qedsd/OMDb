@@ -26,18 +26,23 @@ namespace OMDb.WinUI3.Dialogs
             if(label == null)
             {
                 Label = new Core.DbModels.LabelDb();
+                IsProperty.IsOn = false;
+                IsShowOnClassificationPage.IsOn = false;
             }
             else
             {
                 Label = label;
                 TextBox_Name.Text = label.Name;
                 TextBox_Desc.Text = label.Description;
+                IsProperty.IsOn = label.IsProperty;
+                IsShowOnClassificationPage.IsOn = label.IsShow;
             }
         }
         public static async Task<Core.DbModels.LabelDb> ShowDialog(Core.DbModels.LabelDb label = null)
         {
+            bool IsNew = (label == null);
             MyContentDialog dialog = new MyContentDialog();
-            dialog.TitleTextBlock.Text = label == null ? "新建标签" : "编辑标签";
+            dialog.TitleTextBlock.Text = IsNew ? "新建标签" : "编辑标签";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
             EditLabelDialog content = new EditLabelDialog(label);
@@ -47,6 +52,8 @@ namespace OMDb.WinUI3.Dialogs
                 content.Label.Name = content.TextBox_Name.Text;
                 content.Label.Description = content.TextBox_Desc.Text;
                 content.Label.DbSourceId = DbSelectorService.dbCurrentId;
+                content.Label.IsProperty = content.IsProperty.IsOn;
+                content.Label.IsShow = content.IsShowOnClassificationPage.IsOn;
                 return content.Label;
             }
             else

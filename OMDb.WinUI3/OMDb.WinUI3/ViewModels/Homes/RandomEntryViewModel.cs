@@ -24,7 +24,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
             var ls = await Core.Services.EntryService.RandomEntryAsync(10);
             if(ls.NotNullAndEmpty())
             {
-                var queryItems = ls.Select(p => new Core.Models.QueryItem(p.Id, p.DbId)).ToList();
+                var queryItems = ls.Select(p => new Core.Models.QueryItem(p.EntryId, p.DbId)).ToList();
                 var items = await Core.Services.EntryService.QueryEntryAsync(queryItems, true);
                 if (items.NotNullAndEmpty())
                 {

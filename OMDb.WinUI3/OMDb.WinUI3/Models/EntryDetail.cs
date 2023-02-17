@@ -134,11 +134,11 @@ namespace OMDb.WinUI3.Models
                 SetProperty(ref labels, value);
                 Task.Run(() =>
                 {
-                    Core.Services.LabelService.ClearEntryLabel(Entry.Id);//清空词条标签
+                    Core.Services.LabelService.ClearEntryLabel(Entry.EntryId);//清空词条标签
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(labels.Count);
-                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.Id, LabelId = p.Id,DbId = Entry.DbId }));
+                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.EntryId, LabelId = p.Id,DbId = Entry.DbId }));
                         Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
@@ -152,13 +152,13 @@ namespace OMDb.WinUI3.Models
         }
         private async Task Init()
         {
-            var namesT = await Core.Services.EntryNameSerivce.QueryNamesAsync(Entry.Id, Entry.DbId);
+            var namesT = await Core.Services.EntryNameSerivce.QueryNamesAsync(Entry.EntryId, Entry.DbId);
             if (namesT != null)
             {
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
             await UpdateWatchHistoryAsync();
-            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.Id);
+            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.EntryId);
             Labels ??= new List<Core.DbModels.LabelDb>();
             WatchHistory ??= new ObservableCollection<Core.Models.WatchHistory>();
             LoadImgs();
@@ -170,7 +170,7 @@ namespace OMDb.WinUI3.Models
         }
         public async Task UpdateWatchHistoryAsync()
         {
-            var histories = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.Id, Entry.DbId)).ToObservableCollection();
+            var histories = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.EntryId, Entry.DbId)).ToObservableCollection();
             if (histories == null)
             {
                 WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
