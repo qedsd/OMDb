@@ -308,7 +308,7 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ICommand AddRootCommand => new RelayCommand(async () =>
         {
-            var result = await Dialogs.EditLabelDialog.ShowDialog();
+            var result = await Dialogs.EditLabelDialog.ShowDialog(true);
             if (result != null)
             {
                 if (string.IsNullOrEmpty(result.Name))
@@ -325,7 +325,7 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ICommand AddSubCommand => new RelayCommand<LabelTree>(async (parent) =>
         {
-            var result = await Dialogs.EditLabelDialog.ShowDialog();
+            var result = await Dialogs.EditLabelDialog.ShowDialog(false);
             if (result != null)
             {
                 if (string.IsNullOrEmpty(result.Name))
@@ -349,7 +349,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (item != null)
             {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(item.Label);
+                var result = await Dialogs.EditLabelDialog.ShowDialog(false,item.Label);
                 if (result != null)
                 {
                     if (string.IsNullOrEmpty(result.Name))
@@ -380,7 +380,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (item != null)
             {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(item.Label);
+                var result = await Dialogs.EditLabelDialog.ShowDialog(true,item.Label);
                 if (result != null)
                 {
                     if (string.IsNullOrEmpty(result.Name))

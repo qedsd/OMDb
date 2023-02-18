@@ -58,9 +58,9 @@ namespace OMDb.WinUI3.ViewModels
         private void StorageCard_RemoveStorageEvent(EnrtyStorage enrtyStorage)
         {
             EnrtyStorages.Remove(enrtyStorage);
-            Core.Config.RemoveDb(enrtyStorage.StorageName);
-            Services.ConfigService.LoadStorages();
+            Core.Config.RemoveDb(enrtyStorage.StorageName);           
             Core.Services.StorageService.RemoveStorage(Services.Settings.DbSelectorService.dbCurrentId, enrtyStorage.StorageName);
+            Services.ConfigService.LoadStorages();
             Init();
         }
 
@@ -106,7 +106,7 @@ namespace OMDb.WinUI3.ViewModels
                 Directory.CreateDirectory(path_omdb);
                 var path_omdb_Cover = @$"{path_omdb}\Cover{enrtyStorage.CoverImg.SubString_A21(".", 1, false)}";
                 if(!File.Exists(path_omdb_Cover))File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
-                var path_omdb_db = $@"{path_omdb}\omdb.db";
+                var path_omdb_db = $@"{path_omdb}\{ConfigService.StorageDbName}";
 
 
                 try
@@ -128,7 +128,7 @@ namespace OMDb.WinUI3.ViewModels
                                 StorageDb storageDb = new StorageDb()
                                 {
                                     StorageName = enrtyStorage.StorageName,
-                                    StoragePath = path_omdb,
+                                    StoragePath =enrtyStorage.StoragePath,
                                     EntryCount = enrtyStorage.EntryCount,
                                     CoverImg = path_omdb_Cover,
                                     DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
@@ -144,7 +144,7 @@ namespace OMDb.WinUI3.ViewModels
                                 StorageDb storageDb = new StorageDb()
                                 {
                                     StorageName = enrtyStorage.StorageName,
-                                    StoragePath = path_omdb,
+                                    StoragePath = enrtyStorage.StoragePath,
                                     EntryCount = 0,
                                     CoverImg = path_omdb_Cover,
                                     DbSourceId = Services.Settings.DbSelectorService.dbCurrentId

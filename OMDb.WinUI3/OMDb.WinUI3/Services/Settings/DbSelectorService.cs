@@ -25,7 +25,7 @@ namespace OMDb.WinUI3.Services.Settings
             LoadAllDbs();
             LoadFromSettings();
             dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
-            ConfigService.DefaultEntryFolder = @$".omdb\{dbCurrentName}";
+            ConfigService.DefaultEntryFolder = $@"{ConfigService.OMDbFolder}\{dbCurrentName}";
             ConfigService.LoadStorages();
         }
         public static async Task SetAsync(string dbSwich)
@@ -57,7 +57,7 @@ namespace OMDb.WinUI3.Services.Settings
         {
             await SettingService.SetValueAsync(Key, dbc.ToString());
             dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
-            ConfigService.DefaultEntryFolder = @$".omdb\{dbCurrentName}";
+            ConfigService.DefaultEntryFolder = @$"{ConfigService.OMDbFolder}\{dbCurrentName}";
             ConfigService.LoadStorages();
 
         }

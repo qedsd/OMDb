@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OMDb.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,13 +73,13 @@ namespace OMDb.WinUI3
             return sourceStr.SubStringByIndex(0, index) + str;
         }
 
-        public static string SubString_A21(this string sourceStr, string str, int n, bool isForward = true)
+        public static string SubString_A21(this string sourceStr, string str, int n, bool isForward = true, bool retain = true)
         {
             if (str == string.Empty) return sourceStr;
             if (!sourceStr.Contains(str)) throw new Exception(string.Format($@"Source string does not exist:[{str}]"));
             var index_Start = sourceStr.NIndex(str, n, isForward);
             if (index_Start == -1) throw new Exception(string.Format($@"{str}[{n}] out of index!"));
-            return sourceStr.SubStringByIndex(index_Start, sourceStr.Length);
+            return retain? sourceStr.SubStringByIndex(index_Start, sourceStr.Length) : sourceStr.SubStringByIndex(index_Start+ str.Length, sourceStr.Length);
         }
 
         public static string SubString_A2B(this string sourceStr,

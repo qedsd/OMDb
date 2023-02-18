@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public class EditEntryViewModel: ObservableObject
+    public class EditEntryViewModel : ObservableObject
     {
         public Models.EntryDetail EntryDetail { get; set; }
         public Core.Models.Entry Entry { get; set; }
@@ -75,7 +75,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref selectedEnrtyStorage, value);
-                SelectedEntryDicPath = Path.Combine(Path.GetDirectoryName(selectedEnrtyStorage.StoragePath), Services.ConfigService.DefaultEntryFolder);//重置为默认路径
+                SelectedEntryDicPath = Path.Combine(selectedEnrtyStorage.StoragePath, Services.ConfigService.DefaultEntryFolder);//重置为默认路径
                 //if (EntryName != null&&!string.IsNullOrEmpty(EntryName.Name))
                 //{
                 //    SetEntryPath(EntryName.Name);
@@ -105,7 +105,7 @@ namespace OMDb.WinUI3.ViewModels
         public List<Models.Label> Labels
         {
             get => labels;
-            set=>SetProperty(ref labels, value);
+            set => SetProperty(ref labels, value);
         }
         public void SetEntryPath(string name)
         {
@@ -143,20 +143,20 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.Path = Helpers.PathHelper.EntryFullPath(Entry);
                 Entry.CoverImg = Helpers.PathHelper.EntryCoverImgFullPath(Entry);
                 //现有词条暂不允许修改仓库
-                var onlyStorage = Services.ConfigService.EnrtyStorages.FirstOrDefault(p=>p.StorageName == Entry.DbId);
-                if(onlyStorage != null)
+                var onlyStorage = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == Entry.DbId);
+                if (onlyStorage != null)
                 {
                     EnrtyStorages = new List<Models.EnrtyStorage>() { onlyStorage };
                 }
                 MyRating = Entry.MyRating == null ? -1 : (double)Entry.MyRating;
             }
-            
+
             SelectedEnrtyStorage = EnrtyStorages?.FirstOrDefault();
             Init(entry);
         }
         private async void Init(Core.Models.Entry entry)
         {
-            if(entry == null)
+            if (entry == null)
             {
                 Labels = new List<Models.Label>();
             }
@@ -167,7 +167,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        Labels = new List<Models.Label>(labels.Select(p=>new Models.Label(p)));
+                        Labels = new List<Models.Label>(labels.Select(p => new Models.Label(p)));
                     });
                 }
                 else
@@ -196,19 +196,12 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        //public ICommand CheckDefaultCommand => new RelayCommand(() =>
-        //{
-        //    if (EntryName != null)
-        //    {
-        //        EntryNames.ForEach(p =>
-        //        {
-        //            if (p.IsDefault && p != EntryName)
-        //            {
-        //                p.IsDefault = false;
-        //            }
-        //        });
-        //        SetEntryPath(EntryName.Name);
-        //    }
-        //});
+
+        private string _pointFolder = string.Empty;
+        public string PointFolder
+        {
+            get => _pointFolder;
+            set => SetProperty(ref _pointFolder, value);
+        }
     }
 }

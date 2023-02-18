@@ -94,7 +94,6 @@ namespace OMDb.WinUI3.Dialogs
             var file = await Helpers.PickHelper.PickFolderAsync();
             if (file != null)
             {
-                //EnrtyStorage.StoragePath = System.IO.Path.Combine(file.Path, "OMDb.db");
                 EnrtyStorage.StoragePath =file.Path;
                 EnrtyStorage.StorageName=file.Name;
             }

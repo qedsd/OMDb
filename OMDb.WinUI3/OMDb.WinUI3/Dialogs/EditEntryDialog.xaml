@@ -13,10 +13,13 @@
     MaxWidth="800"
     Background="Transparent"
     mc:Ignorable="d">
+    <Page.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="800"/>
         </Grid.ColumnDefinitions>
         <Button
             Height="256"
@@ -42,76 +45,121 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <!--  名字  -->
-            <Grid Margin="0,0,0,10">
-                <!--<Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="32" />
-                </Grid.ColumnDefinitions>
-                <ComboBox
-                    x:Name="ComboBox_Names"
-                    ItemsSource="{x:Bind VM.EntryNames, Mode=OneWay}"
-                    SelectedItem="{x:Bind VM.EntryName, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="models:EntryName">
-                            <TextBlock Text="{x:Bind Lang}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>-->
-                <TextBox
-                    Grid.Column="1"
-                    Margin="4,0,12,0"
-                    PlaceholderText="词条名称"
-                    Text="{x:Bind VM.EntryName, Mode=TwoWay}"
-                    TextChanged="TextBox_TextChanged" />
-                <!--<CheckBox
-                    Grid.Column="2"
-                    Command="{x:Bind VM.CheckDefaultCommand}"
-                    IsChecked="{Binding ElementName=ComboBox_Names, Path=SelectedItem.IsDefault, Mode=TwoWay}" />-->
-            </Grid>
-            <!--  路径  -->
-            <Grid Grid.Row="1" Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <ComboBox
-                    DisplayMemberPath="StorageName"
-                    ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
-                    SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
-                <TextBox
-                    Grid.Column="1"
-                    Margin="4,0"
-                    Text="{x:Bind VM.EntryPath, Mode=TwoWay}" />
-                <Button
-                    Grid.Column="2"
-                    VerticalAlignment="Bottom"
-                    Click="Button_Path_Click"
-                    ToolTipService.ToolTip="选择路径">
-                    <SymbolIcon Symbol="NewFolder" />
-                </Button>
-            </Grid>
-            <!--  上映日期  -->
-            <Grid Grid.Row="2" Margin="0,10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}" Header="上映日期" />
-            </Grid>
-            <!--  评分  -->
-            <Grid Grid.Row="3" Margin="0,10">
-                <StackPanel>
-                    <TextBlock Text="我的评分" />
-                    <RatingControl
-                        Margin="0,4,0,0"
-                        HorizontalAlignment="Left"
-                        Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+            <!--  倉庫名稱+詞條名稱  -->
+            <Grid Margin="2,0,0,10">
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox
+                        DisplayMemberPath="StorageName"
+                        ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
+                        SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}"
+                        Width="200"/>
+                    <TextBox
+                        Grid.Column="1"
+                        Margin="4,0,12,0"
+                        PlaceholderText="词条名称"
+                        Text="{x:Bind VM.EntryName, Mode=TwoWay}"
+                        TextChanged="TextBox_TextChanged"
+                        Width="350"/>
                 </StackPanel>
             </Grid>
-            <!--  评分  -->
+            <!--  路径  -->
+            <Grid Grid.Row="1" Margin="0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="詞條路徑：" Margin="8,0,20,0"></TextBlock>
+                        <TextBlock
+                            Margin="0,0"
+                            Width="960"
+                            Text="{x:Bind VM.EntryPath, Mode=TwoWay}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="存儲模式："  Margin="8,18,20,6"></TextBlock>
+                        <RadioButtons x:Name="ModeSelector" MaxColumns="3" Width="400"  Padding="10" Margin="0,6,0,6" >
+                            <RadioButton x:Name="Local" Content="本地存儲" ></RadioButton>
+                            <RadioButton x:Name="SetFolder" Content="指定文件夾"></RadioButton>
+                            <RadioButton x:Name="SetFile" Content="指定文件"></RadioButton>
+                            <RadioButtons.RenderTransform>
+                                <CompositeTransform ScaleX="0.9" ScaleY="0.9"/>
+                            </RadioButtons.RenderTransform>
+                        </RadioButtons>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="搜刮資源："  Margin="8,2,17,0"></TextBlock>
+                        <Button
+                            VerticalAlignment="Bottom"
+                            ToolTipService.ToolTip="选择路径">
+                            <Button.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </Button.RenderTransform>
+                            <SymbolIcon Symbol="MoveToFolder" />
+                        </Button>
+                        <TextBox Width="556" >
+                            <TextBox.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </TextBox.RenderTransform>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="指定文件夾："  Margin="8,2,3,0"></TextBlock>
+                        <Button
+                            VerticalAlignment="Bottom"
+                            Click="Button_Path_Click"
+                            ToolTipService.ToolTip="选择路径">
+                            <Button.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </Button.RenderTransform>
+                            <SymbolIcon Symbol="MoveToFolder" />
+                        </Button>
+                        <TextBox Width="556" Text="{x:Bind VM.PointFolder,Mode=OneWay}" IsReadOnly="True">
+                            <TextBox.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </TextBox.RenderTransform>
+                        </TextBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="指定文件："  Margin="8,2,17,0"></TextBlock>
+                        <Button
+                            VerticalAlignment="Bottom"
+                            ToolTipService.ToolTip="选择路径">
+                            <Button.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </Button.RenderTransform>
+                            <SymbolIcon Symbol="MoveToFolder" />
+                        </Button>
+                        <TextBox Width="556" >
+                            <TextBox.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </TextBox.RenderTransform>
+                        </TextBox>
+                    </StackPanel>
+
+                    <!--  上映日期  -->
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="上映日期：" Margin="8,5,17,0"></TextBlock>
+                        <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
+                            <CalendarDatePicker.RenderTransform>
+                                <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
+                            </CalendarDatePicker.RenderTransform>
+                        </CalendarDatePicker>
+
+                        <!--  評分  -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="評分：" Margin="48,5,5,0"/>
+                            <RatingControl
+                                Margin="0,3,0,0"
+                                HorizontalAlignment="Left"
+                                Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+            </Grid>
+
+
+            <!--  标签  -->
             <Grid Grid.Row="4" Margin="0,10">
                 <StackPanel>
                     <TextBlock Text="标签" />

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.Core.DbModels;
 using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
@@ -20,32 +21,59 @@ namespace OMDb.WinUI3.Dialogs
     public sealed partial class EditLabelDialog : Page
     {
         private Core.DbModels.LabelDb Label;
-        public EditLabelDialog(Core.DbModels.LabelDb label)
+        public EditLabelDialog(bool IsRoot, Core.DbModels.LabelDb label)
         {
             this.InitializeComponent();
-            if(label == null)
+            if (label == null)
             {
                 Label = new Core.DbModels.LabelDb();
-                IsProperty.IsOn = false;
-                IsShowOnClassificationPage.IsOn = false;
+
+                if (IsRoot)
+                {
+                    IsProperty.Visibility = Visibility.Visible;
+                    IsShowOnClassificationPage.Visibility = Visibility.Visible;
+                    IsProperty.IsOn = false;
+                    IsShowOnClassificationPage.IsOn = false;
+                }
+                else 
+                {
+                    IsProperty.Visibility= Visibility.Collapsed;
+                    IsShowOnClassificationPage.Visibility= Visibility.Collapsed;
+                }
             }
             else
             {
                 Label = label;
                 TextBox_Name.Text = label.Name;
                 TextBox_Desc.Text = label.Description;
-                IsProperty.IsOn = label.IsProperty;
-                IsShowOnClassificationPage.IsOn = label.IsShow;
+                if (IsRoot)
+                {
+                    IsProperty.Visibility = Visibility.Visible;
+                    IsShowOnClassificationPage.Visibility = Visibility.Visible;
+                    IsProperty.IsOn = label.IsProperty;
+                    IsShowOnClassificationPage.IsOn = label.IsShow;
+                }
+                else
+                {
+                    IsProperty.Visibility = Visibility.Collapsed;
+                    IsShowOnClassificationPage.Visibility = Visibility.Collapsed;
+                }
             }
         }
-        public static async Task<Core.DbModels.LabelDb> ShowDialog(Core.DbModels.LabelDb label = null)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IsRoot"></param>大标签
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public static async Task<Core.DbModels.LabelDb> ShowDialog(bool IsRoot, Core.DbModels.LabelDb label = null)
         {
             bool IsNew = (label == null);
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = IsNew ? "新建标签" : "编辑标签";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
-            EditLabelDialog content = new EditLabelDialog(label);
+            EditLabelDialog content = new EditLabelDialog(IsRoot, label);
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {

@@ -55,22 +55,6 @@ namespace OMDb.WinUI3
             }
         }
 
-        //private void myButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Core.Config.AddConnectionString($"DataSource={System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "OMDb.db")}", "1");
-        //    myButton.Content = "Clicked";
-        //    var s = RatingService.GetRatings("test");
-        //    if (s != null)
-        //    {
-        //        StringBuilder stringBuilder = new StringBuilder();
-        //        foreach (var p in s)
-        //        {
-        //            stringBuilder.AppendLine(p.ToString());
-        //        }
-        //        RateTextBlock.Text = stringBuilder.ToString();
-        //    }
-        //}
-
         Helpers.WindowsSystemDispatcherQueueHelper m_wsdqHelper; // See separate sample below for implementation
         Microsoft.UI.Composition.SystemBackdrops.MicaController m_micaController;
         Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration m_configurationSource;

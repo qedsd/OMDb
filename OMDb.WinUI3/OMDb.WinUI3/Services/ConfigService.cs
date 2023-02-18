@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.UI.Xaml.Shapes;
+using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,13 +18,7 @@ namespace OMDb.WinUI3.Services
         /// 默认词条路径
         /// 相对于仓库路径
         /// </summary>
-        public static string DefaultEntryFolder 
-        { 
-            get;
-            set;
-        }  
-
-
+        public static string DefaultEntryFolder { get;set;}  
         /// <summary>
         /// 资源文件夹
         /// </summary>
@@ -48,8 +44,8 @@ namespace OMDb.WinUI3.Services
         /// 资源文件夹->视频资源文件夹
         /// </summary>
         public static string InfoFolder { get; } = "Info";
-
-
+        public static string OMDbFolder { get; } = ".omdb";
+        public static string StorageDbName { get; } = "omdb.db";
         /// <summary>
         /// 元文件文件名
         /// </summary>
@@ -79,8 +75,8 @@ namespace OMDb.WinUI3.Services
                     enrtyStorage.CoverImg = item.CoverImg;
                     enrtyStorage.EntryCount = (int)item.EntryCount;
                     EnrtyStorages.Add(enrtyStorage);
-
-                    Core.Config.AddDbFile(item.StoragePath+@"\omdb.db", item.StorageName, false);
+                    var path_db = System.IO.Path.Combine(item.StoragePath, OMDbFolder,Services.Settings.DbSelectorService.dbCurrentName, StorageDbName);
+                    Core.Config.AddDbFile(path_db, item.StorageName, false);
 
                 }
 

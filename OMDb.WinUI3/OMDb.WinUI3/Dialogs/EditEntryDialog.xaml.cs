@@ -101,7 +101,8 @@ namespace OMDb.WinUI3.Dialogs
                 }
                 else
                 {
-                    VM.SelectedEntryDicPath = folder.Path;
+                    VM.PointFolder = folder.Path;
+                    VM.EntryName = folder.Path.SubString_A21("\\", 1, false, false);
                 }
             }
         }

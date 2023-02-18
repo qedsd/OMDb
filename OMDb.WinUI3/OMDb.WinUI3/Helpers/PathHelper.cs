@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OMDb.Core;
+using OMDb.WinUI3.Services;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -20,7 +22,7 @@ namespace OMDb.WinUI3.Helpers
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(s.StoragePath), entry.Path);
+                return System.IO.Path.Combine(s.StoragePath,ConfigService.DefaultEntryFolder, entry.Path);
             }
             else
             {
@@ -38,7 +40,7 @@ namespace OMDb.WinUI3.Helpers
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(s.StoragePath), entry.Path, entry.CoverImg);
+                return System.IO.Path.Combine(s.StoragePath, ConfigService.DefaultEntryFolder, entry.Path, entry.CoverImg);
             }
             else
             {
@@ -57,7 +59,7 @@ namespace OMDb.WinUI3.Helpers
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return entry.Path.Substring(System.IO.Path.GetDirectoryName(s.StoragePath).Length + 1);
+                return entry.Path.SubString_A21("\\",1,false,false);
             }
             else
             {

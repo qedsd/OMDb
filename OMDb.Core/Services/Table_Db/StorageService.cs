@@ -59,7 +59,10 @@ namespace OMDb.Core.Services
         }
         public static void RemoveStorage(string dbSourceId,string storageName)
         {
-            DbService.LocalDb.Deleteable<StorageDb>().Where(a => a.DbSourceId == dbSourceId&&a.StorageName==storageName);
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("Delete from Storage where StorageName in ('{0}') and dbSourceId='{1}'", storageName, dbSourceId);
+            DbService.LocalDb.Ado.ExecuteCommand(sb.ToString());
+            //DbService.LocalDb.Deleteable<StorageDb>().Where(a => a.DbSourceId == dbSourceId&&a.StorageName==storageName);
         }
 
         public static void RemoveStorage(string dbSourceId, List<string> storageName)

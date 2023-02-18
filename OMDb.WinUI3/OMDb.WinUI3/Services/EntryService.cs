@@ -40,7 +40,7 @@ namespace OMDb.WinUI3.Services
                 InitFolder(entryDetail);
 
                 //复制封面图(Cover)、并同步修改封面路径
-                var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1, false);
+                var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1,false);
                 string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
                 if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }                
                 entryDetail.FullCoverImgPath = newImgCoverPath;

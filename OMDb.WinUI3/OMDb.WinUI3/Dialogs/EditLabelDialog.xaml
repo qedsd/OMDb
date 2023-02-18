@@ -9,7 +9,7 @@
     Background="Transparent"
     mc:Ignorable="d">
 
-    <Grid>
+    <Grid Width="300">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -19,25 +19,23 @@
         <TextBox
             x:Name="TextBox_Desc"
             Grid.Row="1"
-            Width="200"
-            Height="100"
-            Margin="0,20,0,0"
+            Width="300"
+            Height="200"
+            Margin="0,20,0,20"
             FontSize="12"
-            Header="描述"
-            TextWrapping="WrapWholeWords" />
-
-        <StackPanel Orientation="Horizontal">
-            <ToggleSwitch
+            TextWrapping="Wrap" 
+            Header="描述"/>
+        <Grid Grid.Row="2">
+            <StackPanel Orientation="Horizontal">
+                <ToggleSwitch
                 x:Name="IsShowOnClassificationPage"
-                Header="IsShowOnClassificationPage"
-                OffContent="NoShow"
-                OnContent="Show" />
-            <ToggleSwitch
+                OffContent="显示"
+                OnContent="显示" />
+                <ToggleSwitch
                 x:Name="IsProperty"
-                Header="IsProperty"
-                OffContent="NoProperty"
-                OnContent="Property" />
-        </StackPanel>
-
+                OffContent="属性"
+                OnContent="属性" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>
