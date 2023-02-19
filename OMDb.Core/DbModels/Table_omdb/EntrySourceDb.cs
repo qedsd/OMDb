@@ -29,6 +29,8 @@ namespace OMDb.Core.DbModels
 
         public string Path { get; set; }
 
+        public string FileType { get; set; }
+
         public EntrySourceDb()
         {
             Id = Guid.NewGuid().ToString();

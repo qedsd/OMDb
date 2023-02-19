@@ -23,7 +23,7 @@
                 <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
             </Button.RenderTransform>
             <Button.Flyout>
-                <Flyout>
+                <Flyout Closing="Flyout_Closing">
                     <StackPanel>
                         <ListView ItemsSource="{x:Bind Labels,Mode=TwoWay}" Width="200" SelectionMode="None">
                             <ListView.ItemTemplate>

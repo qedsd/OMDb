@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.Core.Services;
 using OMDb.WinUI3.Extensions;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,50 @@ namespace OMDb.WinUI3.Models
             FullEntryPath = Helpers.PathHelper.EntryFullPath(entry);
             FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
+            SaveType = entry.SaveType;//存儲模式
+            if (SaveType.Equals("1"))
+            {
+                PathFolder = EntrySourceSerivce.QueryPath(entry.EntryId, "1", entry.DbId).FirstOrDefault().Path;
+            }
+            if (SaveType.Equals("2"))
+            {
+                PathImg=EntrySourceSerivce.QueryPath(entry.EntryId, "2", entry.DbId).Select(a=>a.Path).ToList();
+                PathVideo=EntrySourceSerivce.QueryPath(entry.EntryId, "3", entry.DbId).Select(a => a.Path).ToList();
+                PathAudio=EntrySourceSerivce.QueryPath(entry.EntryId, "4", entry.DbId).Select(a => a.Path).ToList();
+                PathMore=EntrySourceSerivce.QueryPath(entry.EntryId, "5", entry.DbId).Select(a => a.Path).ToList();
+            }
+        }
+        private string _pathFolder;
+        public string PathFolder
+        {
+            get => _pathFolder;
+            set => SetProperty(ref _pathFolder, value);
+        }
+
+        private List<string> _pathImg;
+        public List<string> PathImg
+        {
+            get => _pathImg;
+            set => SetProperty(ref _pathImg, value);
+        }
+        private List<string> _pathVideo;
+        public List<string> PathVideo
+        {
+            get => _pathVideo;
+            set => SetProperty(ref _pathVideo, value);
+        }
+        private List<string> _pathAudio;
+        public List<string> PathAudio
+        {
+            get => _pathAudio;
+            set => SetProperty(ref _pathAudio, value);
+        }
+
+        private List<string> _pathMore;
+        public List<string> PathMore
+        {
+            get => _pathMore;
+            set => SetProperty(ref _pathMore, value);
         }
         public static async Task<EntryDetail> CreateAsync(Core.Models.Entry entry)
         {
@@ -51,7 +96,12 @@ namespace OMDb.WinUI3.Models
                 UpdateAlias();
             }
         }
-
+        private string _saveType;
+        public string SaveType
+        { 
+            get => _saveType;
+            set => SetProperty(ref _saveType, value);
+        }
         private string alias;
         /// <summary>
         /// 别名
@@ -315,5 +365,7 @@ namespace OMDb.WinUI3.Models
         {
             return Metadata.Save(System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
+
+        
     }
 }

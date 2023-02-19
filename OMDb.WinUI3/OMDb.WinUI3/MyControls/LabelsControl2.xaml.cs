@@ -212,5 +212,14 @@ namespace OMDb.WinUI3.MyControls
             [Description("添加模式")]
             Add
         }
+
+        private void Flyout_Closing(FlyoutBase sender, FlyoutBaseClosingEventArgs args)
+        {
+            foreach (var item in Labels)
+            {
+                if (this.StrSelectItem.Text.Contains(item.LabelDb.Name)) item.IsChecked = true;
+                else item.IsChecked = false;
+            }
+        }
     }
 }

@@ -133,6 +133,24 @@ namespace OMDb.WinUI3.Services
         {
             await Task.Run(() =>
             {
+                entry.Entry.SaveType = entry.SaveType;
+                if (entry.Entry.SaveType.Equals("1"))
+                {
+                    var EsDb=new EntrySourceDb() 
+                    { 
+                        EntryId = entry.Entry.EntryId,
+                        Path = entry.PathFolder,
+                        FileType = "1" 
+                    };
+                    List<EntrySourceDb> entrySourceDbs= new List<EntrySourceDb>() { EsDb };
+                    Core.Services.EntrySourceSerivce.SavePath(entrySourceDbs, entry.Entry.DbId);
+                }
+                if (entry.Entry.SaveType.Equals("2"))
+                {
+                    List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();                    
+                    Core.Services.EntrySourceSerivce.SavePath(entrySourceDbs, entry.Entry.DbId);
+                }
+
                 Core.Services.EntryService.UpdateEntry(entry.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.EntryId, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
                 if (entry.Labels?.Count != 0)

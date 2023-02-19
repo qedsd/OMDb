@@ -112,7 +112,7 @@
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556" Text="{x:Bind VM.PointFolder,Mode=OneWay}" IsReadOnly="True">
+                        <TextBox Width="556" x:Name="PointFolder" Text="{x:Bind VM.PointFolder,Mode=OneWay}" IsReadOnly="True">
                             <TextBox.RenderTransform>
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
                             </TextBox.RenderTransform>
@@ -154,7 +154,7 @@
                                 Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal">
+                    <!--<StackPanel Orientation="Horizontal">
                         <TextBlock Text="參演女優：" Margin="8,5,0,0" Width="87"></TextBlock>
                         <Grid Margin="0,3,0,0">
                             <TextBox Text="蒼井空" Width="220" IsReadOnly="True">
@@ -176,7 +176,7 @@
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
                             </Grid.RenderTransform>
                         </Grid>
-                    </StackPanel>
+                    </StackPanel>-->
                 </StackPanel>
             </Grid>
 
