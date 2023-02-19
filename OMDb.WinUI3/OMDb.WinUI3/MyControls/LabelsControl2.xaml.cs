@@ -18,7 +18,7 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.MyControls
 {
-    public sealed partial class LabelsControl : UserControl
+    public sealed partial class LabelsControl2 : UserControl
     {
         public LabelsControl2()
         {
@@ -33,42 +33,23 @@ namespace OMDb.WinUI3.MyControls
             );
         private static void SetLabels2(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var card = d as LabelsControl;
+            var card = d as LabelsControl2;
             if (card != null)
             {
                 var labels = e.NewValue as IEnumerable<Models.Label>;
                 if (labels != null)
                 {
-                    List<Models.Label> list = new List<Models.Label>();
-                    foreach (var item in labels)
-                    {
-                        item.IsChecked = true;
-                        list.Add(item);
-                    }
-                    if(card.Mode == LabelControlMode.Add)
-                    {
-                        list.Add(new Models.Label(new Core.DbModels.LabelDb() { Name = "+"}) { IsTemp = true,IsChecked = true});
-                    }
-                    else if(card.Mode == LabelControlMode.Selecte)
-                    {
-                        list.Insert(0,new Models.Label(new Core.DbModels.LabelDb() { Name = "全选" }) { IsTemp = true, IsChecked = true });
-                    }
-                    card.GridView_Label.ItemsSource = list;
-                    card.GridViewItemsSource = list;
-                }
-                else
-                {
-                    card.GridView_Label.ItemsSource = null;
-                    card.GridViewItemsSource = null;
+                    var str= labels.Where(a=>a.IsChecked==true).Select(a=>a.LabelDb.Name).ToList();
+                    card.StrSelectItem.Text = string.Join("/",str);
                 }
             }
         }
         private IEnumerable<Models.Label> GridViewItemsSource;
         public IEnumerable<Models.Label> Labels
         {
-            get { return (IEnumerable<Models.Label>)GetValue(LabelsProperty); }
+            get { return (IEnumerable<Models.Label>)GetValue(LabelsProperty2); }
 
-            set { SetValue(LabelsProperty, value); }
+            set { SetValue(LabelsProperty2, value); }
         }
 
         public static readonly DependencyProperty LabelDbsProperty = DependencyProperty.Register
@@ -80,13 +61,13 @@ namespace OMDb.WinUI3.MyControls
            );
         private static void SetLabelDbs(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var card = d as LabelsControl;
+            var card = d as LabelsControl2;
             if (card != null)
             {
                 var labelDbs = e.NewValue as IEnumerable<Core.DbModels.LabelDb>;
-                if(labelDbs != null)
+                if (labelDbs != null)
                 {
-                    card.Labels = new List<Models.Label>(labelDbs.Select(p=>new Models.Label(p)));
+                    card.Labels = new List<Models.Label>(labelDbs.Select(p => new Models.Label(p)));
                 }
             }
         }
@@ -109,55 +90,21 @@ namespace OMDb.WinUI3.MyControls
         }
         public LabelControlMode Mode
         {
-            get { return (LabelControlMode) GetValue(ModeProperty); }
+            get { return (LabelControlMode)GetValue(ModeProperty); }
 
             set { SetValue(ModeProperty, value); }
         }
-        
+
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var label = (sender as Button).DataContext as Models.Label;
-            if(label != null)
+            if (Labels != null)
             {
-                if (Mode == LabelControlMode.Add && label.IsTemp)//新增标签
-                {
-                    ShowAddLabelsFlyout(sender as Button);
-                }
-                else if(Mode == LabelControlMode.Selecte && label.IsTemp)//全选、全不选
-                {
-                    label.IsChecked = !label.IsChecked;
-                    foreach(var l in Labels)
-                    {
-                        l.IsChecked = label.IsChecked;
-                    }
-                    CallChanged();
-                }
-                else
-                {
-                    switch (Mode)
-                    {
-                        case LabelControlMode.None: break;
-                        case LabelControlMode.Selecte:
-                            {
-                                label.IsChecked = !label.IsChecked;
-                                if(label.IsChecked)
-                                {
-                                    if(GridViewItemsSource.FirstOrDefault(p=>!p.IsTemp && !p.IsChecked) == null)
-                                    {
-                                        GridViewItemsSource.First().IsChecked = true;
-                                    }
-                                }
-                                else
-                                {
-                                    GridViewItemsSource.First().IsChecked = false;
-                                }
-                                CallChanged();
-                            }
-                            break;
-                        case LabelControlMode.Add: break;
-                    }
-                }
+                var str = Labels.Where(a => a.IsChecked == true).Select(a => a.LabelDb.Name).ToList();
+                this.StrSelectItem.Text = string.Join("/", str);
             }
+            this.btn.Flyout.Hide();
         }
         private void CallChanged()
         {
@@ -169,18 +116,18 @@ namespace OMDb.WinUI3.MyControls
         private Flyout AddLabelFlyout;
         private async void ShowAddLabelsFlyout(FrameworkElement element)
         {
-            if(AllLabels == null)
+            if (AllLabels == null)
             {
                 var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
                 if (labels != null)
                 {
                     AllLabels = labels.Select(p => new Models.Label(p)).ToList();
-                    if(labels?.Count!=0)
+                    if (labels?.Count != 0)
                     {
                         var dic = Labels.ToDictionary(p => p.LabelDb.Id);
-                        foreach(var label in AllLabels)
+                        foreach (var label in AllLabels)
                         {
-                            if(dic.ContainsKey(label.LabelDb.Id))
+                            if (dic.ContainsKey(label.LabelDb.Id))
                             {
                                 label.IsChecked = true;
                             }
@@ -188,7 +135,7 @@ namespace OMDb.WinUI3.MyControls
                     }
                 }
             }
-            if(AddLabelFlyout == null)
+            if (AddLabelFlyout == null)
             {
                 AddLabelFlyout = new Flyout();
                 AddLabelsControl addLabelsControl = new AddLabelsControl();
@@ -202,17 +149,17 @@ namespace OMDb.WinUI3.MyControls
         private void AddLabelsControl_DoneEvent(bool confirm, IEnumerable<Models.Label> labels)
         {
             AddLabelFlyout.Hide();
-            if(confirm)
+            if (confirm)
             {
                 var dic = labels.ToDictionary(p => p.LabelDb.Id);
                 foreach (var label in AllLabels)
                 {
-                    if(dic.TryGetValue(label.LabelDb.Id, out var value))
+                    if (dic.TryGetValue(label.LabelDb.Id, out var value))
                     {
                         label.IsChecked = value.IsChecked;
                     }
                 }
-                Labels = labels.Where(p=>p.IsChecked).ToList();
+                Labels = labels.Where(p => p.IsChecked).ToList();
             }
             else
             {

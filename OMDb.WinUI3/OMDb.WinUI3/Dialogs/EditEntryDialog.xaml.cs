@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using static OMDb.WinUI3.MyControls.LabelsControl;
-using static System.Net.WebRequestMethods;
 
 namespace OMDb.WinUI3.Dialogs
 {
@@ -53,14 +52,17 @@ namespace OMDb.WinUI3.Dialogs
                     };
                     stack.Children.Add(tBlock);
                     //属性 -> 属性
-                    Grid grid = new Grid()
+                    var lbc = new LabelsControl2();
+                    lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                    stack.Children.Add(lbc);
+                    /*Grid grid = new Grid()
                     {
                         Margin = new Thickness(0, 3, 0, 0),
                         RenderTransform = new CompositeTransform() { ScaleX = 0.75, ScaleY = 0.75 }
                     };
 
 
-                    /*Button btn = new Button()
+                    Button btn = new Button()
                     {
                         HorizontalAlignment = HorizontalAlignment.Right,
                         BorderThickness = new Thickness(0),
@@ -69,7 +71,7 @@ namespace OMDb.WinUI3.Dialogs
                         RenderTransform = new CompositeTransform() { ScaleX = 0.92, ScaleY = 0.92 }
                     };
                     //var lstSon = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId).Select(a => a.LabelDb.Name).ToList();
-                    
+
                     Flyout flyout = new Flyout();
 
                     flyout.Content = new MyControls.LabelsControl()
@@ -77,11 +79,11 @@ namespace OMDb.WinUI3.Dialogs
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Labels = lstSon,
                         Mode = LabelControlMode.Add,
-                    };*/
+                    };
                     var lstSon = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
-                    var btn=new MyControls.LabelsControl()
+                    var btn = new MyControls.LabelsControl()
                     {
-                        HorizontalAlignment= HorizontalAlignment.Right,
+                        HorizontalAlignment = HorizontalAlignment.Right,
                         Labels = lstSon,
                         Mode = LabelControlMode.Add,
                     };
@@ -96,11 +98,11 @@ namespace OMDb.WinUI3.Dialogs
                     {
                         Width = 220,
                         IsReadOnly = true,
-                    };
-                    tBox.SetBinding(TextBox.TextProperty, binding);
-                    grid.Children.Add(tBox);
-                    grid.Children.Add(btn);
-                    stack.Children.Add(grid);
+                    };*/
+                    //tBox.SetBinding(TextBox.TextProperty, binding);
+                    //grid.Children.Add(tBox);
+                    //grid.Children.Add(btn);
+                    //stack.Children.Add(grid);
 
                     stp.Children.Add(stack);
                 }

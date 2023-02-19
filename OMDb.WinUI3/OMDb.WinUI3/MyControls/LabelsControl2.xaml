@@ -14,28 +14,40 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         <converters:CheckToOpacityConverter x:Key="CheckToOpacityConverter" />
     </UserControl.Resources>
-    <Grid>
-        <GridView x:Name="GridView_Label" SelectionMode="None">
-            <GridView.ItemContainerStyle>
-                <Style TargetType="GridViewItem">
-                    <Setter Property="Margin" Value="4" />
-                </Style>
-            </GridView.ItemContainerStyle>
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="Models:Label">
-                    <Button
-                        Width="72"
-                        Background="Transparent"
-                        Click="Button_Click"
-                        CornerRadius="16">
-                        <TextBlock
-                            Grid.Column="1"
-                            Opacity="{x:Bind IsChecked, Mode=OneWay, Converter={StaticResource CheckToOpacityConverter}}"
-                            Text="{x:Bind LabelDb.Name}"
-                            ToolTipService.ToolTip="{x:Bind LabelDb.Name}" />
-                    </Button>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-        </GridView>
+    <Grid Margin="0,3,0,0">
+        <TextBox x:Name="StrSelectItem" Text="蒼井空" Width="220" IsReadOnly="True">
+        </TextBox>
+        <Button HorizontalAlignment="Right" BorderThickness="0" Margin="0,5,0,0" x:Name="btn">
+            <SymbolIcon Symbol="Find" />
+            <Button.RenderTransform>
+                <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
+            </Button.RenderTransform>
+            <Button.Flyout>
+                <Flyout>
+                    <StackPanel>
+                        <ListView ItemsSource="{x:Bind Labels,Mode=TwoWay}" Width="200" SelectionMode="None">
+                            <ListView.ItemTemplate>
+                                <DataTemplate x:DataType="Models:Label">
+                                    <Grid>
+                                        <CheckBox IsChecked="{x:Bind IsChecked,Mode=TwoWay}" Width="10"></CheckBox>
+                                        <TextBlock Text="{x:Bind LabelDb.Name}" HorizontalAlignment="Left" Margin="30,4,0,0"></TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <StackPanel Orientation="Horizontal">
+                            <Button 
+                                Content="確認" 
+                                Margin="15,5,0,0"
+                                Click="Button_Click">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+        <Grid.RenderTransform>
+            <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+        </Grid.RenderTransform>
     </Grid>
 </UserControl>
