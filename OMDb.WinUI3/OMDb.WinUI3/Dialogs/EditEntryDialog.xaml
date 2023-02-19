@@ -64,7 +64,7 @@
             </Grid>
             <!--  路径  -->
             <Grid Grid.Row="1" Margin="0,0">
-                <StackPanel>
+                <StackPanel x:Name="stp">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="詞條路徑：" Margin="8,0,20,0"></TextBlock>
                         <TextBlock
@@ -139,7 +139,7 @@
                     <!--  上映日期  -->
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="上映日期：" Margin="8,5,17,0"></TextBlock>
-                        <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
+                        <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}" Width="180">
                             <CalendarDatePicker.RenderTransform>
                                 <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
                             </CalendarDatePicker.RenderTransform>
@@ -147,14 +147,36 @@
 
                         <!--  評分  -->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="評分：" Margin="48,5,5,0"/>
+                            <TextBlock Text="評分：" Margin="10,5,5,0"/>
                             <RatingControl
                                 Margin="0,3,0,0"
                                 HorizontalAlignment="Left"
                                 Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
                         </StackPanel>
                     </StackPanel>
-
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="參演女優：" Margin="8,5,0,0" Width="87"></TextBlock>
+                        <Grid Margin="0,3,0,0">
+                            <TextBox Text="蒼井空" Width="220" IsReadOnly="True">
+                            </TextBox>
+                            <Button HorizontalAlignment="Right" BorderThickness="0" Margin="0,5,0,0">
+                                <SymbolIcon Symbol="Find" />
+                                <Button.RenderTransform>
+                                    <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
+                                </Button.RenderTransform>
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ListView ItemsSource="{Binding ElementName=page, Path=VM.Label_Property}"
+                                                  SelectionMode="Multiple">
+                                        </ListView>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                            <Grid.RenderTransform>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                            </Grid.RenderTransform>
+                        </Grid>
+                    </StackPanel>
                 </StackPanel>
             </Grid>
 

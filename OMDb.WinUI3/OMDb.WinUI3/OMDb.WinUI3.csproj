@@ -55,6 +55,7 @@
     <None Remove="MyControls\LabelCollection2.xaml" />
     <None Remove="MyControls\LabelCollection3.xaml" />
     <None Remove="MyControls\LabelsControl.xaml" />
+    <None Remove="MyControls\LabelsControl2.xaml" />
     <None Remove="MyControls\NotifyPopup.xaml" />
     <None Remove="MyControls\StorageCard.xaml" />
     <None Remove="MyControls\WaitingPopup.xaml" />
@@ -101,6 +102,9 @@
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="MyControls\DropArea.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="MyControls\LabelsControl2.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
     <Page Update="MyControls\LabelsControl.xaml">

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -7,6 +8,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.MyControls;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,6 +19,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using static OMDb.WinUI3.MyControls.LabelsControl;
+using static System.Net.WebRequestMethods;
 
 namespace OMDb.WinUI3.Dialogs
 {
@@ -26,9 +31,79 @@ namespace OMDb.WinUI3.Dialogs
         {
             VM = new ViewModels.EditEntryViewModel(entry);
             this.InitializeComponent();
-            if (entry != null && entry.CoverImg != null)
+            //封面不为空 ->设置封面
+            if (entry != null && entry.CoverImg != null) { Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg)); }
+
+            //取属性标签
+            var lst_label_property = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId, true);
+            if (lst_label_property.Count > 0) VM.Label_Property = new List<Models.Label>();
             {
-                Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg));
+                foreach (var item in lst_label_property) { VM.Label_Property.Add(new Models.Label(item)); }
+                var lstBaba = VM.Label_Property.Where(a => !a.LabelDb.ParentId.NotNullAndEmpty()).DepthClone<List<Models.Label>>();
+                foreach (var item in lstBaba)
+                {
+                    StackPanel stack = new StackPanel();
+                    stack.Orientation = Orientation.Horizontal;
+                    //属性 -> 标题
+                    TextBlock tBlock = new TextBlock()
+                    {
+                        Margin = new Thickness(8, 5, 0, 0),
+                        Text = item.LabelDb.Name + "：",
+                        Width = 87
+                    };
+                    stack.Children.Add(tBlock);
+                    //属性 -> 属性
+                    Grid grid = new Grid()
+                    {
+                        Margin = new Thickness(0, 3, 0, 0),
+                        RenderTransform = new CompositeTransform() { ScaleX = 0.75, ScaleY = 0.75 }
+                    };
+
+
+                    /*Button btn = new Button()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        BorderThickness = new Thickness(0),
+                        Margin = new Thickness(0, 5, 0, 0),
+                        Content = new SymbolIcon(Symbol.Find),
+                        RenderTransform = new CompositeTransform() { ScaleX = 0.92, ScaleY = 0.92 }
+                    };
+                    //var lstSon = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId).Select(a => a.LabelDb.Name).ToList();
+                    
+                    Flyout flyout = new Flyout();
+
+                    flyout.Content = new MyControls.LabelsControl()
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        Labels = lstSon,
+                        Mode = LabelControlMode.Add,
+                    };*/
+                    var lstSon = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                    var btn=new MyControls.LabelsControl()
+                    {
+                        HorizontalAlignment= HorizontalAlignment.Right,
+                        Labels = lstSon,
+                        Mode = LabelControlMode.Add,
+                    };
+
+                    var binding = new Binding()
+                    {
+                        ElementName = "ListView",
+                        Mode = BindingMode.OneWay,
+                        Path = new PropertyPath("SelectedItems"),
+                    };
+                    TextBox tBox = new TextBox()
+                    {
+                        Width = 220,
+                        IsReadOnly = true,
+                    };
+                    tBox.SetBinding(TextBox.TextProperty, binding);
+                    grid.Children.Add(tBox);
+                    grid.Children.Add(btn);
+                    stack.Children.Add(grid);
+
+                    stp.Children.Add(stack);
+                }
             }
         }
 
@@ -75,11 +150,11 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     Entry = entry,
                     //Names = content.VM.EntryNames.ToObservableCollection(),
-                    Labels = content.VM.Labels.Select(p=>p.LabelDb).ToList(),
+                    Labels = content.VM.Labels.Select(p => p.LabelDb).ToList(),
                     FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
                 };
-                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder,Path.GetFileName(entry.CoverImg));
+                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entry.CoverImg));
                 entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
                 return entryDetail;
                 //return new Tuple<Core.Models.Entry, List<Models.EntryName>>(entry,content.VM.EntryNames);
@@ -89,13 +164,13 @@ namespace OMDb.WinUI3.Dialogs
                 return null;
             }
         }
-        
+
         private async void Button_Path_Click(object sender, RoutedEventArgs e)
         {
             var folder = await Helpers.PickHelper.PickFolderAsync();
-            if(folder != null)
+            if (folder != null)
             {
-                if(!folder.Path.StartsWith(Path.GetDirectoryName(VM.SelectedEnrtyStorage.StoragePath), StringComparison.OrdinalIgnoreCase))
+                if (!folder.Path.StartsWith(Path.GetDirectoryName(VM.SelectedEnrtyStorage.StoragePath), StringComparison.OrdinalIgnoreCase))
                 {
                     Helpers.DialogHelper.ShowError("请选择位于仓库下的路径");
                 }
@@ -110,7 +185,7 @@ namespace OMDb.WinUI3.Dialogs
         private async void Button_CoverImg_Click(object sender, RoutedEventArgs e)
         {
             var file = await Helpers.PickHelper.PickImgAsync();
-            if(file != null)
+            if (file != null)
             {
                 VM.Entry.CoverImg = file.Path;
                 Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));

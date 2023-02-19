@@ -107,6 +107,24 @@ namespace OMDb.WinUI3.ViewModels
             get => labels;
             set => SetProperty(ref labels, value);
         }
+
+        private List<Models.Label> _label_Property;
+        /// <summary>
+        /// 绑定的标签
+        /// </summary>
+        public List<Models.Label> Label_Property
+        {
+            get => _label_Property;
+            set => SetProperty(ref _label_Property, value);
+        }
+
+        private List<string> _str_Selected_Label_Property;
+        public List<string> Str_Selected_Label_Property
+        {
+            get => _str_Selected_Label_Property;
+            set => SetProperty(ref _str_Selected_Label_Property, value);
+        }
+
         public void SetEntryPath(string name)
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
