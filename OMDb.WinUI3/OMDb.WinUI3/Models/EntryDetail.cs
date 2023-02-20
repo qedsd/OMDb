@@ -25,48 +25,47 @@ namespace OMDb.WinUI3.Models
             FullEntryPath = Helpers.PathHelper.EntryFullPath(entry);
             FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
-            SaveType = entry.SaveType;//存儲模式
-            if (SaveType.Equals('1') || SaveType.Equals('2'))
+            if (entry.SaveType.Equals('1') || entry.SaveType.Equals('2'))
             {
                 var result = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
-                if (result != null)
+                if (result.Count > 0)
                 {
                     PathFolder = result.Where(a => a.FileType == '1').FirstOrDefault().Path;
-                    PathImg = result.Where(a => a.FileType == '2').Select(a => a.Path).ToList();
-                    PathVideo = result.Where(a => a.FileType == '3').Select(a => a.Path).ToList();
-                    PathAudio = result.Where(a => a.FileType == '4').Select(a => a.Path).ToList();
-                    PathMore = result.Where(a => a.FileType == '5').Select(a => a.Path).ToList();
+                    PathImg = result.Where(a => a.FileType == '2').Select(a => a.Path).ToObservableCollection();
+                    PathVideo = result.Where(a => a.FileType == '3').Select(a => a.Path).ToObservableCollection();
+                    PathAudio = result.Where(a => a.FileType == '4').Select(a => a.Path).ToObservableCollection();
+                    PathMore = result.Where(a => a.FileType == '5').Select(a => a.Path).ToObservableCollection();
                 }
             }
         }
-        private string _pathFolder;
+        private string _pathFolder = string.Empty;
         public string PathFolder
         {
             get => _pathFolder;
             set => SetProperty(ref _pathFolder, value);
         }
 
-        private List<string> _pathImg;
-        public List<string> PathImg
+        private ObservableCollection<string> _pathImg = new ObservableCollection<string>();
+        public ObservableCollection<string> PathImg
         {
             get => _pathImg;
             set => SetProperty(ref _pathImg, value);
         }
-        private List<string> _pathVideo;
-        public List<string> PathVideo
+        private ObservableCollection<string> _pathVideo = new ObservableCollection<string>();
+        public ObservableCollection<string> PathVideo
         {
             get => _pathVideo;
             set => SetProperty(ref _pathVideo, value);
         }
-        private List<string> _pathAudio;
-        public List<string> PathAudio
+        private ObservableCollection<string> _pathAudio = new ObservableCollection<string>();
+        public ObservableCollection<string> PathAudio
         {
             get => _pathAudio;
             set => SetProperty(ref _pathAudio, value);
         }
 
-        private List<string> _pathMore;
-        public List<string> PathMore
+        private ObservableCollection<string> _pathMore = new ObservableCollection<string>();
+        public ObservableCollection<string> PathMore
         {
             get => _pathMore;
             set => SetProperty(ref _pathMore, value);
@@ -98,12 +97,7 @@ namespace OMDb.WinUI3.Models
                 UpdateAlias();
             }
         }
-        private char _saveType;
-        public char SaveType
-        {
-            get => _saveType;
-            set => SetProperty(ref _saveType, value);
-        }
+
         private string alias;
         /// <summary>
         /// 别名
@@ -213,12 +207,39 @@ namespace OMDb.WinUI3.Models
             labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.EntryId);
             Labels ??= new List<Core.DbModels.LabelDb>();
             WatchHistory ??= new ObservableCollection<Core.Models.WatchHistory>();
-            LoadImgs();
-            LoadMetaData();
-            LoadVideos();
-            LoadSubs();
-            LoadRes();
-            LoadLines();
+
+
+
+            if (this.Entry.SaveType == '1')
+            {
+                if (Directory.Exists(PathFolder))
+                {
+                    var items = Helpers.FileHelper.FindExplorerItems(PathFolder).FirstOrDefault().Children?.ToObservableCollection();
+                    if (items != null && items.Count > 0)
+                    {
+                        VideoExplorerItems = items.Where(a => a.Name.EndsWith(".mp4")).ToObservableCollection();
+                        Imgs = items.Where(
+                            a => a.Name.EndsWith(".jpg") ||
+                                 a.Name.EndsWith(".png") ||
+                                 a.Name.EndsWith(".jepg") 
+                        ).Select(a => a.FullName).ToObservableCollection<string>();
+                    }
+                }
+            }
+            else if ((this.Entry.SaveType == '2'))
+            {
+
+            }
+            else
+            {
+                LoadImgs();
+                LoadMetaData();
+                LoadVideos();
+                LoadSubs();
+                LoadRes();
+                LoadLines();
+            }
+
         }
         public async Task UpdateWatchHistoryAsync()
         {

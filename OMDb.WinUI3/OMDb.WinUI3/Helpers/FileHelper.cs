@@ -157,6 +157,17 @@ namespace OMDb.WinUI3.Helpers
             return GetAllFiles(items);
         }
 
+        /// <summary>
+        /// 获取所有文件，包含文件夹的子文件
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static List<Models.ExplorerItem> GetImgFiles(string path)
+        {
+            var items = FindExplorerItems(path);
+            return GetAllFiles(items);
+        }
+
         public static void OpenBySystem(string path)
         {
             System.Diagnostics.Process.Start("explorer.exe", path);

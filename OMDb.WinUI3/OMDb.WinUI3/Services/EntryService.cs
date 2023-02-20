@@ -111,7 +111,7 @@ namespace OMDb.WinUI3.Services
             {
                 Core.Services.EntryService.AddEntry(entry.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.EntryId, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
-
+                Core.Services.EntrySourceSerivce.AddEntrySource(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId, Core.Enums.FileType.Folder);
                 //添加标签
                 if (entry.Labels?.Count != 0)
                 {
@@ -133,8 +133,7 @@ namespace OMDb.WinUI3.Services
         {
             await Task.Run(() =>
             {
-                entry.Entry.SaveType = entry.SaveType;
-                if (entry.Entry.SaveType.Equals("1"))
+                if (entry.Entry.SaveType.Equals('1'))
                 {
                     var EsDb=new EntrySourceDb() 
                     { 
@@ -143,12 +142,12 @@ namespace OMDb.WinUI3.Services
                         FileType = '1'
                     };
                     List<EntrySourceDb> entrySourceDbs= new List<EntrySourceDb>() { EsDb };
-                    Core.Services.EntrySourceSerivce.InsertEntrySource(entrySourceDbs, entry.Entry.DbId);
+                    Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, entry.Entry.DbId);
                 }
-                if (entry.Entry.SaveType.Equals("2"))
+                if (entry.Entry.SaveType.Equals('2'))
                 {
                     List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();                    
-                    Core.Services.EntrySourceSerivce.InsertEntrySource(entrySourceDbs, entry.Entry.DbId);
+                    Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, entry.Entry.DbId);
                 }
 
                 Core.Services.EntryService.UpdateEntry(entry.Entry);//词条

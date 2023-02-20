@@ -16,21 +16,7 @@ namespace OMDb.WinUI3.ViewModels
     {
         public Models.EntryDetail EntryDetail { get; set; }
         public Core.Models.Entry Entry { get; set; }
-        //private List<Models.EntryName> entryNames;
-        //public List<Models.EntryName> EntryNames
-        //{
-        //    get => entryNames;
-        //    set
-        //    {
-        //        SetProperty(ref entryNames, value);
-        //    }
-        //}
-        //private Models.EntryName entryName;
-        //public Models.EntryName EntryName
-        //{
-        //    get => entryName;
-        //    set => SetProperty(ref entryName, value);
-        //}
+
         private string entryName;
         public string EntryName
         {
@@ -76,10 +62,6 @@ namespace OMDb.WinUI3.ViewModels
             {
                 SetProperty(ref selectedEnrtyStorage, value);
                 SelectedEntryDicPath = Path.Combine(selectedEnrtyStorage.StoragePath, Services.ConfigService.DefaultEntryFolder);//重置为默认路径
-                //if (EntryName != null&&!string.IsNullOrEmpty(EntryName.Name))
-                //{
-                //    SetEntryPath(EntryName.Name);
-                //}
                 SetEntryPath(EntryName);
             }
         }
@@ -118,13 +100,6 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _label_Property, value);
         }
 
-        private List<string> _str_Selected_Label_Property;
-        public List<string> Str_Selected_Label_Property
-        {
-            get => _str_Selected_Label_Property;
-            set => SetProperty(ref _str_Selected_Label_Property, value);
-        }
-
         public void SetEntryPath(string name)
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
@@ -143,15 +118,6 @@ namespace OMDb.WinUI3.ViewModels
                 Entry.CreateTime = DateTime.Now;
                 Entry.LastUpdateTime = DateTime.Now;
                 Entry.ReleaseDate = DateTimeOffset.Now;
-                //foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
-                //{
-                //    EntryNames.Add(new Models.EntryName()
-                //    {
-                //        Lang = p,
-                //        IsDefault = p == Core.Enums.LangEnum.zh_CN,
-                //    });
-                //}
-                //EntryName = EntryNames.FirstOrDefault();
                 EnrtyStorages = Services.ConfigService.EnrtyStorages.Where(p => p.StoragePath != null).ToList();
             }
             else
@@ -197,29 +163,10 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        //foreach (Core.Enums.LangEnum p in Enum.GetValues(typeof(Core.Enums.LangEnum)))
-                        //{
-                        //    var targetName = names.FirstOrDefault(p2 => p2.Lang == p.ToString());
-                        //    EntryNames.Add(new Models.EntryName()
-                        //    {
-                        //        Lang = p,
-                        //        IsDefault = p == Core.Enums.LangEnum.zh_CN,
-                        //        Name = targetName?.Name
-                        //    });
-                        //}
-                        //EntryName = EntryNames.FirstOrDefault(p=>p.IsDefault);
                         EntryName = names.FirstOrDefault(p => p.IsDefault)?.Name;
                     });
                 }
             }
-        }
-
-
-        private string _pointFolder = string.Empty;
-        public string PointFolder
-        {
-            get => _pointFolder;
-            set => SetProperty(ref _pointFolder, value);
         }
     }
 }

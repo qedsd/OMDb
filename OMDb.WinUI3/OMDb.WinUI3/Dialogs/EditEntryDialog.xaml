@@ -14,12 +14,12 @@
     Background="Transparent"
     mc:Ignorable="d">
     <Page.Resources>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="800"/>
+            <ColumnDefinition Width="800" />
         </Grid.ColumnDefinitions>
         <Button
             Height="256"
@@ -49,105 +49,109 @@
             <Grid Margin="2,0,0,10">
                 <StackPanel Orientation="Horizontal">
                     <ComboBox
+                        Width="200"
                         DisplayMemberPath="StorageName"
                         ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
-                        SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}"
-                        Width="200"/>
+                        SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
                     <TextBox
                         Grid.Column="1"
+                        Width="350"
                         Margin="4,0,12,0"
                         PlaceholderText="词条名称"
                         Text="{x:Bind VM.EntryName, Mode=TwoWay}"
-                        TextChanged="TextBox_TextChanged"
-                        Width="350"/>
+                        TextChanged="TextBox_TextChanged" />
                 </StackPanel>
             </Grid>
             <!--  路径  -->
             <Grid Grid.Row="1" Margin="0,0">
                 <StackPanel x:Name="stp">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="詞條路徑：" Margin="8,0,20,0"></TextBlock>
+                        <TextBlock Margin="8,0,20,0" Text="詞條路徑：" />
                         <TextBlock
-                            Margin="0,0"
                             Width="960"
-                            Text="{x:Bind VM.EntryPath, Mode=TwoWay}"/>
+                            Margin="0,0"
+                            Text="{x:Bind VM.EntryPath, Mode=TwoWay}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="存儲模式："  Margin="8,18,20,6"></TextBlock>
-                        <RadioButtons x:Name="ModeSelector" MaxColumns="3" Width="400"  Padding="10" Margin="0,6,0,6" >
-                            <RadioButton x:Name="Local" Content="本地存儲" ></RadioButton>
-                            <RadioButton x:Name="SetFolder" Content="指定文件夾"></RadioButton>
-                            <RadioButton x:Name="SetFile" Content="指定文件"></RadioButton>
+                        <TextBlock Margin="8,18,20,6" Text="存儲模式：" />
+                        <RadioButtons
+                            x:Name="ModeSelector"
+                            Width="400"
+                            Margin="0,6,0,6"
+                            Padding="10"
+                            MaxColumns="3">
+                            <RadioButton x:Name="Local" Content="本地存儲" />
+                            <RadioButton x:Name="SetFolder" Content="指定文件夾" />
+                            <RadioButton x:Name="SetFile" Content="指定文件" />
                             <RadioButtons.RenderTransform>
-                                <CompositeTransform ScaleX="0.9" ScaleY="0.9"/>
+                                <CompositeTransform ScaleX="0.9" ScaleY="0.9" />
                             </RadioButtons.RenderTransform>
                         </RadioButtons>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Text="搜刮資源："  Margin="8,2,17,0"></TextBlock>
-                        <Button
-                            VerticalAlignment="Bottom"
-                            ToolTipService.ToolTip="选择路径">
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Margin="8,2,17,0" Text="搜刮資源：" />
+                        <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
                             <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556" >
+                        <TextBox Width="556">
                             <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </TextBox.RenderTransform>
                         </TextBox>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Text="指定文件夾："  Margin="8,2,3,0"></TextBlock>
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Margin="8,2,3,0" Text="指定文件夾：" />
                         <Button
                             VerticalAlignment="Bottom"
                             Click="Button_Path_Click"
                             ToolTipService.ToolTip="选择路径">
                             <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556" x:Name="PointFolder" Text="{x:Bind VM.PointFolder,Mode=OneWay}" IsReadOnly="True">
+                        <TextBox
+                            x:Name="PointFolder"
+                            Width="556"
+                            IsReadOnly="True">
                             <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </TextBox.RenderTransform>
                         </TextBox>
                     </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked,Mode=OneWay,Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Text="指定文件："  Margin="8,2,17,0"></TextBlock>
-                        <Button
-                            VerticalAlignment="Bottom"
-                            ToolTipService.ToolTip="选择路径">
+                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Margin="8,2,17,0" Text="指定文件：" />
+                        <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
                             <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556" >
+                        <TextBox Width="556">
                             <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </TextBox.RenderTransform>
                         </TextBox>
                     </StackPanel>
 
                     <!--  上映日期  -->
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="上映日期：" Margin="8,5,17,0"></TextBlock>
-                        <CalendarDatePicker Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}" Width="180">
+                        <TextBlock Margin="8,5,17,0" Text="上映日期：" />
+                        <CalendarDatePicker Width="180" Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
                             <CalendarDatePicker.RenderTransform>
-                                <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
+                                <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
                             </CalendarDatePicker.RenderTransform>
                         </CalendarDatePicker>
 
                         <!--  評分  -->
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="評分：" Margin="10,5,5,0"/>
+                            <TextBlock Margin="10,5,5,0" Text="評分：" />
                             <RatingControl
                                 Margin="0,3,0,0"
                                 HorizontalAlignment="Left"
