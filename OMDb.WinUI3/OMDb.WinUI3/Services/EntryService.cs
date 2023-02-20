@@ -140,15 +140,15 @@ namespace OMDb.WinUI3.Services
                     { 
                         EntryId = entry.Entry.EntryId,
                         Path = entry.PathFolder,
-                        FileType = "1" 
+                        FileType = '1'
                     };
                     List<EntrySourceDb> entrySourceDbs= new List<EntrySourceDb>() { EsDb };
-                    Core.Services.EntrySourceSerivce.SavePath(entrySourceDbs, entry.Entry.DbId);
+                    Core.Services.EntrySourceSerivce.InsertEntrySource(entrySourceDbs, entry.Entry.DbId);
                 }
                 if (entry.Entry.SaveType.Equals("2"))
                 {
                     List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();                    
-                    Core.Services.EntrySourceSerivce.SavePath(entrySourceDbs, entry.Entry.DbId);
+                    Core.Services.EntrySourceSerivce.InsertEntrySource(entrySourceDbs, entry.Entry.DbId);
                 }
 
                 Core.Services.EntryService.UpdateEntry(entry.Entry);//词条

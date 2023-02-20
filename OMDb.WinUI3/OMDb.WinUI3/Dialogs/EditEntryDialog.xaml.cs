@@ -37,7 +37,8 @@ namespace OMDb.WinUI3.Dialogs
 
             var labelIds = new List<string>();
             if (entry != null) labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
-            if (lst_label_property.Count > 0) VM.Label_Property = new List<Models.Label>();
+            VM.Label_Property = new List<Models.Label>();
+            if (lst_label_property.Count > 0) 
             {
                 foreach (var item in lst_label_property)
                 {
@@ -73,17 +74,17 @@ namespace OMDb.WinUI3.Dialogs
             {
                 switch (entry.SaveType)
                 {
-                    case "1":
+                    case '1':
                         this.SetFolder.IsChecked = true;
                         /*if (!(VM.EntryDetail.PathFolder==null)&& VM.EntryDetail.PathFolder.Length>0)
                         {
                             PointFolder.Text = VM.EntryDetail.PathFolder;
                         }*/
                         break;
-                    case "2": 
+                    case '2': 
                         this.SetFile.IsChecked = true;                     
                         break;
-                    case "3": 
+                    case '3': 
                         this.Local.IsChecked = true;
                         break;
                     default:
@@ -143,7 +144,7 @@ namespace OMDb.WinUI3.Dialogs
                 var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
                 entryDetail.Labels.AddRange(lst);
                 //存储方式
-                entryDetail.SaveType= content.SetFolder.IsChecked==true? "1" :content.SetFile.IsChecked==true? "2" :"3";
+                entryDetail.SaveType= content.SetFolder.IsChecked==true? '1' :content.SetFile.IsChecked==true? '2' :'3';
                 //存储地址
 
 

@@ -34,16 +34,17 @@ namespace OMDb.Core.Services
 
         public static async Task<List<LabelDb>> GetAllLabelAsync(string currentDb)
         {
-            if (IsLocalDbValid()) return await DbService.LocalDb.Queryable<LabelDb>().Where(a=>a.DbSourceId== currentDb).ToListAsync();
+            if (IsLocalDbValid()) return await DbService.LocalDb.Queryable<LabelDb>().Where(a => a.DbSourceId == currentDb).ToListAsync();
             else return null;
         }
 
-        public static List<LabelDb> GetAllLabel(string currentDb,bool IsProperty)
+        public static List<LabelDb> GetAllLabel(string currentDb, bool IsProperty)
         {
             StringBuilder sb = new StringBuilder();
-            if (IsProperty)sb.AppendFormat("select * from Label where (IsProperty=1 or ParentId in (select Id from Label where IsProperty=1)) and DbSourceId='{0}'", currentDb);
-            else sb.AppendFormat("select * from Label where (IsProperty=1 or ParentId in (select Id from Label where IsProperty=0)) and DbSourceId='{0}'", currentDb);
-            return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString()); 
+            sb.AppendFormat(@"select * from Label 
+                                where (IsProperty=1 or ParentId in (select Id from Label where IsProperty={0})) and DbSourceId='{1}'"
+                                , Convert.ToInt32(IsProperty), currentDb);
+            return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString());
         }
 
 

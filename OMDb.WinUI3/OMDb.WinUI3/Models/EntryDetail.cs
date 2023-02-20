@@ -4,6 +4,7 @@ using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
 using OMDb.WinUI3.Extensions;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,16 +26,17 @@ namespace OMDb.WinUI3.Models
             FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
             SaveType = entry.SaveType;//存儲模式
-            if (SaveType.Equals("1"))
+            if (SaveType.Equals('1') || SaveType.Equals('2'))
             {
-                PathFolder = EntrySourceSerivce.QueryPath(entry.EntryId, "1", entry.DbId).FirstOrDefault().Path;
-            }
-            if (SaveType.Equals("2"))
-            {
-                PathImg=EntrySourceSerivce.QueryPath(entry.EntryId, "2", entry.DbId).Select(a=>a.Path).ToList();
-                PathVideo=EntrySourceSerivce.QueryPath(entry.EntryId, "3", entry.DbId).Select(a => a.Path).ToList();
-                PathAudio=EntrySourceSerivce.QueryPath(entry.EntryId, "4", entry.DbId).Select(a => a.Path).ToList();
-                PathMore=EntrySourceSerivce.QueryPath(entry.EntryId, "5", entry.DbId).Select(a => a.Path).ToList();
+                var result = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
+                if (result != null)
+                {
+                    PathFolder = result.Where(a => a.FileType == '1').FirstOrDefault().Path;
+                    PathImg = result.Where(a => a.FileType == '2').Select(a => a.Path).ToList();
+                    PathVideo = result.Where(a => a.FileType == '3').Select(a => a.Path).ToList();
+                    PathAudio = result.Where(a => a.FileType == '4').Select(a => a.Path).ToList();
+                    PathMore = result.Where(a => a.FileType == '5').Select(a => a.Path).ToList();
+                }
             }
         }
         private string _pathFolder;
@@ -79,7 +81,7 @@ namespace OMDb.WinUI3.Models
         public string Name
         {
             get => name;
-            set=>SetProperty(ref name, value);
+            set => SetProperty(ref name, value);
         }
         public Core.Models.Entry Entry { get; set; }
         public ObservableCollection<EntryName> names = new ObservableCollection<EntryName>();
@@ -96,9 +98,9 @@ namespace OMDb.WinUI3.Models
                 UpdateAlias();
             }
         }
-        private string _saveType;
-        public string SaveType
-        { 
+        private char _saveType;
+        public char SaveType
+        {
             get => _saveType;
             set => SetProperty(ref _saveType, value);
         }
@@ -140,7 +142,7 @@ namespace OMDb.WinUI3.Models
         public string FullEntryPath
         {
             get => fullEntryPath;
-            set=>SetProperty(ref fullEntryPath, value);
+            set => SetProperty(ref fullEntryPath, value);
         }
         private string fullCoverImgPath;
         public string FullCoverImgPath
@@ -158,7 +160,7 @@ namespace OMDb.WinUI3.Models
         public Core.Models.EntryMetadata Metadata
         {
             get => metadata;
-            set=>SetProperty(ref metadata,value);
+            set => SetProperty(ref metadata, value);
         }
         private ObservableCollection<Core.Models.WatchHistory> watchHistory;
         public ObservableCollection<Core.Models.WatchHistory> WatchHistory
@@ -172,10 +174,10 @@ namespace OMDb.WinUI3.Models
         /// </summary>
         public int WatchCount
         {
-            get=> watchCount;
-            set=>SetProperty(ref watchCount, value);
+            get => watchCount;
+            set => SetProperty(ref watchCount, value);
         }
-        private List<Core.DbModels.LabelDb> labels ;
+        private List<Core.DbModels.LabelDb> labels;
         public List<Core.DbModels.LabelDb> Labels
         {
             get => labels;
@@ -188,7 +190,7 @@ namespace OMDb.WinUI3.Models
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(labels.Count);
-                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.EntryId, LabelId = p.Id,DbId = Entry.DbId }));
+                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = Entry.EntryId, LabelId = p.Id, DbId = Entry.DbId }));
                         Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
@@ -198,7 +200,7 @@ namespace OMDb.WinUI3.Models
         public ObservableCollection<string> Imgs
         {
             get => imgs;
-            set=> SetProperty(ref imgs, value);
+            set => SetProperty(ref imgs, value);
         }
         private async Task Init()
         {
@@ -235,11 +237,11 @@ namespace OMDb.WinUI3.Models
         public void LoadImgs()
         {
             Imgs = new ObservableCollection<string>();
-            string imgFolder = Path.Combine(FullEntryPath,Services.ConfigService.ImgFolder);
-            if(Directory.Exists(imgFolder))
+            string imgFolder = Path.Combine(FullEntryPath, Services.ConfigService.ImgFolder);
+            if (Directory.Exists(imgFolder))
             {
                 var items = Helpers.FileHelper.GetAllFiles(imgFolder);
-                if(items != null && items.Any())
+                if (items != null && items.Any())
                 {
                     foreach (var file in items)
                     {
@@ -260,7 +262,7 @@ namespace OMDb.WinUI3.Models
         public ObservableCollection<Models.ExplorerItem> VideoExplorerItems
         {
             get => videoExplorerItems;
-            set=>SetProperty(ref videoExplorerItems, value);
+            set => SetProperty(ref videoExplorerItems, value);
         }
         public void LoadVideos()
         {
@@ -268,7 +270,7 @@ namespace OMDb.WinUI3.Models
             if (Directory.Exists(folder))
             {
                 VideoExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
-                if(VideoExplorerItems == null)
+                if (VideoExplorerItems == null)
                 {
                     VideoExplorerItems = new ObservableCollection<ExplorerItem>();
                 }
@@ -366,6 +368,6 @@ namespace OMDb.WinUI3.Models
             return Metadata.Save(System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
 
-        
+
     }
 }
