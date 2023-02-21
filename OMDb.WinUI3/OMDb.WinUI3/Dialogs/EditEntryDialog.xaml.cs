@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services.Settings;
 using System;
@@ -47,27 +48,55 @@ namespace OMDb.WinUI3.Dialogs
                     VM.Label_Property.Add(label);
                 }
                 var lstBaba = VM.Label_Property.Where(a => !a.LabelDb.ParentId.NotNullAndEmpty()).DepthClone<List<Models.Label>>();
+                int n = 2;//第1列 or 第2列
+                StackPanel stack = new StackPanel();
+                stack.Orientation = Orientation.Horizontal;
                 foreach (var item in lstBaba)
                 {
-                    StackPanel stack = new StackPanel();
-                    stack.Orientation = Orientation.Horizontal;
-                    //属性 -> 标题
-                    TextBlock tBlock = new TextBlock()
+                    //第一列
+                    if (n % 2 == 0)
                     {
-                        Margin = new Thickness(8, 5, 0, 0),
-                        Text = item.LabelDb.Name + "：",
-                        Width = 87
-                    };
-                    stack.Children.Add(tBlock);
-                    //属性 -> 属性
-                    var lbc = new LabelsControl2();
-                    lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
-                    stack.Children.Add(lbc);
-                    stp.Children.Add(stack);
+                        if (n != 2)
+                        {
+                            stack = new StackPanel();
+                            stack.Orientation = Orientation.Horizontal;
+                        }
+                        //属性 -> 标题
+                        TextBlock tBlock = new TextBlock()
+                        {
+                            Margin = new Thickness(8, 5, 0, 0),
+                            Text = item.LabelDb.Name + "：",
+                            Width = 87
+                        };
+                        stack.Children.Add(tBlock);
+                        //属性 -> 属性
+                        var lbc = new LabelsControl2();
+                        lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                        stack.Children.Add(lbc);
+                        n++;
+                        if (lstBaba.Count == n - 2)
+                            stp.Children.Add(stack);
+                    }
+                    //第二列
+                    else
+                    {
+                        //属性 -> 标题
+                        TextBlock tBlock = new TextBlock()
+                        {
+                            Margin = new Thickness(-11, 5, 0, 0),
+                            Text = item.LabelDb.Name + "：",
+                            Width = 87
+                        };
+                        stack.Children.Add(tBlock);
+                        //属性 -> 属性
+                        var lbc = new LabelsControl2();
+                        lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                        stack.Children.Add(lbc);
+                        stp.Children.Add(stack);
+                        n++;
+                    }
                 }
             }
-
-
             //封面不为空 -> 设置封面
             if (entry != null && entry.CoverImg != null) { Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg)); }
 
@@ -80,7 +109,9 @@ namespace OMDb.WinUI3.Dialogs
                         {
                             this.SetFolder.IsChecked = true;
                             var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId, FileType.Folder);
-                            PointFolder.Text = result?.FirstOrDefault()?.Path.ToString();
+                            var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
+                            if (s != null && !string.IsNullOrEmpty(entry.Path))
+                                PointFolder.Text = s + (result?.FirstOrDefault()?.Path.ToString());
                             break;
                         }
                     case '2':
@@ -99,15 +130,12 @@ namespace OMDb.WinUI3.Dialogs
                         break;
                 }
             }
+
             //新增 -> 默認存儲模式為指定文件夾
             else
             {
                 this.SetFolder.IsChecked = true;
             }
-
-
-
-
         }
         /// <summary>
         /// 返回的entry的Path、CoverImg都为全路径
@@ -126,6 +154,7 @@ namespace OMDb.WinUI3.Dialogs
             //保存按鈕
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
+                //新增 or 編輯
                 if (entry == null)
                 {
                     entry = content.VM.Entry;
@@ -144,29 +173,65 @@ namespace OMDb.WinUI3.Dialogs
                     Entry = entry,
                     //Names = content.VM.EntryNames.ToObservableCollection(),
                     Labels = content.VM.Labels.Select(p => p.LabelDb).ToList(),
-                    FullCoverImgPath = content.VM.Entry.CoverImg,
+                    //FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
                 };
-                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entry.CoverImg));
-                entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
 
-                //关于 标签 -> 属性 的保存
-                var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
-                entryDetail.Labels.AddRange(lst);
-                //存储方式+存储地址
+                //根據存储模式，選擇存储地址和默認封面
                 if (content.SetFolder.IsChecked == true)
                 {
                     entryDetail.Entry.SaveType = '1';
                     entryDetail.PathFolder = content.PointFolder.Text;
+                    //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
+                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
+                    {
+                        entryDetail.LoadPathFolder();
+                        if (entryDetail.Imgs.Count > 0)
+                        {
+                            entryDetail.FullCoverImgPath = entryDetail.Imgs[0];
+                        }
+                        else if (entryDetail.VideoExplorerItems.Count > 0)
+                        {
+                            entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                        }
+                        else
+                        {
+                            entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                        }
+                        entryDetail.Entry.CoverImg = entryDetail.FullCoverImgPath;
+                    }
                 }
                 else if (content.SetFile.IsChecked == true)
                 {
                     entryDetail.Entry.SaveType = '2';
+                    //封面空 -> 尋找指定地址中圖片 -> 尋找指定地址中視頻縮略圖 -> 設置默認封面
+                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
+                    {
+                        entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                        entryDetail.Entry.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                    }
                 }
                 else
                 {
                     entryDetail.Entry.SaveType = '3';
+                    //封面空 -> 設置默認封面
+                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
+                    {
+                        entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                        entryDetail.Entry.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                    }
                 }
+
+
+                //數據庫 詞條路徑&圖片路徑 取相對地址
+                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entry.CoverImg));
+                entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
+
+                //保存：标签 -> 属性
+                var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
+                entryDetail.Labels.AddRange(lst);
+
+
 
 
                 return entryDetail;
@@ -178,9 +243,6 @@ namespace OMDb.WinUI3.Dialogs
                 return null;
             }
         }
-
-
-
 
 
 

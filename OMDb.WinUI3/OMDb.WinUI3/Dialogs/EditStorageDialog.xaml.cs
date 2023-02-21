@@ -45,14 +45,15 @@ namespace OMDb.WinUI3.Dialogs
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
-                if(enrtyStorage != null)
-                {
+                //編輯 or 新增  
+                if (enrtyStorage != null)
                     enrtyStorage.Update(content.EnrtyStorage);
-                }
                 else
-                {
                     enrtyStorage = content.EnrtyStorage;
-                }
+                //封面空 -> 設置默認封面
+                if (enrtyStorage.CoverImg == null || enrtyStorage.CoverImg.Length <= 0)
+                    enrtyStorage.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+
                 return enrtyStorage;
             }
             else
@@ -74,7 +75,6 @@ namespace OMDb.WinUI3.Dialogs
             if (file != null)
             {
                 EnrtyStorage.CoverImg = file.Path;
-
                 var bi = new BitmapImage(new Uri(file.Path));
                 Image_CoverImg.Source = bi;
             }
@@ -94,8 +94,8 @@ namespace OMDb.WinUI3.Dialogs
             var file = await Helpers.PickHelper.PickFolderAsync();
             if (file != null)
             {
-                EnrtyStorage.StoragePath =file.Path;
-                EnrtyStorage.StorageName=file.Name;
+                EnrtyStorage.StoragePath = file.Path;
+                EnrtyStorage.StorageName = file.Name;
             }
         }
     }

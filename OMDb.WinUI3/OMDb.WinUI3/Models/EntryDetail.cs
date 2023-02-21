@@ -4,6 +4,7 @@ using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
 using OMDb.WinUI3.Extensions;
+using OMDb.WinUI3.Services;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -30,11 +31,15 @@ namespace OMDb.WinUI3.Models
                 var result = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
                 if (result.Count > 0)
                 {
-                    PathFolder = result.Where(a => a.FileType == '1').FirstOrDefault().Path;
-                    PathImg = result.Where(a => a.FileType == '2').Select(a => a.Path).ToObservableCollection();
-                    PathVideo = result.Where(a => a.FileType == '3').Select(a => a.Path).ToObservableCollection();
-                    PathAudio = result.Where(a => a.FileType == '4').Select(a => a.Path).ToObservableCollection();
-                    PathMore = result.Where(a => a.FileType == '5').Select(a => a.Path).ToObservableCollection();
+                    var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
+                    if (s != null && !string.IsNullOrEmpty(entry.Path))
+                    {
+                        PathFolder =s+result.Where(a => a.FileType == '1').FirstOrDefault().Path;
+                        PathImg = result.Where(a => a.FileType == '2').Select(a =>s+a.Path).ToObservableCollection();
+                        PathVideo = result.Where(a => a.FileType == '3').Select(a =>s+a.Path).ToObservableCollection();
+                        PathAudio = result.Where(a => a.FileType == '4').Select(a =>s+a.Path).ToObservableCollection();
+                        PathMore = result.Where(a => a.FileType == '5').Select(a =>s+a.Path).ToObservableCollection();
+                    }
                 }
             }
         }
@@ -212,19 +217,7 @@ namespace OMDb.WinUI3.Models
 
             if (this.Entry.SaveType == '1')
             {
-                if (Directory.Exists(PathFolder))
-                {
-                    var items = Helpers.FileHelper.FindExplorerItems(PathFolder).FirstOrDefault().Children?.ToObservableCollection();
-                    if (items != null && items.Count > 0)
-                    {
-                        VideoExplorerItems = items.Where(a => a.Name.EndsWith(".mp4")).ToObservableCollection();
-                        Imgs = items.Where(
-                            a => a.Name.EndsWith(".jpg") ||
-                                 a.Name.EndsWith(".png") ||
-                                 a.Name.EndsWith(".jepg") 
-                        ).Select(a => a.FullName).ToObservableCollection<string>();
-                    }
-                }
+                LoadPathFolder();
             }
             else if ((this.Entry.SaveType == '2'))
             {
@@ -232,11 +225,8 @@ namespace OMDb.WinUI3.Models
             }
             else
             {
-                LoadImgs();
-                LoadMetaData();
-                LoadVideos();
-                LoadSubs();
-                LoadRes();
+                LoadLocalRes();
+                LoadLocalMetaData();
                 LoadLines();
             }
 
@@ -255,7 +245,7 @@ namespace OMDb.WinUI3.Models
                 WatchCount = WatchHistory.Where(p => p.Done).Count();
             }
         }
-        public void LoadImgs()
+        public void LoadLocalImgs()
         {
             Imgs = new ObservableCollection<string>();
             string imgFolder = Path.Combine(FullEntryPath, Services.ConfigService.ImgFolder);
@@ -274,7 +264,7 @@ namespace OMDb.WinUI3.Models
                 }
             }
         }
-        public void LoadMetaData()
+        public void LoadLocalMetaData()
         {
             Metadata = Core.Models.EntryMetadata.Read(Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
@@ -285,7 +275,7 @@ namespace OMDb.WinUI3.Models
             get => videoExplorerItems;
             set => SetProperty(ref videoExplorerItems, value);
         }
-        public void LoadVideos()
+        public void LoadLocalVideos()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.VideoFolder);
             if (Directory.Exists(folder))
@@ -304,7 +294,7 @@ namespace OMDb.WinUI3.Models
             get => subExplorerItems;
             set => SetProperty(ref subExplorerItems, value);
         }
-        public void LoadSubs()
+        public void LoadLocalSubs()
         {
             string folder = Path.Combine(FullEntryPath, Services.ConfigService.SubFolder);
             if (Directory.Exists(folder))
@@ -317,21 +307,21 @@ namespace OMDb.WinUI3.Models
             }
         }
 
-        private ObservableCollection<Models.ExplorerItem> resExplorerItems;
-        public ObservableCollection<Models.ExplorerItem> ResExplorerItems
+        private ObservableCollection<Models.ExplorerItem> moreExplorerItems;
+        public ObservableCollection<Models.ExplorerItem> MoreExplorerItems
         {
-            get => resExplorerItems;
-            set => SetProperty(ref resExplorerItems, value);
+            get => moreExplorerItems;
+            set => SetProperty(ref moreExplorerItems, value);
         }
-        public void LoadRes()
+        public void LoadLocalMore()
         {
-            string folder = Path.Combine(FullEntryPath, Services.ConfigService.ResourceFolder);
+            string folder = Path.Combine(FullEntryPath, Services.ConfigService.MoreFolder);
             if (Directory.Exists(folder))
             {
-                ResExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
-                if (ResExplorerItems == null)
+                MoreExplorerItems = Helpers.FileHelper.FindExplorerItems(folder).FirstOrDefault().Children?.ToObservableCollection();
+                if (MoreExplorerItems == null)
                 {
-                    ResExplorerItems = new ObservableCollection<ExplorerItem>();
+                    MoreExplorerItems = new ObservableCollection<ExplorerItem>();
                 }
             }
         }
@@ -389,6 +379,42 @@ namespace OMDb.WinUI3.Models
             return Metadata.Save(System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae));
         }
 
+        /// <summary>
+        /// 加載指定文件夾
+        /// </summary>
+        public void LoadPathFolder()
+        {
+            if (Directory.Exists(PathFolder))
+            {
+                var items = Helpers.FileHelper.FindExplorerItems(PathFolder).FirstOrDefault().Children?.ToObservableCollection();
+                if (items != null && items.Count > 0)
+                {
+                    VideoExplorerItems = items.Where(
+                        a => a.Name.EndsWith(".mp4") ||
+                             a.Name.EndsWith(".mkv") ||
+                             a.Name.EndsWith(".avi")
+                        ).ToObservableCollection();
+                    Imgs = items.Where(
+                        a => a.Name.EndsWith(".jpg") ||
+                             a.Name.EndsWith(".png") ||
+                             a.Name.EndsWith(".jpeg")
+                    ).Select(a => a.FullName).ToObservableCollection<string>();
+                }
 
+                if (VideoExplorerItems == null)
+                    VideoExplorerItems = new ObservableCollection<ExplorerItem>();
+                if (Imgs == null)
+                    Imgs = new ObservableCollection<string>();
+            }
+        }
+
+
+        public void LoadLocalRes()
+        {
+            LoadLocalVideos();
+            LoadLocalSubs();
+            LoadLocalMore();
+            LoadLocalImgs();
+        }
     }
 }

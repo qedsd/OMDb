@@ -86,7 +86,7 @@ namespace OMDb.WinUI3.ViewModels
             CancelEditDescCommand.Execute(null);
             Entry.Metadata.Desc = Desc;
             Entry.Metadata.Save(System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.MetadataFileNmae));
-            Entry.LoadMetaData();
+            Entry.LoadLocalMetaData();
         });
         public ICommand CancelEditDescCommand => new RelayCommand(() =>
         {
@@ -313,7 +313,7 @@ namespace OMDb.WinUI3.ViewModels
                         await p.CopyAsync();
                     }
                     ExplorerItem.VerifyFaiedEvent -= VideoExplorerItem_VerifyFaiedEvent;
-                    Entry.LoadVideos();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    Entry.LoadLocalVideos();//前面添加的是无目录结构显示，需要刷新显示目录结构
                     Helpers.InfoHelper.ShowSuccess("复制完成");
                     if (VerifyFaiedVideoItems.Count!=0)//存在校验失败的
                     {
@@ -372,7 +372,7 @@ namespace OMDb.WinUI3.ViewModels
                         await p.CopyAsync();
                     }
                     ExplorerItem.VerifyFaiedEvent -= SubExplorerItem_VerifyFaiedEvent;
-                    Entry.LoadSubs();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    Entry.LoadLocalSubs();//前面添加的是无目录结构显示，需要刷新显示目录结构
                     Helpers.InfoHelper.ShowSuccess("复制完成");
                     if (VerifyFaiedSubItems.Count != 0)//存在校验失败的
                     {
@@ -412,10 +412,10 @@ namespace OMDb.WinUI3.ViewModels
                         {
                             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                             {
-                                Entry.ResExplorerItems.Remove(s);
+                                Entry.MoreExplorerItems.Remove(s);
                             });
                         };
-                        Entry.ResExplorerItems.Add(p);
+                        Entry.MoreExplorerItems.Add(p);
                     });
                     if (VerifyFaiedResItems == null)
                     {
@@ -431,7 +431,7 @@ namespace OMDb.WinUI3.ViewModels
                         await p.CopyAsync();
                     }
                     ExplorerItem.VerifyFaiedEvent -= ResExplorerItem_VerifyFaiedEvent;
-                    Entry.LoadRes();//前面添加的是无目录结构显示，需要刷新显示目录结构
+                    Entry.LoadLocalMore();//前面添加的是无目录结构显示，需要刷新显示目录结构
                     Helpers.InfoHelper.ShowSuccess("复制完成");
                     if (VerifyFaiedResItems.Count != 0)//存在校验失败的
                     {
@@ -472,7 +472,7 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         await p.CopyAsync();
                     }
-                    Entry.LoadImgs();
+                    Entry.LoadLocalImgs();
                     Helpers.InfoHelper.ShowSuccess("复制完成");
                 }
             }

@@ -1,4 +1,5 @@
-﻿using OMDb.Core.DbModels;
+﻿using CommunityToolkit.WinUI.UI.Controls;
+using OMDb.Core.DbModels;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Models;
@@ -96,6 +97,7 @@ namespace OMDb.WinUI3.Services
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ResourceFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.MoreFolder));
         }
 
 
@@ -111,7 +113,24 @@ namespace OMDb.WinUI3.Services
             {
                 Core.Services.EntryService.AddEntry(entry.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.EntryId, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
-                Core.Services.EntrySourceSerivce.AddEntrySource(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId, Core.Enums.FileType.Folder);
+                switch (entry.Entry.SaveType)
+                {
+                    case '1':
+                        {
+                            //文件夾地址轉爲相對地址
+                            var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.Entry.DbId).StoragePath;
+                            entry.PathFolder = entry.PathFolder.Replace(s, null);
+                            Core.Services.EntrySourceSerivce.AddEntrySource_PathFolder(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId);
+                            break; 
+                        }
+                    case '2':
+                        {
+                            break;
+                        }
+                    default:
+                        break;
+                }
+                //
                 //添加标签
                 if (entry.Labels?.Count != 0)
                 {
@@ -135,16 +154,11 @@ namespace OMDb.WinUI3.Services
             {
                 if (entry.Entry.SaveType.Equals('1'))
                 {
-                    var EsDb=new EntrySourceDb() 
-                    { 
-                        EntryId = entry.Entry.EntryId,
-                        Path = entry.PathFolder,
-                        FileType = '1'
-                    };
-                    List<EntrySourceDb> entrySourceDbs= new List<EntrySourceDb>() { EsDb };
-                    Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, entry.Entry.DbId);
+                    var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.Entry.DbId).StoragePath;
+                    entry.PathFolder = entry.PathFolder.Replace(s, null);
+                    Core.Services.EntrySourceSerivce.UpdateEntrySource_PathFolder(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId);
                 }
-                if (entry.Entry.SaveType.Equals('2'))
+                else if (entry.Entry.SaveType.Equals('2'))
                 {
                     List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();                    
                     Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, entry.Entry.DbId);

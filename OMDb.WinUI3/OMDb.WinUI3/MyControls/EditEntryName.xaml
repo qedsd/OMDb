@@ -33,15 +33,20 @@
                                     <Core:ChangePropertyAction PropertyName="PlaceholderText" Value="名称" />
                                 </Core:DataTriggerBehavior>
                                 <Core:DataTriggerBehavior Binding="{x:Bind IsDefault}" Value="False">
-                                    <Core:ChangePropertyAction PropertyName="PlaceholderText" Value="别名" />
+                                    <Core:ChangePropertyAction PropertyName="PlaceholderText" Value="别称" />
                                 </Core:DataTriggerBehavior>
                             </Interactivity:Interaction.Behaviors>
                         </TextBox>
                         <TextBox
                             Grid.Column="1"
+                            Margin="10,0,0,0"
                             PlaceholderText="备注"
                             Text="{x:Bind Mark, Mode=TwoWay}" />
-                        <Button Grid.Column="2" ToolTipService.ToolTip="删除" Click="Button_Click_1">
+                        <Button
+                            Grid.Column="2"
+                            Margin="10,0,0,0"
+                            Click="Button_Click_1"
+                            ToolTipService.ToolTip="删除">
                             <Interactivity:Interaction.Behaviors>
                                 <Core:DataTriggerBehavior Binding="{x:Bind IsDefault}" Value="True">
                                     <Core:ChangePropertyAction PropertyName="Visibility" Value="Collapsed" />
@@ -50,7 +55,7 @@
                                     <Core:ChangePropertyAction PropertyName="Visibility" Value="Visible" />
                                 </Core:DataTriggerBehavior>
                             </Interactivity:Interaction.Behaviors>
-                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE10A;" />
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;" />
                         </Button>
                     </Grid>
                 </DataTemplate>

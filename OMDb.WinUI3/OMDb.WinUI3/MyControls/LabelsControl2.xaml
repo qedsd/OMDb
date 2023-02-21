@@ -15,39 +15,51 @@
         <converters:CheckToOpacityConverter x:Key="CheckToOpacityConverter" />
     </UserControl.Resources>
     <Grid Margin="0,3,0,0">
-        <TextBox x:Name="StrSelectItem" Text="蒼井空" Width="220" IsReadOnly="True">
-        </TextBox>
-        <Button HorizontalAlignment="Right" BorderThickness="0" Margin="0,5,0,0" x:Name="btn">
+        <TextBox
+            x:Name="StrSelectItem"
+            Width="220"
+            FontSize="16"
+            IsReadOnly="True" />
+        <Button
+            x:Name="btn"
+            Margin="0,5,0,0"
+            HorizontalAlignment="Right"
+            BorderThickness="0">
             <SymbolIcon Symbol="Find" />
             <Button.RenderTransform>
-                <CompositeTransform ScaleX="0.92" ScaleY="0.92"/>
+                <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
             </Button.RenderTransform>
             <Button.Flyout>
                 <Flyout Closing="Flyout_Closing">
                     <StackPanel>
-                        <ListView ItemsSource="{x:Bind Labels,Mode=TwoWay}" Width="200" SelectionMode="None">
+                        <ListView
+                            Width="200"
+                            ItemsSource="{x:Bind Labels, Mode=TwoWay}"
+                            SelectionMode="None">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="Models:Label">
                                     <Grid>
-                                        <CheckBox IsChecked="{x:Bind IsChecked,Mode=TwoWay}" Width="10"></CheckBox>
-                                        <TextBlock Text="{x:Bind LabelDb.Name}" HorizontalAlignment="Left" Margin="30,4,0,0"></TextBlock>
+                                        <CheckBox Width="10" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" />
+                                        <TextBlock
+                                            Margin="30,4,0,0"
+                                            HorizontalAlignment="Left"
+                                            Text="{x:Bind LabelDb.Name}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
                         <StackPanel Orientation="Horizontal">
-                            <Button 
-                                Content="確認" 
+                            <Button
                                 Margin="15,5,0,0"
-                                Click="Button_Click">
-                            </Button>
+                                Click="Button_Click"
+                                Content="確認" />
                         </StackPanel>
                     </StackPanel>
                 </Flyout>
             </Button.Flyout>
         </Button>
         <Grid.RenderTransform>
-            <CompositeTransform ScaleX="0.75" ScaleY="0.75"/>
+            <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
         </Grid.RenderTransform>
     </Grid>
 </UserControl>

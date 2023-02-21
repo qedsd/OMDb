@@ -39,10 +39,11 @@ namespace OMDb.WinUI3.Services
         /// 资源文件夹->视频资源文件夹->字幕资源文件夹
         /// </summary>
         public static string SubFolder { get; } = @"Resource\Video\Sub";
-
         /// <summary>
         /// 资源文件夹->视频资源文件夹
         /// </summary>
+        public static string MoreFolder { get; } = @"Resource\More";
+
         public static string InfoFolder { get; } = "Info";
         public static string OMDbFolder { get; } = ".omdb";
         public static string StorageDbName { get; } = "omdb.db";

@@ -297,7 +297,7 @@
                         </Grid>
                     </Grid>
                 </StackPanel>
-                
+
                 <!--  图片  -->
                 <mycontrols:DropArea Caption="复制到图片文件夹" DropCommand="{x:Bind VM.DropImgCommand}">
                     <StackPanel Style="{StaticResource ItemOutStackPanel}">
@@ -353,7 +353,7 @@
                     </StackPanel>
                 </mycontrols:DropArea>
 
-                
+
 
                 <!--  观看记录  -->
                 <StackPanel Style="{StaticResource ItemOutStackPanel}">
@@ -542,7 +542,7 @@
                         </StackPanel>
                         <Rectangle Style="{StaticResource ItemHeaderSplit}" />
                         <Grid Margin="10,0,0,0">
-                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.ResExplorerItems, Mode=OneWay}" />
+                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.MoreExplorerItems, Mode=OneWay}" />
                         </Grid>
                     </StackPanel>
                 </mycontrols:DropArea>
@@ -567,9 +567,10 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <ListView ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}"
-                                  ItemClick="LineListView_ItemClick"
-                                  DoubleTapped="LineListView_DoubleTapped">
+                        <ListView
+                            DoubleTapped="LineListView_DoubleTapped"
+                            ItemClick="LineListView_ItemClick"
+                            ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="models1:ExtractsLineBase">
                                     <Grid>
@@ -614,7 +615,7 @@
                             Margin="10,0,0,0"
                             Orientation="Horizontal"
                             Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}">
-                            <TextBlock Text="别名" />
+                            <TextBlock Text="别称" />
                             <TextBlock Text=":" />
                             <TextBlock Margin="10,0,0,0" Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" />
                         </StackPanel>
