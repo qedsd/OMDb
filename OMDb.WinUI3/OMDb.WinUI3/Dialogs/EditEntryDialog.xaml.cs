@@ -222,11 +222,6 @@ namespace OMDb.WinUI3.Dialogs
                     }
                 }
 
-
-                //數據庫 詞條路徑&圖片路徑 取相對地址
-                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entry.CoverImg));
-                entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry);
-
                 //保存：标签 -> 属性
                 var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
                 entryDetail.Labels.AddRange(lst);
@@ -256,7 +251,7 @@ namespace OMDb.WinUI3.Dialogs
             var folder = await Helpers.PickHelper.PickFolderAsync();
             if (folder != null)
             {
-                if (!folder.Path.StartsWith(Path.GetDirectoryName(VM.SelectedEnrtyStorage.StoragePath), StringComparison.OrdinalIgnoreCase))
+                if (!folder.Path.StartsWith(VM.SelectedEnrtyStorage.StoragePath, StringComparison.OrdinalIgnoreCase))
                     Helpers.DialogHelper.ShowError("请选择位于仓库下的路径");
                 else
                 {

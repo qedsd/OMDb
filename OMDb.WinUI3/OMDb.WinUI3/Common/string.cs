@@ -75,7 +75,7 @@ namespace OMDb.WinUI3
 
         public static string SubString_A21(this string sourceStr, string str, int n, bool isForward = true, bool retain = true)
         {
-            if (str == string.Empty) return sourceStr;
+            if (sourceStr == string.Empty|| sourceStr==null||str== string.Empty) return sourceStr;
             if (!sourceStr.Contains(str)) throw new Exception(string.Format($@"Source string does not exist:[{str}]"));
             var index_Start = sourceStr.NIndex(str, n, isForward);
             if (index_Start == -1) throw new Exception(string.Format($@"{str}[{n}] out of index!"));
