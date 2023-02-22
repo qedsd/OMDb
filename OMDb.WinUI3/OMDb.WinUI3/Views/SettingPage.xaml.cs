@@ -172,7 +172,7 @@ namespace OMDb.WinUI3.Views
                 VM.DbSelector_Refresh.Execute(null);
                 return;
             }
-            if (dbName_New == null || dbName_New.Count() == 0)
+            else if (dbName_New == null || dbName_New.Count() == 0)
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }

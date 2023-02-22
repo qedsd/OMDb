@@ -40,10 +40,13 @@ namespace OMDb.WinUI3.Services
                 //创建词条文件夹
                 InitFolder(entryDetail);
 
+                //數據庫 詞條路徑&圖片路徑 取相對地址
+                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entryDetail.Entry.CoverImg));
+                entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entryDetail.Entry);
                 //复制封面图(Cover)、并同步修改封面路径
-                var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1,false);
+                var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1, false);
                 string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
-                if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }                
+                if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }
                 entryDetail.FullCoverImgPath = newImgCoverPath;
 
                 //创建元数据(MataData)
@@ -54,7 +57,7 @@ namespace OMDb.WinUI3.Services
 
                 //这时已经是相对路径
                 Helpers.InfoHelper.ShowSuccess("创建成功");
-                GlobalEvent.NotifyAddEntry(null,new EntryEventArgs(entryDetail.Entry));
+                GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(entryDetail.Entry));
                 return entryDetail.Entry.EntryId;
             }
             else
@@ -121,7 +124,7 @@ namespace OMDb.WinUI3.Services
                             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.Entry.DbId).StoragePath;
                             entry.PathFolder = entry.PathFolder.Replace(s, null);
                             Core.Services.EntrySourceSerivce.AddEntrySource_PathFolder(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId);
-                            break; 
+                            break;
                         }
                     case '2':
                         {
@@ -135,7 +138,7 @@ namespace OMDb.WinUI3.Services
                 if (entry.Labels?.Count != 0)
                 {
                     List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(entry.Labels.Count);
-                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = entry.Entry.EntryId, LabelId = p.Id,DbId = entry.Entry.DbId }));
+                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = entry.Entry.EntryId, LabelId = p.Id, DbId = entry.Entry.DbId }));
                     Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                 }
             });
@@ -152,6 +155,20 @@ namespace OMDb.WinUI3.Services
         {
             await Task.Run(() =>
             {
+
+                //封面变更
+                var coverType = Path.GetFileName(entry.Entry.CoverImg).SubString_A21(".", 1, false);
+                string newImgCoverPath = Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
+                if (!entry.Entry.CoverImg.Equals(newImgCoverPath))
+                {
+                    File.Copy(entry.Entry.CoverImg, newImgCoverPath, true);
+                    entry.Entry.CoverImg = entry.Entry.CoverImg.Replace(entry.Entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
+                }
+                //數據庫 詞條路徑&圖片路徑 取相對地址
+                entry.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entry.Entry.CoverImg));
+                entry.Entry.Path = Helpers.PathHelper.EntryRelativePath(entry.Entry);
+
+                //数据库表Entry3更新
                 if (entry.Entry.SaveType.Equals('1'))
                 {
                     var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.Entry.DbId).StoragePath;
@@ -160,16 +177,17 @@ namespace OMDb.WinUI3.Services
                 }
                 else if (entry.Entry.SaveType.Equals('2'))
                 {
-                    List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();                    
+                    List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();
                     Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, entry.Entry.DbId);
                 }
 
+                //数据库Entry1、Entry2更新
                 Core.Services.EntryService.UpdateEntry(entry.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.EntryId, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
                 if (entry.Labels?.Count != 0)
                 {
                     List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(entry.Labels.Count);
-                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = entry.Entry.EntryId, LabelId = p.Id,DbId = entry.Entry.DbId }));
+                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = entry.Entry.EntryId, LabelId = p.Id, DbId = entry.Entry.DbId }));
                     Core.Services.LabelService.ClearEntryLabel(entry.Entry.EntryId);//清空词条标签
                     Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                 }
@@ -194,7 +212,7 @@ namespace OMDb.WinUI3.Services
 
         public static async Task RemoveEntryAsync(Core.Models.Entry entry)
         {
-            if(await Dialogs.QueryDialog.ShowDialog("删除",$"是否删除 {entry.Name} 词条?不会删除本地文件"))
+            if (await Dialogs.QueryDialog.ShowDialog("删除", $"是否删除 {entry.Name} 词条?不会删除本地文件"))
             {
                 Core.Services.EntryService.RemoveEntry(entry);
                 Helpers.InfoHelper.ShowSuccess("已删除");

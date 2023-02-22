@@ -107,8 +107,12 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand DbSelector_Add => new RelayCommand(async () =>
         {
             var dbName = await EditDbSource.ShowDialog();
-
-            if ((dbName == null || dbName.Count() == 0))
+            if (dbName.Equals(@"04833378-22bb-465b-9582-fb1bab622de"))
+            {
+                LoadDbs();
+                return;
+            }
+            else if ((dbName == null || dbName.Count() == 0))
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
