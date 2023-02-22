@@ -93,11 +93,11 @@ namespace OMDb.WinUI3.Services
                 tmpInfo += "\r\n";
             }
 
-            //显示数据
+            /*//显示数据
             ShowInfo(tmpInfo);
 
             //导入成功提示
-            ImportSuccessTips(filePathAndName);
+            ImportSuccessTips(filePathAndName);*/
 
         }
     }
