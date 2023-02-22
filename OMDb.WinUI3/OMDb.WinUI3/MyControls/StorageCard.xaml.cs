@@ -88,5 +88,20 @@ namespace OMDb.WinUI3.MyControls
         public delegate void RemoveStorage(Models.EnrtyStorage enrtyStorage);
         public static event RemoveStorage RemoveStorageEvent;
 
+        private async void Export_Click(object sender, RoutedEventArgs e)
+        {
+            //導出地址
+            string name = "Info.xlsx";            
+            var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
+
+            if (Directory.Exists(outputPath) && (!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息","是否覆蓋？")))
+                return;
+            Services.ExcelService.ExportExcel(outputPath);
+        }
+
+        private void Inport_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

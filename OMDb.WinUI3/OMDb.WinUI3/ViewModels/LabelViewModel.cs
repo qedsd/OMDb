@@ -196,8 +196,8 @@ namespace OMDb.WinUI3.ViewModels
         }
 
 
-        private Brush _brush;
-        public Brush Brush
+        private System.Drawing.Brush _brush;
+        public System.Drawing.Brush Brush
         {
             get => _brush;
             set => SetProperty(ref _brush, value);

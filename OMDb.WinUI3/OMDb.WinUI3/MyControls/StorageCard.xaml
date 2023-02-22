@@ -15,8 +15,10 @@
     <Grid Margin="4" CornerRadius="4">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Click="Edit_Click" Text="编辑" />
-                <MenuFlyoutItem Click="Remove_Click" Text="移除" />
+                <MenuFlyoutItem Click="Edit_Click" Text="編輯倉庫" />
+                <MenuFlyoutItem Click="Remove_Click" Text="移除倉庫" />
+                <MenuFlyoutItem Click="Export_Click" Text="導出詞條" />
+                <MenuFlyoutItem Click="Inport_Click" Text="導入詞條" />
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid x:Name="ShowGrid">
