@@ -93,10 +93,10 @@ namespace OMDb.WinUI3.MyControls
             //導出地址
             string name = "Info.xlsx";            
             var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
-
+            var dbId=((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             if (Directory.Exists(outputPath) && (!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息","是否覆蓋？")))
                 return;
-            Services.ExcelService.ExportExcel(outputPath);
+            Services.ExcelService.ExportExcel(outputPath,dbId);
         }
 
         private void Inport_Click(object sender, RoutedEventArgs e)

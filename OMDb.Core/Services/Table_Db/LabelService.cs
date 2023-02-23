@@ -47,6 +47,12 @@ namespace OMDb.Core.Services
             return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString());
         }
 
+        public static List<LabelDb> GetAllLabel(string currentDb)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat(@"select * from Label where DbSourceId='{0}'",currentDb);
+            return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString());
+        }
 
         public static async Task<int> GetLabelCountAsync()
         {
