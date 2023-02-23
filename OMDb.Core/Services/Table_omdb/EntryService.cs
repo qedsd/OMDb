@@ -487,6 +487,10 @@ namespace OMDb.Core.Services
         }
 
 
+        public static void AddEntry(EntryDb edb,string dbId)
+        {
+            DbService.GetConnection(dbId).Insertable(edb).ExecuteCommand();
+        }
 
     }
 }

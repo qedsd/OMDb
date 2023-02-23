@@ -216,5 +216,15 @@ namespace OMDb.Core.Services
             }
             return queryItems;
         }
+
+
+
+
+        public static void AddEntryName(List<EntryNameDb> endbs, string dbId)
+        {
+             DbService.GetConnection(dbId).Insertable(endbs).ExecuteCommand();
+        }
+
+
     }
 }

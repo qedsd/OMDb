@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.DbModels;
+using OMDb.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,18 @@ namespace OMDb.Core.Services
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat($@"select * from EntryLabel where DbId='{dbId}'");
             return DbService.LocalDb.Ado.SqlQuery<EntryLabelDb>(sb.ToString());
+        }
+
+
+
+        /// <summary>
+        /// 查詢所有Entry&Label對應關係
+        /// </summary>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static void AddEntryLabel(EntryLabelDb eldb)
+        {
+            DbService.LocalDb.Insertable(eldb).ExecuteCommand();
         }
     }
 }

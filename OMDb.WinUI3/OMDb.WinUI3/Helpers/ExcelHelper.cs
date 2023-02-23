@@ -448,7 +448,7 @@ namespace OMDb.WinUI3.Helpers
         /// <param name="HeaderRowIndex">列头所在行号，-1表示没有列头</param>
         /// <param name="dir">excel列名和DataTable列名的对应字典</param>
         /// <returns></returns>
-        static DataTable ImportDt(ISheet sheet, int HeaderRowIndex, Dictionary<string, string> dir)
+        static DataTable ImportDt(ISheet sheet, int HeaderRowIndex)
         {
             DataTable table = new DataTable();
             IRow headerRow;
@@ -498,7 +498,8 @@ namespace OMDb.WinUI3.Helpers
                         else
                         //正常情况，列名存在且不重复：用excel中的列名作为datatable中对应的列名
                         {
-                            string colName = dir.Where(s => s.Value == headerRow.GetCell(i).ToString()).First().Key;
+                            /*string colName = dir.Where(s => s.Value == headerRow.GetCell(i).ToString()).First().Key;*/
+                            string colName = headerRow.GetCell(i).ToString();
                             DataColumn column = new DataColumn(colName);
                             table.Columns.Add(column);
                         }
@@ -627,7 +628,7 @@ namespace OMDb.WinUI3.Helpers
                 {
                     IWorkbook wb = WorkbookFactory.Create(file);
                     ISheet isheet = wb.GetSheet(SheetName);
-                    table = ImportDt(isheet, HeaderRowIndex, dir);
+                    table = ImportDt(isheet, HeaderRowIndex);
                     isheet = null;
                 }
             }
@@ -642,7 +643,7 @@ namespace OMDb.WinUI3.Helpers
         /// <param name="HeaderRowIndex">列头所在行号，-1表示没有列头</param>
         /// <param name="dir">excel列名和DataTable列名的对应字典</param>
         /// <returns></returns>
-        public static DataTable ImportExceltoDt(string strFileName, Dictionary<string, string> dir, int HeaderRowIndex = 1, int SheetIndex = 0)
+        public static DataTable ImportExceltoDt(string strFileName, int HeaderRowIndex = 1, int SheetIndex = 0)
         {
             DataTable table = new DataTable();
             using (FileStream file = new FileStream(strFileName, FileMode.Open, FileAccess.Read))
@@ -651,7 +652,7 @@ namespace OMDb.WinUI3.Helpers
                 {
                     IWorkbook wb = WorkbookFactory.Create(file);
                     ISheet isheet = wb.GetSheetAt(SheetIndex);
-                    table = ImportDt(isheet, HeaderRowIndex, dir);
+                    table = ImportDt(isheet, HeaderRowIndex);
                     isheet = null;
                 }
             }

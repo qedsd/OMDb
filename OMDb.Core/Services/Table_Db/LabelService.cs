@@ -50,7 +50,7 @@ namespace OMDb.Core.Services
         public static List<LabelDb> GetAllLabel(string currentDb)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"select * from Label where DbSourceId='{0}'",currentDb);
+            sb.AppendFormat(@"select * from Label where DbSourceId='{0}'", currentDb);
             return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString());
         }
 
@@ -254,6 +254,7 @@ namespace OMDb.Core.Services
             }
             DbService.LocalDb.Insertable(labelDb).ExecuteCommand();
         }
+
         public static void RemoveLabel(string labelId)
         {
             RemoveLabel(new List<string>() { labelId });
