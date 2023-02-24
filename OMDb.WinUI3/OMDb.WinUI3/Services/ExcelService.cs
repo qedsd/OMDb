@@ -151,7 +151,7 @@ namespace OMDb.WinUI3.Services
 
 
         //从Excel中导入数据到界面
-        public static void ImportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
+        public static async void ImportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
         {
             if (string.IsNullOrEmpty(filePath)) return;
             //用于支持gb2312    
@@ -355,11 +355,16 @@ namespace OMDb.WinUI3.Services
 
 
 
-                        /*//數據庫 詞條路徑&圖片路徑 取相對地址
-                        entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entryDetail.Entry.CoverImg));
-                        entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entryDetail.Entry);
                         //复制封面图(Cover)、并同步修改封面路径
-                        var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1, false);
+                        if (!System.IO.Directory.Exists(edb.CoverImg)||!stringEx.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                        {
+                            edb.CoverImg=
+                        }
+                        var coverType = Path.GetFileName(edb.CoverImg).SubString_A21(".", 1, false);
+                        //數據庫 詞條路徑&圖片路徑 取相對地址
+                        /*entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entryDetail.Entry);
+                        
+                        
                         string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
                         if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }
                         entryDetail.FullCoverImgPath = newImgCoverPath;
