@@ -1,12 +1,16 @@
-﻿using NPOI.SS.Formula;
+﻿using NPOI.POIFS.FileSystem;
+using NPOI.SS.Formula;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Helpers;
+using OMDb.WinUI3.Models;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,8 +101,8 @@ namespace OMDb.WinUI3.Services
                 }
 
 
-                row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Convert.ToString(path_entry));
-                row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Convert.ToString(path_entry), Convert.ToString(path_cover));
+                row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName, Convert.ToString(path_entry));
+                row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName, Convert.ToString(path_entry), Convert.ToString(path_cover));
 
                 var saveMode = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
                 row["SaveType"] = saveMode;
@@ -195,7 +199,7 @@ namespace OMDb.WinUI3.Services
                         List<EntryNameDb> endbs = new List<EntryNameDb>();
                         List<EntrySourceDb> esdbs = new List<EntrySourceDb>();
 
-                        SaveType saveMode=SaveType.Local;
+                        SaveType saveMode = SaveType.Local;
                         var strPath = string.Empty;
                         int n = 0;
 
@@ -228,7 +232,7 @@ namespace OMDb.WinUI3.Services
                                     edb.CoverImg = Convert.ToString(row[n]);
                                     break;
                                 case "存储模式":
-                                    try { var saveMode = Enum.Parse(typeof(SaveType), Convert.ToString(row[n])); } catch { }
+                                    try { saveMode = (SaveType)Enum.Parse(typeof(SaveType), Convert.ToString(row[n])); } catch { }
                                     break;
                                 case "存儲地址"://绝对地址
                                     strPath = Convert.ToString(row[n]);
@@ -283,7 +287,7 @@ namespace OMDb.WinUI3.Services
                             }
                         }
 
-                        //校验地址是否合法
+                        //校验存储地址是否合法
                         switch (saveMode)
                         {
                             case SaveType.Folder:
@@ -302,7 +306,7 @@ namespace OMDb.WinUI3.Services
                                 break;
                             case SaveType.Files:
                                 edb.SaveType = '2';
-                                var lstPath= strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
+                                var lstPath = strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
                                 foreach (var path in lstPath)
                                 {
                                     if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase)) continue;
@@ -324,7 +328,52 @@ namespace OMDb.WinUI3.Services
                         }
 
                         //创建词条路径
+                        if (!edb.Path.Contains(System.IO.Path.Combine(enrtyStorage.StorageName, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName)))//不在仓库路径内，强设置词条路径
+                            edb.Path = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, endbs[0].Name);
+                        if (Directory.Exists(edb.Path))
+                        {
+                            int i = 1;
+                            while (true)
+                            {
+                                string newPath = $"{edb.Path}({i++})";
+                                if (!Directory.Exists(newPath))
+                                {
+                                    edb.Path = newPath;
+                                    break;
+                                }
+                            }
+                        }//重名路径 -> 改名
+                        //创建词条文件夹
+                        Directory.CreateDirectory(edb.Path);
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.AudioFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.ImgFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.VideoFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.ResourceFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.SubFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.InfoFolder));
+                        Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.MoreFolder));
 
+
+
+                        /*//數據庫 詞條路徑&圖片路徑 取相對地址
+                        entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(entryDetail.Entry.CoverImg));
+                        entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entryDetail.Entry);
+                        //复制封面图(Cover)、并同步修改封面路径
+                        var coverType = Path.GetFileName(entryDetail.FullCoverImgPath).SubString_A21(".", 1, false);
+                        string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
+                        if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }
+                        entryDetail.FullCoverImgPath = newImgCoverPath;
+
+                        //创建元数据(MataData)
+                        InitFile(entryDetail);
+
+                        //保存至数据库
+                        await SaveToDbAsync(entryDetail);
+
+                        //这时已经是相对路径
+                        Helpers.InfoHelper.ShowSuccess("创建成功");
+                        GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(entryDetail.Entry));
+                        return entryDetail.Entry.EntryId;*/
 
 
 
