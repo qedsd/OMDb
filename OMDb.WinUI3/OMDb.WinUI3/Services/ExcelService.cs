@@ -1,4 +1,5 @@
-﻿using NPOI.POIFS.FileSystem;
+﻿using ICSharpCode.SharpZipLib.Core;
+using NPOI.POIFS.FileSystem;
 using NPOI.SS.Formula;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
@@ -356,9 +357,24 @@ namespace OMDb.WinUI3.Services
 
 
                         //复制封面图(Cover)、并同步修改封面路径
-                        if (!System.IO.Directory.Exists(edb.CoverImg)||!stringEx.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                        if (!System.IO.Directory.Exists(edb.CoverImg) || !stringEx.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
                         {
-                            edb.CoverImg=
+                            switch (saveMode)
+                            {
+                                case SaveType.Folder:
+                                    //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
+                                    var files_1 = Helpers.FileHelper.FindExplorerItems(strPath).FirstOrDefault().Children;
+                                    files_1.Where(a => stringEx.GetFileType(a.FullName) == '1').FirstOrDefault();
+
+                                    break;
+                                case SaveType.Files:
+                                    break;
+                                case SaveType.Local:
+                                    break;
+                                default:
+                                    break;
+                            }
+
                         }
                         var coverType = Path.GetFileName(edb.CoverImg).SubString_A21(".", 1, false);
                         //數據庫 詞條路徑&圖片路徑 取相對地址
