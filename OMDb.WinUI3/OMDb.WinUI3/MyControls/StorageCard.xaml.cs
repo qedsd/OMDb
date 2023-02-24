@@ -94,9 +94,10 @@ namespace OMDb.WinUI3.MyControls
             string name = "Info.xlsx";            
             var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
             var dbId=((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             if (!Directory.Exists(outputPath) && (!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息","是否覆蓋？")))
                 return;
-            Services.ExcelService.ExportExcel(outputPath,dbId);
+            Services.ExcelService.ExportExcel(outputPath, enrtyStorage);
         }
 
         private void Import_Click(object sender, RoutedEventArgs e)
@@ -105,7 +106,8 @@ namespace OMDb.WinUI3.MyControls
             string name = "Info.xlsx";
             var inputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
-            Services.ExcelService.ImportExcel(inputPath, dbId);
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            Services.ExcelService.ImportExcel(inputPath, enrtyStorage);
         }
     }
 }

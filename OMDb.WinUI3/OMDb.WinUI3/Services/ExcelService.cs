@@ -1,5 +1,6 @@
 ﻿using NPOI.SS.Formula;
 using OMDb.Core.DbModels;
+using OMDb.Core.Enums;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Helpers;
 using SqlSugar;
@@ -14,7 +15,7 @@ namespace OMDb.WinUI3.Services
 {
     public static class ExcelService
     {
-        public static void ExportExcel(string filePath, string dbId)
+        public static void ExportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
         {
             if (string.IsNullOrEmpty(filePath)) return;
 
@@ -27,7 +28,7 @@ namespace OMDb.WinUI3.Services
             dataTable.Columns.Add("Name", typeof(string));
             dataTable.Columns.Add("ReleaseDate", typeof(string));
             dataTable.Columns.Add("MyRating", typeof(double));
-            dataTable.Columns.Add("CoverImg", typeof(string));
+
             //詞條屬性列
             var result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
             var label_Property = result_LabelInfo.Where(a => a.IsProperty).ToList();
@@ -36,20 +37,30 @@ namespace OMDb.WinUI3.Services
             //分類列
             dataTable.Columns.Add("Classification", typeof(string));
 
+            dataTable.Columns.Add("SaveType", typeof(string));
+            dataTable.Columns.Add("path_source", typeof(string));
+            dataTable.Columns.Add("path_entry", typeof(string));
+            dataTable.Columns.Add("path_cover", typeof(string));
 
-            var result_EntryInfo = Core.Services.EntryCommonService.SelectEntry(dbId);
-            var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(dbId);
+
+            var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(enrtyStorage.StorageName);
+
+
+            var result_EntryInfo = Core.Services.EntryCommonService.SelectEntry(enrtyStorage.StorageName);
             foreach (var item in result_EntryInfo)
             {
                 var data = (IDictionary<String, Object>)item;
-                object eid, name, releaseData, myRating, coverImg, path;
+                object eid, name, releaseData, myRating, path_cover, path_source, path_entry, saveType;
                 data.TryGetValue("Eid", out eid);
                 data.TryGetValue("NameStr", out name);
                 data.TryGetValue("ReleaseDate", out releaseData);
                 data.TryGetValue("MyRating", out myRating);
-                data.TryGetValue("CoverImg", out coverImg);
-                data.TryGetValue("PathStr", out path);
 
+
+                data.TryGetValue("SaveType", out saveType);
+                data.TryGetValue("path_entry", out path_entry);
+                data.TryGetValue("path_cover", out path_cover);
+                data.TryGetValue("path_source", out path_source);
 
 
                 //创建数据行
@@ -58,7 +69,7 @@ namespace OMDb.WinUI3.Services
                 row["Name"] = name;
                 row["ReleaseDate"] = releaseData;
                 row["MyRating"] = myRating;
-                row["CoverImg"] = coverImg;
+
                 //屬性
                 var el = result_EntryLabel.Where(a => a.EntryId == Convert.ToString(eid));
                 foreach (var lp in label_Property)
@@ -68,8 +79,9 @@ namespace OMDb.WinUI3.Services
                     {
                         if (el.Select(a => a.LabelId).Contains(lpc.Id))
                         {
-                            row[lp.Name] = lpc.Name;
-                            break;
+                            if (row[lp.Name].ToString().Length > 0)
+                                row[lp.Name] += "/";
+                            row[lp.Name] += lpc.Name;
                         }
                     }
                 }
@@ -78,9 +90,37 @@ namespace OMDb.WinUI3.Services
                 {
                     if (el.Select(a => a.LabelId).Contains(lc.Id))
                     {
-                        row["Classification"] += string.Format("{0}/", lc.Name);
+                        if (row["Classification"].ToString().Length > 0) row["Classification"] += "/";
+                        row["Classification"] += lc.Name;
                         break;
                     }
+                }
+
+
+                row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Convert.ToString(path_entry));
+                row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Convert.ToString(path_entry), Convert.ToString(path_cover));
+
+                var saveMode = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
+                row["SaveType"] = saveMode;
+                switch (saveMode)
+                {
+                    case SaveType.Folder:
+                        row["path_source"] = enrtyStorage.StoragePath + path_source;
+                        break;
+                    case SaveType.Files:
+                        var lstPath = Convert.ToString(path_source).Split(">.<").ToList();
+                        var lstPath_Full = new List<string>();
+                        foreach (var path in lstPath)
+                        {
+                            lstPath_Full.Add(enrtyStorage.StoragePath + path);
+                        }
+                        row["path_source"] = string.Format("<{0}>", string.Join(">,<", lstPath_Full));
+                        break;
+                    case SaveType.Local:
+                        row["path_source"] = string.Empty;
+                        break;
+                    default:
+                        break;
                 }
                 dataTable.Rows.Add(row);
             }
@@ -92,9 +132,14 @@ namespace OMDb.WinUI3.Services
             dir.Add("Name", "詞條名稱");
             dir.Add("ReleaseDate", "發行日期");
             dir.Add("MyRating", "評分");
-            dir.Add("CoverImg", "封面地址");
+
             label_Property.ForEach(s => dir.Add(s.Name, s.Name));
             dir.Add("Classification", "分類");
+
+            dir.Add("SaveType", "存儲模式");
+            dir.Add("path_source", "存儲地址");
+            dir.Add("path_entry", "詞條地址");
+            dir.Add("path_cover", "封面地址");
             //使用helper类导出DataTable数据到excel表格中,参数依次是 （DataTable数据源;  excel表名;  excel存放位置的绝对路径; 列名对应字典; 是否清空以前的数据，设置为false，表示内容追加; 每个sheet放的数据条数,如果超过该条数就会新建一个sheet存储）
             ExcelHelper.ExportDTtoExcel(dataTable, "Info表", filePath, dir, true);
 
@@ -102,7 +147,7 @@ namespace OMDb.WinUI3.Services
 
 
         //从Excel中导入数据到界面
-        public static void ImportExcel(string filePath, string dbId)
+        public static void ImportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
         {
             if (string.IsNullOrEmpty(filePath)) return;
             //用于支持gb2312    
@@ -147,8 +192,11 @@ namespace OMDb.WinUI3.Services
                     {
                         var eid = Guid.NewGuid().ToString();
                         EntryDb edb = new EntryDb() { EntryId = eid };
-                        EntryNameDb endb = new EntryNameDb() { EntryId = eid };
-                        EntrySourceDb esdb = new EntrySourceDb() { EntryId = eid };
+                        List<EntryNameDb> endbs = new List<EntryNameDb>();
+                        List<EntrySourceDb> esdbs = new List<EntrySourceDb>();
+
+                        SaveType saveMode=SaveType.Local;
+                        var strPath = string.Empty;
                         int n = 0;
 
                         var baseInfo = list.Where(a => a.Equals(item.ColumnName));
@@ -157,7 +205,18 @@ namespace OMDb.WinUI3.Services
                             switch (baseInfo.FirstOrDefault())
                             {
                                 case "詞條名稱":
-                                    endb.Name = Convert.ToString(row[n]);
+                                    var strName = Convert.ToString(row[n]);
+                                    var lstName = strName.Split('/').ToList();//根据分隔符构建list
+                                    int c = 0;
+                                    foreach (var name in lstName)
+                                    {
+                                        endbs.Add(new EntryNameDb()
+                                        {
+                                            Name = name,
+                                            EntryId = eid,
+                                            IsDefault = c == 0 ? true : false,
+                                        });
+                                    }
                                     break;
                                 case "發行日期":
                                     edb.ReleaseDate = Convert.ToDateTime(row[n]);
@@ -168,13 +227,20 @@ namespace OMDb.WinUI3.Services
                                 case "封面地址":
                                     edb.CoverImg = Convert.ToString(row[n]);
                                     break;
+                                case "存储模式":
+                                    try { var saveMode = Enum.Parse(typeof(SaveType), Convert.ToString(row[n])); } catch { }
+                                    break;
+                                case "存儲地址"://绝对地址
+                                    strPath = Convert.ToString(row[n]);
+                                    break;
                                 case "分類":
-                                    //不处理
+                                    //暂不处理
                                     break;
                                 default:
                                     break;
                             }
                         }
+                        //标签->属性 插入
                         var propertyInfo = label_Property_Parent.Where(a => a.Name.Equals(item.ColumnName));
                         if (propertyInfo.Count() > 0)
                         {
@@ -196,7 +262,7 @@ namespace OMDb.WinUI3.Services
                                 Core.Services.LabelService.AddLabel(ldb);
                                 var eldb = new EntryLabelDb()
                                 {
-                                    DbId = dbId,
+                                    DbId = enrtyStorage.StorageName,
                                     LabelId = ldb.Id,
                                     EntryId = eid,
                                 };
@@ -209,7 +275,7 @@ namespace OMDb.WinUI3.Services
                                 var labelId = label_Property_Childs.Where(a => a.Name.Equals(property_Child)).FirstOrDefault().Id;
                                 var eldb = new EntryLabelDb()
                                 {
-                                    DbId = dbId,
+                                    DbId = enrtyStorage.StorageName,
                                     LabelId = labelId,
                                     EntryId = eid,
                                 };
@@ -217,9 +283,54 @@ namespace OMDb.WinUI3.Services
                             }
                         }
 
-                        Core.Services.EntryService.AddEntry(edb,dbId);
-                        Core.Services.EntryNameSerivce.AddEntryName(new List<EntryNameDb>() { endb },dbId);
-                        Core.Services.EntrySourceSerivce.AddEntrySource(new List<EntrySourceDb>() { esdb }, dbId );
+                        //校验地址是否合法
+                        switch (saveMode)
+                        {
+                            case SaveType.Folder:
+                                edb.SaveType = '1';
+                                if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase))
+                                    //logInfo
+                                    break;
+                                var esdb = new EntrySourceDb()
+                                {
+                                    EntryId = eid,
+                                    FileType = '1',
+                                    Id = Guid.NewGuid().ToString(),
+                                    Path = strPath,
+                                };
+                                esdbs.Add(esdb);
+                                break;
+                            case SaveType.Files:
+                                edb.SaveType = '2';
+                                var lstPath= strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
+                                foreach (var path in lstPath)
+                                {
+                                    if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase)) continue;
+                                    var esdb_s = new EntrySourceDb()
+                                    {
+                                        EntryId = eid,
+                                        FileType = stringEx.GetFileType(path),
+                                        Id = Guid.NewGuid().ToString(),
+                                        Path = path,
+                                    };
+                                    esdbs.Add(esdb_s);
+                                }
+                                break;
+                            case SaveType.Local:
+                                edb.SaveType = '3';
+                                break;
+                            default:
+                                break;
+                        }
+
+                        //创建词条路径
+
+
+
+
+                        Core.Services.EntryService.AddEntry(edb, enrtyStorage.StorageName);
+                        Core.Services.EntryNameSerivce.AddEntryName(endbs, enrtyStorage.StorageName);
+                        Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
                     }
                 }
                 catch (Exception ex)

@@ -18,10 +18,11 @@ namespace OMDb.Core.Services
             if (!string.IsNullOrEmpty(dbId))
             {
                 StringBuilder sb = new StringBuilder();
-                sb.AppendFormat(@"select t13.Eid,CoverImg,ReleaseDate,PathStr,NameStr,MyRating from 
-(select distinct t1.EntryId as Eid,t1.CoverImg,t1.ReleaseDate,t1.MyRating,group_concat(t3.path,'/') as PathStr from Entry t1 
-    inner join EntrySource t3 on t1.EntryId=t3.EntryId 
-    group by t1.EntryId) t13
+                sb.AppendFormat(@"select 
+t13.Eid,NameStr,ReleaseDate,MyRating,SaveType,path_entry,path_cover,path_source from 
+(select distinct t1.EntryId as Eid,t1.Path as path_entry,t1.SaveType,t1.CoverImg as path_cover,t1.ReleaseDate,t1.MyRating,group_concat(t3.path,'>,<') as path_source from Entry t1 
+    left join EntrySource t3 on t1.EntryId=t3.EntryId and ((t1.SaveType=t3.FileType) or (t1.SaveType=2 and t3.FileType!=1) or (t1.SaveType=3))
+    group by t1.EntryId) t13 
 inner join 
 (select distinct t1.EntryId as Eid,group_concat(t2.Name,'/') as NameStr from Entry t1 
     inner join EntryName t2 on t1.EntryId=t2.EntryId 
