@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.WinUI.UI;
+using ICSharpCode.SharpZipLib.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -100,7 +101,7 @@ namespace OMDb.WinUI3.Dialogs
             //封面不为空 -> 设置封面
             if (entry != null && entry.CoverImg != null) { Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg)); }
 
-            //編輯 -> 設置存儲模式+存儲地址
+            //編輯 -> 設置存儲模式+存儲地址+設置詞條絕對地址
             if (entry != null)
             {
                 switch (entry.SaveType)
@@ -110,7 +111,7 @@ namespace OMDb.WinUI3.Dialogs
                             this.SetFolder.IsChecked = true;
                             var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId, FileType.Folder);
                             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
-                            if (s != null && !string.IsNullOrEmpty(entry.Path))
+                            if (s != null && !string.IsNullOrWhiteSpace(result?.FirstOrDefault()?.Path))
                                 PointFolder.Text = s + (result?.FirstOrDefault()?.Path.ToString());
                             break;
                         }
@@ -129,7 +130,10 @@ namespace OMDb.WinUI3.Dialogs
                         this.SetFolder.IsChecked = true;
                         break;
                 }
+                VM.SetEntryPath(entry.Path);
             }
+
+
 
             //新增 -> 默認存儲模式為指定文件夾
             else
@@ -177,51 +181,50 @@ namespace OMDb.WinUI3.Dialogs
                     FullEntryPath = content.VM.Entry.Path,
                 };
 
-                //根據存储模式，選擇存储地址和默認封面
+                //根據存储模式，選擇存储地址
                 if (content.SetFolder.IsChecked == true)
                 {
                     entryDetail.Entry.SaveType = '1';
                     entryDetail.PathFolder = content.PointFolder.Text;
-                    //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
-                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
-                    {
-                        entryDetail.LoadPathFolder();
-                        if (entryDetail.Imgs.Count > 0)
-                        {
-                            entryDetail.FullCoverImgPath = entryDetail.Imgs[0];
-                        }
-                        else if (entryDetail.VideoExplorerItems.Count > 0)
-                        {
-                            entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                        }
-                        else
-                        {
-                            entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                        }
-                        entryDetail.Entry.CoverImg = entryDetail.FullCoverImgPath;
-                    }
                 }
                 else if (content.SetFile.IsChecked == true)
                 {
                     entryDetail.Entry.SaveType = '2';
-                    //封面空 -> 尋找指定地址中圖片 -> 尋找指定地址中視頻縮略圖 -> 設置默認封面
-                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
-                    {
-                        entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                        entryDetail.Entry.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                    }
                 }
                 else
                 {
                     entryDetail.Entry.SaveType = '3';
-                    //封面空 -> 設置默認封面
-                    if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
-                    {
-                        entryDetail.FullCoverImgPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                        entryDetail.Entry.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
-                    }
                 }
 
+                //封面空
+                if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
+                {
+                    List<string> lstPath = new List<string>();
+                    switch (entryDetail.Entry.SaveType)
+                    {
+                        //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
+                        case '1':
+                            lstPath.Add(content.PointFolder.Text);
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                            break;
+                        //封面空 -> 尋找指定地址中圖片 -> 尋找指定地址中視頻縮略圖 -> 設置默認封面
+                        case '2':
+                            //lstPath.AddRange()
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                            break;
+                        //設置默認封面
+                        case '3':
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath();
+                            break;
+                        default:
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath();
+                            break;
+                    }
+                }
+                else
+                {
+                    entryDetail.FullCoverImgPath = content.VM.Entry.CoverImg;
+                }
                 //保存：标签 -> 属性
                 var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
                 entryDetail.Labels.AddRange(lst);
@@ -278,7 +281,8 @@ namespace OMDb.WinUI3.Dialogs
         /// <param name="e"></param>
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            VM.SetEntryPath((sender as TextBox).Text);
+            if (VM.Entry.Name == null)
+                VM.SetEntryPath((sender as TextBox).Text);
         }
     }
 }

@@ -23,8 +23,8 @@ namespace OMDb.WinUI3.Models
         {
             Entry = entry.DepthClone<Core.Models.Entry>();
             Name = entry.Name;
-            FullEntryPath = Helpers.PathHelper.EntryFullPath(entry);
-            FullCoverImgPath = Helpers.PathHelper.EntryCoverImgFullPath(entry);
+            FullEntryPath = PathService.EntryFullPath(entry);
+            FullCoverImgPath =PathService.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
             if (entry.SaveType.Equals('1') || entry.SaveType.Equals('2'))
             {

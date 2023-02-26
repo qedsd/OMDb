@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -108,6 +109,17 @@ namespace OMDb.WinUI3.MyControls
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             Services.ExcelService.ImportExcel(inputPath, enrtyStorage);
+        }
+
+
+        private void Enter_Click(object sender, RoutedEventArgs e)
+        {
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            if (enrtyStorage != null && !string.IsNullOrEmpty(enrtyStorage.StoragePath))
+            {
+                Services.NavigationService.Navigate(typeof(Views.EntryPage), enrtyStorage.StorageName);
+                EntryViewModel.Current.UpdateEntryListAsync();
+            }        
         }
     }
 }

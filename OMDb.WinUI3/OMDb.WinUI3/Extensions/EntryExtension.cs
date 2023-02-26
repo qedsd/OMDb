@@ -41,7 +41,7 @@ namespace OMDb.WinUI3.Extensions
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return System.IO.Path.Combine(s.StoragePath,Services.ConfigService.DefaultEntryFolder, entry.Path);
+                return System.IO.Path.Combine(s.StoragePath+ entry.Path);
             }
             else
             {

@@ -27,6 +27,7 @@ namespace OMDb.WinUI3.Services.Settings
             dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
             ConfigService.DefaultEntryFolder = $@"{ConfigService.OMDbFolder}\{dbCurrentName}";
             ConfigService.LoadStorages();
+            CommonService.GetCoverByPath(new List<string>() { @"D:\照片\2021 厂大毕业" }, Core.Enums.FileType.Folder);
         }
         public static async Task SetAsync(string dbSwich)
         {

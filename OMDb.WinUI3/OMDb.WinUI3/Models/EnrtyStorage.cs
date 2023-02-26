@@ -10,6 +10,8 @@ namespace OMDb.WinUI3.Models
 {
     public class EnrtyStorage : ObservableObject
     {
+        public string StorageId{ get;  set;}
+
         private string storageName;
         public string StorageName
         {

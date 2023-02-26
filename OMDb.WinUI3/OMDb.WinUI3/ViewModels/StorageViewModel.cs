@@ -166,13 +166,13 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>(async (item) =>
+        /*public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>(async (item) =>
         {
             if (item != null && !string.IsNullOrEmpty(item.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
                 await EntryViewModel.Current.UpdateEntryListAsync();
             }
-        });
+        });*/
     }
 }

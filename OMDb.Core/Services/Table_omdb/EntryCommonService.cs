@@ -33,6 +33,19 @@ on t13.Eid=t12.Eid;");
             return null;
         }
 
+        public static string GetEidBySameEntryPath(string ep, string dbId)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat($@"select EntryId from Entry where Path='{ep}'");
+            var result = DbService.GetConnection(dbId).Ado.SqlQuery<dynamic>(sb.ToString());
+            if (result.Count > 0)
+            {
+                var data = (IDictionary<String, Object>)result.FirstOrDefault();
+                data.TryGetValue("EntryId", out object eidObj);
+                return eidObj.ToString();
+            }
+            else return String.Empty;
+        }
 
 
     }

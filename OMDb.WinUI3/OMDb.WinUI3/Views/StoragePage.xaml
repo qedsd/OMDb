@@ -31,9 +31,7 @@
             ItemHeight="240"
             ItemsSource="{x:Bind VM.EnrtyStorages, Mode=TwoWay}"
             OneRowModeEnabled="False"
-
-            ItemClickCommand="{x:Bind VM.ItemClickCommand}"
-            SelectionMode="Multiple"
+            SelectionMode="None"
             StretchContentForSingleRow="False">
                 <controls:AdaptiveGridView.ItemTemplate>
                     <DataTemplate>

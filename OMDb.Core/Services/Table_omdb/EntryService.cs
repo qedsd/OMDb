@@ -491,6 +491,9 @@ namespace OMDb.Core.Services
         {
             DbService.GetConnection(dbId).Insertable(edb).ExecuteCommand();
         }
-
+        public static void UpdateEntry(EntryDb edb, string dbId)
+        {
+            DbService.GetConnection(dbId).Updateable(edb).Where(a=>a.EntryId.Equals(edb.EntryId)).ExecuteCommand();
+        }
     }
 }

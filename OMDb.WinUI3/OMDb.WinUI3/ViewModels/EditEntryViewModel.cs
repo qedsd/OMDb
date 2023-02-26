@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -61,7 +62,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref selectedEnrtyStorage, value);
-                SelectedEntryDicPath = Path.Combine(selectedEnrtyStorage.StoragePath, Services.ConfigService.DefaultEntryFolder);//重置为默认路径
+                SelectedEntryDicPath = selectedEnrtyStorage.StoragePath;//重置为默认路径
                 SetEntryPath(EntryName);
             }
         }
@@ -104,7 +105,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
             {
-                EntryPath = System.IO.Path.Combine(SelectedEntryDicPath, name);
+                EntryPath = (SelectedEntryDicPath+name);
             }
         }
 
@@ -124,8 +125,8 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Entry = entry.DepthClone<Core.Models.Entry>();
                 //拼接全封面路径、存储路径
-                Entry.Path = Helpers.PathHelper.EntryFullPath(Entry);
-                Entry.CoverImg = Helpers.PathHelper.EntryCoverImgFullPath(Entry);
+                Entry.Path = PathService.EntryFullPath(Entry);
+                Entry.CoverImg = PathService.EntryCoverImgFullPath(Entry);
                 //现有词条暂不允许修改仓库
                 var onlyStorage = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == Entry.DbId);
                 if (onlyStorage != null)

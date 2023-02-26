@@ -98,5 +98,22 @@ namespace OMDb.WinUI3.Helpers
             Dialogs.QueryDialog queryDialog = new Dialogs.QueryDialog(title, content);
             return await queryDialog.ShowAsync();
         }
+
+
+
+        public static void ShowMsgLong(string title, string msg)
+        {
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                {
+                    InfoBar.Severity = InfoBarSeverity.Informational;
+                    InfoBar.Title = title;
+                    InfoBar.Message = msg;
+                    InfoBar.IsOpen = true;
+                    InfoBar.Height = 400;
+                    InfoBar.Width = 500;
+                });
+        }
+
+
     }
 }

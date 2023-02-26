@@ -90,14 +90,21 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Margin="8,2,17,0" Text="本地存儲：" />
+                        <TextBlock 
+                            Margin="8,2,0,0" 
+                            Text="本地存儲："  
+                            Width="87"/>
                         <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
                             <Button.RenderTransform>
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556">
+                        <TextBox
+                            x:Name="PointLocal"
+                            Width="556"
+                            FontSize="16"
+                            IsReadOnly="True">
                             <TextBox.RenderTransform>
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </TextBox.RenderTransform>
@@ -105,7 +112,10 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Margin="8,2,3,0" Text="指定文件夾：" />
+                        <TextBlock 
+                            Margin="8,2,0,0" 
+                            Text="指定文件夾："  
+                            Width="87"/>
                         <Button
                             VerticalAlignment="Bottom"
                             Click="Button_Path_Click"
@@ -127,14 +137,21 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock Margin="8,2,17,0" Text="指定文件：" />
+                        <TextBlock 
+                            Margin="8,2,0,0" 
+                            Text="指定文件：" 
+                            Width="87"/>
                         <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
                             <Button.RenderTransform>
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </Button.RenderTransform>
                             <SymbolIcon Symbol="MoveToFolder" />
                         </Button>
-                        <TextBox Width="556">
+                        <TextBox
+                            x:Name="PointFiles"
+                            Width="556"
+                            FontSize="16"
+                            IsReadOnly="True">
                             <TextBox.RenderTransform>
                                 <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
                             </TextBox.RenderTransform>

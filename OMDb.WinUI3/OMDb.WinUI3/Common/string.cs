@@ -133,58 +133,6 @@ namespace OMDb.WinUI3
 
     public static class stringEx
     {
-        public static char GetFileType(string path)
-        {
-            var typeAllImg = @"bmp，jpg，png，tif，gif，pcx，tga，exif，fpx，svg，psd，cdr，pcd，dxf，ufo，eps，ai，raw，WMF，webp，avif，apng".ToUpper();
-            var typeAllVideo = @"avi、wmv、mpeg、mp4、m4v、mov、asf、flv、f4v、rmvb、rm、3gp、vob".ToUpper();
-            var typeAllVideoSub = "Srt、Webvtt、STL、Sbv、Ass、Dfxp、Ttml".ToUpper();
-            var typeAllAudio = @"MP3、WAV、WMA、MP2、Flac、MIDI、RA、APE、AAC、CDA、MOV".ToUpper();
 
-            if (path.Contains(@"\"))
-            {
-                var path_file = path.SubString_A21(@"\", 1, false, false);
-                if (path_file.Contains("."))
-                {
-                    var fileType = path_file.SubString_A21(".", 1, false, false).ToUpper();
-
-                    if (typeAllImg.Contains(fileType))
-                        return '2';
-                    else if (typeAllVideo.Contains(fileType))
-                        return '3';
-                    else if (typeAllVideoSub.Contains(fileType))
-                        return '4';
-                    else if (typeAllAudio.Contains(fileType))
-                        return '5';
-                    else 
-                        return '5';
-                }
-                else
-                {
-                    return '5';
-                }
-            }
-            else
-            {
-                if (path.Contains("."))
-                {
-                    var fileType = path.SubString_A21(".", 1, false, false).ToUpper();
-
-                    if (typeAllImg.Contains(fileType))
-                        return '2';
-                    else if (typeAllVideo.Contains(fileType))
-                        return '3';
-                    else if (typeAllVideoSub.Contains(fileType))
-                        return '4';
-                    else if (typeAllAudio.Contains(fileType))
-                        return '5';
-                    else
-                        return '5';
-                }
-                else
-                {
-                    return '5';
-                }
-            }
-        }
     }
 }

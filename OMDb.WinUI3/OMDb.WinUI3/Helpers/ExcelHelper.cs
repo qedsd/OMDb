@@ -472,7 +472,7 @@ namespace OMDb.WinUI3.Helpers
                 {
                     headerRow = sheet.GetRow(HeaderRowIndex);
                     cellCount = headerRow.LastCellNum;
-                    for (int i = headerRow.FirstCellNum; i <= cellCount; i++)
+                    for (int i = headerRow.FirstCellNum; i < cellCount; i++)
                     {
                         //如果excel某一列列名不存在：以该列的序号作为Datatable的列名，如果DataTable中包含了这个序列为名的列，那么列名为重复列名+序号
                         if (headerRow.GetCell(i) == null)

@@ -18,7 +18,7 @@ namespace OMDb.WinUI3.Services
         /// 默认词条路径
         /// 相对于仓库路径
         /// </summary>
-        public static string DefaultEntryFolder { get;set;}  
+        public static string DefaultEntryFolder { get; set; }
         /// <summary>
         /// 资源文件夹
         /// </summary>
@@ -53,9 +53,9 @@ namespace OMDb.WinUI3.Services
         public static string MetadataFileNmae { get; } = "MetaData.json";
 
         public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; }
-        
+
         public static void Load()
-        {    
+        {
             Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
             Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
             LoadStorages();
@@ -64,21 +64,27 @@ namespace OMDb.WinUI3.Services
         {
             EnrtyStorages = new ObservableCollection<EnrtyStorage>();
             Core.Config.ClearDb();
-            var lstStorage=await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
-            if (EnrtyStorages != null) { EnrtyStorages.Clear(); } else { EnrtyStorages = new ObservableCollection<EnrtyStorage>(); }
+            var lstStorage = await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
+
+            //初始化 EnrtyStorages
+            if (EnrtyStorages != null)
+                EnrtyStorages.Clear();
+            else
+                EnrtyStorages = new ObservableCollection<EnrtyStorage>();
+
             if (lstStorage != null)
             {
                 foreach (var item in lstStorage)
                 {
                     EnrtyStorage enrtyStorage = new EnrtyStorage();
+                    enrtyStorage.StorageId = item.Id;
                     enrtyStorage.StorageName = item.StorageName;
                     enrtyStorage.StoragePath = item.StoragePath;
                     enrtyStorage.CoverImg = item.CoverImg;
                     enrtyStorage.EntryCount = (int)item.EntryCount;
                     EnrtyStorages.Add(enrtyStorage);
-                    var path_db = System.IO.Path.Combine(item.StoragePath, OMDbFolder,Services.Settings.DbSelectorService.dbCurrentName, StorageDbName);
+                    var path_db = System.IO.Path.Combine(item.StoragePath, OMDbFolder, Services.Settings.DbSelectorService.dbCurrentName, StorageDbName);
                     Core.Config.AddDbFile(path_db, item.StorageName, false);
-
                 }
 
             }

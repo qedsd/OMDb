@@ -53,7 +53,8 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 我的评分
         /// </summary>
-        public double? MyRating { get; set; }
+        public double MyRating { get; set; }
+
 
         /// <summary>
         /// 类型 1:指向文件夹 2:指向文件 3:本地存储

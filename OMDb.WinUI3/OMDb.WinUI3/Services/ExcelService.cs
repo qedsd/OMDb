@@ -1,6 +1,9 @@
-﻿using ICSharpCode.SharpZipLib.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using ICSharpCode.SharpZipLib.Core;
+using NPOI.OpenXmlFormats.Vml;
 using NPOI.POIFS.FileSystem;
 using NPOI.SS.Formula;
+using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
@@ -13,6 +16,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,18 +106,19 @@ namespace OMDb.WinUI3.Services
                 }
 
 
-                row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName, Convert.ToString(path_entry));
-                row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName, Convert.ToString(path_entry), Convert.ToString(path_cover));
+                row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry));
+                row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry), Convert.ToString(path_cover));
 
                 var saveMode = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
                 row["SaveType"] = saveMode;
                 switch (saveMode)
                 {
                     case SaveType.Folder:
-                        row["path_source"] = enrtyStorage.StoragePath + path_source;
+                        if (!string.IsNullOrWhiteSpace(Convert.ToString(path_source)))
+                            row["path_source"] = enrtyStorage.StoragePath + Convert.ToString(path_source);
                         break;
                     case SaveType.Files:
-                        var lstPath = Convert.ToString(path_source).Split(">.<").ToList();
+                        var lstPath = Convert.ToString(path_source).Split(">.<", StringSplitOptions.RemoveEmptyEntries).ToList();
                         var lstPath_Full = new List<string>();
                         foreach (var path in lstPath)
                         {
@@ -143,8 +148,8 @@ namespace OMDb.WinUI3.Services
 
             dir.Add("SaveType", "存儲模式");
             dir.Add("path_source", "存儲地址");
-            dir.Add("path_entry", "詞條地址");
-            dir.Add("path_cover", "封面地址");
+            dir.Add("path_entry", "詞條路徑");
+            dir.Add("path_cover", "封面路徑");
             //使用helper类导出DataTable数据到excel表格中,参数依次是 （DataTable数据源;  excel表名;  excel存放位置的绝对路径; 列名对应字典; 是否清空以前的数据，设置为false，表示内容追加; 每个sheet放的数据条数,如果超过该条数就会新建一个sheet存储）
             ExcelHelper.ExportDTtoExcel(dataTable, "Info表", filePath, dir, true);
 
@@ -154,6 +159,7 @@ namespace OMDb.WinUI3.Services
         //从Excel中导入数据到界面
         public static async void ImportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
         {
+            var msg = new StringBuilder();
             if (string.IsNullOrEmpty(filePath)) return;
             //用于支持gb2312    
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -164,7 +170,7 @@ namespace OMDb.WinUI3.Services
             //遍历DataTable---------------------------
 
             //基本信息
-            List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "封面地址", "分類" };
+            List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "分類", "存儲模式", "存儲地址", "詞條路徑", "封面路徑" };
             //已有屬性
             var result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
             var label_Property_Parent = result_LabelInfo.Where(a => a.IsProperty);
@@ -188,22 +194,43 @@ namespace OMDb.WinUI3.Services
             result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
             label_Property_Parent = result_LabelInfo.Where(a => a.IsProperty);
 
+            int rowCount = 1;
             //遍历DataTable中的数据并插入数据库
             foreach (DataRow row in dt.Rows)
             {
                 try
                 {
+                    var eid = Guid.NewGuid().ToString();
+                    EntryDb edb = new EntryDb() { EntryId = eid };
+                    List<EntryNameDb> endbs = new List<EntryNameDb>();
+                    List<EntrySourceDb> esdbs = new List<EntrySourceDb>();
+
+                    SaveType saveMode = SaveType.Local;
+                    var strPath = string.Empty;
+                    bool isAdd = true;
+                    int n = 0;
+                    int k = 0;
+
+                    foreach (DataColumn dc in dt.Columns)
+                    {
+                        if (dc.ColumnName.Equals("詞條路徑"))
+                        {
+                            var path_full = Convert.ToString(row[k]);
+                            var path_entry = path_full.Replace(enrtyStorage.StoragePath, string.Empty);
+                            var eid_update = Core.Services.EntryCommonService.GetEidBySameEntryPath(path_entry, enrtyStorage.StorageName);
+                            if (!string.IsNullOrWhiteSpace(eid_update))
+                            {
+                                isAdd = false;
+                                edb.EntryId = eid_update;
+                                edb.Path = path_full;
+                            }
+                            break;
+                        }
+                        k++;
+                    }
+
                     foreach (DataColumn item in dt.Columns)
                     {
-                        var eid = Guid.NewGuid().ToString();
-                        EntryDb edb = new EntryDb() { EntryId = eid };
-                        List<EntryNameDb> endbs = new List<EntryNameDb>();
-                        List<EntrySourceDb> esdbs = new List<EntrySourceDb>();
-
-                        SaveType saveMode = SaveType.Local;
-                        var strPath = string.Empty;
-                        int n = 0;
-
                         var baseInfo = list.Where(a => a.Equals(item.ColumnName));
                         if (baseInfo.Count() > 0)
                         {
@@ -211,7 +238,7 @@ namespace OMDb.WinUI3.Services
                             {
                                 case "詞條名稱":
                                     var strName = Convert.ToString(row[n]);
-                                    var lstName = strName.Split('/').ToList();//根据分隔符构建list
+                                    var lstName = strName.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();//根据分隔符构建list
                                     int c = 0;
                                     foreach (var name in lstName)
                                     {
@@ -229,11 +256,14 @@ namespace OMDb.WinUI3.Services
                                 case "評分":
                                     edb.MyRating = Convert.ToDouble(row[n]);
                                     break;
-                                case "封面地址":
+                                case "詞條路徑":
+                                    edb.Path = Convert.ToString(row[n]);
+                                    break;
+                                case "封面路徑":
                                     edb.CoverImg = Convert.ToString(row[n]);
                                     break;
-                                case "存储模式":
-                                    try { saveMode = (SaveType)Enum.Parse(typeof(SaveType), Convert.ToString(row[n])); } catch { }
+                                case "存儲模式":
+                                    try { saveMode = (SaveType)System.Enum.Parse(typeof(SaveType), Convert.ToString(row[n])); } catch { }
                                     break;
                                 case "存儲地址"://绝对地址
                                     strPath = Convert.ToString(row[n]);
@@ -251,6 +281,8 @@ namespace OMDb.WinUI3.Services
                         {
                             var label_Property_Childs = result_LabelInfo.Where(a => a.ParentId == propertyInfo.FirstOrDefault().Id);
                             var property_Child = Convert.ToString(row[n]);
+                            if (string.IsNullOrWhiteSpace(property_Child))
+                                break;
                             //不存在 属性_儿子
                             if (!label_Property_Childs.Select(a => a.Name).Contains(property_Child))
                             {
@@ -287,51 +319,62 @@ namespace OMDb.WinUI3.Services
                                 Core.Services.EntryLabelService.AddEntryLabel(eldb);
                             }
                         }
+                        n++;
+                    }
 
-                        //校验存储地址是否合法
-                        switch (saveMode)
-                        {
-                            case SaveType.Folder:
-                                edb.SaveType = '1';
-                                if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase))
-                                    //logInfo
-                                    break;
-                                var esdb = new EntrySourceDb()
+
+                    //校驗必錄字段
+                    if (!(endbs.Count > 0))
+                        throw new Exception($"詞條名稱為空！");
+                    //選填字段自動錄入
+
+
+                    //校驗存儲地址是否合法(仅插入合法地址)
+                    switch (saveMode)
+                    {
+                        case SaveType.Folder:
+                            edb.SaveType = '1';
+                            if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase))
+                                strPath = string.Empty;
+                            var esdb = new EntrySourceDb()
+                            {
+                                EntryId = eid,
+                                FileType = '1',
+                                Id = Guid.NewGuid().ToString(),
+                                Path = strPath,
+                            };
+                            esdbs.Add(esdb);
+                            break;
+                        case SaveType.Files:
+                            edb.SaveType = '2';
+                            var lstPath = strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
+                            foreach (var path in lstPath)
+                            {
+                                if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase)) continue;
+                                var esdb_s = new EntrySourceDb()
                                 {
                                     EntryId = eid,
-                                    FileType = '1',
+                                    FileType = CommonService.GetFileType(path),
                                     Id = Guid.NewGuid().ToString(),
-                                    Path = strPath,
+                                    Path = path,
                                 };
-                                esdbs.Add(esdb);
-                                break;
-                            case SaveType.Files:
-                                edb.SaveType = '2';
-                                var lstPath = strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
-                                foreach (var path in lstPath)
-                                {
-                                    if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase)) continue;
-                                    var esdb_s = new EntrySourceDb()
-                                    {
-                                        EntryId = eid,
-                                        FileType = stringEx.GetFileType(path),
-                                        Id = Guid.NewGuid().ToString(),
-                                        Path = path,
-                                    };
-                                    esdbs.Add(esdb_s);
-                                }
-                                break;
-                            case SaveType.Local:
-                                edb.SaveType = '3';
-                                break;
-                            default:
-                                break;
-                        }
+                                esdbs.Add(esdb_s);
+                            }
+                            break;
+                        case SaveType.Local:
+                            edb.SaveType = '3';
+                            break;
+                        default:
+                            break;
+                    }
 
+                    //詞條 插入or更新
+                    if (isAdd)
+                    {
                         //创建词条路径
-                        if (!edb.Path.Contains(System.IO.Path.Combine(enrtyStorage.StorageName, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName)))//不在仓库路径内，强设置词条路径
-                            edb.Path = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, endbs[0].Name);
-                        if (Directory.Exists(edb.Path))
+                        if (edb.Path == null || !edb.Path.Contains(System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName)))//不在仓库路径内，强设置词条路径
+                            edb.Path = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.OMDbFolder, Settings.DbSelectorService.dbCurrentName, endbs[0].Name);
+                        if (Directory.Exists(edb.Path))//重名路径 -> 改名
                         {
                             int i = 1;
                             while (true)
@@ -343,7 +386,7 @@ namespace OMDb.WinUI3.Services
                                     break;
                                 }
                             }
-                        }//重名路径 -> 改名
+                        }
                         //创建词条文件夹
                         Directory.CreateDirectory(edb.Path);
                         Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.AudioFolder));
@@ -354,68 +397,86 @@ namespace OMDb.WinUI3.Services
                         Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.InfoFolder));
                         Directory.CreateDirectory(Path.Combine(edb.Path, Services.ConfigService.MoreFolder));
 
-
-
-                        //复制封面图(Cover)、并同步修改封面路径
-                        if (!System.IO.Directory.Exists(edb.CoverImg) || !stringEx.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                        //创建元数据(MataData.Json)
+                        string metaDateFile = Path.Combine(edb.Path, Services.ConfigService.MetadataFileNmae);
+                        Core.Models.EntryMetadata metadata;
+                        if (System.IO.File.Exists(metaDateFile))
                         {
-                            switch (saveMode)
-                            {
-                                case SaveType.Folder:
-                                    //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
-                                    var files_1 = Helpers.FileHelper.FindExplorerItems(strPath).FirstOrDefault().Children;
-                                    files_1.Where(a => stringEx.GetFileType(a.FullName) == '1').FirstOrDefault();
-
-                                    break;
-                                case SaveType.Files:
-                                    break;
-                                case SaveType.Local:
-                                    break;
-                                default:
-                                    break;
-                            }
-
+                            metadata = Core.Models.EntryMetadata.Read(metaDateFile);
+                            metadata.Name = endbs[0].Name;
                         }
-                        var coverType = Path.GetFileName(edb.CoverImg).SubString_A21(".", 1, false);
-                        //數據庫 詞條路徑&圖片路徑 取相對地址
-                        /*entryDetail.Entry.Path = Helpers.PathHelper.EntryRelativePath(entryDetail.Entry);
-                        
-                        
-                        string newImgCoverPath = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
-                        if (newImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newImgCoverPath, true); }
-                        entryDetail.FullCoverImgPath = newImgCoverPath;
+                        else
+                        {
+                            metadata = new Core.Models.EntryMetadata()
+                            {
+                                Id = eid,
+                                Name = endbs[0].Name,
+                            };
+                        }
+                        metadata.Save(metaDateFile);
+                    }
 
-                        //创建元数据(MataData)
-                        InitFile(entryDetail);
+                    //封面路徑不正確
+                    if (edb.CoverImg == null || !System.IO.Directory.Exists(edb.CoverImg) || CommonService.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                    {
+                        List<string> lstPath = new List<string>();
+                        switch (saveMode)
+                        {
+                            case SaveType.Folder:
+                                lstPath.Add(esdbs[0].Path);
+                                edb.CoverImg = CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                                break;
+                            case SaveType.Files:
+                                if (esdbs.Count > 0)
+                                    edb.CoverImg = CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                                else
+                                    edb.CoverImg = CommonService.GetCoverByPath();
+                                break;
+                            case SaveType.Local:
+                                edb.CoverImg = CommonService.GetCoverByPath();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    //复制封面图(Cover)、并同步修改封面路径
+                    var coverType = Path.GetExtension(edb.CoverImg);
+                    var newCoverFullPath = Path.Combine(edb.Path, Services.ConfigService.InfoFolder, $@"Cover{coverType}");
+                    if (newCoverFullPath != edb.CoverImg)
+                        File.Copy(edb.CoverImg, newCoverFullPath, true);
 
-                        //保存至数据库
-                        await SaveToDbAsync(entryDetail);
-
-                        //这时已经是相对路径
-                        Helpers.InfoHelper.ShowSuccess("创建成功");
-                        GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(entryDetail.Entry));
-                        return entryDetail.Entry.EntryId;*/
 
 
 
+
+                    //數據庫 詞條路徑&圖片路徑 取相對地址
+                    edb.Path = edb.Path.Replace(enrtyStorage.StoragePath, string.Empty);
+                    edb.CoverImg = newCoverFullPath.Replace(enrtyStorage.StoragePath + edb.Path + "\\", string.Empty);
+
+                    //保存至数据库
+                    if (isAdd)
+                    {
                         Core.Services.EntryService.AddEntry(edb, enrtyStorage.StorageName);
                         Core.Services.EntryNameSerivce.AddEntryName(endbs, enrtyStorage.StorageName);
                         Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
+                        msg.AppendLine($"第{rowCount}行導入 新增成功！");
                     }
+                    else
+                    {
+                        Core.Services.EntryService.UpdateEntry(edb, enrtyStorage.StorageName);
+                        Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
+                        msg.AppendLine($"第{rowCount}行導入 更新成功！");
+                    }
+                    rowCount++;
+
                 }
                 catch (Exception ex)
                 {
-
-                    throw ex;
+                    msg.AppendLine($"第{rowCount}行導入失敗:{ex.Message}");
+                    rowCount++;
                 }
             }
-
-            /*//显示数据
-            ShowInfo(tmpInfo);
-
-            //导入成功提示
-            ImportSuccessTips(filePathAndName);*/
-
+            InfoHelper.ShowMsgLong("Result", msg.ToString());
         }
     }
 }

@@ -196,7 +196,7 @@ namespace OMDb.WinUI3.ViewModels
                         List<string> covers = new List<string>(entrys.Count);//所有词条封面图
                         foreach (var entry in entrys)
                         {
-                            covers.Add(Helpers.PathHelper.EntryCoverImgFullPath(entry));
+                            covers.Add(PathService.EntryCoverImgFullPath(entry));
                         }
                         string bg = covers.FirstOrDefault();
                         if (!string.IsNullOrEmpty(bg))
@@ -242,7 +242,7 @@ namespace OMDb.WinUI3.ViewModels
             List<Core.Models.ImageInfo> bestImages = new List<Core.Models.ImageInfo>();
             foreach(var entry in entries)
             {
-                var fullPath = Helpers.PathHelper.EntryFullPath(entry);
+                var fullPath = PathService.EntryFullPath(entry);
                 string imgFolder = Path.Combine(fullPath, Services.ConfigService.InfoFolder);
                 if (Directory.Exists(imgFolder))
                 {
@@ -330,7 +330,7 @@ namespace OMDb.WinUI3.ViewModels
                             var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
                             if (entrys?.Any() == true)
                             {
-                                var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
+                                var bgStream = await Core.Helpers.ImageHelper.BlurAsync(PathService.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
                                     Title = label.Label.Name,
@@ -355,7 +355,7 @@ namespace OMDb.WinUI3.ViewModels
                         var entrys = await Core.Services.EntryService.QueryEntryAsync(result.Select(p => p.ToQueryItem()).ToList());
                         if (entrys?.Any() == true)
                         {
-                            var bgStream = await Core.Helpers.ImageHelper.BlurAsync(Helpers.PathHelper.EntryCoverImgFullPath(entrys.FirstOrDefault()));
+                            var bgStream = await Core.Helpers.ImageHelper.BlurAsync(PathService.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                             otherCollectionTree.Children.Add(new LabelCollection()
                             {
                                 Title = labelTree.Label.Name,
@@ -413,7 +413,7 @@ namespace OMDb.WinUI3.ViewModels
                             var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
                             if (entry != null)
                             {
-                                var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry), 600, 0);
+                                var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(PathService.EntryCoverImgFullPath(entry), 600, 0);
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
                                     Title = label.Label.Name,
@@ -435,7 +435,7 @@ namespace OMDb.WinUI3.ViewModels
                         var entry = await Core.Services.EntryService.QueryEntryAsync(showItem.ToQueryItem());
                         if (entry != null)
                         {
-                            var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(Helpers.PathHelper.EntryCoverImgFullPath(entry), 600, 0);
+                            var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(PathService.EntryCoverImgFullPath(entry), 600, 0);
                             otherCollectionTree.Children.Add(new LabelCollection()
                             {
                                 Title = labelTree.Label.Name,
