@@ -17,9 +17,11 @@
             <MenuFlyout>
                 <MenuFlyoutItem Click="Edit_Click" Text="編輯倉庫" />
                 <MenuFlyoutItem Click="Remove_Click" Text="移除倉庫" />
+                <MenuFlyoutItem Click="Enter_Click" Text="已有詞條" />
+                <MenuFlyoutItem Click="BatchAdd_Click" Text="批量添加" />
                 <MenuFlyoutItem Click="Export_Click" Text="導出詞條" />
                 <MenuFlyoutItem Click="Import_Click" Text="導入詞條" />
-                <MenuFlyoutItem Click="Enter_Click" Text="跳轉詞條頁" />
+
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid x:Name="ShowGrid">

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Navigation;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.ViewModels;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -79,7 +80,7 @@ namespace OMDb.WinUI3.MyControls
 
         private async void Remove_Click(object sender, RoutedEventArgs e)
         {
-            if(await Dialogs.QueryDialog.ShowDialog("是否确认移除?","不会删除文件"))
+            if (await Dialogs.QueryDialog.ShowDialog("是否确认移除?", "不会删除文件"))
             {
                 RemoveStorageEvent?.Invoke(EnrtyStorage);
             }
@@ -89,37 +90,71 @@ namespace OMDb.WinUI3.MyControls
         public delegate void RemoveStorage(Models.EnrtyStorage enrtyStorage);
         public static event RemoveStorage RemoveStorageEvent;
 
+        /// <summary>
+        /// 导出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void Export_Click(object sender, RoutedEventArgs e)
         {
             //導出地址
-            string name = "Info.xlsx";            
-            var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
-            var dbId=((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
-            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
-            if (!Directory.Exists(outputPath) && (!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息","是否覆蓋？")))
-                return;
-            Services.ExcelService.ExportExcel(outputPath, enrtyStorage);
-        }
-
-        private void Import_Click(object sender, RoutedEventArgs e)
-        {
-            //導出地址
-            string name = "Info.xlsx";
-            var inputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
+            //string name = "Info.xlsx";            
+            //var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
-            Services.ExcelService.ImportExcel(inputPath, enrtyStorage);
+            var outputPath = await Helpers.PickHelper.PickFileAsync();
+            if (outputPath.Path != null || !Directory.Exists(outputPath.Path))
+            {
+                InfoHelper.ShowError("導出路徑有誤！");
+            }
+            else
+            {
+                if (!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息", "是否覆蓋？"))
+                    return;
+                Services.ExcelService.ExportExcel(outputPath.Path, enrtyStorage);
+            }
+
         }
 
 
-        private void Enter_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 导入
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Import_Click(object sender, RoutedEventArgs e)
+        {
+            //導出地址
+            //string name = "Info.xlsx";
+            //var inputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
+            var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            var inputPath = await Helpers.PickHelper.PickFileAsync();
+            if (inputPath.Path != null&& await Dialogs.QueryDialog.ShowDialog("確認", "確認導入？"))
+            {
+                Services.ExcelService.ImportExcel(inputPath.Path, enrtyStorage);
+            }
+        }
+
+
+        /// <summary>
+        /// 跳轉至詞條頁
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Enter_Click(object sender, RoutedEventArgs e)
         {
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             if (enrtyStorage != null && !string.IsNullOrEmpty(enrtyStorage.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryPage), enrtyStorage.StorageName);
-                EntryViewModel.Current.UpdateEntryListAsync();
-            }        
+                await EntryViewModel.Current.UpdateEntryListAsync();
+            }
+        }
+
+        private void BatchAdd_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

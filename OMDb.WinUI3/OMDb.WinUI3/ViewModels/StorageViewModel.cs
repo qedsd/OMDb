@@ -86,8 +86,6 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (enrtyStorage != null)
             {
-
-                //var storagePathFolder = enrtyStorage.StoragePath.SubString_02B(@"\", 1, false);
                 bool isPathCorrect_Storage = Directory.Exists(enrtyStorage.StoragePath);
                 if (!isPathCorrect_Storage)
                 {
@@ -98,13 +96,12 @@ namespace OMDb.WinUI3.ViewModels
                 bool isPathCorrect_Cover = File.Exists(enrtyStorage.CoverImg);
                 if (!isPathCorrect_Cover)
                 {
-                    await Dialogs.MsgDialog.ShowDialog("添加失败，封面路径有误");
-                    return;
+                    enrtyStorage.CoverImg= CommonService.GetCoverByPath();
                 }
 
                 var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.DefaultEntryFolder);
                 Directory.CreateDirectory(path_omdb);
-                var path_omdb_Cover = @$"{path_omdb}\Cover{enrtyStorage.CoverImg.SubString_A21(".", 1, false)}";
+                var path_omdb_Cover = @$"{path_omdb}\Cover{Path.GetExtension(enrtyStorage.CoverImg)}";
                 if(!File.Exists(path_omdb_Cover))File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
                 var path_omdb_db = $@"{path_omdb}\{ConfigService.StorageDbName}";
 

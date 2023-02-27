@@ -459,20 +459,20 @@ namespace OMDb.WinUI3.Services
                         Core.Services.EntryService.AddEntry(edb, enrtyStorage.StorageName);
                         Core.Services.EntryNameSerivce.AddEntryName(endbs, enrtyStorage.StorageName);
                         Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
-                        msg.AppendLine($"第{rowCount}行導入 新增成功！");
+                        msg.AppendLine($"第{rowCount}行導入：新增成功！");
                     }
                     else
                     {
                         Core.Services.EntryService.UpdateEntry(edb, enrtyStorage.StorageName);
                         Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
-                        msg.AppendLine($"第{rowCount}行導入 更新成功！");
+                        msg.AppendLine($"第{rowCount}行導入：更新成功！");
                     }
                     rowCount++;
 
                 }
                 catch (Exception ex)
                 {
-                    msg.AppendLine($"第{rowCount}行導入失敗:{ex.Message}");
+                    msg.AppendLine($"第{rowCount}行導入：失敗！{ex.Message}");
                     rowCount++;
                 }
             }
