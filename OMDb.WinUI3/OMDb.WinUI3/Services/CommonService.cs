@@ -19,7 +19,7 @@ namespace OMDb.WinUI3.Services
         {
             var result = string.Empty;
             if (lstPath == null||!(lstPath.Count>0))
-                result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "defaultStorageCover.jpg");
+                result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
             switch (fileType)
             {
                 case Core.Enums.FileType.Folder:
@@ -40,10 +40,10 @@ namespace OMDb.WinUI3.Services
                     {
                         result = filesPath.Where(a => GetFileType(a).Equals('3')).FirstOrDefault();
                         if (string.IsNullOrWhiteSpace(result))
-                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "defaultStorageCover.jpg");
+                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
                         else
                         {
-                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "defaultStorageCover.jpg");
+                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
                         }
                     }
                     return result;
@@ -63,10 +63,10 @@ namespace OMDb.WinUI3.Services
                     {
                         result = lstPath.Where(a => GetFileType(a).Equals('3')).FirstOrDefault();
                         if (string.IsNullOrWhiteSpace(result))
-                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "defaultStorageCover.jpg");
+                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
                         else
                         {
-                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "defaultStorageCover.jpg");
+                            result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
                         }
                     }
                     return result;

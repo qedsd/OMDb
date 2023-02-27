@@ -208,29 +208,12 @@ namespace OMDb.WinUI3.Services
                     SaveType saveMode = SaveType.Local;
                     var strPath = string.Empty;
                     bool isAdd = true;
-                    int n = 0;
-                    int k = 0;
-
-                    foreach (DataColumn dc in dt.Columns)
-                    {
-                        if (dc.ColumnName.Equals("詞條路徑"))
-                        {
-                            var path_full = Convert.ToString(row[k]);
-                            var path_entry = path_full.Replace(enrtyStorage.StoragePath, string.Empty);
-                            var eid_update = Core.Services.EntryCommonService.GetEidBySameEntryPath(path_entry, enrtyStorage.StorageName);
-                            if (!string.IsNullOrWhiteSpace(eid_update))
-                            {
-                                isAdd = false;
-                                edb.EntryId = eid_update;
-                                edb.Path = path_full;
-                            }
-                            break;
-                        }
-                        k++;
-                    }
-
+                    
+                    
+                    int n = -1;
                     foreach (DataColumn item in dt.Columns)
                     {
+                        n++;
                         var baseInfo = list.Where(a => a.Equals(item.ColumnName));
                         if (baseInfo.Count() > 0)
                         {
@@ -257,6 +240,18 @@ namespace OMDb.WinUI3.Services
                                     edb.MyRating = Convert.ToDouble(row[n]);
                                     break;
                                 case "詞條路徑":
+                                    var path_full = Convert.ToString(row[n]);
+                                    var path_entry = path_full.Replace(enrtyStorage.StoragePath, string.Empty);
+                                    var eid_update = Core.Services.EntryCommonService.GetEidBySameEntryPath(path_entry, enrtyStorage.StorageName);
+                                    if (!string.IsNullOrWhiteSpace(eid_update))
+                                    {
+                                        isAdd = false;
+                                        edb.EntryId = eid_update;
+                                        edb.Path = path_full;
+                                        eid = eid_update;
+                                        endbs.ForEach(a => a.EntryId = eid);
+                                        esdbs.ForEach(a => a.EntryId = eid);
+                                    }
                                     edb.Path = Convert.ToString(row[n]);
                                     break;
                                 case "封面路徑":
@@ -282,7 +277,7 @@ namespace OMDb.WinUI3.Services
                             var label_Property_Childs = result_LabelInfo.Where(a => a.ParentId == propertyInfo.FirstOrDefault().Id);
                             var property_Child = Convert.ToString(row[n]);
                             if (string.IsNullOrWhiteSpace(property_Child))
-                                break;
+                                continue;
                             //不存在 属性_儿子
                             if (!label_Property_Childs.Select(a => a.Name).Contains(property_Child))
                             {
@@ -319,7 +314,6 @@ namespace OMDb.WinUI3.Services
                                 Core.Services.EntryLabelService.AddEntryLabel(eldb);
                             }
                         }
-                        n++;
                     }
 
 
@@ -417,7 +411,7 @@ namespace OMDb.WinUI3.Services
                     }
 
                     //封面路徑不正確
-                    if (edb.CoverImg == null || !System.IO.Directory.Exists(edb.CoverImg) || CommonService.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                    if (edb.CoverImg == null || !System.IO.File.Exists(edb.CoverImg) || CommonService.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
                     {
                         List<string> lstPath = new List<string>();
                         switch (saveMode)

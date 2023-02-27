@@ -52,7 +52,7 @@ namespace OMDb.WinUI3.Dialogs
                     enrtyStorage = content.EnrtyStorage;
                 //封面空 -> 設置默認封面
                 if (enrtyStorage.CoverImg == null || enrtyStorage.CoverImg.Length <= 0)
-                    enrtyStorage.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "defaultStorageCover.jpg");
+                    enrtyStorage.CoverImg = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "DefaultCover.jpg");
 
                 return enrtyStorage;
             }

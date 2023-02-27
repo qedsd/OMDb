@@ -160,13 +160,11 @@ namespace OMDb.WinUI3.Services
             {
 
                 //封面变更
-                if (!ed.Entry.CoverImg.Equals(ed.FullCoverImgPath))
-                {
-                    var coverType = Path.GetExtension(ed.Entry.CoverImg);
-                    string newImgCoverPath = Path.Combine(ed.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
-                    File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
-                    ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
-                }
+                var coverType = Path.GetExtension(ed.Entry.CoverImg);
+                string newImgCoverPath = Path.Combine(ed.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
+                File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
+                ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
+
                 //數據庫 詞條路徑&圖片路徑 取相對地址
                 ed.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(ed.Entry.CoverImg));
                 ed.Entry.Path = PathService.EntryRelativePath(ed.Entry);
