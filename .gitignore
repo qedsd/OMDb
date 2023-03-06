@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/OMDb.WinUI3/OMDb.WinUI3/Views/Management/LabelPage - 复制.xaml.cs
