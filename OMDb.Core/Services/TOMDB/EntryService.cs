@@ -402,7 +402,8 @@ namespace OMDb.Core.Services
             connet.Deleteable<EntryDb>().In(entry.EntryId).ExecuteCommand();
             connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
             connet.Deleteable<WatchHistoryDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
-            DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
+            DbService.LocalDb.Deleteable<EntryLabelLKDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
+            DbService.LocalDb.Deleteable<EntryLabelPropertyLKDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             connet.CommitTran();
         }
 
@@ -421,7 +422,7 @@ namespace OMDb.Core.Services
                   connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<EntryNameDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<WatchHistoryDb>().In(ids).ExecuteCommand();
-                  DbService.LocalDb.Deleteable<EntryLabelDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
+                  DbService.LocalDb.Deleteable<EntryLabelLKDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
                   connet.CommitTran();
               });
         }

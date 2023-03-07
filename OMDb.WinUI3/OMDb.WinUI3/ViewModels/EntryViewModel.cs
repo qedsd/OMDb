@@ -180,7 +180,7 @@ namespace OMDb.WinUI3.ViewModels
             List<string> filterLabel = null;
             if (IsFilterLabel && Labels != null)
             {
-                filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelDb.Id).ToList();
+                filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelDb.LCId).ToList();
             }
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList(), filterLabel);
             if (queryResults?.Count > 0)
@@ -347,7 +347,7 @@ namespace OMDb.WinUI3.ViewModels
                             var l = Labels.Where(p => p.IsChecked).ToList();
                             if(l != null && l.Count != 0)
                             {
-                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelDb.Id)) != null;
+                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelDb.LCId)) != null;
                             }
                         }
                     }

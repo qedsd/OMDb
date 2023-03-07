@@ -228,7 +228,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.Id, new LabelTree(label));
+                        labelsDb.Add(label.LCId, new LabelTree(label));
                     }
                 }
                 foreach (var label in labels)
@@ -334,7 +334,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    result.ParentId = parent.Label.Id;
+                    result.ParentId = parent.Label.LCId;
                     Core.Services.LabelService.AddLabel(result);
                     parent.Children.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -359,7 +359,7 @@ namespace OMDb.WinUI3.ViewModels
                     else
                     {
                         Core.Services.LabelService.UpdateLabel(result);
-                        var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == result.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == result.ParentId);
                         if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t.Label == result);
@@ -409,10 +409,10 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Label.Name}标签"))
                 {
-                    Core.Services.LabelService.RemoveLabel(item.Label.Id);
+                    Core.Services.LabelService.RemoveLabel(item.Label.LCId);
                     if (item.Label.ParentId != null)//子类
                     {
-                        var parent = LabelTrees.FirstOrDefault(p => p.Label.Id == item.Label.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == item.Label.ParentId);
                         if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t == item);

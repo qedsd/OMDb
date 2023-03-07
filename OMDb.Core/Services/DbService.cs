@@ -145,7 +145,8 @@ namespace OMDb.Core.Services
                 LocalDb.DbMaintenance.CreateDatabase();
                 List<Type> types = new List<Type>();
                 types.Add(typeof(LabelDb));
-                types.Add(typeof(EntryLabelDb));
+                types.Add(typeof(EntryLabelLKDb));
+                types.Add(typeof(EntryLabelPropertyLKDb));
                 types.Add(typeof(EntryCollectionDb));
                 types.Add(typeof(EntryCollectionItemDb));
                 types.Add(typeof(StorageDb));

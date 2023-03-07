@@ -91,11 +91,11 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref labels, value);
         }
 
-        private List<Models.Label> _label_Property;
+        private List<Models.LabelProperty> _label_Property;
         /// <summary>
         /// 绑定的标签
         /// </summary>
-        public List<Models.Label> Label_Property
+        public List<Models.LabelProperty> Label_Property
         {
             get => _label_Property;
             set => SetProperty(ref _label_Property, value);

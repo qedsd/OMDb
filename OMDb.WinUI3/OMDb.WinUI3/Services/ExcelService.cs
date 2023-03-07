@@ -10,6 +10,7 @@ using OMDb.Core.Models;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Services.Settings;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,13 @@ namespace OMDb.WinUI3.Services
 {
     public static class ExcelService
     {
-        public static void ExportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
+
+        /// <summary>
+        /// 导出Excel
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="enrtyStorage"></param>
+        public static void ExportExcel(string filePath, EnrtyStorage enrtyStorage)
         {
             if (string.IsNullOrEmpty(filePath)) return;
 
@@ -38,11 +45,15 @@ namespace OMDb.WinUI3.Services
             dataTable.Columns.Add("ReleaseDate", typeof(string));
             dataTable.Columns.Add("MyRating", typeof(double));
 
-            //詞條屬性列
-            var result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
-            var label_Property = result_LabelInfo.Where(a => a.IsProperty).ToList();
-            var label_Classification = result_LabelInfo.Where(a => !a.IsProperty).Where(c => (!label_Property.Select(b => b.Id).Contains(c.ParentId))).ToList();
-            label_Property.ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));
+            //数据库查询 属性标签&分类标签
+            var label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+
+            //标签&词条 关联关系
+            var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(enrtyStorage.StorageName);
+            var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
+
+            label_lp.Where(a=>a.Level==1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));
             //分類列
             dataTable.Columns.Add("Classification", typeof(string));
 
@@ -52,7 +63,6 @@ namespace OMDb.WinUI3.Services
             dataTable.Columns.Add("path_cover", typeof(string));
 
 
-            var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
 
             var result_EntryInfo = Core.Services.EntryCommonService.SelectEntry(enrtyStorage.StorageName);
@@ -80,13 +90,14 @@ namespace OMDb.WinUI3.Services
                 row["MyRating"] = myRating;
 
                 //屬性
-                var el = result_EntryLabel.Where(a => a.EntryId == Convert.ToString(eid));
-                foreach (var lp in label_Property)
+                var elc = result_EntryLabel.Where(a => a.EntryId == Convert.ToString(eid));
+                var elp = result_EntryLabelProperty.Where(a => a.EntryId == Convert.ToString(eid));
+                foreach (var lp in label_lp)
                 {
-                    var label_Property_Child = result_LabelInfo.Where(a => a.ParentId == lp.Id);
+                    var label_Property_Child = label_lp.Where(a => a.ParentId == lp.LPId);
                     foreach (var lpc in label_Property_Child)
                     {
-                        if (el.Select(a => a.LabelId).Contains(lpc.Id))
+                        if (elp.Select(a => a.LPId).Contains(lpc.LPId))
                         {
                             if (row[lp.Name].ToString().Length > 0)
                                 row[lp.Name] += "/";
@@ -95,9 +106,9 @@ namespace OMDb.WinUI3.Services
                     }
                 }
                 //分類
-                foreach (var lc in label_Classification)
+                foreach (var lc in label_lc)
                 {
-                    if (el.Select(a => a.LabelId).Contains(lc.Id))
+                    if (elc.Select(a => a.LCId).Contains(lc.LCId))
                     {
                         if (row["Classification"].ToString().Length > 0) row["Classification"] += "/";
                         row["Classification"] += lc.Name;
@@ -143,7 +154,7 @@ namespace OMDb.WinUI3.Services
             dir.Add("ReleaseDate", "發行日期");
             dir.Add("MyRating", "評分");
 
-            label_Property.ForEach(s => dir.Add(s.Name, s.Name));
+            label_lp.ForEach(s => dir.Add(s.Name, s.Name));
             dir.Add("Classification", "分類");
 
             dir.Add("SaveType", "存儲模式");
@@ -156,8 +167,12 @@ namespace OMDb.WinUI3.Services
         }
 
 
-        //从Excel中导入数据到界面
-        public static async void ImportExcel(string filePath, Models.EnrtyStorage enrtyStorage)
+        /// <summary>
+        /// 从Excel中导入词条数据
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="enrtyStorage"></param>
+        public static async void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
         {
             var msg = new StringBuilder();
             if (string.IsNullOrEmpty(filePath)) return;
@@ -172,27 +187,23 @@ namespace OMDb.WinUI3.Services
             //基本信息
             List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "分類", "存儲模式", "存儲地址", "詞條路徑", "封面路徑" };
             //已有屬性
-            var result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
-            var label_Property_Parent = result_LabelInfo.Where(a => a.IsProperty);
+            var lpdbs = Core.Services.LabelPropertyService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
+            var lpdbs_Yeye = lpdbs.Where(a => a.Level==1);
 
             foreach (DataColumn item in dt.Columns)
             {
-                if (!list.Contains(item.ColumnName) && !label_Property_Parent.Select(a => a.Name).Contains(item.ColumnName))
+                if (!list.Contains(item.ColumnName) && !lpdbs_Yeye.Select(a => a.Name).Contains(item.ColumnName))
                 {
-                    var ldb = new LabelDb()
+                    var lpdb = new LabelPropertyDb()
                     {
                         Name = item.ColumnName,
                         DbSourceId = Settings.DbSelectorService.dbCurrentId,
-                        IsProperty = true,
-                        IsShow = false,
+                        Level = 1,
                     };
-                    Core.Services.LabelService.AddLabel(ldb);
+                    Core.Services.LabelPropertyService.AddLabel(lpdb);
+                    lpdbs.Add(lpdb);
                 }
             }
-
-            //重新加载已有属性
-            result_LabelInfo = Core.Services.LabelService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
-            label_Property_Parent = result_LabelInfo.Where(a => a.IsProperty);
 
             int rowCount = 1;
             //遍历DataTable中的数据并插入数据库
@@ -271,47 +282,45 @@ namespace OMDb.WinUI3.Services
                             }
                         }
                         //标签->属性 插入
-                        var propertyInfo = label_Property_Parent.Where(a => a.Name.Equals(item.ColumnName));
-                        if (propertyInfo.Count() > 0)
+                        var lpdb_Yeye = lpdbs_Yeye.Where(a => a.Name.Equals(item.ColumnName));
+                        if (lpdb_Yeye.Count() > 0)
                         {
-                            var label_Property_Childs = result_LabelInfo.Where(a => a.ParentId == propertyInfo.FirstOrDefault().Id);
-                            var property_Child = Convert.ToString(row[n]);
-                            if (string.IsNullOrWhiteSpace(property_Child))
+                            var lpdbs_Baba = lpdbs.Where(a => a.ParentId == lpdb_Yeye.FirstOrDefault().LPId);
+                            var lpdbName = Convert.ToString(row[n]);
+                            if (string.IsNullOrWhiteSpace(lpdbName))
                                 continue;
                             //不存在 属性_儿子
-                            if (!label_Property_Childs.Select(a => a.Name).Contains(property_Child))
+                            if (!lpdbs_Baba.Select(a => a.Name).Contains(lpdbName))
                             {
-                                var ldb = new LabelDb()
+                                var lpdb = new LabelPropertyDb()
                                 {
-                                    Id = Guid.NewGuid().ToString(),
-                                    Name = property_Child,
+                                    LPId = Guid.NewGuid().ToString(),
+                                    Name = lpdbName,
                                     DbSourceId = Settings.DbSelectorService.dbCurrentId,
-                                    IsProperty = false,
-                                    IsShow = false,
-                                    ParentId = propertyInfo.FirstOrDefault().Id,
+                                    ParentId = lpdb_Yeye.FirstOrDefault().LPId,
                                 };
-                                result_LabelInfo.Add(ldb);
-                                Core.Services.LabelService.AddLabel(ldb);
-                                var eldb = new EntryLabelDb()
+                                lpdbs.Add(lpdb);
+                                Core.Services.LabelPropertyService.AddLabel(lpdb);
+                                var eldb = new EntryLabelPropertyLKDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LabelId = ldb.Id,
+                                    LPId = lpdb.LPId,
                                     EntryId = eid,
                                 };
-                                Core.Services.EntryLabelService.AddEntryLabel(eldb);
+                                Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);
 
                             }
                             //已存在 属性_儿子
                             else
                             {
-                                var labelId = label_Property_Childs.Where(a => a.Name.Equals(property_Child)).FirstOrDefault().Id;
-                                var eldb = new EntryLabelDb()
+                                var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPId;
+                                var eldb = new EntryLabelPropertyLKDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LabelId = labelId,
+                                    LPId = lpid,
                                     EntryId = eid,
                                 };
-                                Core.Services.EntryLabelService.AddEntryLabel(eldb);
+                                Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);
                             }
                         }
                     }

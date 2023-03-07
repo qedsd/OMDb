@@ -50,7 +50,6 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     IsProperty.Visibility = Visibility.Visible;
                     IsShowOnClassificationPage.Visibility = Visibility.Visible;
-                    IsProperty.IsOn = label.IsProperty;
                     IsShowOnClassificationPage.IsOn = label.IsShow;
                 }
                 else
@@ -80,7 +79,6 @@ namespace OMDb.WinUI3.Dialogs
                 content.Label.Name = content.TextBox_Name.Text;
                 content.Label.Description = content.TextBox_Desc.Text;
                 content.Label.DbSourceId = DbSelectorService.dbCurrentId;
-                content.Label.IsProperty = content.IsProperty.IsOn;
                 content.Label.IsShow = content.IsShowOnClassificationPage.IsOn;
                 return content.Label;
             }

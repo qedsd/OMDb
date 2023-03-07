@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    public static class EntryLabelService
+    public static class EntryLabelPropertyService
     {
         /// <summary>
         /// 查詢所有Entry&Label對應關係
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static List<EntryLabelDb> SelectAllEntryLabel()
+        public static List<EntryLabelPropertyLKDb> SelectAllEntryLabel()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat(@"select * from EntryLabel ");
-            return DbService.LocalDb.Ado.SqlQuery<EntryLabelDb>(sb.ToString());
+            return DbService.LocalDb.Ado.SqlQuery<EntryLabelPropertyLKDb>(sb.ToString());
         }
 
 
@@ -28,11 +28,11 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static List<EntryLabelDb> SelectAllEntryLabel(string dbId)
+        public static List<EntryLabelPropertyLKDb> SelectAllEntryLabel(string dbId)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat($@"select * from EntryLabel where DbId='{dbId}'");
-            return DbService.LocalDb.Ado.SqlQuery<EntryLabelDb>(sb.ToString());
+            return DbService.LocalDb.Ado.SqlQuery<EntryLabelPropertyLKDb>(sb.ToString());
         }
 
 
@@ -42,7 +42,7 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static void AddEntryLabel(EntryLabelDb eldb)
+        public static void AddEntryLabel(EntryLabelPropertyLKDb eldb)
         {
             DbService.LocalDb.Insertable(eldb).ExecuteCommand();
         }

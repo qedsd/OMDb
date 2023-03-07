@@ -137,11 +137,11 @@ namespace OMDb.WinUI3.Services
                         break;
                 }
                 //
-                //添加标签
+                //添加分类标签
                 if (entry.Labels?.Count != 0)
                 {
-                    List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(entry.Labels.Count);
-                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = entry.Entry.EntryId, LabelId = p.Id, DbId = entry.Entry.DbId }));
+                    List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(entry.Labels.Count);
+                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = entry.Entry.EntryId, LCId = p.LCId, DbId = entry.Entry.DbId }));
                     Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                 }
             });
@@ -187,8 +187,8 @@ namespace OMDb.WinUI3.Services
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
                 if (ed.Labels?.Count != 0)
                 {
-                    List<Core.DbModels.EntryLabelDb> entryLabelDbs = new List<Core.DbModels.EntryLabelDb>(ed.Labels.Count);
-                    ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelDb() { EntryId = ed.Entry.EntryId, LabelId = p.Id, DbId = ed.Entry.DbId }));
+                    List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(ed.Labels.Count);
+                    ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = ed.Entry.EntryId, LCId = p.LCId, DbId = ed.Entry.DbId }));
                     Core.Services.LabelService.ClearEntryLabel(ed.Entry.EntryId);//清空词条标签
                     Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                 }
