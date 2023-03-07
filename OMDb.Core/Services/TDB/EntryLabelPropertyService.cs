@@ -44,7 +44,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void AddEntryLabel(EntryLabelPropertyLKDb eldb)
         {
-            DbService.LocalDb.Insertable(eldb).ExecuteCommand();
+            DbService.LocalDb.Insertable<EntryLabelPropertyLKDb>(eldb).ExecuteCommand();
         }
     }
 }

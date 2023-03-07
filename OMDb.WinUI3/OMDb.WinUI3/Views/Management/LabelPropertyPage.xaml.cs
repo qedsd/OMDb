@@ -5,6 +5,8 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.Core.Extensions;
+using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,11 +22,24 @@ namespace OMDb.WinUI3.Views
 {
     public sealed partial class LabelPropertyPage : Page
     {
-        public ViewModels.LabelViewModel VM { get; set; } = new ViewModels.LabelViewModel();
+        public ViewModels.LabelPropertyViewModel VM { get; set; } = new ViewModels.LabelPropertyViewModel();
         public LabelPropertyPage()
         {
             this.InitializeComponent();
             DataContext = VM;
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            VM.LP_Baba.Clear();
+            foreach (var item in e.AddedItems)
+            {
+                var lp_Yeye=((LabelPropertyTree)item);
+                foreach (var lp in lp_Yeye.Children)
+                {
+                    VM.LP_Baba.Add(lp);
+                }          
+            }
         }
     }
 }

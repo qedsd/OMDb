@@ -164,7 +164,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return DbService.LocalDb.Queryable<EntryLabelLKDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToList();
+                return DbService.LocalDb.Queryable<EntryLabelPropertyLKDb>().Where(p => p.EntryId == entryId).Select(p => p.LPId).ToList();
             }
             else
             {

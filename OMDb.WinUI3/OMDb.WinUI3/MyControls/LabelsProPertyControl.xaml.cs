@@ -27,7 +27,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty LabelsProperty2 = DependencyProperty.Register
             (
             "Labels",
-            typeof(IEnumerable<Models.Label>),
+            typeof(IEnumerable<Models.LabelProperty>),
             typeof(UserControl),
             new PropertyMetadata(null, new PropertyChangedCallback(SetLabels2))
             );
@@ -36,10 +36,10 @@ namespace OMDb.WinUI3.MyControls
             var card = d as LabelsProPertyControl;
             if (card != null)
             {
-                var labels = e.NewValue as IEnumerable<Models.Label>;
+                var labels = e.NewValue as IEnumerable<Models.LabelProperty>;
                 if (labels != null)
                 {
-                    var str= labels.Where(a=>a.IsChecked==true).Select(a=>a.LabelDb.Name).ToList();
+                    var str= labels.Where(a=>a.IsChecked==true).Select(a=>a.LPDb.Name).ToList();
                     card.StrSelectItem.Text = string.Join("/",str);
                 }
             }
@@ -112,22 +112,22 @@ namespace OMDb.WinUI3.MyControls
             CheckChanged?.Invoke(ls);
             CheckChangedCommand?.Execute(ls);
         }
-        private List<Models.Label> AllLabels;
+        private List<Models.LabelProperty> AllLabels;
         private Flyout AddLabelFlyout;
         private async void ShowAddLabelsFlyout(FrameworkElement element)
         {
             if (AllLabels == null)
             {
-                var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+                var labels = await Core.Services.LabelPropertyService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
                 if (labels != null)
                 {
-                    AllLabels = labels.Select(p => new Models.Label(p)).ToList();
+                    AllLabels = labels.Select(p => new Models.LabelProperty(p)).ToList();
                     if (labels?.Count != 0)
                     {
                         var dic = Labels.ToDictionary(p => p.LPDb.LPId);
                         foreach (var label in AllLabels)
                         {
-                            if (dic.ContainsKey(label.LabelDb.LCId))
+                            if (dic.ContainsKey(label.LPDb.LPId))
                             {
                                 label.IsChecked = true;
                             }
@@ -153,7 +153,7 @@ namespace OMDb.WinUI3.MyControls
                 var dic = labels.ToDictionary(p => p.LPDb.LPId);
                 foreach (var label in AllLabels)
                 {
-                    if (dic.TryGetValue(label.LabelDb.LCId, out var value))
+                    if (dic.TryGetValue(label.LPDb.LPId, out var value))
                     {
                         label.IsChecked = value.IsChecked;
                     }

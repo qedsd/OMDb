@@ -53,7 +53,7 @@ namespace OMDb.WinUI3.Services
             var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(enrtyStorage.StorageName);
             var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
-            label_lp.Where(a=>a.Level==1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));
+            label_lp.Where(a => a.Level == 1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));
             //分類列
             dataTable.Columns.Add("Classification", typeof(string));
 
@@ -188,7 +188,7 @@ namespace OMDb.WinUI3.Services
             List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "分類", "存儲模式", "存儲地址", "詞條路徑", "封面路徑" };
             //已有屬性
             var lpdbs = Core.Services.LabelPropertyService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
-            var lpdbs_Yeye = lpdbs.Where(a => a.Level==1);
+            var lpdbs_Yeye = lpdbs.Where(a => a.Level == 1);
 
             foreach (DataColumn item in dt.Columns)
             {
@@ -219,11 +219,33 @@ namespace OMDb.WinUI3.Services
                     SaveType saveMode = SaveType.Local;
                     var strPath = string.Empty;
                     bool isAdd = true;
-                    
-                    
+
+                    int k = -1;
+                    foreach (DataColumn item in dt.Columns)
+                    {
+                        k++;
+                        if (item.ColumnName.Equals("詞條路徑"))
+                        {
+                            var path_full = Convert.ToString(row[k]);
+                            var path_entry = path_full.Replace(enrtyStorage.StoragePath, string.Empty);
+                            var eid_update = Core.Services.EntryCommonService.GetEidBySameEntryPath(path_entry, enrtyStorage.StorageName);
+                            if (!string.IsNullOrWhiteSpace(eid_update))
+                            {
+                                isAdd = false;
+                                edb.EntryId = eid_update;
+                                edb.Path = path_full;
+                                eid = eid_update;
+                                endbs.ForEach(a => a.EntryId = eid);
+                                esdbs.ForEach(a => a.EntryId = eid);
+                            }
+                            edb.Path = Convert.ToString(row[k]);
+                            break;
+                        }
+                    }
                     int n = -1;
                     foreach (DataColumn item in dt.Columns)
                     {
+
                         n++;
                         var baseInfo = list.Where(a => a.Equals(item.ColumnName));
                         if (baseInfo.Count() > 0)
@@ -250,21 +272,7 @@ namespace OMDb.WinUI3.Services
                                 case "評分":
                                     edb.MyRating = Convert.ToDouble(row[n]);
                                     break;
-                                case "詞條路徑":
-                                    var path_full = Convert.ToString(row[n]);
-                                    var path_entry = path_full.Replace(enrtyStorage.StoragePath, string.Empty);
-                                    var eid_update = Core.Services.EntryCommonService.GetEidBySameEntryPath(path_entry, enrtyStorage.StorageName);
-                                    if (!string.IsNullOrWhiteSpace(eid_update))
-                                    {
-                                        isAdd = false;
-                                        edb.EntryId = eid_update;
-                                        edb.Path = path_full;
-                                        eid = eid_update;
-                                        endbs.ForEach(a => a.EntryId = eid);
-                                        esdbs.ForEach(a => a.EntryId = eid);
-                                    }
-                                    edb.Path = Convert.ToString(row[n]);
-                                    break;
+
                                 case "封面路徑":
                                     edb.CoverImg = Convert.ToString(row[n]);
                                     break;

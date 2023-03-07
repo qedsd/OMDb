@@ -35,18 +35,21 @@ namespace OMDb.WinUI3.Dialogs
             VM = new ViewModels.EditEntryViewModel(entry);
             this.InitializeComponent();
 
-            //取屬性標簽
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var labelIds = new List<string>();
-            if (entry != null) labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
+            var lst_label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lpids = new List<string>();//属性标签
+            var lcids = new List<string>();//分类标签
+            if (entry != null) lpids = Core.Services.LabelPropertyService.GetLabelIdsOfEntry(entry.EntryId);
+            if (entry != null) lcids = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
+
             VM.Label_Property = new List<Models.LabelProperty>();
             if (lst_label_lp.Count > 0)
             {
                 foreach (var item in lst_label_lp)
                 {
-                    var label = new Models.LabelProperty(item);
-                    if (labelIds.Count > 0 && labelIds.Contains(item.LPId)) label.IsChecked = true;
-                    VM.Label_Property.Add(label);
+                    var lp = new Models.LabelProperty(item);
+                    if (lpids.Count > 0 && lpids.Contains(item.LPId)) lp.IsChecked = true;
+                    VM.Label_Property.Add(lp);
                 }
                 var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level==1);
                 int n = 2;//第1列 or 第2列
@@ -131,6 +134,7 @@ namespace OMDb.WinUI3.Dialogs
                         break;
                 }
                 VM.SetEntryPath(entry.Path);
+                VM.ReleaseDate = (DateTimeOffset)entry.ReleaseDate;
             }
 
 

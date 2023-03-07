@@ -10,7 +10,7 @@ namespace OMDb.Core.DbModels
     /// <summary>
     /// 关联词条与标签
     /// </summary>
-    [SugarTable("EntryLabelLK")]
+    [SugarTable("EntryLabelPropertyLK")]
     public class EntryLabelPropertyLKDb
     {
         /// <summary>

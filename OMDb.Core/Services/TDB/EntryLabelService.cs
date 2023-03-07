@@ -38,13 +38,13 @@ namespace OMDb.Core.Services
 
 
         /// <summary>
-        /// 查詢所有Entry&Label對應關係
+        /// 添加Entry&Label 关联关系
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
         public static void AddEntryLabel(EntryLabelLKDb eldb)
         {
-            DbService.LocalDb.Insertable(eldb).ExecuteCommand();
+            DbService.LocalDb.Insertable<EntryLabelLKDb>(eldb).ExecuteCommand();
         }
     }
 }

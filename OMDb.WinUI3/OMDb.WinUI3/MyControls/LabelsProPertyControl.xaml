@@ -37,13 +37,13 @@
                             ItemsSource="{x:Bind Labels, Mode=TwoWay}"
                             SelectionMode="None">
                             <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="Models:Label">
+                                <DataTemplate x:DataType="Models:LabelProperty">
                                     <Grid>
                                         <CheckBox Width="10" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="30,4,0,0"
                                             HorizontalAlignment="Left"
-                                            Text="{x:Bind LabelDb.Name}" />
+                                            Text="{x:Bind LPDb.Name}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
