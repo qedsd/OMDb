@@ -162,7 +162,7 @@ namespace OMDb.WinUI3.Services
                 //封面变更
                 var coverType = Path.GetExtension(ed.Entry.CoverImg);
                 string newImgCoverPath = Path.Combine(ed.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
-                File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
+                if(!ed.Entry.CoverImg.Equals(newImgCoverPath)) File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
                 ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
 
                 //數據庫 詞條路徑&圖片路徑 取相對地址

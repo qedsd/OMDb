@@ -1,434 +1,437 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-    <RootNamespace>OMDb.WinUI3</RootNamespace>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Platforms>x86;x64;arm64</Platforms>
-    <RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
-    <UseWinUI>true</UseWinUI>
-    <BaseOutputPath>bin\</BaseOutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Enums\**" />
-    <Content Remove="Enums\**" />
-    <EmbeddedResource Remove="Enums\**" />
-    <None Remove="Enums\**" />
-    <Page Remove="Enums\**" />
-    <PRIResource Remove="Enums\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Converters\StringToObject - 复制.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Assets\Img\logo_32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Assets\Img\defaultbanner.jpg" />
-    <None Remove="Assets\Img\defaultbanneritem.jpg" />
-    <None Remove="Dialogs\EditDbSource.xaml" />
-    <None Remove="Dialogs\EditEntryDialog.xaml" />
-    <None Remove="Dialogs\EditLabelDialog.xaml" />
-    <None Remove="Dialogs\EditLineDialog.xaml" />
-    <None Remove="Dialogs\EditStorageDialog.xaml" />
-    <None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
-    <None Remove="Dialogs\LineDetailDialog.xaml" />
-    <None Remove="Dialogs\MsgDialog.xaml" />
-    <None Remove="Dialogs\MyContentDialog.xaml" />
-    <None Remove="Dialogs\PickEntryCollectionDialog.xaml" />
-    <None Remove="Dialogs\QueryDialog.xaml" />
-    <None Remove="Dialogs\WatingDialog.xaml" />
-    <None Remove="MyControls\AddLabelsControl.xaml" />
-    <None Remove="MyControls\Banner.xaml" />
-    <None Remove="MyControls\DropArea.xaml" />
-    <None Remove="MyControls\EditEntryName.xaml" />
-    <None Remove="MyControls\EntryCard.xaml" />
-    <None Remove="MyControls\EntryCard2.xaml" />
-    <None Remove="MyControls\EntryCollectionCard.xaml" />
-    <None Remove="MyControls\EntryCollectionCard2.xaml" />
-    <None Remove="MyControls\EntryStoragesControl.xaml" />
-    <None Remove="MyControls\ExpandableSettingControl.xaml" />
-    <None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
-    <None Remove="MyControls\ExplorerItemControl.xaml" />
-    <None Remove="MyControls\LabelCollection1.xaml" />
-    <None Remove="MyControls\LabelCollection2.xaml" />
-    <None Remove="MyControls\LabelCollection3.xaml" />
-    <None Remove="MyControls\LabelsControl.xaml" />
-    <None Remove="MyControls\NotifyPopup.xaml" />
-    <None Remove="MyControls\StorageCard.xaml" />
-    <None Remove="MyControls\WaitingPopup.xaml" />
-    <None Remove="SettingPage.xaml" />
-    <None Remove="Strings\en-us\Resources.resw" />
-    <None Remove="Strings\zh-CN\Resources.resw" />
-    <None Remove="Styles\Colors.xaml" />
-    <None Remove="Styles\Custom.xaml" />
-    <None Remove="Styles\Thickness.xaml" />
-    <None Remove="Views\ClassificationPage.xaml" />
-    <None Remove="Views\CollectionsPage.xaml" />
-    <None Remove="Views\EntryCollectionDetailPage.xaml" />
-    <None Remove="Views\EntryDetailPage.xaml" />
-    <None Remove="Views\EntryPage.xaml" />
-    <None Remove="Views\HomePage.xaml" />
-    <None Remove="Views\Homes\ExtractLinePage.xaml" />
-    <None Remove="Views\Homes\RandomEntryPage.xaml" />
-    <None Remove="Views\Homes\RecentlyUpdatedEntryPage.xaml" />
-    <None Remove="Views\Homes\RecentlyWatchedEntryPage.xaml" />
-    <None Remove="Views\Homes\RecentlyWatchedFilesPage.xaml" />
-    <None Remove="Views\Homes\StatisticsPage.xaml" />
-    <None Remove="Views\LabelCollectionPage.xaml" />
-    <None Remove="Views\LabelPage.xaml" />
-    <None Remove="Views\ManagementPage.xaml" />
-    <None Remove="Views\ShellPage.xaml" />
-    <None Remove="Views\StoragePage.xaml" />
-    <None Remove="Views\ToolsPage.xaml" />
-    <None Remove="Views\Tools\AVCodecToolPage.xaml" />
-    <None Remove="Views\Tools\SubToolPage.xaml" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<RootNamespace>OMDb.WinUI3</RootNamespace>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<Platforms>x86;x64;arm64</Platforms>
+		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
+		<UseWinUI>true</UseWinUI>
+		<BaseOutputPath>bin\</BaseOutputPath>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Enums\**" />
+		<Content Remove="Enums\**" />
+		<EmbeddedResource Remove="Enums\**" />
+		<None Remove="Enums\**" />
+		<Page Remove="Enums\**" />
+		<PRIResource Remove="Enums\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Converters\StringToObject - 复制.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Remove="Assets\Img\logo_32.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Assets\Img\defaultbanner.jpg" />
+		<None Remove="Assets\Img\defaultbanneritem.jpg" />
+		<None Remove="Dialogs\EditDbSource.xaml" />
+		<None Remove="Dialogs\EditEntryDialog.xaml" />
+		<None Remove="Dialogs\EditLabelDialog.xaml" />
+		<None Remove="Dialogs\EditLineDialog.xaml" />
+		<None Remove="Dialogs\EditStorageDialog.xaml" />
+		<None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
+		<None Remove="Dialogs\LineDetailDialog.xaml" />
+		<None Remove="Dialogs\MsgDialog.xaml" />
+		<None Remove="Dialogs\MyContentDialog.xaml" />
+		<None Remove="Dialogs\PickEntryCollectionDialog.xaml" />
+		<None Remove="Dialogs\QueryDialog.xaml" />
+		<None Remove="Dialogs\WatingDialog.xaml" />
+		<None Remove="MyControls\AddLabelsControl.xaml" />
+		<None Remove="MyControls\Banner.xaml" />
+		<None Remove="MyControls\DropArea.xaml" />
+		<None Remove="MyControls\EditEntryName.xaml" />
+		<None Remove="MyControls\EntryCard.xaml" />
+		<None Remove="MyControls\EntryCard2.xaml" />
+		<None Remove="MyControls\EntryCollectionCard.xaml" />
+		<None Remove="MyControls\EntryCollectionCard2.xaml" />
+		<None Remove="MyControls\EntryStoragesControl.xaml" />
+		<None Remove="MyControls\ExpandableSettingControl.xaml" />
+		<None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
+		<None Remove="MyControls\ExplorerItemControl.xaml" />
+		<None Remove="MyControls\LabelCollection1.xaml" />
+		<None Remove="MyControls\LabelCollection2.xaml" />
+		<None Remove="MyControls\LabelCollection3.xaml" />
+		<None Remove="MyControls\LabelsControl.xaml" />
+		<None Remove="MyControls\NotifyPopup.xaml" />
+		<None Remove="MyControls\StorageCard.xaml" />
+		<None Remove="MyControls\WaitingPopup.xaml" />
+		<None Remove="SettingPage.xaml" />
+		<None Remove="Strings\en-us\Resources.resw" />
+		<None Remove="Strings\zh-CN\Resources.resw" />
+		<None Remove="Styles\Colors.xaml" />
+		<None Remove="Styles\Custom.xaml" />
+		<None Remove="Styles\Thickness.xaml" />
+		<None Remove="Views\ClassificationPage.xaml" />
+		<None Remove="Views\CollectionsPage.xaml" />
+		<None Remove="Views\EntryCollectionDetailPage.xaml" />
+		<None Remove="Views\EntryDetailPage.xaml" />
+		<None Remove="Views\EntryPage.xaml" />
+		<None Remove="Views\HomePage.xaml" />
+		<None Remove="Views\Homes\ExtractLinePage.xaml" />
+		<None Remove="Views\Homes\RandomEntryPage.xaml" />
+		<None Remove="Views\Homes\RecentlyUpdatedEntryPage.xaml" />
+		<None Remove="Views\Homes\RecentlyWatchedEntryPage.xaml" />
+		<None Remove="Views\Homes\RecentlyWatchedFilesPage.xaml" />
+		<None Remove="Views\Homes\StatisticsPage.xaml" />
+		<None Remove="Views\LabelPage.xaml" />
+		<None Remove="Views\ManagementPage.xaml" />
+		<None Remove="Views\LabelPropertyPage.xaml" />
+		<None Remove="Views\ShellPage.xaml" />
+		<None Remove="Views\StoragePage.xaml" />
+		<None Remove="Views\ToolsPage.xaml" />
+		<None Remove="Views\Tools\AVCodecToolPage.xaml" />
+		<None Remove="Views\Tools\SubToolPage.xaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
-    <PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221116.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.2.0" />
-    <Manifest Include="$(ApplicationManifest)" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+		<PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221116.1" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
+		<PackageReference Include="Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.0.9" />
+		<PackageReference Include="Xabe.FFmpeg" Version="5.2.0" />
+		<Manifest Include="$(ApplicationManifest)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="MyControls\DropArea.xaml">
-      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-    </Page>
-    <Page Update="MyControls\LabelsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MyControls\DropArea.xaml">
+			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MyControls\LabelsControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\EditLabelDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\EditLabelDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\LabelPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\LabelPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\EntryDetailPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\EntryDetailPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Styles\Colors.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Styles\Colors.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\ExpandableSettingHeaderControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\ExpandableSettingHeaderControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\ExpandableSettingControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\ExpandableSettingControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\LabelPropertyPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\SettingPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\SettingPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\MyContentDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\MyContentDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\EditEntryDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\EditEntryDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EntryCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EntryCard.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\MsgDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\MsgDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\NotifyPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\NotifyPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\QueryDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\QueryDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\StoragePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\StoragePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\EntryPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\EntryPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\HomePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\HomePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\ShellPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\ShellPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\StorageCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\StorageCard.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\EditStorageDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\EditStorageDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Styles\Thickness.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Styles\Thickness.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EntryStoragesControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EntryStoragesControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\WatingDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\WatingDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\WaitingPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\WaitingPopup.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EditEntryName.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EditEntryName.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\ExplorerItemControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\ExplorerItemControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Styles\Custom.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Styles\Custom.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\AddLabelsControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\AddLabelsControl.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\OMDb.Core\OMDb.Core.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EntryCollectionCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="Views\Tools\SubToolPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EntryCollectionCard.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="Views\Tools\SubToolPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\LabelCollectionPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\LabelCollectionPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\LabelCollection3.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\LabelCollection3.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\CollectionsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\CollectionsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\ToolsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\ToolsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\ManagementPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\ManagementPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\LabelCollection2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\LabelCollection2.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\LabelCollection1.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\LabelCollection1.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\Banner.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\Banner.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\ClassificationPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\ClassificationPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Assets\FFmpeg\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Assets\FFmpeg\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\EditDbSource.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\EditDbSource.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\RandomEntryPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\RandomEntryPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\StatisticsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\StatisticsPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Tools\AVCodecToolPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Tools\AVCodecToolPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\RecentlyUpdatedEntryPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\RecentlyUpdatedEntryPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\RecentlyWatchedEntryPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\RecentlyWatchedEntryPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\RecentlyWatchedFilesPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\RecentlyWatchedFilesPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\Homes\ExtractLinePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\Homes\ExtractLinePage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\LineDetailDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\LineDetailDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\EditLineDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\EditLineDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Windows\ThemeWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Windows\ThemeWindow.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EntryCard2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EntryCard2.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Dialogs\PickEntryCollectionDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Dialogs\PickEntryCollectionDialog.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Views\EntryCollectionDetailPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Views\EntryCollectionDetailPage.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="MyControls\EntryCollectionCard2.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="MyControls\EntryCollectionCard2.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 </Project>
