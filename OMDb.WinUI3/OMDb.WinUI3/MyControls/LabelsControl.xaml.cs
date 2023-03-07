@@ -177,10 +177,10 @@ namespace OMDb.WinUI3.MyControls
                     AllLabels = labels.Select(p => new Models.Label(p)).ToList();
                     if(labels?.Count!=0)
                     {
-                        var dic = Labels.ToDictionary(p => p.LabelDb.Id);
+                        var dic = Labels.ToDictionary(p => p.LabelDb.LCId);
                         foreach(var label in AllLabels)
                         {
-                            if(dic.ContainsKey(label.LabelDb.Id))
+                            if(dic.ContainsKey(label.LabelDb.LCId))
                             {
                                 label.IsChecked = true;
                             }
@@ -204,10 +204,10 @@ namespace OMDb.WinUI3.MyControls
             AddLabelFlyout.Hide();
             if(confirm)
             {
-                var dic = labels.ToDictionary(p => p.LabelDb.Id);
+                var dic = labels.ToDictionary(p => p.LabelDb.LCId);
                 foreach (var label in AllLabels)
                 {
-                    if(dic.TryGetValue(label.LabelDb.Id, out var value))
+                    if(dic.TryGetValue(label.LabelDb.LCId, out var value))
                     {
                         label.IsChecked = value.IsChecked;
                     }

@@ -25,6 +25,9 @@ namespace OMDb.Core.Models
 
         public int? Forced { get; set; }
 
+        /// <summary>
+        /// 像素格式
+        /// </summary>
         public string PixelFormat { get; set; }
 
         public int? Rotation { get; set; }

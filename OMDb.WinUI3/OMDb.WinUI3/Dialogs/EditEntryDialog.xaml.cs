@@ -36,19 +36,19 @@ namespace OMDb.WinUI3.Dialogs
             this.InitializeComponent();
 
             //取屬性標簽
-            var lst_label_property = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId, true);
+            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
             var labelIds = new List<string>();
             if (entry != null) labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
-            VM.Label_Property = new List<Models.Label>();
-            if (lst_label_property.Count > 0)
+            VM.Label_Property = new List<Models.LabelProperty>();
+            if (lst_label_lp.Count > 0)
             {
-                foreach (var item in lst_label_property)
+                foreach (var item in lst_label_lp)
                 {
-                    var label = new Models.Label(item);
-                    if (labelIds.Count > 0 && labelIds.Contains(item.Id)) label.IsChecked = true;
+                    var label = new Models.LabelProperty(item);
+                    if (labelIds.Count > 0 && labelIds.Contains(item.LPId)) label.IsChecked = true;
                     VM.Label_Property.Add(label);
                 }
-                var lstBaba = VM.Label_Property.Where(a => !a.LabelDb.ParentId.NotNullAndEmpty()).DepthClone<List<Models.Label>>();
+                var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level==1);
                 int n = 2;//第1列 or 第2列
                 StackPanel stack = new StackPanel();
                 stack.Orientation = Orientation.Horizontal;
@@ -66,16 +66,16 @@ namespace OMDb.WinUI3.Dialogs
                         TextBlock tBlock = new TextBlock()
                         {
                             Margin = new Thickness(8, 5, 0, 0),
-                            Text = item.LabelDb.Name + "：",
+                            Text = item.LPDb.Name + "：",
                             Width = 87
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsControl2();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                        var lbc = new LabelsProPertyControl();
+                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.Level==1);
                         stack.Children.Add(lbc);
                         n++;
-                        if (lstBaba.Count == n - 2)
+                        if (lstBaba.Count() == n - 2)
                             stp.Children.Add(stack);
                     }
                     //第二列
@@ -85,13 +85,13 @@ namespace OMDb.WinUI3.Dialogs
                         TextBlock tBlock = new TextBlock()
                         {
                             Margin = new Thickness(-11, 5, 0, 0),
-                            Text = item.LabelDb.Name + "：",
+                            Text = item.LPDb.Name + "：",
                             Width = 87
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsControl2();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LabelDb.ParentId.NotNullAndEmpty()).Where(a => item.LabelDb.Id == a.LabelDb.ParentId);
+                        var lbc = new LabelsProPertyControl();
+                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
                         n++;
@@ -226,8 +226,8 @@ namespace OMDb.WinUI3.Dialogs
                     entryDetail.FullCoverImgPath = content.VM.Entry.CoverImg;
                 }
                 //保存：标签 -> 属性
-                var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LabelDb).ToList();
-                entryDetail.Labels.AddRange(lst);
+                var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LPDb).ToList();
+                entryDetail.Lpdbs.AddRange(lst);
 
 
 

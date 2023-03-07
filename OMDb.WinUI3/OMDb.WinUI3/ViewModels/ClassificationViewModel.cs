@@ -94,7 +94,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 foreach (var label in labels)
                 {
-                    LabelsDic.Add(label.Id, new Label(label));
+                    LabelsDic.Add(label.LCId, new Label(label));
                 }
 
                 Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();//string为父节点id
@@ -104,7 +104,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.Id, new LabelTree(label));
+                        labelsDb.Add(label.LCId, new LabelTree(label));
                     }
                 }
                 foreach (var label in labels)
@@ -145,7 +145,7 @@ namespace OMDb.WinUI3.ViewModels
             List<Label> target = Core.Helpers.RandomHelper.RandomList(Labels, 10);
             foreach(var item in target)
             {
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { item.LabelDb.Id });
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { item.LabelDb.LCId });
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults,3);
                 if(result?.Any() == true)
                 {
@@ -158,7 +158,7 @@ namespace OMDb.WinUI3.ViewModels
                             var samllStream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 400, 0);
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelDb.Id,
+                                Id = item.LabelDb.LCId,
                                 Title = item.LabelDb.Name,
                                 Description = item.LabelDb.Description,
                                 Img = new BitmapImage(new Uri(bg)),
@@ -170,7 +170,7 @@ namespace OMDb.WinUI3.ViewModels
                         {
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelDb.Id,
+                                Id = item.LabelDb.LCId,
                                 Title = item.LabelDb.Name,
                                 Description = item.LabelDb.Description,
                                 Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
@@ -184,7 +184,7 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async Task<BannerItem> GetAllBannerItem()
         {
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelDb.Id).ToList());
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelDb.LCId).ToList());
             if(queryResults?.Count > 2)
             {
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults, 40);
@@ -322,7 +322,7 @@ namespace OMDb.WinUI3.ViewModels
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.Id });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.LCId });
                         int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                         var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                         if (result?.Any() == true)
@@ -338,7 +338,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Entries = entrys,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                     Template = entryCount == 6 ? 1 : 2,
-                                    Id = label.Label.Id
+                                    Id = label.Label.LCId
                                 });
                             }
                         }
@@ -347,7 +347,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.Id });
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.LCId });
                     int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                     var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                     if (result?.Any() == true)
@@ -363,7 +363,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Entries = entrys,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                 Template = entryCount == 6 ? 1 : 2,
-                                Id = labelTree.Label.Id
+                                Id = labelTree.Label.LCId
                             });
                         }
                     }
@@ -406,7 +406,7 @@ namespace OMDb.WinUI3.ViewModels
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.Id });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.LCId });
                         var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                         if (showItem != null)
                         {
@@ -419,7 +419,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Title = label.Label.Name,
                                     Description = label.Label.Description,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                    Id = label.Label.Id,
+                                    Id = label.Label.LCId,
                                 });
                             }
                         }
@@ -428,7 +428,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.Id });
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.LCId });
                     var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                     if (showItem != null)
                     {
@@ -441,7 +441,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Title = labelTree.Label.Name,
                                 Description = labelTree.Label.Description,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                Id = labelTree.Label.Id
+                                Id = labelTree.Label.LCId
                             });
                         }
                     }
@@ -490,7 +490,7 @@ namespace OMDb.WinUI3.ViewModels
             if(LabelsDic.TryGetValue(id, out var label))
             {
                 Helpers.InfoHelper.ShowWaiting();
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.Id });
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.LCId });
                 var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 if (entrys?.Any() == true)
                 {
@@ -499,7 +499,7 @@ namespace OMDb.WinUI3.ViewModels
                         Title = label.LabelDb.Name,
                         Description = label.LabelDb.Description,
                         Entries = entrys,
-                        Id = label.LabelDb.Id
+                        Id = label.LabelDb.LCId
                     };
                     Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
                 }
