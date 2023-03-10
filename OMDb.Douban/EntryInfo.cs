@@ -2,10 +2,13 @@
 using OMDb.Core.Helpers;
 using OMDb.Core.Interfaces;
 using OMDb.Core.Models;
+using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -51,7 +54,9 @@ namespace OMDb.Douban
             try
             {
                 var cover = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""mainpic""]/a/img").Attributes["src"].Value;
-                dic.Add("封面", cover);
+                var bytes=GetUrlMemoryStream(cover);
+                MemoryStream ms= new MemoryStream(bytes);
+                dic.Add("封面", ms);
             }
             catch (Exception ex)
             {
@@ -68,8 +73,8 @@ namespace OMDb.Douban
         {
             try
             {
-                var rate = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""interest_sectl""]/div/div[2]/strong").InnerText;
-                dic.Add("评分", rate);
+                var rate = Convert.ToDouble(htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""interest_sectl""]/div/div[2]/strong").InnerText);
+                dic.Add("评分", rate/2.0);
             }
             catch (Exception ex)
             {
@@ -98,7 +103,7 @@ namespace OMDb.Douban
         }
 
 
-        private static void GetDirector(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetDirector(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
         {
             try
             {
@@ -113,7 +118,7 @@ namespace OMDb.Douban
             }
         }
 
-        private static void GetDate(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetDate(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
         {
             try
             {
@@ -141,7 +146,7 @@ namespace OMDb.Douban
             }
         }
 
-        private static void GetClass(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetClass(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
         {
             try
             {
@@ -161,6 +166,23 @@ namespace OMDb.Douban
             {
                 LogHelper.Instance._logger.Error("分类获取失败" + ex);
             }
+        }
+
+        public static byte[] GetUrlMemoryStream(string path)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+
+            List<byte> btlst = new List<byte>();
+            int b = responseStream.ReadByte();
+            while (b > -1)
+            {
+                btlst.Add((byte)b);
+                b = responseStream.ReadByte();
+            }
+            byte[] bts = btlst.ToArray();
+            return bts;
         }
     }
 }

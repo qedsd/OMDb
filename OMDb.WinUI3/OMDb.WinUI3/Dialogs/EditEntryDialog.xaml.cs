@@ -318,14 +318,13 @@ namespace OMDb.WinUI3.Dialogs
             var entryInfo = EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
             try
             {
-                var path_Cover = Convert.ToString(entryInfo["封面"]);
+                var coverStream = (MemoryStream)(entryInfo["封面"]);
                 var tmpPath = new TmpFileHelper();
-                var bts = ImgHelper.GetUrlMemoryStream(path_Cover);
                 FileStream fs = new FileStream(tmpPath.FilePath, FileMode.Create);
-                fs.Write(bts, 0, bts.Length);
+                coverStream.WriteTo(fs);
                 fs.Close();
                 VM.Entry.CoverImg = tmpPath.FilePath;
-                Image_CoverImg.Source = new BitmapImage(new Uri(path_Cover));
+                Image_CoverImg.Source = new BitmapImage(new Uri(tmpPath.FilePath));
             }
             catch (Exception ex)
             {
@@ -334,7 +333,7 @@ namespace OMDb.WinUI3.Dialogs
 
             try
             {
-                this.VM.MyRating = Convert.ToDouble(entryInfo["评分"]) / 2.0;
+                this.VM.MyRating = Convert.ToDouble(entryInfo["评分"]);
             }
             catch (Exception ex)
             {
