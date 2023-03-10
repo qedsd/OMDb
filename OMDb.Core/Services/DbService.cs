@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.DbModels;
+using OMDb.Core.Helpers;
 using OMDb.Core.Models;
 using SqlSugar;
 using System;
@@ -160,8 +161,9 @@ namespace OMDb.Core.Services
                 }
                 return true;
             }
-            catch(Exception)
+            catch(Exception ex)
             {
+                LogHelper.Instance._logger.Error(ex);
                 return false;
             }
         }
