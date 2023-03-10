@@ -45,8 +45,8 @@ namespace OMDb.Core.Models
         }
         public Rating(double rate, double max, double min, string remarks = null)
         {
+            Min= min;
             Max = max;
-            Rate = rate;
             Rate = rate;
             Remarks = remarks;
         }

@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using OMDb.Core.Services;
+using OMDb.Core.Services.PluginsService;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
@@ -24,7 +24,7 @@ namespace OMDb.WinUI3.Wins
             Helpers.WindowHelper.TrackWindow(this);
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
-            RatingService.Init();
+            PluginsBaseService.Init();
             if (Content is FrameworkElement rootElement)
             {
                 rootElement.RequestedTheme = Services.ThemeSelectorService.Theme;

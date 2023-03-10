@@ -15,5 +15,6 @@ namespace OMDb.Core.Interfaces
         /// <param name="id">影片唯一标识，规范由各自确定</param>
         /// <returns></returns>
         Rating Rate(string id);
+
     }
 }

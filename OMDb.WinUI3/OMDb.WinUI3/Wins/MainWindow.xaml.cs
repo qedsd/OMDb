@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using OMDb.Core.Services;
+using OMDb.Core.Services.PluginsService;
 using OMDb.WinUI3.Services;
 using System.Runtime.InteropServices; // For DllImport
 using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
@@ -20,7 +20,7 @@ namespace OMDb.WinUI3
             Helpers.WindowHelper.SetMainWindow(this);
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
-            RatingService.Init();
+            PluginsBaseService.Init();
             Instance = this;
             if (Content is FrameworkElement rootElement)
             {

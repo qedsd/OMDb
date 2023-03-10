@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OMDb.WinUI3.Services.Settings;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,5 +91,14 @@ namespace OMDb.WinUI3.Services
         }
 
 
+        /// <summary>
+        /// 根据词条名补充词条完整路径
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static string GetFullEntryPathByEntryName(string entryName,string storePath)
+        {
+            return Path.Combine(storePath,ConfigService.DefaultEntryFolder, entryName);
+        }
     }
 }

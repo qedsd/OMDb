@@ -3,6 +3,8 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>disable</Nullable>
+		<BaseOutputPath>..\OMDb.WinUI3\OMDb.WinUI3\Plugins</BaseOutputPath>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

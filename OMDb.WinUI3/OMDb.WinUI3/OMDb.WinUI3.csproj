@@ -343,6 +343,7 @@
 
 	<ItemGroup>
 		<Folder Include="Assets\FFmpeg\" />
+		<Folder Include="Plugins\" />
 	</ItemGroup>
 
 	<ItemGroup>

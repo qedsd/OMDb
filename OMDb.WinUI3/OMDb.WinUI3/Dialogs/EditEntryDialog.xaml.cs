@@ -8,9 +8,14 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Shapes;
+using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Extensions;
+using OMDb.Core.Services;
+using OMDb.Core.Services.PluginsService;
+using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services.Settings;
@@ -23,7 +28,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using static OMDb.WinUI3.MyControls.LabelsControl;
+
 
 namespace OMDb.WinUI3.Dialogs
 {
@@ -51,7 +56,7 @@ namespace OMDb.WinUI3.Dialogs
                     if (lpids.Count > 0 && lpids.Contains(item.LPId)) lp.IsChecked = true;
                     VM.Label_Property.Add(lp);
                 }
-                var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level==1);
+                var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level == 1);
                 int n = 2;//第1列 or 第2列
                 StackPanel stack = new StackPanel();
                 stack.Orientation = Orientation.Horizontal;
@@ -75,7 +80,7 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.Level==1);
+                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.Level == 1);
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)
@@ -133,7 +138,7 @@ namespace OMDb.WinUI3.Dialogs
                         this.SetFolder.IsChecked = true;
                         break;
                 }
-                VM.SetEntryPath(entry.Path);
+                VM.SetFullEntryPathByRelativePath(entry.Path);
                 VM.ReleaseDate = (DateTimeOffset)entry.ReleaseDate;
             }
 
@@ -144,6 +149,29 @@ namespace OMDb.WinUI3.Dialogs
             {
                 this.SetFolder.IsChecked = true;
             }
+
+            if (PluginsBaseService.EntryInfos.Count() > 0)
+            {
+                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
+                var mf = new MenuFlyout();
+                foreach (var item in PluginsBaseService.EntryInfos)
+                {
+                    MenuFlyoutItem mfl = new MenuFlyoutItem();
+                    mfl.Text = item.GetType().Assembly.GetName().Name;
+                    mfl.Click += (s, e) => { this.ddb.Content = mfl.Text; };
+                    mf.Items.Add(mfl);
+                }
+                this.ddb.Flyout = mf;
+            }
+            else this.ddb.Content = "无服务";
+
+
+
+
+
+
+
+
         }
         /// <summary>
         /// 返回的entry的Path、CoverImg都为全路径
@@ -231,7 +259,7 @@ namespace OMDb.WinUI3.Dialogs
                 }
                 //保存：标签 -> 属性
                 var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LPDb).ToList();
-                entryDetail.Lpdbs.AddRange(lst);
+                if(lst.Count>0)entryDetail.Lpdbs.AddRange(lst);
 
 
 
@@ -278,15 +306,61 @@ namespace OMDb.WinUI3.Dialogs
                 Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));
             }
         }
+
+
+
+        private void GetInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
+            /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
+            this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
+
+            var entryInfo = EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
+            try
+            {
+                var path_Cover = Convert.ToString(entryInfo["封面"]);
+                var tmpPath = new TmpFileHelper();
+                var bts = ImgHelper.GetUrlMemoryStream(path_Cover);
+                FileStream fs = new FileStream(tmpPath.FilePath, FileMode.Create);
+                fs.Write(bts, 0, bts.Length);
+                fs.Close();
+                VM.Entry.CoverImg = tmpPath.FilePath;
+                Image_CoverImg.Source = new BitmapImage(new Uri(path_Cover));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            try
+            {
+                this.VM.MyRating = Convert.ToDouble(entryInfo["评分"]) / 2.0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            try
+            {
+                this.VM.ReleaseDate = Convert.ToDateTime(entryInfo["上映日期"]);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+        }
+
         /// <summary>
         /// 编辑词条名的时候同步修改仓库路径
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void EntryName_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (VM.Entry.Name == null)
-                VM.SetEntryPath((sender as TextBox).Text);
+                VM.SetFullEntryPathByName((sender as TextBox).Text);
         }
     }
 }

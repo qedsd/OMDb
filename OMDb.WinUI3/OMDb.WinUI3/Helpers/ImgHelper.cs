@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,6 +65,30 @@ namespace OMDb.WinUI3.Helpers
             {
                 return null;
             }
+        }
+
+
+        /// <summary>
+        /// 用远程地址获取文件字节流
+        /// </summary>
+        /// <param name="path">URL</param>
+        /// <returns></returns>
+        public static byte[] GetUrlMemoryStream(string path)
+        {
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+
+            List<byte> btlst = new List<byte>();
+            int b = responseStream.ReadByte();
+            while (b > -1)
+            {
+                btlst.Add((byte)b);
+                b = responseStream.ReadByte();
+            }
+            byte[] bts = btlst.ToArray();
+            return bts;
         }
     }
 }

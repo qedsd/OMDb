@@ -63,7 +63,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 SetProperty(ref selectedEnrtyStorage, value);
                 SelectedEntryDicPath = selectedEnrtyStorage.StoragePath;//重置为默认路径
-                SetEntryPath(EntryName);
+                SetFullEntryPathByName(EntryName);
             }
         }
         private string selectedEntryDicPath = string.Empty;
@@ -78,7 +78,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 selectedEntryDicPath = value;
                 //SetEntryPath(EntryNames.FirstOrDefault(p=>p.IsDefault)?.Name);
-                SetEntryPath(EntryName);
+                SetFullEntryPathByName(EntryName);
             }
         }
         private List<Models.Label> labels;
@@ -101,14 +101,21 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _label_Property, value);
         }
 
-        public void SetEntryPath(string name)
+        public void SetFullEntryPathByName(string name)
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
             {
-                EntryPath = (SelectedEntryDicPath+name);
+                EntryPath = PathService.GetFullEntryPathByEntryName( name, selectedEnrtyStorage.StoragePath);
             }
         }
-
+        public void SetFullEntryPathByRelativePath(string relativePath)
+        {
+            if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(relativePath))
+            {
+                EntryPath =  selectedEnrtyStorage.StoragePath+ relativePath;
+            }
+        }
+        
         public EditEntryViewModel(Core.Models.Entry entry)
         {
             //EntryNames = new List<Models.EntryName>();

@@ -14,6 +14,6 @@ namespace OMDb.Core.Interfaces
         /// </summary>
         /// <param name="id">影片唯一标识，规范由各自确定</param>
         /// <returns></returns>
-        Dictionary<string,Object> GetEntryInfo(string keyword);
+        Dictionary<string,Object> EntryInfo(string keyword);
     }
 }
