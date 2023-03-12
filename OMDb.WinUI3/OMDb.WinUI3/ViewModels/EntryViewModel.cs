@@ -290,6 +290,18 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
+        public ICommand AddEntryBatchCommand => new RelayCommand(async () =>
+        {
+            Services.ConfigService.LoadStorages();
+            if (Services.ConfigService.EnrtyStorages.Count == 0)
+            {
+                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
+            }
+            else
+            {
+                await Services.EntryService.AddEntryBatchAsync();
+            }
+        });
 
         private void GlobalEvent_RemoveEntryEvent(object sender, Events.EntryEventArgs e)
         {

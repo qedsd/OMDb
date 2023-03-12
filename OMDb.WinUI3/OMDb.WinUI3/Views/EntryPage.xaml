@@ -60,10 +60,54 @@
                         <KeyboardAccelerator Key="F5" />
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
-                <AppBarButton
-                    Command="{x:Bind VM.AddEntryCommand}"
+
+                <AppBarButton 
                     Icon="Add"
-                    Label="新增" />
+                    Label="新增"
+                    Command="{x:Bind VM.AddEntryCommand}">
+                </AppBarButton>
+                <AppBarElementContainer>
+                    <SplitButton
+                                    Width="90"
+                                    Height="48"
+                                    VerticalAlignment="Center"
+                        Command="{x:Bind VM.AddEntryCommand}">
+                        <SplitButton.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                            FontFamily="Segoe MDL2 Assets"
+                            Text="&#xE74D;"
+                            VerticalAlignment="Center" 
+                                        FontSize="14"/>
+                                    <TextBlock Text="新增" Margin="5,0,0,0"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </SplitButton.ContentTemplate>
+                        <SplitButton.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel>
+                                    <Button Width="80" Command="{x:Bind VM.AddEntryCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="新增词条"></TextBlock>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button Width="80" Margin="0,5,0,0" Command="{x:Bind VM.AddEntryBatchCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="批量新增"></TextBlock>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                                <!--  flyout content  -->
+                            </Flyout>
+                        </SplitButton.Flyout>
+
+
+
+
+                    </SplitButton>
+                </AppBarElementContainer>
+
                 <AppBarButton Icon="Filter" Label="筛选">
                     <AppBarButton.Flyout>
                         <Flyout>

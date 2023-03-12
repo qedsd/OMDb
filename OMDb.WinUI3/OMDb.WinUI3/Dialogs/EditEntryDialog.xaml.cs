@@ -319,12 +319,13 @@ namespace OMDb.WinUI3.Dialogs
             try
             {
                 var coverStream = (MemoryStream)(entryInfo["封面"]);
-                var tmpPath = new TmpFileHelper();
-                FileStream fs = new FileStream(tmpPath.FilePath, FileMode.Create);
+                TempFileHelper.CreateTempImg();
+                FileStream fs = new FileStream(TempFileHelper.fullTempImgPath, FileMode.Create);
                 coverStream.WriteTo(fs);
                 fs.Close();
-                VM.Entry.CoverImg = tmpPath.FilePath;
-                Image_CoverImg.Source = new BitmapImage(new Uri(tmpPath.FilePath));
+                VM.Entry.CoverImg = TempFileHelper.fullTempImgPath;
+                Image_CoverImg.Source = ImgHelper.CreateBitmapImage(coverStream);
+
             }
             catch (Exception ex)
             {

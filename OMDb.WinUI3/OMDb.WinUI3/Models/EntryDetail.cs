@@ -196,7 +196,7 @@ namespace OMDb.WinUI3.Models
             }
         }
 
-        private List<Core.DbModels.LabelPropertyDb> _lpdbs;
+        private List<Core.DbModels.LabelPropertyDb> _lpdbs=new List<Core.DbModels.LabelPropertyDb>();
         public List<Core.DbModels.LabelPropertyDb> Lpdbs
         {
             get => _lpdbs;

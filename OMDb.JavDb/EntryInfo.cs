@@ -23,8 +23,16 @@ namespace OMDb.JavDb
             try
             {
                 HtmlWeb htmlWeb = new HtmlWeb();
+                var lstIgno= new List<string>() { "TokyoHot-", "Carib-", "Heyzo-" };
+
+                foreach (var item in lstIgno)
+                {
+                    if (keyword.StartsWith(item))
+                        keyword=keyword.Replace(item,string.Empty);
+                }
+                    
                 var name = keyword;
-                var url_Sereach = ($"https://javdb.com/search?q={name}");
+                var url_Sereach = ($"https://javdb.com/search?q={name}&sb=0");
                 HtmlDocument htmlDoc_Sereach = htmlWeb.Load(url_Sereach);
                 var url = htmlDoc_Sereach.DocumentNode.SelectSingleNode(@"/html/body/section/div/div[6]/div[1]/a").Attributes["href"].Value;
                 HtmlDocument htmlDoc = htmlWeb.Load($"https://javdb.com/{url}");
@@ -96,7 +104,7 @@ namespace OMDb.JavDb
                 {
                     var startIndex = arrTup[i].Item2 + arrTup[i].Item1.Length;
                     var lenth = 4;
-                    var result = Convert.ToDouble(infoStr.Substring(startIndex, lenth));
+                    var result = Convert.ToDouble(infoStr.Substring(startIndex, lenth).Replace("分",string.Empty).Replace(",",string.Empty));
                     //dic.Add(arrTup[i].Item1, result);
                     dic.Add("评分", result);
                 }
