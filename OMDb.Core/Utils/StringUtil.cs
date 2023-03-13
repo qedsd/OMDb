@@ -1,21 +1,14 @@
-﻿using NPOI.SS.Formula.Functions;
-using OMDb.Core;
-using OMDb.Core.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace OMDb.WinUI3
+namespace OMDb.Core.Utils
 {
-    public static class @string
+    public static class StringUtil
     {
-
-
-
         public static int NthIndexOf(this string target, string value, int n)
         {
             string pattern = "((" + Regex.Escape(value) + ").*?){" + n + "}";
@@ -129,10 +122,5 @@ namespace OMDb.WinUI3
             }
             return sourceStr;
         }
-    }
-
-    public static class stringEx
-    {
-
     }
 }

@@ -351,6 +351,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="nlog.config">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
 		<Page Update="Dialogs\EditDbSource.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>

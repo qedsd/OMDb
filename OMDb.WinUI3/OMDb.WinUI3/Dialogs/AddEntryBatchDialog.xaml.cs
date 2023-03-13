@@ -54,5 +54,11 @@ namespace OMDb.WinUI3.Dialogs
                 return null;
             }
         }
+
+        private async void SelectFolderMulti_Click(object sender, RoutedEventArgs e)
+        {
+            var inputPaths = await Helpers.PickHelper.PickFolderAsync();
+
+        }
     }
 }

@@ -15,6 +15,7 @@ using OMDb.Core.Enums;
 using OMDb.Core.Extensions;
 using OMDb.Core.Services;
 using OMDb.Core.Services.PluginsService;
+using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;

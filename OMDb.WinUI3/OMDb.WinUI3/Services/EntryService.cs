@@ -2,6 +2,7 @@
 using NPOI.POIFS.FileSystem;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
+using OMDb.Core.Utils;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Models;
 using System;
@@ -163,7 +164,7 @@ namespace OMDb.WinUI3.Services
                 var coverType = Path.GetExtension(ed.Entry.CoverImg);
                 string newImgCoverPath = Path.Combine(ed.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
                 if (!ed.Entry.CoverImg.Equals(newImgCoverPath)) File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
-                ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
+                ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", @".", 1, 1, true, false), @"\Cover.");
 
                 //數據庫 詞條路徑&圖片路徑 取相對地址
                 ed.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(ed.Entry.CoverImg));

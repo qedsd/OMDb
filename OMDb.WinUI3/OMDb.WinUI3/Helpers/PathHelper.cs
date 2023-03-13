@@ -1,5 +1,4 @@
 ﻿using OMDb.Core;
-using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
