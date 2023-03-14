@@ -5,10 +5,13 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.ViewModels;
+using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,12 +36,6 @@ namespace OMDb.WinUI3.Dialogs
         public AddEntryBatchDialog()
         {
             this.InitializeComponent();
-            for (int i = 0; i < 10; i++)
-            {
-                EntryDetail ed = new EntryDetail();
-                ed.FullCoverImgPath = @"C:\Users\26712\Desktop\新建文件夹\微信图片_20230308211158.jpg";
-                VM.EntryDetailCollection.Add(ed);
-            }
         }
 
         public static async Task<string> ShowDialog()
@@ -59,16 +56,42 @@ namespace OMDb.WinUI3.Dialogs
             }
         }
 
-        private async void SelectFolders_Click(object sender, RoutedEventArgs e)
+        private void SelectFolders_Click(object sender, RoutedEventArgs e)
         {
-            var paths = await Helpers.PickHelper.PickFolderAsync();
-            /*foreach (var item in collection)
-            {
+            var path = @"D:\Data\Data\SRC.AV-Nippon";
+            this.ei.treeFolders.ItemsSource= FileHelper.FindFolderItems(path);
+            this.flyGrid.Visibility= Visibility.Visible;
+        }
 
-            }*/
-            EntryDetail ed = new EntryDetail();
-            ed.FullCoverImgPath = CommonService.GetCoverByPath(paths.Path );
-            VM.EntryDetailCollection.Add(ed);
+        private void ReturnFolder_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in (List<string>)this.eic.ItemsSource)
+            {
+                EntryDetail ed = new EntryDetail();
+                ed.FullCoverImgPath = CommonService.GetCoverByPath(item);
+                VM.EntryDetailCollection.Add(ed);
+            }
+            this.ei.treeFolders.SelectedItems.Clear();
+            this.btn_FolderPicker.Flyout.Hide();
+        }
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.ei.treeFolders.SelectedItems.Clear();
+            this.btn_FolderPicker.Flyout.Hide();
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            List<string> lstEic= new List<string>();
+            foreach (var item in this.ei.treeFolders.SelectedItems)
+            {
+                var ei = (ExplorerItem)item;
+                lstEic.Add(ei.FullName);
+
+            }
+            this.eic.ItemsSource = lstEic;
+            this.ei.treeFolders.SelectedItems.Clear();
+            
         }
     }
 }

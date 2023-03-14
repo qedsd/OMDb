@@ -28,6 +28,7 @@
 		<None Remove="Assets\Img\defaultbanner.jpg" />
 		<None Remove="Assets\Img\defaultbanneritem.jpg" />
 		<None Remove="Dialogs\AddEntryBatchDialog.xaml" />
+		<None Remove="Dialogs\AddEntryBatchFolderSelectorDialog.xaml" />
 		<None Remove="Dialogs\EditDbSource.xaml" />
 		<None Remove="Dialogs\EditEntryDialog.xaml" />
 		<None Remove="Dialogs\EditLabelDialog.xaml" />
@@ -52,6 +53,7 @@
 		<None Remove="MyControls\ExpandableSettingControl.xaml" />
 		<None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
 		<None Remove="MyControls\ExplorerItemControl.xaml" />
+		<None Remove="MyControls\ExplorerItemSimpleControl.xaml" />
 		<None Remove="MyControls\LabelCollection1.xaml" />
 		<None Remove="MyControls\LabelCollection2.xaml" />
 		<None Remove="MyControls\LabelCollection3.xaml" />
@@ -99,6 +101,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Page Update="Dialogs\AddEntryBatchFolderSelectorDialog.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		  <SubType>Designer</SubType>
+		</Page>
 		<Page Update="Dialogs\AddEntryBatchDialog.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
@@ -351,6 +357,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Page Update="MyControls\ExplorerItemSimpleControl.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	  <None Update="nlog.config">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>

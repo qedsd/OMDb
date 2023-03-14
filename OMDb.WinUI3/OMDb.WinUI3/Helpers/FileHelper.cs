@@ -222,9 +222,53 @@ namespace OMDb.WinUI3.Helpers
             catch (Exception e)
             {
                 Helpers.InfoHelper.ShowError(e.Message);
+                Core.Helpers.LogHelper.Instance._logger.Error(e);
                 return 0;
             }
 
         }
+
+
+        /// <summary>
+        /// 获取指定路径下所有文件夹
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static List<Models.ExplorerItem> FindFolderItems(string path)
+        {
+            
+            List<Models.ExplorerItem> items = new List<Models.ExplorerItem>();
+           
+            if (Directory.Exists(path))//文件夹
+            {
+                //根文件夹
+                var dire = new DirectoryInfo(path);
+                var dirItem = new ExplorerItem()
+                {
+                    Name = dire.Name,
+                    IsFile = false,
+                    FullName = dire.FullName,
+                };
+                items.Add(dirItem);
+
+                //根儿子问加减
+                var dirs = new DirectoryInfo(path).GetDirectories();
+                if (dirs.Any())
+                {
+                    dirItem.Children = new List<ExplorerItem>();
+
+                    //递归
+                    foreach (var dir in dirs)
+                    {
+                        dirItem.Children.AddRange(FindFolderItems(dir.FullName));
+                    }
+                }
+                dirItem.Length += dirItem.Children?.Count > 0 ? dirItem.Children.Sum(p => p.Length) : 0;
+            }
+            return items;
+        }
+
+
+
     }
 }

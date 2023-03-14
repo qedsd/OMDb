@@ -44,7 +44,16 @@ namespace OMDb.WinUI3.Dialogs
         {
             Helpers.DialogHelper.Current = this;
             Helpers.DialogHelper.InfoBar = InfoBar;
-            await base.ShowAsync();
+            try
+            {
+                await base.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                Core.Helpers.LogHelper.Instance._logger.Error(ex);
+                throw ex;
+            }
+            
             return DialogResult;
         }
 
