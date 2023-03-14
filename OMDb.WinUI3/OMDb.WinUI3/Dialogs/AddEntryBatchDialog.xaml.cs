@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Services;
 using OMDb.WinUI3.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,12 @@ namespace OMDb.WinUI3.Dialogs
         public AddEntryBatchDialog()
         {
             this.InitializeComponent();
-            EntryDetail ed = new EntryDetail();
-            ed.FullCoverImgPath = @"C:\Users\26712\Desktop\新建文件夹\微信图片_20230308211158.jpg";
-            VM.EntryDetailCollection.Add(ed);
+            for (int i = 0; i < 10; i++)
+            {
+                EntryDetail ed = new EntryDetail();
+                ed.FullCoverImgPath = @"C:\Users\26712\Desktop\新建文件夹\微信图片_20230308211158.jpg";
+                VM.EntryDetailCollection.Add(ed);
+            }
         }
 
         public static async Task<string> ShowDialog()
@@ -55,10 +59,16 @@ namespace OMDb.WinUI3.Dialogs
             }
         }
 
-        private async void SelectFolderMulti_Click(object sender, RoutedEventArgs e)
+        private async void SelectFolders_Click(object sender, RoutedEventArgs e)
         {
-            var inputPaths = await Helpers.PickHelper.PickFolderAsync();
+            var paths = await Helpers.PickHelper.PickFolderAsync();
+            /*foreach (var item in collection)
+            {
 
+            }*/
+            EntryDetail ed = new EntryDetail();
+            ed.FullCoverImgPath = CommonService.GetCoverByPath(paths.Path );
+            VM.EntryDetailCollection.Add(ed);
         }
     }
 }

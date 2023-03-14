@@ -1,4 +1,6 @@
 ﻿using OMDb.Core.Utils;
+using NPOI.OpenXmlFormats.Vml;
+using OMDb.Core.Extensions;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,10 @@ namespace OMDb.WinUI3.Services
         /// 根据地址自动获取封面
         /// </summary>
         /// <returns></returns>
-        public static string GetCoverByPath(List<string> lstPath=null,Core.Enums.FileType fileType=Core.Enums.FileType.TotalAll)
+        public static string GetCoverByPath(List<string> lstPath = null, Core.Enums.FileType fileType = Core.Enums.FileType.TotalAll)
         {
             var result = string.Empty;
-            if (lstPath == null||!(lstPath.Count>0))
+            if (lstPath == null || !(lstPath.Count > 0))
                 result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
             switch (fileType)
             {
@@ -29,9 +31,9 @@ namespace OMDb.WinUI3.Services
                         //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
                         var files = Helpers.FileHelper.FindExplorerItems(path);
                         var sourceFiles = Helpers.FileHelper.GetAllFiles(files);
-                        filesPath.AddRange(sourceFiles.Select(a=>a.FullName));
+                        filesPath.AddRange(sourceFiles.Select(a => a.FullName));
                     }
-                    filesPath.Sort(delegate(string str1 ,string str2)
+                    filesPath.Sort(delegate (string str1, string str2)
                     {
                         return GetFileType(str1) - GetFileType(str2);
                     });
@@ -76,7 +78,7 @@ namespace OMDb.WinUI3.Services
                     return result;
 
             }
-            
+
         }
 
         /// <summary>
@@ -139,7 +141,40 @@ namespace OMDb.WinUI3.Services
         }
 
 
+        /// <summary>
+        /// 根据地址自动获取封面
+        /// </summary>
+        /// <returns></returns>
+        public static string GetCoverByPath(string path)
+        {
+            var result = string.Empty;
+            if (!path.NotNullAndEmpty())
+                result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
 
+            List<string> filesPath = new List<string>();
 
+            //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
+            var files = Helpers.FileHelper.FindExplorerItems(path);
+            var sourceFiles = Helpers.FileHelper.GetAllFiles(files);
+            filesPath.AddRange(sourceFiles.Select(a => a.FullName));
+
+            filesPath.Sort(delegate (string str1, string str2)
+            {
+                return GetFileType(str1) - GetFileType(str2);
+            });
+            result = filesPath.Where(a => GetFileType(a).Equals('2')).FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                result = filesPath.Where(a => GetFileType(a).Equals('3')).FirstOrDefault();
+                if (string.IsNullOrWhiteSpace(result))
+                    result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
+                else
+                {
+                    result = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
+                }
+            }
+            return result;
+        }
     }
 }
+
