@@ -40,12 +40,21 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _labelPropertyTrees, value);
         }
 
-        private ObservableCollection<LabelPropertyTree> _lp_Baba=new ObservableCollection<LabelPropertyTree>();
-        public ObservableCollection<LabelPropertyTree> LP_Baba
+        private ObservableCollection<LabelPropertyTree> _current_LPEZCollection = new ObservableCollection<LabelPropertyTree>();
+        public ObservableCollection<LabelPropertyTree> Current_LPEZCollection
         {
-            get => _lp_Baba;
-            set => SetProperty(ref _lp_Baba, value);
+            get => _current_LPEZCollection;
+            set => SetProperty(ref _current_LPEZCollection, value);
         }
+
+        private ObservableCollection<LabelPropertyTree> _current_LPEZ_Link = new ObservableCollection<LabelPropertyTree>();
+        public ObservableCollection<LabelPropertyTree> Current_LPEZ_Link
+        {
+            get => _current_LPEZ_Link;
+            set => SetProperty(ref _current_LPEZ_Link, value);
+        }
+
+
 
         //初始化
         private async void Init()
@@ -57,9 +66,9 @@ namespace OMDb.WinUI3.ViewModels
                 var root = lpdbs.Where(p => p.ParentId == null).ToList();
                 if (root != null)
                 {
-                    foreach (var lp_Yeye in root)
+                    foreach (var lp_Baba in root)
                     {
-                        dicLpdbs.Add(lp_Yeye.LPId, new LabelPropertyTree(lp_Yeye));
+                        dicLpdbs.Add(lp_Baba.LPId, new LabelPropertyTree(lp_Baba));
                     }
                 }
                 foreach (var lp in lpdbs)
@@ -81,8 +90,6 @@ namespace OMDb.WinUI3.ViewModels
                     }
                 });
             }
-
-
         }
 
 

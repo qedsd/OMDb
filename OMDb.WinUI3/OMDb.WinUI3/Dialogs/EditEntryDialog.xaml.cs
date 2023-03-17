@@ -81,7 +81,7 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.Level == 1);
+                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)

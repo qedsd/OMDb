@@ -32,6 +32,7 @@
 		<None Remove="Dialogs\EditDbSource.xaml" />
 		<None Remove="Dialogs\EditEntryDialog.xaml" />
 		<None Remove="Dialogs\EditLabelDialog.xaml" />
+		<None Remove="Dialogs\EditLabelPropertyDialog.xaml" />
 		<None Remove="Dialogs\EditLineDialog.xaml" />
 		<None Remove="Dialogs\EditStorageDialog.xaml" />
 		<None Remove="Dialogs\ExplorerItemVerifyFaiedDialog.xaml" />
@@ -106,6 +107,9 @@
 		  <SubType>Designer</SubType>
 		</Page>
 		<Page Update="Dialogs\AddEntryBatchDialog.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="Dialogs\EditLabelPropertyDialog.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">

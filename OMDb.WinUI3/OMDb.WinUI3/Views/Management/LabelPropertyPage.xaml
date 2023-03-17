@@ -38,41 +38,93 @@
 
     </Page.Resources>
 
-        <!-- The nested ItemsRepeater experience is achieved by creating one ItemsRepeater (outerRepeater below)
+    <!-- The nested ItemsRepeater experience is achieved by creating one ItemsRepeater (outerRepeater below)
 and creating another ItemsRepeater (innerRepeater below) inside the outer one's DataTemplate. Below is
 the outer ItemsRepeater definition and the DataTemplate it uses. -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <CommandBar OverflowButtonVisibility="Collapsed">
+                <AppBarButton Icon="Add">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout Placement="LeftEdgeAlignedTop">
+                            <MenuFlyoutItem Text="ADD Property" Click="ADD_Property_Click" />
+                            <MenuFlyoutItem Text="ADD PropertyData" Click="ADD_PropertyData_Click" />
+                            <MenuFlyoutItem Text="ADD PropertyDataLink" Click="ADD_PropertyDataLink_Click"/>
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton Icon="Edit">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout Placement="Left">
+                            <MenuFlyoutItem Text="Edit Property" Click="Edit_Property_Click"/>
+                            <MenuFlyoutItem Text="Edit PropertyData" Click="Edit_PropertyData_Click"/>
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton Icon="Delete">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout Placement="LeftEdgeAlignedTop">
+                            <MenuFlyoutItem Text="Delete Property" Click="Delete_Property_Click"/>
+                            <MenuFlyoutItem Text="Delete PropertyData" Click="Delete_PropertyData_Click"/>
+                            <MenuFlyoutItem Text="Delete PropertyDataLink" Click="Delete_PropertyDataLink_Click"/>
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+            </CommandBar>
+        </Grid>
+        <Grid Grid.Row="1">
+            <controls:DockPanel Name="SampleDockPanel" Margin="0" LastChildFill="False" >
+                <Grid Width="200" controls:DockPanel.Dock="Left" BorderBrush="BlueViolet" BorderThickness="0" >
+                    <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees}" SelectionChanged="ListView_SelectionChanged">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:LabelPropertyTree">
+                                <ListViewItem Width="200" IsSelected="True">
+                                    <TextBlock Text="{x:Bind LPDb.Name}"></TextBlock>
+                                </ListViewItem>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+                <Grid Height="250" controls:DockPanel.Dock="Bottom" BorderBrush="BlueViolet" BorderThickness="0" Visibility="Collapsed" x:Name="Grid_LPEZ_Link">
+                    <TabView CloseButtonOverlayMode="OnPointerOver" x:Name="TabView_LPEZ_Link">
+                    </TabView>
 
-    <controls:DockPanel Name="SampleDockPanel" Margin="2" LastChildFill="False">
-
-        <StackPanel Width="200" controls:DockPanel.Dock="Left">
-            <ListView ItemsSource="{x:Bind VM.LabelPropertyTrees}" SelectionChanged="ListView_SelectionChanged">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelPropertyTree">
-                        <ListViewItem Width="200" IsSelected="True">
-                            <TextBlock Text="{x:Bind LPDb.Name}"></TextBlock>
-                        </ListViewItem>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackPanel>
-        <StackPanel Height="300" controls:DockPanel.Dock="Bottom" Background="Green" Visibility="Collapsed"></StackPanel>
-        <ItemsControl ItemsSource="{x:Bind VM.LP_Baba,Mode=OneWay}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="models:LabelPropertyTree">
-                    <TextBlock Text="{x:Bind LPDb.Name}"></TextBlock>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </controls:DockPanel>
+                </Grid>
+                <Grid>
+                    <GridView x:Name="GridView_Current_LPEZCollection" ItemsSource="{x:Bind VM.Current_LPEZCollection,Mode=OneWay}" SelectionMode="Single" BorderBrush="Blue" BorderThickness="0" SelectionChanged="GridView_SelectionChanged">
+                        <GridView.ItemTemplate>
+                            <DataTemplate x:DataType="models:LabelPropertyTree">
+                                <Border BorderBrush="CadetBlue" BorderThickness="0">
+                                <TextBlock 
+                                    Text="{x:Bind LPDb.Name}" 
+                                    Width="110"
+                                    HorizontalAlignment="Center"
+                                    TextAlignment="Center"
+                                    Margin="10,10,10,10"></TextBlock>
+                                </Border>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </Grid>
+            </controls:DockPanel>
+        </Grid>
+    </Grid>
 
 
-
-
-        <!-- The DataTemplate shown above is bound to a custom-class type called NestedCategory,
+    <!-- The DataTemplate shown above is bound to a custom-class type called NestedCategory,
 which is defined in the code-behind. NestedCategory objects have the following two attributes:
 a CategoryName (string), and a collection of strings called CategoryItems. -->
 
-        <!-- The inner ItemsRepeater is bound to its own, separate DataTemplate called StringDataTemplateColor: -->
+    <!-- The inner ItemsRepeater is bound to its own, separate DataTemplate called StringDataTemplateColor: -->
 
 
 

@@ -240,5 +240,19 @@ namespace OMDb.Core.Services
         {
             DbService.LocalDb.Updateable(labelDb).ExecuteCommand();
         }
+
+
+
+        public static List<string> GetLKId(string dbSourceId,string lpid)
+        {
+            var sb1 = new StringBuilder();
+            sb1.AppendLine($@"select LPIdA from LabelPropertyLKDb where LPIdB='{lpid}' and DbSourceId='{dbSourceId}'");
+            var lst1=DbService.LocalDb.Ado.SqlQuery<string>(sb1.ToString());
+            var sb2 = new StringBuilder();
+            sb2.AppendLine($@"select LPIdB from LabelPropertyLKDb where LPIdA='{lpid}' and DbSourceId='{dbSourceId}'");
+            var lst2 = DbService.LocalDb.Ado.SqlQuery<string>(sb2.ToString());
+            lst1.AddRange(lst2);
+            return lst1;
+        }
     }
 }
