@@ -22,6 +22,8 @@ using System.IO;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using OMDb.WinUI3.Services.Settings;
+using System.ComponentModel.Design;
+using OMDb.Core.DbModels;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -55,9 +57,14 @@ namespace OMDb.WinUI3.ViewModels
         }
 
 
-
+        private ObservableCollection<LabelPropertyDb> _dtData = new ObservableCollection<LabelPropertyDb>();
+        public ObservableCollection<LabelPropertyDb> DtData
+        {
+            get => _dtData;
+            set => SetProperty(ref _dtData, value);
+        }
         //初始化
-        private async void Init()
+        public async void Init()
         {
             var lpdbs = await Core.Services.LabelPropertyService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
             if (lpdbs != null)
@@ -99,5 +106,11 @@ namespace OMDb.WinUI3.ViewModels
             Init();
             Helpers.InfoHelper.ShowSuccess("刷新完成");
         });
+
+        public ICommand Property_SelectionChangedCommand => new RelayCommand<LabelPropertyTree>((e) =>
+        {
+            Current_LPEZCollection = e.Children;
+        });
+
     }
 }

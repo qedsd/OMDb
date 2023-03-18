@@ -68,7 +68,15 @@ namespace OMDb.Core.Services
                 return 0;
         }
 
-
+        /// <summary>
+        /// 根据内码获取属性标签
+        /// </summary>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
+        public static LabelPropertyDb GetLabels(string labelId)
+        {
+            return GetLabels(new List<string>() { labelId })[0];
+        }
         /// <summary>
         /// 根据内码获取属性标签
         /// </summary>
@@ -234,6 +242,8 @@ namespace OMDb.Core.Services
             //DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
             DbService.LocalDb.Deleteable<LabelPropertyDb>().Where(p => lpids.Contains(p.ParentId)).ExecuteCommand();
             DbService.LocalDb.Deleteable<EntryLabelPropertyLKDb>().Where(p => lpids.Contains(p.LPId));//EntryLabelDb表是没有主键的，不能用in
+            DbService.LocalDb.Deleteable<LabelPropertyLKDb>().Where(p => lpids.Contains(p.LPIdA));
+            DbService.LocalDb.Deleteable<LabelPropertyLKDb>().Where(p => lpids.Contains(p.LPIdB));
         }
 
         public static void UpdateLabel(LabelPropertyDb labelDb)

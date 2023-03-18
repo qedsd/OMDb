@@ -41,7 +41,8 @@ namespace OMDb.WinUI3.Dialogs
         /// <returns></returns>
         public static async Task<Core.DbModels.LabelPropertyDb> ShowDialog(Core.DbModels.LabelPropertyDb label = null)
         {
-            bool IsNew = (label == null);
+            var IsNew = (bool)(label == null);
+            if (IsNew) label=new LabelPropertyDb();
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = IsNew ? "新建标签" : "编辑标签";
             dialog.PrimaryButton.Content = "保存";

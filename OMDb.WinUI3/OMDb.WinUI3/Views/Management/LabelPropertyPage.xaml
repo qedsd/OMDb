@@ -8,6 +8,7 @@
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:coverters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
@@ -17,10 +18,14 @@
     <Page.Resources>
         <DataTemplate x:Key="CategoryTemplate" x:DataType="models:LabelPropertyTree">
             <StackPanel>
-                <TextBlock Text="{x:Bind LPDb.Name}" Padding="8" Style="{StaticResource TitleTextBlockStyle}"/>
-                <ItemsRepeater x:Name="innerRepeater"
-                            ItemsSource="{x:Bind Children}"
-                            ItemTemplate="{StaticResource StringDataTemplateColor}">
+                <TextBlock
+                    Padding="8"
+                    Style="{StaticResource TitleTextBlockStyle}"
+                    Text="{x:Bind LPDb.Name}" />
+                <ItemsRepeater
+                    x:Name="innerRepeater"
+                    ItemTemplate="{StaticResource StringDataTemplateColor}"
+                    ItemsSource="{x:Bind Children}">
                     <ItemsRepeater.Layout>
                         <StackLayout Orientation="Horizontal" />
                     </ItemsRepeater.Layout>
@@ -29,52 +34,58 @@
         </DataTemplate>
 
         <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelPropertyTree">
-            <Grid Background="{StaticResource SystemControlBackgroundAccentBrush}" Margin="10, 0, 10 10">
-                <TextBlock Padding="10" Text="{x:Bind LPDb.Name}"
-                   Foreground="{StaticResource SystemControlForegroundAltHighBrush}"
-                   HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <Grid Margin="10,0,10,10" Background="{StaticResource SystemControlBackgroundAccentBrush}">
+                <TextBlock
+                    Padding="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource SystemControlForegroundAltHighBrush}"
+                    Text="{x:Bind LPDb.Name}"
+                    TextWrapping="Wrap" />
             </Grid>
         </DataTemplate>
 
     </Page.Resources>
 
-    <!-- The nested ItemsRepeater experience is achieved by creating one ItemsRepeater (outerRepeater below)
-and creating another ItemsRepeater (innerRepeater below) inside the outer one's DataTemplate. Below is
-the outer ItemsRepeater definition and the DataTemplate it uses. -->
+    <!--
+        The nested ItemsRepeater experience is achieved by creating one ItemsRepeater (outerRepeater below)
+        and creating another ItemsRepeater (innerRepeater below) inside the outer one's DataTemplate. Below is
+        the outer ItemsRepeater definition and the DataTemplate it uses.
+    -->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <CommandBar OverflowButtonVisibility="Collapsed">
                 <AppBarButton Icon="Add">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Text="ADD Property" Click="ADD_Property_Click" />
-                            <MenuFlyoutItem Text="ADD PropertyData" Click="ADD_PropertyData_Click" />
-                            <MenuFlyoutItem Text="ADD PropertyDataLink" Click="ADD_PropertyDataLink_Click"/>
+                            <MenuFlyoutItem Click="ADD_Property_Click" Text="ADD Property" />
+                            <MenuFlyoutItem Click="ADD_PropertyData_Click" Text="ADD PropertyData" />
+                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="ADD PropertyDataLink" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <AppBarButton Icon="Edit">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="Left">
-                            <MenuFlyoutItem Text="Edit Property" Click="Edit_Property_Click"/>
-                            <MenuFlyoutItem Text="Edit PropertyData" Click="Edit_PropertyData_Click"/>
+                            <MenuFlyoutItem Click="Edit_Property_Click" Text="Edit Property" />
+                            <MenuFlyoutItem Click="Edit_PropertyData_Click" Text="Edit PropertyData" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
                 <AppBarButton Icon="Delete">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Text="Delete Property" Click="Delete_Property_Click"/>
-                            <MenuFlyoutItem Text="Delete PropertyData" Click="Delete_PropertyData_Click"/>
-                            <MenuFlyoutItem Text="Delete PropertyDataLink" Click="Delete_PropertyDataLink_Click"/>
+                            <MenuFlyoutItem Click="Delete_Property_Click" Text="Delete Property" />
+                            <MenuFlyoutItem Click="Delete_PropertyData_Click" Text="Delete PropertyData" />
+                            <MenuFlyoutItem Click="Delete_PropertyDataLink_Click" Text="Delete PropertyDataLink" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}">
+                <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh">
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Key="F5" />
                     </AppBarButton.KeyboardAccelerators>
@@ -82,34 +93,63 @@ the outer ItemsRepeater definition and the DataTemplate it uses. -->
             </CommandBar>
         </Grid>
         <Grid Grid.Row="1">
-            <controls:DockPanel Name="SampleDockPanel" Margin="0" LastChildFill="False" >
-                <Grid Width="200" controls:DockPanel.Dock="Left" BorderBrush="BlueViolet" BorderThickness="0" >
-                    <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees}" SelectionChanged="ListView_SelectionChanged">
+            <controls:DockPanel
+                x:Name="SampleDockPanel"
+                Margin="0"
+                LastChildFill="False">
+                <Grid
+                    Width="200"
+                    controls:DockPanel.Dock="Left"
+                    BorderBrush="BlueViolet"
+                    BorderThickness="0">
+                    <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}">
+                        <!--  SelectionChanged="ListView_SelectionChanged">  -->
+                        <i:Interaction.Behaviors>
+                            <Core:EventTriggerBehavior EventName="SelectionChanged">
+                                <Core:InvokeCommandAction Command="{x:Bind VM.Property_SelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />
+                            </Core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
                                 <ListViewItem Width="200" IsSelected="True">
-                                    <TextBlock Text="{x:Bind LPDb.Name}"></TextBlock>
+                                    <TextBlock Text="{x:Bind LPDb.Name, Mode=OneWay}" />
                                 </ListViewItem>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
                 </Grid>
-                <Grid Height="250" controls:DockPanel.Dock="Bottom" BorderBrush="BlueViolet" BorderThickness="0" Visibility="Collapsed" x:Name="Grid_LPEZ_Link">
-                    <TabView CloseButtonOverlayMode="OnPointerOver" x:Name="TabView_LPEZ_Link">
-                    </TabView>
+                <Grid
+                    x:Name="Grid_LPEZ_Link"
+                    Height="250"
+                    controls:DockPanel.Dock="Bottom"
+                    BorderBrush="BlueViolet"
+                    BorderThickness="0"
+                    Visibility="Collapsed">
+                    <TabView x:Name="TabView_LPEZ_Link" CloseButtonOverlayMode="OnPointerOver" />
 
                 </Grid>
                 <Grid>
-                    <GridView x:Name="GridView_Current_LPEZCollection" ItemsSource="{x:Bind VM.Current_LPEZCollection,Mode=OneWay}" SelectionMode="Single" BorderBrush="Blue" BorderThickness="0" SelectionChanged="GridView_SelectionChanged">
+                    <GridView
+                        x:Name="GridView_Current_LPEZCollection"
+                        BorderBrush="Blue"
+                        BorderThickness="0"
+                        ItemsSource="{x:Bind VM.Current_LPEZCollection, Mode=OneWay}"
+                        SelectionChanged="GridView_SelectionChanged"
+                        SelectionMode="Single">
+                        <!--<i:Interaction.Behaviors>
+                            <Core:EventTriggerBehavior EventName="SelectionChanged">
+                                <Core:InvokeCommandAction Command="{x:Bind VM.PropertyData_SelectionChangedCommand}" CommandParameter="{Binding ElementName=GridView_Current_LPEZCollection, Path=SelectedItem}" />
+                            </Core:EventTriggerBehavior>
+                        </i:Interaction.Behaviors>-->
                         <GridView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
                                 <Border BorderBrush="CadetBlue" BorderThickness="0">
-                                <TextBlock 
-                                    Text="{x:Bind LPDb.Name}" 
-                                    Width="110"
-                                    HorizontalAlignment="Center"
-                                    TextAlignment="Center"
-                                    Margin="10,10,10,10"></TextBlock>
+                                    <TextBlock
+                                        Width="110"
+                                        Margin="10,10,10,10"
+                                        HorizontalAlignment="Center"
+                                        Text="{x:Bind LPDb.Name, Mode=OneWay}"
+                                        TextAlignment="Center" />
                                 </Border>
                             </DataTemplate>
                         </GridView.ItemTemplate>
@@ -120,11 +160,13 @@ the outer ItemsRepeater definition and the DataTemplate it uses. -->
     </Grid>
 
 
-    <!-- The DataTemplate shown above is bound to a custom-class type called NestedCategory,
-which is defined in the code-behind. NestedCategory objects have the following two attributes:
-a CategoryName (string), and a collection of strings called CategoryItems. -->
+    <!--
+        The DataTemplate shown above is bound to a custom-class type called NestedCategory,
+        which is defined in the code-behind. NestedCategory objects have the following two attributes:
+        a CategoryName (string), and a collection of strings called CategoryItems.
+    -->
 
-    <!-- The inner ItemsRepeater is bound to its own, separate DataTemplate called StringDataTemplateColor: -->
+    <!--  The inner ItemsRepeater is bound to its own, separate DataTemplate called StringDataTemplateColor:  -->
 
 
 

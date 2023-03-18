@@ -28,7 +28,7 @@
 		<None Remove="Assets\Img\defaultbanner.jpg" />
 		<None Remove="Assets\Img\defaultbanneritem.jpg" />
 		<None Remove="Dialogs\AddEntryBatchDialog.xaml" />
-		<None Remove="Dialogs\AddEntryBatchFolderSelectorDialog.xaml" />
+		<None Remove="Dialogs\AddLabelPropertyLKDialog.xaml" />
 		<None Remove="Dialogs\EditDbSource.xaml" />
 		<None Remove="Dialogs\EditEntryDialog.xaml" />
 		<None Remove="Dialogs\EditLabelDialog.xaml" />
@@ -102,7 +102,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Update="Dialogs\AddEntryBatchFolderSelectorDialog.xaml">
+		<Page Update="Dialogs\AddLabelPropertyLKDialog.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		  <SubType>Designer</SubType>
 		</Page>
