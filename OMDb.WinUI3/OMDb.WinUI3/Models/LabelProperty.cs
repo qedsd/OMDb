@@ -19,10 +19,18 @@ namespace OMDb.WinUI3.Models
             get => isChecked;
             set=>SetProperty(ref isChecked, value);
         }
+
+        private bool isHiden;
+        public bool IsHiden
+        {
+            get => isHiden;
+            set => SetProperty(ref isHiden, value);
+        }
         public LabelProperty(Core.DbModels.LabelPropertyDb lpdb)
         {
             LPDb = lpdb;
             isChecked = false;
+            isHiden = false;
         }
         public bool IsTemp { get; set; } = false;
         public LabelProperty() { }

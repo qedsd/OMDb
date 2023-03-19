@@ -48,13 +48,15 @@ namespace OMDb.WinUI3.Dialogs
             if (entry != null) lpids = Core.Services.LabelPropertyService.GetLabelIdsOfEntry(entry.EntryId);
             if (entry != null) lcids = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
 
-            VM.Label_Property = new List<Models.LabelProperty>();
+            //VM.Label_Property = new List<Models.LabelProperty>();
             if (lst_label_lp.Count > 0)
             {
                 foreach (var item in lst_label_lp)
                 {
                     var lp = new Models.LabelProperty(item);
-                    if (lpids.Count > 0 && lpids.Contains(item.LPId)) lp.IsChecked = true;
+                    //根据词条&属性数据の关联关系 设置 □√
+                    if (lpids.Count > 0 && lpids.Contains(item.LPId))
+                        lp.IsChecked = true;
                     VM.Label_Property.Add(lp);
                 }
                 var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level == 1);
@@ -81,7 +83,7 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)
@@ -100,7 +102,7 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
-                        lbc.Labels = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
                         n++;

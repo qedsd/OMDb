@@ -12,6 +12,7 @@ namespace OMDb.WinUI3.Events
 
         public static event EventHandler<EntryEventArgs> RemoveEntryEvent;
         public static event EventHandler<EntryEventArgs> UpdateEntryEvent;
+        public static event EventHandler<LPSEventArgs> UpdateLPSEvent;
 
         /// <summary>
         /// 最近观看文件更新通知事件
@@ -33,6 +34,11 @@ namespace OMDb.WinUI3.Events
         public static void NotifyRecentFileChanged(object sender, RecentFileChangedEventArgs args)
         {
             RecentFileChangedEvent?.Invoke(sender, args);
+        }
+
+        public static void NotifyLPSChanged(object sender, LPSEventArgs args)
+        {
+            UpdateLPSEvent?.Invoke(sender, args);
         }
     }
 }

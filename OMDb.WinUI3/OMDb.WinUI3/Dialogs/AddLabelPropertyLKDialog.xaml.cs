@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.DbModels;
 using OMDb.Core.Extensions;
+using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -38,7 +39,7 @@ namespace OMDb.WinUI3.Dialogs
 
         }
 
-        public static async Task<string> ShowDialog()
+        public static async Task<List<string>> ShowDialog()
         {
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = "关联标签选择";
@@ -48,9 +49,37 @@ namespace OMDb.WinUI3.Dialogs
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
+                List<string> result = new List<string>();
                 //数据库新增属性&属性数据 合并返回
-                var ab=content.Link_Table.ItemsSource;
-                return null;
+                foreach (var item in content.VM.DtData)
+                {
+                    //手动输入的属性数据
+                    if (item.LPId.IsNullOrEmptyOrWhiteSpace())
+                    {
+                        var childs = content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
+                        var lp_repeat = childs.Where(a => a.LPDb.Name.Equals(item.Name));
+                        //手输的属性数据是原有的：
+                        if (lp_repeat.Count() > 0)
+                        {
+                            result.Add(lp_repeat.FirstOrDefault().LPDb.LPId);
+                        }
+                        //手输新增
+                        else
+                        {
+                            item.LPId = Guid.NewGuid().ToString();
+                            Core.Services.LabelPropertyService.AddLabel(item);
+                            var lpt = new LabelPropertyTree(item);
+                            content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
+                            result.Add(item.LPId);
+                        }
+                    }
+                    else 
+                    {
+                        result.Add(item.LPId);
+                    }
+
+                }
+                return result;
             }
             else
             {

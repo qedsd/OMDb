@@ -1,7 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Extensions;
+using OMDb.WinUI3.Models;
+using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -91,11 +94,11 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref labels, value);
         }
 
-        private List<Models.LabelProperty> _label_Property;
+        private ObservableCollection<Models.LabelProperty> _label_Property=new ObservableCollection<Models.LabelProperty>();
         /// <summary>
         /// 绑定的标签
         /// </summary>
-        public List<Models.LabelProperty> Label_Property
+        public ObservableCollection<Models.LabelProperty> Label_Property
         {
             get => _label_Property;
             set => SetProperty(ref _label_Property, value);
@@ -115,7 +118,6 @@ namespace OMDb.WinUI3.ViewModels
                 EntryPath =  selectedEnrtyStorage.StoragePath+ relativePath;
             }
         }
-        
         public EditEntryViewModel(Core.Models.Entry entry)
         {
             //EntryNames = new List<Models.EntryName>();
@@ -145,7 +147,38 @@ namespace OMDb.WinUI3.ViewModels
 
             SelectedEnrtyStorage = EnrtyStorages?.FirstOrDefault();
             Init(entry);
+
+            Events.GlobalEvent.UpdateLPSEvent += GlobalEvent_UpdateLPSEvent;
         }
+        private void GlobalEvent_UpdateLPSEvent(object sender, Events.LPSEventArgs lpe)
+        {
+            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            List<string> lpBabaIds= new List<string>();
+            foreach (var item in lpe.LPS)
+            {
+                var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
+                foreach (var lkid in lst_LK)
+                {
+                    lpBabaIds.Add(lst_label_lp.Where(a => a.LPId.Equals(lkid)).FirstOrDefault().ParentId);                
+                }
+                lpBabaIds = lpBabaIds.Distinct().ToList();
+                foreach (var lpbabaid in lpBabaIds)
+                {
+                    lst_label_lp.Where(a => a.ParentId.Equals(lpbabaid)).Where(a => lst_LK.Contains(a.LPId));
+                }
+                foreach (var lpdb in lst_label_lp)
+                {
+                    if (lpBabaIds.Contains(lpdb.ParentId))
+                    {
+                        if (!lst_LK.Contains(lpdb.LPId))
+                        {
+                            Label_Property.Where(a=>a.LPDb.LPId== lpdb.LPId).FirstOrDefault().IsHiden = true;
+                        }
+                    }
+                }
+            }
+        }
+
         private async void Init(Core.Models.Entry entry)
         {
             if (entry == null)

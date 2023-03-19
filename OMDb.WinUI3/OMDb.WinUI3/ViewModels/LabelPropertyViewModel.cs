@@ -109,7 +109,10 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand Property_SelectionChangedCommand => new RelayCommand<LabelPropertyTree>((e) =>
         {
-            Current_LPEZCollection = e.Children;
+            if (e!=null)
+            {
+                Current_LPEZCollection = e.Children;
+            }
         });
 
     }

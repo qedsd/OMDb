@@ -231,6 +231,9 @@ namespace OMDb.Core.Services
             DbService.LocalDb.Insertable(labelDb).ExecuteCommand();
         }
 
+
+
+
         public static void RemoveLabel(string labelId)
         {
             RemoveLabel(new List<string>() { labelId });
@@ -251,18 +254,44 @@ namespace OMDb.Core.Services
             DbService.LocalDb.Updateable(labelDb).ExecuteCommand();
         }
 
+        public static void AddLabelPropertyLK(string dbSourceId, string lpid, List<string> lst)
+        {
+            List<LabelPropertyLKDb> lst_lplk = new List<LabelPropertyLKDb>();
+            foreach (var item in lst)
+            {
+                lst_lplk.Add(new LabelPropertyLKDb()
+                {
+                    DbSourceId = dbSourceId,
+                    LPIdA = lpid,
+                    LPIdB = item
+                });
 
+            }
+            DbService.LocalDb.Insertable(lst_lplk).ExecuteCommand();
+        }
 
-        public static List<string> GetLKId(string dbSourceId,string lpid)
+        public static List<string> GetLKId(string dbSourceId, string lpid)
         {
             var sb1 = new StringBuilder();
-            sb1.AppendLine($@"select LPIdA from LabelPropertyLKDb where LPIdB='{lpid}' and DbSourceId='{dbSourceId}'");
-            var lst1=DbService.LocalDb.Ado.SqlQuery<string>(sb1.ToString());
             var sb2 = new StringBuilder();
+            sb1.AppendLine($@"select LPIdA from LabelPropertyLKDb where LPIdB='{lpid}' and DbSourceId='{dbSourceId}'");
             sb2.AppendLine($@"select LPIdB from LabelPropertyLKDb where LPIdA='{lpid}' and DbSourceId='{dbSourceId}'");
+            var lst1 = DbService.LocalDb.Ado.SqlQuery<string>(sb1.ToString());
             var lst2 = DbService.LocalDb.Ado.SqlQuery<string>(sb2.ToString());
             lst1.AddRange(lst2);
-            return lst1;
+            var lst=lst1.Distinct();
+            return lst.ToList();
+        }
+
+        /// <summary>
+        /// 清空词条绑定的标签
+        /// </summary>
+        /// <param name="entryId"></param>
+        /// <param name="dbId"></param>
+        /// <returns></returns>
+        public static void ClearLabelPropertyLK(string dbSourceId, string lpid)
+        {
+            DbService.LocalDb.Deleteable<LabelPropertyLKDb>(p => p.LPIdA == lpid||p.LPIdB==lpid).ExecuteCommand();
         }
     }
 }
