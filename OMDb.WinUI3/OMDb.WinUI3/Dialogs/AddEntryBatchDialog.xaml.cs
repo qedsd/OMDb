@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.Extensions;
+using OMDb.Core.Services.PluginsService;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -36,6 +37,21 @@ namespace OMDb.WinUI3.Dialogs
         public AddEntryBatchDialog()
         {
             this.InitializeComponent();
+            if (PluginsBaseService.EntryInfos.Count() > 0)
+            {
+                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
+                var mf = new MenuFlyout();
+                foreach (var item in PluginsBaseService.EntryInfos)
+                {
+                    MenuFlyoutItem mfl = new MenuFlyoutItem();
+                    mfl.Text = item.GetType().Assembly.GetName().Name;
+                    mfl.Click += (s, e) => { this.ddb.Content = mfl.Text; };
+                    mf.Items.Add(mfl);
+                    mfl.Width = 200;
+                }
+                this.ddb.Flyout = mf;
+            }
+            else this.ddb.Content = "无服务";
         }
 
         public static async Task<string> ShowDialog()
@@ -58,7 +74,7 @@ namespace OMDb.WinUI3.Dialogs
 
         private void SelectFolders_Click(object sender, RoutedEventArgs e)
         {
-            var path = @"D:\Data\Data\SRC.AV-Nippon";
+            var path = VM.SelectedEnrtyStorage.StoragePath;
             this.ei.treeFolders.ItemsSource= FileHelper.FindFolderItems(path);
             this.flyGrid.Visibility= Visibility.Visible;
         }

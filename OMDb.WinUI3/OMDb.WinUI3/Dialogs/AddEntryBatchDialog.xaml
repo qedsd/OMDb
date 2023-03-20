@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Dialogs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="using:OMDb.WinUI3.Models" 
+    xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:myControls="using:OMDb.WinUI3.MyControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -19,31 +19,43 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
-                <Button Content="全选" />
-                <Button Margin="10,0,0,0" Content="全不选" />
+
                 <Button Margin="10,0,0,0" Content="新增行" />
                 <Button Margin="10,0,0,0" Content="删除行" />
+                <Border
+                    Width="1"
+                    Margin="30,0,30,0"
+                    BorderThickness="1" />
+                <ComboBox
+                    Width="200"
+                    Margin="10,0,0,0"
+                    DisplayMemberPath="StorageName"
+                    ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
+                    SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
                 <Button
                     x:Name="btn_FolderPicker"
                     Margin="10,0,0,0"
                     Click="SelectFolders_Click"
-                    Content="选择文件夹" >
+                    Content="选择文件夹">
                     <Button.Flyout>
-                        <Flyout Placement="Bottom" x:Name="fly">
-                            <Grid x:Name="flyGrid" Width="600" Height="500">
+                        <Flyout x:Name="fly" Placement="Bottom">
+                            <Grid
+                                x:Name="flyGrid"
+                                Width="600"
+                                Height="500">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="400"></RowDefinition>
-                                    <RowDefinition Height="380"></RowDefinition>
-                                    <RowDefinition Height="55"></RowDefinition>
+                                    <RowDefinition Height="400" />
+                                    <RowDefinition Height="380" />
+                                    <RowDefinition Height="55" />
                                 </Grid.RowDefinitions>
                                 <Grid Grid.Row="0" Width="600">
-                                    <myControls:ExplorerItemSimpleControl x:Name="ei" HorizontalAlignment="Left"></myControls:ExplorerItemSimpleControl>
+                                    <myControls:ExplorerItemSimpleControl x:Name="ei" HorizontalAlignment="Left" />
                                 </Grid>
                                 <Grid Grid.Row="1" Margin="0,10,0,0">
                                     <ListView x:Name="eic" Width="600">
                                         <ListView.ItemTemplate>
                                             <DataTemplate x:DataType="x:String">
-                                                <TextBlock Text="{x:Bind}" Margin="0,-5,0,-5"></TextBlock>
+                                                <TextBlock Margin="0,-5,0,-5" Text="{x:Bind}" />
                                             </DataTemplate>
                                         </ListView.ItemTemplate>
                                     </ListView>
@@ -51,9 +63,15 @@
                                 </Grid>
                                 <Grid Grid.Row="2" Margin="10,0,0,0">
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Content="确认" Click="ReturnFolder_Click"></Button>
-                                        <Button Content="取消" Click="Cancel_Click" Margin="30,0,0,0"></Button>
-                                        <Button Content="添加" Click="Add_Click" Margin="30,0,0,0"></Button>
+                                        <Button Click="ReturnFolder_Click" Content="确认" />
+                                        <Button
+                                            Margin="30,0,0,0"
+                                            Click="Cancel_Click"
+                                            Content="取消" />
+                                        <Button
+                                            Margin="30,0,0,0"
+                                            Click="Add_Click"
+                                            Content="添加" />
                                     </StackPanel>
                                 </Grid>
                                 <Grid.RenderTransform>
@@ -64,6 +82,15 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
+                <Border
+                    Width="1"
+                    Margin="30,0,30,0"
+                    BorderThickness="1" />
+                <DropDownButton
+                    x:Name="ddb"
+                    Width="200"
+                    Margin="10,0,0,0"
+                    Content="Email" />
                 <Button Margin="10,0,0,0" Content="获取信息" />
             </StackPanel>
         </Grid>
@@ -71,21 +98,90 @@
             <ListView
                 Margin="0,20,0,0"
                 ItemsSource="{x:Bind VM.EntryDetailCollection}"
-                SelectionMode="Multiple">
+                SelectionMode="Extended">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="models:EntryDetail">
                         <Grid Height="100" HorizontalAlignment="Left">
-                            <Image
-                                x:Name="Image_CoverImg"
-                                Width="60"
-                                Height="80"
-                                Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
-                                Stretch="Fill" />
-                            <Button
-                                Width="60"
-                                Height="80"
-                                VerticalAlignment="Center"
-                                Background="Transparent" />
+                            <StackPanel Orientation="Horizontal">
+                                <Grid>
+                                    <Image
+                                        x:Name="Image_CoverImg"
+                                        Width="60"
+                                        Height="80"
+                                        Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
+                                        Stretch="Fill" />
+                                    <Button
+                                        Width="60"
+                                        Height="80"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent" />
+                                </Grid>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="70"
+                                            Margin="8,5,0,0"
+                                            Text="詞條名称：" />
+                                        <TextBlock
+                                            Width="100"
+                                            Margin="0,5,0,0"
+                                            Text="111">
+                                            <!--<TextBox.RenderTransform>
+                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
+                                            </TextBox.RenderTransform>-->
+                                        </TextBlock>
+                                        <TextBlock Margin="8,5,0,0" Text="詞條地址：" />
+                                        <TextBlock
+                                            Width="500"
+                                            Margin="0,5,0,0"
+                                            Text="111" />
+
+
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="70"
+                                            Margin="8,5,0,0"
+                                            Text="發行日期：" />
+                                        <TextBlock Width="100" Margin="0,5,0,0">
+                                            <!--<CalendarDatePicker.RenderTransform>
+                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
+                                            </CalendarDatePicker.RenderTransform>-->
+                                        </TextBlock>
+                                        <TextBlock
+                                            Width="70"
+                                            Margin="8,5,0,0"
+                                            Text="分類：" />
+                                        <TextBlock Width="180" Margin="0,5,0,0">
+                                            <!--<CalendarDatePicker.RenderTransform>
+                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
+                                            </CalendarDatePicker.RenderTransform>-->
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            Width="70"
+                                            Margin="8,5,0,0"
+                                            Text="主演：" />
+                                        <TextBlock Width="100" Margin="0,5,0,0">
+                                            <!--<CalendarDatePicker.RenderTransform>
+                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
+                                            </CalendarDatePicker.RenderTransform>-->
+                                        </TextBlock>
+
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--<TextBlock
+                                            Margin="8,5,0,0"
+                                            Text="評分：" />-->
+                                        <RatingControl
+                                            Margin="8,2,0,0"
+                                            HorizontalAlignment="Right"
+                                            Value="5" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                            </StackPanel>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

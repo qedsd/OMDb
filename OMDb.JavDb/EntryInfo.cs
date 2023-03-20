@@ -74,7 +74,7 @@ namespace OMDb.JavDb
 
         private void GetDic(string infoStr, ref Dictionary<string, object> dic)
         {
-            List<string> lst = new List<string> { "日期", "片商", "發行", "導演", "評分", "類別", "演員" };
+            List<string> lst = new List<string> { "日期", "片商", "發行", "系列","導演", "評分", "類別", "演員" };
             List<Tuple<string, int>> lstTup = new List<Tuple<string, int>>();
             foreach (string str in lst)
             {

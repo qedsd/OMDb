@@ -61,26 +61,25 @@
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
 
-                <AppBarButton 
+                <!--<AppBarButton
+                    Command="{x:Bind VM.AddEntryCommand}"
                     Icon="Add"
-                    Label="新增"
-                    Command="{x:Bind VM.AddEntryCommand}">
-                </AppBarButton>
+                    Label="新增" />-->
                 <AppBarElementContainer>
                     <SplitButton
-                                    Width="90"
-                                    Height="48"
-                                    VerticalAlignment="Center"
+                        Width="90"
+                        Height="48"
+                        VerticalAlignment="Center"
                         Command="{x:Bind VM.AddEntryCommand}">
                         <SplitButton.ContentTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock
-                            FontFamily="Segoe MDL2 Assets"
-                            Text="&#xE74D;"
-                            VerticalAlignment="Center" 
-                                        FontSize="14"/>
-                                    <TextBlock Text="新增" Margin="5,0,0,0"></TextBlock>
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        FontSize="14"
+                                        Text="&#xE710;" />
+                                    <TextBlock Margin="5,0,0,0" Text="新增" />
                                 </StackPanel>
                             </DataTemplate>
                         </SplitButton.ContentTemplate>
@@ -89,12 +88,15 @@
                                 <StackPanel>
                                     <Button Width="80" Command="{x:Bind VM.AddEntryCommand}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="新增词条"></TextBlock>
+                                            <TextBlock Text="新增词条" />
                                         </StackPanel>
                                     </Button>
-                                    <Button Width="80" Margin="0,5,0,0" Command="{x:Bind VM.AddEntryBatchCommand}">
+                                    <Button
+                                        Width="80"
+                                        Margin="0,5,0,0"
+                                        Command="{x:Bind VM.AddEntryBatchCommand}">
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="批量新增"></TextBlock>
+                                            <TextBlock Text="批量新增" />
                                         </StackPanel>
                                     </Button>
                                 </StackPanel>

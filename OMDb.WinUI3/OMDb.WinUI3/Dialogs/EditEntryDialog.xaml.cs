@@ -83,6 +83,8 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
+                        lbc.Name = item.LPDb.Name;
+                        lbc.StrSelectItem.Text = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         n++;
@@ -102,6 +104,7 @@ namespace OMDb.WinUI3.Dialogs
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
+                        lbc.Name = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
@@ -262,7 +265,7 @@ namespace OMDb.WinUI3.Dialogs
                 }
                 //保存：标签 -> 属性
                 var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LPDb).ToList();
-                if(lst.Count>0)entryDetail.Lpdbs.AddRange(lst);
+                if (lst.Count > 0) entryDetail.Lpdbs.AddRange(lst);
 
 
 
@@ -328,7 +331,6 @@ namespace OMDb.WinUI3.Dialogs
                 fs.Close();
                 VM.Entry.CoverImg = TempFileHelper.fullTempImgPath;
                 Image_CoverImg.Source = ImgHelper.CreateBitmapImage(coverStream);
-
             }
             catch (Exception ex)
             {
@@ -347,6 +349,26 @@ namespace OMDb.WinUI3.Dialogs
             try
             {
                 this.VM.ReleaseDate = Convert.ToDateTime(entryInfo["上映日期"]);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            try
+            {
+                var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
+                foreach (var ei in entryInfo)
+                {
+
+                    if (lstBaba.Select(a=>a.LPDb.Name).ToList().Contains(ei.Key))
+                    {
+                        string[] eiv=(string[])ei.Value;
+                        var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
+                        lbc.StrSelectItem.Text = string.Join("/", eiv);
+                    }
+                }
+                
             }
             catch (Exception ex)
             {

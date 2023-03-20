@@ -17,6 +17,7 @@
     </UserControl.Resources>
     <Grid Margin="0,3,0,0">
         <TextBox
+            x:FieldModifier="public"
             x:Name="StrSelectItem"
             Width="220"
             FontSize="16"
