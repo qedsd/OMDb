@@ -17,186 +17,196 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="800" />
-        </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
-            <StackPanel>
-                <Button
-            Height="256"
-            VerticalAlignment="Top"
-            Background="Transparent"
-            Click="Button_CoverImg_Click">
-                    <Grid>
-                        <StackPanel HorizontalAlignment="Center">
-                            <SymbolIcon Symbol="Add" />
-                            <TextBlock Margin="0,10,0,0" Text="添加封面图" />
-                        </StackPanel>
-                        <Image
-                    x:Name="Image_CoverImg"
-                    Width="182"
-                    Stretch="UniformToFill" />
-                    </Grid>
-                </Button>
-                <StackPanel Orientation="Horizontal">
-                    <DropDownButton x:Name="ddb" Content="Email" Margin="0,10,0,0" Width="116">
 
-                    </DropDownButton>
-                    <Button Width="80" Margin="10,10,0,0" Click="GetInfo_Click" Content="获取信息">
+        <Grid x:Name="grida">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="800" />
+            </Grid.ColumnDefinitions>
 
+
+
+            <Grid Grid.Column="0">
+                <StackPanel>
+                    <Button
+                        Height="256"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        Click="Button_CoverImg_Click">
+                        <Grid>
+                            <StackPanel HorizontalAlignment="Center">
+                                <SymbolIcon Symbol="Add" />
+                                <TextBlock Margin="0,10,0,0" Text="添加封面图" />
+                            </StackPanel>
+                            <Image
+                                x:Name="Image_CoverImg"
+                                Width="182"
+                                Stretch="UniformToFill" />
+                        </Grid>
                     </Button>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-        <Grid Grid.Column="1" Margin="10,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <!--  倉庫名稱+詞條名稱  -->
-            <Grid Margin="2,0,0,10">
-                <StackPanel Orientation="Horizontal">
-                    <ComboBox
-                        Width="200"
-                        DisplayMemberPath="StorageName"
-                        ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
-                        SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
-                    <TextBox
-                        Grid.Column="1"
-                        Width="350"
-                        Margin="4,0,12,0"
-                        PlaceholderText="词条名称"
-                        Text="{x:Bind VM.EntryName, Mode=TwoWay}"
-                        TextChanged="EntryName_TextChanged" />
+                    <StackPanel Orientation="Horizontal">
+                        <DropDownButton
+                            x:Name="ddb"
+                            Width="116"
+                            Margin="0,10,0,0"
+                            Content="Email" />
+                        <Button
+                            x:Name="btn_GetInfo"
+                            Width="80"
+                            Margin="10,10,0,0"
+                            Click="GetInfo_Click"
+                            Content="获取信息" />
+                    </StackPanel>
                 </StackPanel>
             </Grid>
-            <!--  路径  -->
-            <Grid Grid.Row="1" Margin="0,0">
-                <StackPanel>
+            <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <!--  倉庫名稱+詞條名稱  -->
+                <Grid Margin="2,0,0,10">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="8,0,20,0" Text="詞條路徑：" />
-                        <TextBlock
-                            Width="960"
-                            Margin="0,0"
-                            Text="{x:Bind VM.EntryPath, Mode=TwoWay}" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Margin="8,18,20,6" Text="存儲模式：" />
-                        <RadioButtons
-                            x:Name="ModeSelector"
-                            Width="400"
-                            Margin="0,6,0,6"
-                            Padding="10"
-                            MaxColumns="3">
-                            <RadioButton x:Name="Local" Content="本地存儲" />
-                            <RadioButton x:Name="SetFolder" Content="指定文件夾" />
-                            <RadioButton x:Name="SetFile" Content="指定文件" />
-                            <RadioButtons.RenderTransform>
-                                <CompositeTransform ScaleX="0.9" ScaleY="0.9" />
-                            </RadioButtons.RenderTransform>
-                        </RadioButtons>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock 
-                            Margin="8,2,0,0" 
-                            Text="本地存儲："  
-                            Width="87"/>
-                        <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
-                            <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </Button.RenderTransform>
-                            <SymbolIcon Symbol="MoveToFolder" />
-                        </Button>
+                        <ComboBox
+                            Width="200"
+                            DisplayMemberPath="StorageName"
+                            ItemsSource="{x:Bind VM.EnrtyStorages, Mode=OneWay}"
+                            SelectedItem="{x:Bind VM.SelectedEnrtyStorage, Mode=TwoWay}" />
                         <TextBox
-                            x:Name="PointLocal"
-                            Width="556"
-                            FontSize="16"
-                            IsReadOnly="True">
-                            <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </TextBox.RenderTransform>
-                        </TextBox>
+                            Grid.Column="1"
+                            Width="350"
+                            Margin="4,0,12,0"
+                            PlaceholderText="词条名称"
+                            Text="{x:Bind VM.EntryName, Mode=TwoWay}"
+                            TextChanged="EntryName_TextChanged" />
                     </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock 
-                            Margin="8,2,0,0" 
-                            Text="指定文件夾："  
-                            Width="87"/>
-                        <Button
-                            VerticalAlignment="Bottom"
-                            Click="Button_Path_Click"
-                            ToolTipService.ToolTip="选择路径">
-                            <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </Button.RenderTransform>
-                            <SymbolIcon Symbol="MoveToFolder" />
-                        </Button>
-                        <TextBox
-                            x:Name="PointFolder"
-                            Width="556"
-                            FontSize="16"
-                            IsReadOnly="True">
-                            <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </TextBox.RenderTransform>
-                        </TextBox>
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <TextBlock 
-                            Margin="8,2,0,0" 
-                            Text="指定文件：" 
-                            Width="87"/>
-                        <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
-                            <Button.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </Button.RenderTransform>
-                            <SymbolIcon Symbol="MoveToFolder" />
-                        </Button>
-                        <TextBox
-                            x:Name="PointFiles"
-                            Width="556"
-                            FontSize="16"
-                            IsReadOnly="True">
-                            <TextBox.RenderTransform>
-                                <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
-                            </TextBox.RenderTransform>
-                        </TextBox>
-                    </StackPanel>
-
-                    <StackPanel x:Name="stp">
+                </Grid>
+                <!--  路径  -->
+                <Grid Grid.Row="1" Margin="0,0">
+                    <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <!--  上映日期  -->
-                            <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
-                                <TextBlock Margin="8,5,17,0" Text="上映日期：" />
-                                <CalendarDatePicker Width="180" Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
-                                    <CalendarDatePicker.RenderTransform>
-                                        <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
-                                    </CalendarDatePicker.RenderTransform>
-                                </CalendarDatePicker>
-                            </StackPanel>
-
-                            <!--  評分  -->
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Width="87"
-                                    Margin="29,5,5,0"
-                                    Text="評分：" />
-                                <RatingControl
-                                    Margin="0,3,0,0"
-                                    HorizontalAlignment="Left"
-                                    Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
-                            </StackPanel>
-
+                            <TextBlock Margin="8,0,20,0" Text="詞條路徑：" />
+                            <TextBlock
+                                Width="960"
+                                Margin="0,0"
+                                Text="{x:Bind VM.EntryPath, Mode=TwoWay}" />
                         </StackPanel>
-                        <!--  测试位  -->
-                        <!--<StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="8,18,20,6" Text="存儲模式：" />
+                            <RadioButtons
+                                x:Name="ModeSelector"
+                                Width="400"
+                                Margin="0,6,0,6"
+                                Padding="10"
+                                MaxColumns="3">
+                                <RadioButton x:Name="Local" Content="本地存儲" />
+                                <RadioButton x:Name="SetFolder" Content="指定文件夾" />
+                                <RadioButton x:Name="SetFile" Content="指定文件" />
+                                <RadioButtons.RenderTransform>
+                                    <CompositeTransform ScaleX="0.9" ScaleY="0.9" />
+                                </RadioButtons.RenderTransform>
+                            </RadioButtons>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Bind Local.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock
+                                Width="87"
+                                Margin="8,2,0,0"
+                                Text="本地存儲：" />
+                            <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
+                                <Button.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </Button.RenderTransform>
+                                <SymbolIcon Symbol="MoveToFolder" />
+                            </Button>
+                            <TextBox
+                                x:Name="PointLocal"
+                                Width="556"
+                                FontSize="16"
+                                IsReadOnly="True">
+                                <TextBox.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </TextBox.RenderTransform>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFolder.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock
+                                Width="87"
+                                Margin="8,2,0,0"
+                                Text="指定文件夾：" />
+                            <Button
+                                VerticalAlignment="Bottom"
+                                Click="Button_Path_Click"
+                                ToolTipService.ToolTip="选择路径">
+                                <Button.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </Button.RenderTransform>
+                                <SymbolIcon Symbol="MoveToFolder" />
+                            </Button>
+                            <TextBox
+                                x:Name="PointFolder"
+                                Width="556"
+                                FontSize="16"
+                                IsReadOnly="True">
+                                <TextBox.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </TextBox.RenderTransform>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Visibility="{x:Bind SetFile.IsChecked, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <TextBlock
+                                Width="87"
+                                Margin="8,2,0,0"
+                                Text="指定文件：" />
+                            <Button VerticalAlignment="Bottom" ToolTipService.ToolTip="选择路径">
+                                <Button.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </Button.RenderTransform>
+                                <SymbolIcon Symbol="MoveToFolder" />
+                            </Button>
+                            <TextBox
+                                x:Name="PointFiles"
+                                Width="556"
+                                FontSize="16"
+                                IsReadOnly="True">
+                                <TextBox.RenderTransform>
+                                    <CompositeTransform ScaleX="0.75" ScaleY="0.75" />
+                                </TextBox.RenderTransform>
+                            </TextBox>
+                        </StackPanel>
+
+                        <StackPanel x:Name="stp">
+                            <StackPanel Orientation="Horizontal">
+                                <!--  上映日期  -->
+                                <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                                    <TextBlock Margin="8,5,17,0" Text="上映日期：" />
+                                    <CalendarDatePicker Width="180" Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
+                                        <CalendarDatePicker.RenderTransform>
+                                            <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
+                                        </CalendarDatePicker.RenderTransform>
+                                    </CalendarDatePicker>
+                                </StackPanel>
+
+                                <!--  評分  -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="87"
+                                        Margin="29,5,5,0"
+                                        Text="評分：" />
+                                    <RatingControl
+                                        Margin="0,3,0,0"
+                                        HorizontalAlignment="Left"
+                                        Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                                </StackPanel>
+
+                            </StackPanel>
+                            <!--  测试位  -->
+                            <!--<StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     Width="87"
@@ -257,29 +267,29 @@
                             </StackPanel>
 
                         </StackPanel>-->
-                        <!--  属性位  -->
-                        <!--  属性位  -->
+                            <!--  属性位  -->
+                            <!--  属性位  -->
+
+
+                        </StackPanel>
 
 
                     </StackPanel>
 
-
-
-
-                </StackPanel>
-
-            </Grid>
-            <!--  标签  -->
-            <Grid Grid.Row="4" Margin="10,10">
-                <StackPanel>
-                    <TextBlock Text="标签" />
-                    <mycontrols:LabelsControl
-                        Margin="0,4,0,0"
-                        HorizontalAlignment="Left"
-                        Labels="{x:Bind VM.Labels, Mode=TwoWay}"
-                        Mode="Add" />
-                </StackPanel>
+                </Grid>
+                <!--  标签  -->
+                <Grid Grid.Row="4" Margin="10,10">
+                    <StackPanel>
+                        <TextBlock Text="标签" />
+                        <mycontrols:LabelsControl
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Labels="{x:Bind VM.Labels, Mode=TwoWay}"
+                            Mode="Add" />
+                    </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
+        <ProgressRing x:Name="pr" IsActive="False" />
     </Grid>
 </Page>

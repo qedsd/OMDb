@@ -13,7 +13,7 @@ namespace OMDb.Core.Services.PluginsService
 {
     public class EntryInfoService: PluginsBaseService
     {
-        public static Dictionary<string,object> GetEntryInfo(string keyword, string dllName)
+        public static Task<Dictionary<string,object>> GetEntryInfo(string keyword, string dllName)
         {
             if (Rates != null)
             {
@@ -21,7 +21,7 @@ namespace OMDb.Core.Services.PluginsService
                 {
                     if (entryInfo.GetType().Assembly.GetName().Name.Equals(dllName))
                     {
-                        return entryInfo.EntryInfo(keyword);
+                        return (Task.Run<Dictionary<string, object>>(()=> entryInfo.EntryInfo(keyword)));
                     }
                 }
                 return null;

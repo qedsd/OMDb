@@ -301,7 +301,7 @@ namespace OMDb.WinUI3.ViewModels
 
 
 
-        public ICommand RefreshCommand => new RelayCommand(() =>
+        public ICommand RefreshCommand => new RelayCommand(async() =>
         {
             Init();
             Helpers.InfoHelper.ShowSuccess("刷新完成");

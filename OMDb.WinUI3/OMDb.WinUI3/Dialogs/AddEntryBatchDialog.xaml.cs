@@ -1,8 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using ColorCode.Compilation.Languages;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
@@ -10,6 +12,7 @@ using OMDb.Core.Extensions;
 using OMDb.Core.Services.PluginsService;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Resource;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.ViewModels;
 using Org.BouncyCastle.Utilities;
@@ -20,8 +23,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using static System.Net.WebRequestMethods;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -52,6 +58,88 @@ namespace OMDb.WinUI3.Dialogs
                 this.ddb.Flyout = mf;
             }
             else this.ddb.Content = "无服务";
+            /*string xaml = @"<TextBlock Text=""123"" xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""/>";*/
+            string xaml = @"    
+    <DataTemplate
+        x:Name=""dt""
+        x:FieldModifier=""public""
+        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+        xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+        xmlns:controls=""using:CommunityToolkit.WinUI.UI.Controls""
+        xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
+        xmlns:local=""using:OMDb.WinUI3.Dialogs""
+        xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
+        xmlns:models=""using:OMDb.WinUI3.Models""
+        xmlns:myControls=""using:OMDb.WinUI3.MyControls"">
+        <Grid Height=""100"" HorizontalAlignment=""Left"">
+            <StackPanel Orientation=""Horizontal"">
+                <Grid>
+                    <Image
+                        x:Name=""Image_CoverImg""
+                        Width=""60""
+                        Height=""80""
+                        Stretch=""Fill"" />
+                    <Button
+                        Width=""60""
+                        Height=""80""
+                        VerticalAlignment=""Center""
+                        Background=""Transparent"" />
+                </Grid>
+                <StackPanel>
+                    <StackPanel Orientation=""Horizontal"">
+                        <TextBlock
+                            Width=""70""
+                            Margin=""8,5,0,0""
+                            Text=""詞條名称："" />
+                        <TextBlock
+                            Width=""100""
+                            Margin=""0,5,0,0""
+                            Text=""111"">
+                        </TextBlock>
+                        <TextBlock Margin=""8,5,0,0"" Text=""詞條地址："" />
+                        <TextBlock
+                            Width=""500""
+                            Margin=""0,5,0,0""
+                            Text=""111"" />
+                    </StackPanel>
+                    <StackPanel Orientation=""Horizontal"">
+                        <TextBlock
+                            Width=""70""
+                            Margin=""8,5,0,0""
+                            Text=""發行日期："" />
+                        <TextBlock x:Name=""ReleaseDate"" Width=""100"" Margin=""0,5,0,0"">
+                        </TextBlock>
+                        <TextBlock
+                            Width=""70""
+                            Margin=""8,5,0,0""
+                            Text=""分類："" />
+                        <TextBlock Width=""180"" Margin=""0,5,0,0"">
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel x:Name=""sp_lp"" Orientation=""Horizontal"">
+                        <TextBlock
+                            Width=""70""
+                            Margin=""8,5,0,0""
+                            Text=""主演："" />
+                        <TextBlock Width=""100"" Margin=""0,5,0,0"">
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Orientation=""Horizontal"">
+                        <RatingControl
+                            Margin=""8,2,0,0""
+                            HorizontalAlignment=""Right""
+                            Value=""5"" />
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+";
+            var stringReader = new StringReader(xaml);
+            XmlReader xr = XmlReader.Create(stringReader);
+            DataTemplate dataTemplate = (DataTemplate)XamlReader.Load(xaml);
+            this.lv_edc.ItemTemplate = dataTemplate;
         }
 
         public static async Task<string> ShowDialog()
@@ -89,6 +177,11 @@ namespace OMDb.WinUI3.Dialogs
             }
             this.ei.treeFolders.SelectedItems.Clear();
             this.btn_FolderPicker.Flyout.Hide();
+
+            var edc_it=lv_edc.ItemTemplate;
+            var edc_ict = lv_edc.ItemContainerTransitions;
+            var edc_i = lv_edc.Items;
+            var edc_dmp = lv_edc.DisplayMemberPath;
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {

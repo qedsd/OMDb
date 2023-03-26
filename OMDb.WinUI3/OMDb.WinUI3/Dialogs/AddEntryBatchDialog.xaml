@@ -96,94 +96,12 @@
         </Grid>
         <Grid Grid.Row="1">
             <ListView
+                x:Name="lv_edc"
                 Margin="0,20,0,0"
                 ItemsSource="{x:Bind VM.EntryDetailCollection}"
                 SelectionMode="Extended">
                 <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="models:EntryDetail">
-                        <Grid Height="100" HorizontalAlignment="Left">
-                            <StackPanel Orientation="Horizontal">
-                                <Grid>
-                                    <Image
-                                        x:Name="Image_CoverImg"
-                                        Width="60"
-                                        Height="80"
-                                        Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
-                                        Stretch="Fill" />
-                                    <Button
-                                        Width="60"
-                                        Height="80"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent" />
-                                </Grid>
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="詞條名称：" />
-                                        <TextBlock
-                                            Width="100"
-                                            Margin="0,5,0,0"
-                                            Text="111">
-                                            <!--<TextBox.RenderTransform>
-                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
-                                            </TextBox.RenderTransform>-->
-                                        </TextBlock>
-                                        <TextBlock Margin="8,5,0,0" Text="詞條地址：" />
-                                        <TextBlock
-                                            Width="500"
-                                            Margin="0,5,0,0"
-                                            Text="111" />
-
-
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="發行日期：" />
-                                        <TextBlock Width="100" Margin="0,5,0,0">
-                                            <!--<CalendarDatePicker.RenderTransform>
-                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
-                                            </CalendarDatePicker.RenderTransform>-->
-                                        </TextBlock>
-                                        <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="分類：" />
-                                        <TextBlock Width="180" Margin="0,5,0,0">
-                                            <!--<CalendarDatePicker.RenderTransform>
-                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
-                                            </CalendarDatePicker.RenderTransform>-->
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="主演：" />
-                                        <TextBlock Width="100" Margin="0,5,0,0">
-                                            <!--<CalendarDatePicker.RenderTransform>
-                                                <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
-                                            </CalendarDatePicker.RenderTransform>-->
-                                        </TextBlock>
-
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <!--<TextBlock
-                                            Margin="8,5,0,0"
-                                            Text="評分：" />-->
-                                        <RatingControl
-                                            Margin="8,2,0,0"
-                                            HorizontalAlignment="Right"
-                                            Value="5" />
-                                    </StackPanel>
-                                </StackPanel>
-
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
+                    <DataTemplate></DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
         </Grid>

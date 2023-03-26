@@ -42,6 +42,7 @@
 		<None Remove="Dialogs\PickEntryCollectionDialog.xaml" />
 		<None Remove="Dialogs\QueryDialog.xaml" />
 		<None Remove="Dialogs\WatingDialog.xaml" />
+		<None Remove="MyControls\AddEntryBatchControl.xaml" />
 		<None Remove="MyControls\AddLabelsControl.xaml" />
 		<None Remove="MyControls\Banner.xaml" />
 		<None Remove="MyControls\DropArea.xaml" />
@@ -62,6 +63,7 @@
 		<None Remove="MyControls\NotifyPopup.xaml" />
 		<None Remove="MyControls\StorageCard.xaml" />
 		<None Remove="MyControls\WaitingPopup.xaml" />
+		<None Remove="Resource\EntryBatchDatatemplate.xaml" />
 		<None Remove="SettingPage.xaml" />
 		<None Remove="Strings\en-us\Resources.resw" />
 		<None Remove="Strings\zh-CN\Resources.resw" />
@@ -126,6 +128,9 @@
 	<ItemGroup>
 		<Page Update="Dialogs\EditLabelDialog.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</Page>
+		<Page Update="MyControls\AddEntryBatchControl.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 	</ItemGroup>
 
@@ -367,6 +372,9 @@
 	  <None Update="nlog.config">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <Page Update="Resource\EntryBatchDatatemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

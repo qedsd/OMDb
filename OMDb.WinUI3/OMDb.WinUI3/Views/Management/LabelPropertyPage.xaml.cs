@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -49,7 +50,7 @@ namespace OMDb.WinUI3.Views
 
         private void GridView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+
             LabelPropertyTree current_LPEZ = (LabelPropertyTree)e.AddedItems.FirstOrDefault();
             if (current_LPEZ == null)
             {
@@ -83,6 +84,7 @@ namespace OMDb.WinUI3.Views
             //确认 -> 数据库创建标签
             else
             {
+                result.Level = 1;
                 LabelPropertyService.AddLabel(result);
                 VM.Init();
                 Helpers.InfoHelper.ShowSuccess($"添加属性“{result.Name}”成功！");
@@ -104,6 +106,7 @@ namespace OMDb.WinUI3.Views
             //确认 -> 数据库创建标签
             else
             {
+                result.Level = 2;
                 var currentRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
                 result.ParentId = currentRoot.LPDb.LPId;
                 LabelPropertyService.AddLabel(result);
@@ -163,8 +166,9 @@ namespace OMDb.WinUI3.Views
             Helpers.InfoHelper.ShowSuccess($"删除属性数据“{item.LPDb.Name}”成功！");
         }
 
-        private void Delete_PropertyDataLink_Click(object sender, RoutedEventArgs e)
+        private async void Delete_PropertyDataLink_Click(object sender, RoutedEventArgs e)
         {
+            
             var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
             if (item == null)
             {

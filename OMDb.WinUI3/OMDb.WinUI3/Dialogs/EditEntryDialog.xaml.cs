@@ -26,6 +26,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -313,15 +314,21 @@ namespace OMDb.WinUI3.Dialogs
             }
         }
 
+        
 
-
-        private void GetInfo_Click(object sender, RoutedEventArgs e)
+        private async void GetInfo_Click(object sender, RoutedEventArgs e)
         {
             if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
             /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
             this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
-
-            var entryInfo = EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
+            this.pr.IsActive = true;
+            var entryInfo = new Dictionary<string, object>();
+            this.btn_GetInfo.IsEnabled = false;
+            //Dialogs.WatingDialog.Show("移动文件中");
+            entryInfo =await EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
+            //Dialogs.WatingDialog.Hide();
+            this.pr.IsActive = false;
+            this.btn_GetInfo.IsEnabled = true;
             try
             {
                 var coverStream = (MemoryStream)(entryInfo["封面"]);
@@ -361,14 +368,14 @@ namespace OMDb.WinUI3.Dialogs
                 foreach (var ei in entryInfo)
                 {
 
-                    if (lstBaba.Select(a=>a.LPDb.Name).ToList().Contains(ei.Key))
+                    if (lstBaba.Select(a => a.LPDb.Name).ToList().Contains(ei.Key))
                     {
-                        string[] eiv=(string[])ei.Value;
+                        string[] eiv = (string[])ei.Value;
                         var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
                         lbc.StrSelectItem.Text = string.Join("/", eiv);
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {
