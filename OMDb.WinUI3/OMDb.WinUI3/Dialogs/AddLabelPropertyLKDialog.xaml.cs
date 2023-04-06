@@ -11,6 +11,7 @@ using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
+using OMDb.WinUI3.Services.Settings;
 using OMDb.WinUI3.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,7 @@ namespace OMDb.WinUI3.Dialogs
                         else
                         {
                             item.LPId = Guid.NewGuid().ToString();
+                            item.DbSourceId = DbSelectorService.dbCurrentId;
                             Core.Services.LabelPropertyService.AddLabel(item);
                             var lpt = new LabelPropertyTree(item);
                             content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
@@ -107,6 +109,7 @@ namespace OMDb.WinUI3.Dialogs
         {
             var lp = new LabelPropertyDb();
             var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
+            if (itemsRoot.IsNullOrEmptyOrWhiteSpace()) return;
             lp.ParentId = itemsRoot.LPDb.LPId;
             VM.DtData.Add(lp);
         }

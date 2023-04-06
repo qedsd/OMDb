@@ -21,6 +21,7 @@ namespace OMDb.WinUI3.ViewModels
             EnrtyStorages = Services.ConfigService.EnrtyStorages.Where(p => p.StoragePath != null).ToList();
             SelectedEnrtyStorage = EnrtyStorages?.FirstOrDefault();
         }
+
         public ObservableCollection<Models.EntryDetail> EntryDetailCollection { get; set; }=new ObservableCollection<Models.EntryDetail>();
 
         public List<Models.EnrtyStorage> EnrtyStorages { get; set; }

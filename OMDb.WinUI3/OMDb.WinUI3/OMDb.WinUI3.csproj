@@ -51,11 +51,12 @@
 		<None Remove="MyControls\EntryCard2.xaml" />
 		<None Remove="MyControls\EntryCollectionCard.xaml" />
 		<None Remove="MyControls\EntryCollectionCard2.xaml" />
+		<None Remove="MyControls\EntryDetailControl.xaml" />
 		<None Remove="MyControls\EntryStoragesControl.xaml" />
 		<None Remove="MyControls\ExpandableSettingControl.xaml" />
 		<None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
+		<None Remove="MyControls\ExplorerControl.xaml" />
 		<None Remove="MyControls\ExplorerItemControl.xaml" />
-		<None Remove="MyControls\ExplorerItemSimpleControl.xaml" />
 		<None Remove="MyControls\LabelCollection1.xaml" />
 		<None Remove="MyControls\LabelCollection2.xaml" />
 		<None Remove="MyControls\LabelCollection3.xaml" />
@@ -119,6 +120,9 @@
 		</Page>
 		<Page Update="MyControls\DropArea.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MyControls\EntryDetailControl.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="MyControls\LabelsControl.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -362,14 +366,25 @@
 
 	<ItemGroup>
 		<Folder Include="Assets\FFmpeg\" />
-		<Folder Include="Plugins\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Page Update="MyControls\ExplorerItemSimpleControl.xaml">
+	  <Page Update="MyControls\ExplorerControl.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	  <None Update="nlog.config">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Plugins\OMDb.Core.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Plugins\OMDb.Douban.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Plugins\OMDb.IMDb.dll">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Plugins\OMDb.JavDb.dll">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <Page Update="Resource\EntryBatchDatatemplate.xaml">

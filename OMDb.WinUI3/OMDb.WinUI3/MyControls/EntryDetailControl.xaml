@@ -1,0 +1,119 @@
+<!-- Copyright (c) Microsoft Corporation and Contributors. -->
+<!-- Licensed under the MIT License. -->
+
+<UserControl
+    x:Class="OMDb.WinUI3.MyControls.EntryDetailControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:models="using:OMDb.WinUI3.Models"
+    mc:Ignorable="d"
+    xmlns:converters="using:OMDb.WinUI3.Converters">
+
+    <Grid Margin="0,20,0,0">
+        <!--  倉庫名稱+詞條名稱  -->
+
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button
+                        Height="128"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        Click="Button_CoverImg_Click">
+                    <Grid>
+                        <StackPanel HorizontalAlignment="Center">
+                            <SymbolIcon Symbol="Add" />
+                            <TextBlock Margin="0,10,0,0" Text="添加封面图" />
+                        </StackPanel>
+                        <Image
+                                x:Name="Image_CoverImg"
+                                Width="91"
+                                Stretch="UniformToFill" />
+                    </Grid>
+                </Button>
+
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox
+                            Grid.Column="1"
+                            Width="350"
+                            Height="20"
+                            Margin="4,0,12,0"
+                            PlaceholderText="词条名称"
+                            Text="{x:Bind VM.EntryName, Mode=TwoWay}"
+                            TextChanged="EntryName_TextChanged" />
+                    </StackPanel>
+
+
+                    <!--  路径  -->
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="8,10,20,0" Text="詞條路徑：" x:FieldModifier="public"/>
+                            <TextBlock
+                                Width="960"
+                                Margin="0,10,0,0"
+                                Text="{x:Bind VM.EntryPath, Mode=OneWay}" />
+                        </StackPanel>
+
+
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                Width="87"
+                                Margin="8,10,20,0"
+                                Text="资源路径：" />
+
+                            <TextBlock
+                                x:Name="PointFolder"
+                                Width="960"
+                                Margin="0,10,0,0">
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel x:Name="stp">
+                    <StackPanel Orientation="Horizontal">
+                        <!--  上映日期  -->
+                        <StackPanel Margin="0,0,0,5" Orientation="Horizontal">
+                            <TextBlock Margin="8,5,17,0" Text="上映日期：" />
+                            <CalendarDatePicker Width="180" Date="{x:Bind VM.ReleaseDate, Mode=TwoWay}">
+                                <CalendarDatePicker.RenderTransform>
+                                    <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
+                                </CalendarDatePicker.RenderTransform>
+                            </CalendarDatePicker>
+                        </StackPanel>
+
+                        <!--  評分  -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                        Width="87"
+                                        Margin="29,5,5,0"
+                                        Text="評分：" />
+                            <RatingControl
+                                        Margin="0,3,0,0"
+                                        HorizontalAlignment="Left"
+                                        Value="{x:Bind VM.MyRating, Mode=TwoWay}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+
+
+
+                <!--  标签  -->
+
+                <StackPanel>
+                    <TextBlock Text="标签" />
+                    <mycontrols:LabelsControl
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Labels="{x:Bind VM.Labels, Mode=TwoWay}"
+                            Mode="Add" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

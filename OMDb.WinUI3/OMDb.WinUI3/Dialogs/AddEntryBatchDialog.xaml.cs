@@ -8,22 +8,24 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using NLog;
+using NPOI.SS.Formula.Functions;
 using OMDb.Core.Extensions;
 using OMDb.Core.Services.PluginsService;
+using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
-using OMDb.WinUI3.Resource;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.ViewModels;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using System.Xml;
 using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -58,88 +60,7 @@ namespace OMDb.WinUI3.Dialogs
                 this.ddb.Flyout = mf;
             }
             else this.ddb.Content = "无服务";
-            /*string xaml = @"<TextBlock Text=""123"" xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
-    xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""/>";*/
-            string xaml = @"    
-    <DataTemplate
-        x:Name=""dt""
-        x:FieldModifier=""public""
-        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
-        xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-        xmlns:controls=""using:CommunityToolkit.WinUI.UI.Controls""
-        xmlns:d=""http://schemas.microsoft.com/expression/blend/2008""
-        xmlns:local=""using:OMDb.WinUI3.Dialogs""
-        xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006""
-        xmlns:models=""using:OMDb.WinUI3.Models""
-        xmlns:myControls=""using:OMDb.WinUI3.MyControls"">
-        <Grid Height=""100"" HorizontalAlignment=""Left"">
-            <StackPanel Orientation=""Horizontal"">
-                <Grid>
-                    <Image
-                        x:Name=""Image_CoverImg""
-                        Width=""60""
-                        Height=""80""
-                        Stretch=""Fill"" />
-                    <Button
-                        Width=""60""
-                        Height=""80""
-                        VerticalAlignment=""Center""
-                        Background=""Transparent"" />
-                </Grid>
-                <StackPanel>
-                    <StackPanel Orientation=""Horizontal"">
-                        <TextBlock
-                            Width=""70""
-                            Margin=""8,5,0,0""
-                            Text=""詞條名称："" />
-                        <TextBlock
-                            Width=""100""
-                            Margin=""0,5,0,0""
-                            Text=""111"">
-                        </TextBlock>
-                        <TextBlock Margin=""8,5,0,0"" Text=""詞條地址："" />
-                        <TextBlock
-                            Width=""500""
-                            Margin=""0,5,0,0""
-                            Text=""111"" />
-                    </StackPanel>
-                    <StackPanel Orientation=""Horizontal"">
-                        <TextBlock
-                            Width=""70""
-                            Margin=""8,5,0,0""
-                            Text=""發行日期："" />
-                        <TextBlock x:Name=""ReleaseDate"" Width=""100"" Margin=""0,5,0,0"">
-                        </TextBlock>
-                        <TextBlock
-                            Width=""70""
-                            Margin=""8,5,0,0""
-                            Text=""分類："" />
-                        <TextBlock Width=""180"" Margin=""0,5,0,0"">
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel x:Name=""sp_lp"" Orientation=""Horizontal"">
-                        <TextBlock
-                            Width=""70""
-                            Margin=""8,5,0,0""
-                            Text=""主演："" />
-                        <TextBlock Width=""100"" Margin=""0,5,0,0"">
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel Orientation=""Horizontal"">
-                        <RatingControl
-                            Margin=""8,2,0,0""
-                            HorizontalAlignment=""Right""
-                            Value=""5"" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-        </Grid>
-    </DataTemplate>
-";
-            var stringReader = new StringReader(xaml);
-            XmlReader xr = XmlReader.Create(stringReader);
-            DataTemplate dataTemplate = (DataTemplate)XamlReader.Load(xaml);
-            this.lv_edc.ItemTemplate = dataTemplate;
+
         }
 
         public static async Task<string> ShowDialog()
@@ -163,43 +84,101 @@ namespace OMDb.WinUI3.Dialogs
         private void SelectFolders_Click(object sender, RoutedEventArgs e)
         {
             var path = VM.SelectedEnrtyStorage.StoragePath;
-            this.ei.treeFolders.ItemsSource= FileHelper.FindFolderItems(path);
+            //this.ei.BasicGridView.ItemsSource= FileHelper.FindFolderItems(path).FirstOrDefault().Children.ToObservableCollection();
+            this.ei.VM.Root = FileHelper.FindFolderItems(path).FirstOrDefault();
+            this.ei.VM.CurrentFileInfos =new ObservableCollectionEx<ExplorerItem>(this.ei.VM.Root.Children);
+            this.ei.VM.PathStack.Clear();
+            this.ei.VM.PathStack.Add(System.IO.Path.GetFileName(path));
             this.flyGrid.Visibility= Visibility.Visible;
         }
 
         private void ReturnFolder_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var item in (List<string>)this.eic.ItemsSource)
+            var result = this.ei.BasicGridView.SelectedItems.ToList();
+            if (!result.IsNullOrEmptyOrWhiteSpace())
             {
-                EntryDetail ed = new EntryDetail();
-                ed.FullCoverImgPath = CommonService.GetCoverByPath(item);
-                VM.EntryDetailCollection.Add(ed);
+                foreach (var item in result)
+                {
+                    ExplorerItem exp = item as ExplorerItem;
+                    EntryDetail ed = new EntryDetail();
+                    ed.FullCoverImgPath = CommonService.GetCoverByPath(exp.Name);
+                    ed.Name = System.IO.Path.GetFileName(exp.Name);
+                    VM.EntryDetailCollection.Add(ed);
+                }
             }
-            this.ei.treeFolders.SelectedItems.Clear();
             this.btn_FolderPicker.Flyout.Hide();
-
-            var edc_it=lv_edc.ItemTemplate;
-            var edc_ict = lv_edc.ItemContainerTransitions;
-            var edc_i = lv_edc.Items;
-            var edc_dmp = lv_edc.DisplayMemberPath;
         }
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            this.ei.treeFolders.SelectedItems.Clear();
+            this.ei.BasicGridView.SelectedItems.Clear();
             this.btn_FolderPicker.Flyout.Hide();
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
-        {
-            List<string> lstEic= new List<string>();
-            foreach (var item in this.ei.treeFolders.SelectedItems)
-            {
-                var ei = (ExplorerItem)item;
-                lstEic.Add(ei.FullName);
 
+
+        private async void GetInfoBatch_Click(object sender, RoutedEventArgs e)
+        {
+            if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
+            //this.pr.IsActive = true;
+            //this.btn_GetInfoBatch.IsEnabled = false;
+            //(ObservableCollection<Models.EntryDetail>)
+            Stopwatch swTotal = new Stopwatch();
+            swTotal.Start();
+            foreach (EntryDetail item in this.lv_edc.SelectedItems)
+            {
+                Stopwatch sw=new Stopwatch();
+                sw.Start();
+                /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
+                this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
+
+                var entryInfo = new Dictionary<string, object>();
+                
+                //Dialogs.WatingDialog.Show("移动文件中");
+                entryInfo = await EntryInfoService.GetEntryInfo(item.Name, Convert.ToString(this.ddb.Content));
+                //Dialogs.WatingDialog.Hide();
+                try
+                {
+                    var coverStream = (MemoryStream)(entryInfo["封面"]);
+                    TempFileHelper.CreateTempImg(item.Name + ".jpg");
+                    FileStream fs = new FileStream(TempFileHelper.fullTempImgPath, FileMode.Create);
+                    coverStream.WriteTo(fs);
+                    fs.Close();
+                    item.FullCoverImgPath = TempFileHelper.fullTempImgPath;
+                    //Image_CoverImg.Source = ImgHelper.CreateBitmapImage(coverStream);
+                }
+                catch (Exception ex)
+                {
+                    Core.Helpers.LogHelper.Instance._logger.Error("封面" + ex.Message);
+                }
+
+                try
+                {
+                    item.Rate = Convert.ToDouble(entryInfo["评分"]);
+                }
+                catch (Exception ex)
+                {
+                    Core.Helpers.LogHelper.Instance._logger.Error("评分" + ex.Message);
+                }
+
+                try
+                {
+                    item.Date = Convert.ToDateTime(entryInfo["上映日期"]).ToShortDateString();
+                }
+                catch (Exception ex)
+                {
+                    Core.Helpers.LogHelper.Instance._logger.Error("上映日期"+ex.Message);
+                }
+                sw.Stop();
+                Core.Helpers.LogHelper.Instance._logger.Info($"获取“{item.Name}”信息耗时：{sw.Elapsed}");
             }
-            this.eic.ItemsSource = lstEic;
-            this.ei.treeFolders.SelectedItems.Clear();
+            swTotal.Stop();
+            Core.Helpers.LogHelper.Instance._logger.Info($"获取信息总耗时：{swTotal.Elapsed}");
+            //this.pr.IsActive = false;
+            //this.btn_GetInfo.IsEnabled = true;
+        }
+
+        private void ldv_edc_click(object sender, ItemClickEventArgs e)
+        {
             
         }
     }

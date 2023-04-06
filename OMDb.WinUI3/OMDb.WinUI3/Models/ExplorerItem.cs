@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OMDb.Core.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -286,5 +287,11 @@ namespace OMDb.WinUI3.Models
                 VerifyFaiedEventHandler -= value;
             }
         }
+
+        public bool IsCurrent { get; set; }
+        public bool IsExpanded { get; set; }
+        public string Path { get; set; }
+        public List<string> PathStack { get; }
+        public FileType Type { get; set; }
     }
 }

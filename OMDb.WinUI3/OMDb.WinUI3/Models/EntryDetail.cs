@@ -75,6 +75,21 @@ namespace OMDb.WinUI3.Models
             get => _pathMore;
             set => SetProperty(ref _pathMore, value);
         }
+
+        private string _date = DateTime.Now.ToShortDateString();
+        public string Date
+        {
+            get => _date;
+            set => SetProperty(ref _date, value);
+        }
+
+        private Double _rate = 0;
+        public Double Rate
+        {
+            get => _rate;
+            set => SetProperty(ref _rate, value);
+        }
+
         public static async Task<EntryDetail> CreateAsync(Core.Models.Entry entry)
         {
             var entryDetail = new EntryDetail(entry);
