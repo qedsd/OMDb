@@ -76,19 +76,6 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref _pathMore, value);
         }
 
-        private string _date = DateTime.Now.ToShortDateString();
-        public string Date
-        {
-            get => _date;
-            set => SetProperty(ref _date, value);
-        }
-
-        private Double _rate = 0;
-        public Double Rate
-        {
-            get => _rate;
-            set => SetProperty(ref _rate, value);
-        }
 
         public static async Task<EntryDetail> CreateAsync(Core.Models.Entry entry)
         {
@@ -223,9 +210,9 @@ namespace OMDb.WinUI3.Models
                     Core.Services.LabelService.ClearEntryLabel(Entry.EntryId);//清空词条标签
                     if (value != null)
                     {
-                        List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(_lpdbs.Count);
-                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = Entry.EntryId, LCId = p.LCId, DbId = Entry.DbId }));
-                        Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
+                        List<Core.DbModels.EntryLabelPropertyLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelPropertyLKDb>(_lpdbs.Count);
+                        _lpdbs.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelPropertyLKDb() { EntryId = Entry.EntryId, LPId = p.LPId, DbId = Entry.DbId }));
+                        Core.Services.LabelPropertyService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
             }

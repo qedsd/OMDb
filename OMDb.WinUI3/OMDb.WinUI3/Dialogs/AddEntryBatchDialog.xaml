@@ -125,7 +125,8 @@
                                             Margin="0,5,0,0"
                                             Text="{x:Bind FullEntryPath, Mode=OneWay}" />
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
+                                    
+                                    <!--<StackPanel Orientation="Horizontal">
                                         <TextBlock
                                             Width="70"
                                             Margin="8,5,0,0"
@@ -140,7 +141,7 @@
                                             Margin="8,2,0,0"
                                             HorizontalAlignment="Right"
                                             Value="{x:Bind Rate,Mode=OneWay}" />
-                                    </StackPanel>
+                                    </StackPanel>-->
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -151,70 +152,41 @@
         <Grid Grid.Row="1" Visibility="Visible">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="400"></ColumnDefinition>
+                    <ColumnDefinition Width="380"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ListView 
                     Grid.Column="0"
                     x:Name="ldv_edc"
                     Margin="0,20,0,0"
-                    ItemsSource="{x:Bind VM.EntryDetailCollection}"
+                    ItemsSource="{x:Bind VM.EntryDetailCollection,Mode=TwoWay}"
                     ItemClick="ldv_edc_click"
+                    SelectionChanged="ldv_edc_SelectionChanged"
                     SelectionMode="Extended">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:EntryDetail">
-                            <Grid Height="100" HorizontalAlignment="Left">
+                            <Grid Height="30" HorizontalAlignment="Left">
                                 <StackPanel Orientation="Horizontal">
                                     <Grid>
-                                        <Image
+                                        <controls:ImageEx
                                         x:Name="Image_CoverImg"
-                                        Width="60"
-                                        Height="80"
+                                        Width="30"
+                                        Height="30"
+                                        CornerRadius="999"
                                         Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
                                         Stretch="Fill" />
-                                        <Button
-                                        Width="60"
-                                        Height="80"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent" />
                                     </Grid>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                            <TextBlock
+                                            <!--<TextBlock
                                             Width="70"
                                             Margin="8,5,0,0"
-                                            Text="詞條名称：" />
+                                            Text="詞條名称：" />-->
                                             <TextBlock
                                             Width="100"
-                                            Margin="0,5,0,0"
+                                            Margin="8,5,0,0"
                                             Text="{x:Bind Name, Mode=OneWay}">
                                             </TextBlock>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="詞條地址：" />
-                                            <TextBlock
-                                            Width="500"
-                                            Margin="0,5,0,0"
-                                            Text="{x:Bind FullEntryPath, Mode=OneWay}" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock
-                                            Width="70"
-                                            Margin="8,5,0,0"
-                                            Text="發行日期：" />
-                                            <TextBlock 
-                                            Width="100" 
-                                            Margin="0,5,0,0"
-                                            Text="{x:Bind Date, Mode=OneWay}" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <RatingControl
-                                            Margin="8,2,0,0"
-                                            HorizontalAlignment="Right"
-                                            Value="{x:Bind Rate,Mode=OneWay}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -222,10 +194,123 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Grid Grid.Column="1">
-                    <myControls:EntryDetailControl x:DefaultBindMode="OneWay" x:Name="edc">
-                        
-                    </myControls:EntryDetailControl>
+                <Grid Grid.Column="1" x:Name="grid_entryDetail">
+                    <Grid Margin="0,20,0,0">
+                        <!--  倉庫名稱+詞條名稱  -->
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                        Height="128"
+                        VerticalAlignment="Top"
+                        Background="Transparent"
+                        Click="Button_CoverImg_Click">
+                                    <Grid>
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <SymbolIcon Symbol="Add" />
+                                            <TextBlock Margin="0,10,0,0" Text="添加封面图" />
+                                        </StackPanel>
+                                        <controls:ImageEx
+                                            x:Name="Image_CoverImg"
+                                            Width="91"
+                                            Stretch="UniformToFill" />
+                                    </Grid>
+                                </Button>
+
+
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox
+                                            x:Name="tb_ctmc"
+                            Grid.Column="1"
+                            Width="435"
+                            Height="20"
+                            Margin="10,0,12,0"
+                            PlaceholderText="词条名称"
+                            Text="{x:Bind VM_Detail.EntryDetail.Name, Mode=TwoWay}"
+                            TextChanged="EntryName_TextChanged" />
+                                    </StackPanel>
+
+
+                                    <!--  路径  -->
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal"  Margin="14,10,0,0">
+                                            <TextBlock Margin="0,0,0,0" Text="詞條路徑："/>
+                                            <TextBlock
+                                                x:Name="tb_ctlj"
+                                Width="960"
+                                Margin="0,0,0,0"
+                                Text="{Binding VM_Detail.EntryDetail.FullEntryPath, Mode=TwoWay}" />
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="14,10,0,0">
+                                            <TextBlock
+                                Width="87"
+                                Margin="0,0,0,0"
+                                Text="存储模式：" />
+
+                                            <TextBlock
+                                                x:Name="tb_ccms"
+                                Width="960"
+                                Margin="0,0,0,0">
+                                                
+                                            </TextBlock>
+                                        </StackPanel>
+
+
+                                        <StackPanel Orientation="Horizontal" Margin="14,10,0,0">
+                                            <TextBlock
+                                Width="87"
+                                Margin="0,0,0,0"
+                                Text="资源路径：" />
+                                            <TextBlock
+                                x:Name="PointFolder"
+                                Width="960"
+                                Margin="0,0,0,0">
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel x:Name="stp">
+                                <StackPanel Orientation="Horizontal">
+                                    <!--  上映日期  -->
+                                    <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
+                                        <TextBlock Margin="8,5,17,0" Text="上映日期：" />
+                                        <CalendarDatePicker Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
+                                            <CalendarDatePicker.RenderTransform>
+                                                <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
+                                            </CalendarDatePicker.RenderTransform>
+                                        </CalendarDatePicker>
+                                    </StackPanel>
+
+                                    <!--  評分  -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                        <TextBlock
+                                        Width="87"
+                                        Margin="29,5,5,0"
+                                        Text="評分：" />
+                                        <RatingControl
+                                        Margin="0,3,0,0"
+                                        HorizontalAlignment="Left"
+                                        Value="{x:Bind VM_Detail.MyRating, Mode=TwoWay}" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+
+
+
+                            <!--  标签  -->
+
+                            <StackPanel Margin="10,10,0,0">
+                                <TextBlock Text="标签" />
+                                <myControls:LabelsControl
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Labels="{x:Bind VM_Detail.Labels, Mode=TwoWay}"
+                            Mode="Add" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

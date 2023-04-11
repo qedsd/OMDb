@@ -15,7 +15,9 @@ using OMDb.Core.Services.PluginsService;
 using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
+using OMDb.WinUI3.Services.Settings;
 using OMDb.WinUI3.ViewModels;
 using Org.BouncyCastle.Utilities;
 using System;
@@ -41,10 +43,13 @@ namespace OMDb.WinUI3.Dialogs
     /// </summary>
     public sealed partial class AddEntryBatchDialog : Page
     {
-        public AddEntryBatchViewModel VM=new AddEntryBatchViewModel();
+        public AddEntryBatchViewModel VM = new AddEntryBatchViewModel();
+
+        public ViewModels.EditEntryViewModel VM_Detail = new EditEntryViewModel(null);
         public AddEntryBatchDialog()
         {
             this.InitializeComponent();
+            this.LoadLabelControl();
             if (PluginsBaseService.EntryInfos.Count() > 0)
             {
                 this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
@@ -86,10 +91,10 @@ namespace OMDb.WinUI3.Dialogs
             var path = VM.SelectedEnrtyStorage.StoragePath;
             //this.ei.BasicGridView.ItemsSource= FileHelper.FindFolderItems(path).FirstOrDefault().Children.ToObservableCollection();
             this.ei.VM.Root = FileHelper.FindFolderItems(path).FirstOrDefault();
-            this.ei.VM.CurrentFileInfos =new ObservableCollectionEx<ExplorerItem>(this.ei.VM.Root.Children);
+            this.ei.VM.CurrentFileInfos = new ObservableCollectionEx<ExplorerItem>(this.ei.VM.Root.Children);
             this.ei.VM.PathStack.Clear();
             this.ei.VM.PathStack.Add(System.IO.Path.GetFileName(path));
-            this.flyGrid.Visibility= Visibility.Visible;
+            this.flyGrid.Visibility = Visibility.Visible;
         }
 
         private void ReturnFolder_Click(object sender, RoutedEventArgs e)
@@ -103,6 +108,9 @@ namespace OMDb.WinUI3.Dialogs
                     EntryDetail ed = new EntryDetail();
                     ed.FullCoverImgPath = CommonService.GetCoverByPath(exp.Name);
                     ed.Name = System.IO.Path.GetFileName(exp.Name);
+                    ed.FullEntryPath = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
+                    ed.Entry = new Core.Models.Entry();
+                    ed.Entry.DbId = VM.SelectedEnrtyStorage.StorageName;
                     VM.EntryDetailCollection.Add(ed);
                 }
             }
@@ -126,13 +134,13 @@ namespace OMDb.WinUI3.Dialogs
             swTotal.Start();
             foreach (EntryDetail item in this.lv_edc.SelectedItems)
             {
-                Stopwatch sw=new Stopwatch();
+                Stopwatch sw = new Stopwatch();
                 sw.Start();
                 /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
                 this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
 
                 var entryInfo = new Dictionary<string, object>();
-                
+
                 //Dialogs.WatingDialog.Show("移动文件中");
                 entryInfo = await EntryInfoService.GetEntryInfo(item.Name, Convert.ToString(this.ddb.Content));
                 //Dialogs.WatingDialog.Hide();
@@ -153,7 +161,7 @@ namespace OMDb.WinUI3.Dialogs
 
                 try
                 {
-                    item.Rate = Convert.ToDouble(entryInfo["评分"]);
+                    //item.Rate = Convert.ToDouble(entryInfo["评分"]);
                 }
                 catch (Exception ex)
                 {
@@ -162,11 +170,11 @@ namespace OMDb.WinUI3.Dialogs
 
                 try
                 {
-                    item.Date = Convert.ToDateTime(entryInfo["上映日期"]).ToShortDateString();
+                    //item.Date = Convert.ToDateTime(entryInfo["上映日期"]).ToShortDateString();
                 }
                 catch (Exception ex)
                 {
-                    Core.Helpers.LogHelper.Instance._logger.Error("上映日期"+ex.Message);
+                    Core.Helpers.LogHelper.Instance._logger.Error("上映日期" + ex.Message);
                 }
                 sw.Stop();
                 Core.Helpers.LogHelper.Instance._logger.Info($"获取“{item.Name}”信息耗时：{sw.Elapsed}");
@@ -179,7 +187,107 @@ namespace OMDb.WinUI3.Dialogs
 
         private void ldv_edc_click(object sender, ItemClickEventArgs e)
         {
-            
+
+        }
+
+        private void EntryName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_CoverImg_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+
+        private void LoadLabelControl()
+        {
+            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lpids = new List<string>();//属性标签
+            var lcids = new List<string>();//分类标签
+
+            if (lst_label_lp.Count > 0)
+            {
+                foreach (var item in lst_label_lp)
+                {
+                    var lp = new Models.LabelProperty(item);
+                    //根据词条&属性数据の关联关系 设置 □√
+                    if (lpids.Count > 0 && lpids.Contains(item.LPId))
+                        lp.IsChecked = true;
+                    VM_Detail.Label_Property.Add(lp);
+                }
+                var lstBaba = VM_Detail.Label_Property.Where(a => a.LPDb.Level == 1);
+                int n = 2;//第1列 or 第2列
+                StackPanel stack = new StackPanel();
+                stack.Orientation = Orientation.Horizontal;
+                foreach (var item in lstBaba)
+                {
+                    //第一列
+                    if (n % 2 == 0)
+                    {
+                        if (n != 2)
+                        {
+                            stack = new StackPanel();
+                            stack.Orientation = Orientation.Horizontal;
+                        }
+                        //属性 -> 标题
+                        TextBlock tBlock = new TextBlock()
+                        {
+                            Margin = new Thickness(8, 5, 0, 0),
+                            Text = item.LPDb.Name + "：",
+                            Width = 87
+                        };
+                        stack.Children.Add(tBlock);
+                        //属性 -> 属性
+                        var lbc = new LabelsProPertyControl();
+                        lbc.Name = item.LPDb.Name;
+                        lbc.StrSelectItem.Text = item.LPDb.Name;
+                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        stack.Children.Add(lbc);
+                        n++;
+                        if (lstBaba.Count() == n - 2)
+                            stp.Children.Add(stack);
+                    }
+                    //第二列
+                    else
+                    {
+                        //属性 -> 标题
+                        TextBlock tBlock = new TextBlock()
+                        {
+                            Margin = new Thickness(-11, 5, 0, 0),
+                            Text = item.LPDb.Name + "：",
+                            Width = 87
+                        };
+                        stack.Children.Add(tBlock);
+                        //属性 -> 属性
+                        var lbc = new LabelsProPertyControl();
+                        lbc.Name = item.LPDb.Name;
+                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        stack.Children.Add(lbc);
+                        stp.Children.Add(stack);
+                        n++;
+                    }
+                }
+            }
+
+        }
+
+        private void ldv_edc_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.ldv_edc.SelectedItems.Count > 1) return;
+            if (this.ldv_edc.SelectedItems.Count < 1)
+            {
+                this.grid_entryDetail.Visibility = Visibility.Collapsed;
+                return;
+            }
+            var ed = this.ldv_edc.SelectedItems.FirstOrDefault() as EntryDetail;
+            //this.grid_entryDetail.Visibility = Visibility.Visible;
+            this.VM_Detail.Entry = ed.Entry;
+            this.VM_Detail.EntryDetail = ed;
+            this.VM_Detail.EntryDetail.Name = "123123";
+            this.ccms.Text = "folder"+ DateTime.Now;
         }
     }
 }
