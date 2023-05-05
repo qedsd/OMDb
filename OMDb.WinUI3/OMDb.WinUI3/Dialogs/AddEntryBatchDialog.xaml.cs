@@ -287,7 +287,7 @@ namespace OMDb.WinUI3.Dialogs
             this.VM_Detail.Entry = ed.Entry;
             this.VM_Detail.EntryDetail = ed;
             this.VM_Detail.EntryDetail.Name = "123123";
-            this.ccms.Text = "folder"+ DateTime.Now;
+            //this.ccms.Text = "folder"+ DateTime.Now;
         }
     }
 }
