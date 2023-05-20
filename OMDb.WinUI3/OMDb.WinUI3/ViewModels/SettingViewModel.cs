@@ -169,42 +169,7 @@ namespace OMDb.WinUI3.ViewModels
         }
 
 
-        public ICommand DbSelector_Delete => new RelayCommand<DbSource>(async (db) =>
-        {
-            /*var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
-            if (flag)
-            {
-                DbSelectorService.RemoveDbAsync(db.DbSourceDb.Id);
-                foreach (var item in DbsCollection)
-                {
-                    if (item.DbSourceDb.Id== db.DbSourceDb.Id)
-                    {
-                        DbsCollection.Remove(db);
-                    }
-                }            
-                LoadDbs();
-            }
-            else return;*/
-        });
 
-        public ICommand DbSelector_Edit => new RelayCommand<DbSource>(async (db) =>
-        {
-            /*dbName = await EditDbSource.ShowDialog(dbName);
-
-            if (dbName == null || dbName.Count() == 0)
-            {
-                Helpers.InfoHelper.ShowError("请输入DbName");
-            }
-            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
-            {
-                Helpers.InfoHelper.ShowError("已存在同名DbSource");
-            }
-            else
-            {
-                DbSelectorService.AddDbAsync(dbName);
-                LoadDbs();
-            }*/
-        });
 
 
     }

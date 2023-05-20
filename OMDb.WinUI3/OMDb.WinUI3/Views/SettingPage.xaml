@@ -14,7 +14,6 @@
     x:Name="sp"
     d:DataContext="{d:DesignInstance Type=viewmodels:SettingViewModel}"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
-    DataContextChanged="sp_DataContextChanged"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -29,7 +28,141 @@
             <TransitionCollection>
                 <EntranceThemeTransition FromVerticalOffset="50" IsStaggeringEnabled="True" />
             </TransitionCollection>
-        </StackPanel.ChildrenTransitions>
+        </StackPanel.ChildrenTransitions>        <controls:ExpandableSettingControl x:Name="DbSelectorConfig" x:Uid="Setting_DbSelectorConfig">
+            <controls:ExpandableSettingControl.ExpandableContent>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="30,10,0,0">
+                            <!--  刷新按钮  -->
+                            <Button
+                                x:Name="DbSelector_Refresh"
+                                Margin="0,0,0,0"
+                                Command="{x:Bind VM.DbSelector_Refresh}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72C;" />
+                            </Button>
+                            <!--  新增按钮  -->
+                            <Button
+                                x:Name="DbSelector_Add"
+                                Margin="15,0,0,0"
+                                Command="{x:Bind VM.DbSelector_Add}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;" />
+                            </Button>
+                            <!--  保存按钮  -->
+                            <Button
+                                x:Name="DbSelector_Save"
+                                Margin="15,0,0,0"
+                                Command="{x:Bind VM.DbSelector_Save}">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74E;" />
+                            </Button>
+                            <!--  编辑按钮  -->
+                            <Button
+                                x:Name="RadioButtonEditButton"
+                                Margin="15,0,0,0"
+                                Click="RadioButtonEditButton_Click">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE70F;" />
+                            </Button>
+                            <!--  删除按钮  -->
+                            <Button
+                                x:Name="RadioButtonDeleteButton"
+                                Margin="15,0,0,0"
+                                Click="RadioButtonDeleteButton_Click">
+                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74D;" />
+                            </Button>
+                        </StackPanel>
+                        <Grid
+                        x:Name="DbSelectorConfigGrid"
+                        Grid.Column="0"
+                        Margin="30,10,30,30">
+                            <RadioButtons
+                            x:Name="RadioButtonss"
+                            HorizontalAlignment="Left"
+                            Background="White"
+                            Header=""
+                            ItemsSource="{x:Bind VM.DbsCollection, Mode=TwoWay}"
+                            MaxColumns="5"
+                            SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
+                                <RadioButtons.ItemTemplate>
+                                    <DataTemplate x:DataType="models:DbSource">
+                                        <Interactivity:Interaction.Behaviors>
+                                            <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=RB}">
+                                                <Core:ChangePropertyAction
+                                                PropertyName="Visibility"
+                                                TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
+                                                Value="Visible" />
+                                            </Core:EventTriggerBehavior>
+                                            <Core:EventTriggerBehavior EventName="PointerExited" SourceObject="{Binding ElementName=RB}">
+                                                <Core:ChangePropertyAction
+                                                PropertyName="Visibility"
+                                                TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
+                                                Value="Collapsed" />
+                                            </Core:EventTriggerBehavior>
+                                        </Interactivity:Interaction.Behaviors>
+                                        <RadioButton
+                                        x:Name="RB"
+                                        Margin="5,0,10,0"
+                                        IsChecked="{x:Bind IsChecked, Mode=TwoWay}">
+                                            <Grid
+                                            x:Name="RadioButtonGrid"
+                                            Width="120"
+                                            Height="24">
+                                                <TextBlock
+                                                x:Name="RadioButtonText"
+                                                Text="{x:Bind DbSourceDb.DbName}" />
+                                                <!--  编辑按钮  -->
+                                                <!--<Button
+                                                x:Name="RadioButtonEditButton"
+                                                Width="24"
+                                                Margin="0,0,24,0"
+                                                Padding="0"
+                                                HorizontalAlignment="Right"
+                                                Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
+                                                BorderThickness="0"
+                                                Click="RadioButtonEditButton_Click"
+                                                Command="{Binding DbSelector_Edit}"
+                                                CommandParameter="{x:Bind}"
+                                                DataContextChanged="Button_DataContextChanged">
+                                                <TextBlock
+                                                    FontFamily="Segoe MDL2 Assets"
+                                                    Text="&#xE70F;"
+                                                    TextAlignment="Center" />
+                                            </Button>
+                                            -->
+                                                <!--  删除按钮  -->
+                                                <!--
+                                            <Button
+                                                x:Name="RadioButtonDeleteButton"
+                                                Width="24"
+                                                Padding="0"
+                                                HorizontalAlignment="Right"
+                                                Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
+                                                BorderThickness="0"
+                                                Click="RadioButtonDeleteButton_Click"
+                                                Command="{Binding DbSelector_Delete}"
+                                                CommandParameter="{x:Bind}"
+                                                DataContextChanged="RadioButtonDeleteButton_DataContextChanged">
+                                                <TextBlock
+                                                    FontFamily="Segoe MDL2 Assets"
+                                                    Text="&#xE74D;"
+                                                    TextAlignment="Center" />
+                                            </Button>-->
+                                            </Grid>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </RadioButtons.ItemTemplate>
+                            </RadioButtons>
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </controls:ExpandableSettingControl.ExpandableContent>
+        </controls:ExpandableSettingControl>
+
         <controls:ExpandableSettingControl x:Uid="Setting_Theme">
             <!--<controls:ExpandableSettingControl.Icon>
                 <fluent:FluentIconElement Symbol="PaintBrush20" />
@@ -120,126 +253,6 @@
                             Text="停用组件" />
                     </Grid>
 
-                </Grid>
-            </controls:ExpandableSettingControl.ExpandableContent>
-        </controls:ExpandableSettingControl>
-        <controls:ExpandableSettingControl x:Name="DbSelectorConfig" x:Uid="Setting_DbSelectorConfig">
-            <controls:ExpandableSettingControl.ExpandableContent>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="200" />
-                    </Grid.ColumnDefinitions>
-                    <Grid
-                        x:Name="DbSelectorConfigGrid"
-                        Grid.Column="0"
-                        Margin="30,30,30,30"
-                        DataContextChanged="Grid_DataContextChanged">
-                        <RadioButtons
-                            x:Name="RadioButtonss"
-                            Width="800"
-                            HorizontalAlignment="Left"
-                            Background="White"
-                            DataContextChanged="RadioButtonss_DataContextChanged"
-                            Header="DbSelector:"
-                            ItemsSource="{x:Bind VM.DbsCollection, Mode=TwoWay}"
-                            MaxColumns="5"
-                            SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
-                            <RadioButtons.ItemTemplate>
-                                <DataTemplate x:DataType="models:DbSource">
-                                    <Interactivity:Interaction.Behaviors>
-                                        <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=RB}">
-                                            <Core:ChangePropertyAction
-                                                PropertyName="Visibility"
-                                                TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
-                                                Value="Visible" />
-                                        </Core:EventTriggerBehavior>
-                                        <Core:EventTriggerBehavior EventName="PointerExited" SourceObject="{Binding ElementName=RB}">
-                                            <Core:ChangePropertyAction
-                                                PropertyName="Visibility"
-                                                TargetObject="{Binding ElementName=RadioButtonDeleteButton}"
-                                                Value="Collapsed" />
-                                        </Core:EventTriggerBehavior>
-                                    </Interactivity:Interaction.Behaviors>
-                                    <RadioButton
-                                        x:Name="RB"
-                                        Margin="5,0,10,0"
-                                        DataContextChanged="RadioButton_DataContextChanged"
-                                        IsChecked="{x:Bind IsChecked, Mode=TwoWay}">
-                                        <Grid
-                                            x:Name="RadioButtonGrid"
-                                            Width="120"
-                                            Height="24">
-                                            <TextBlock
-                                                x:Name="RadioButtonText"
-                                                DataContextChanged="TextBlock_DataContextChanged"
-                                                Text="{x:Bind DbSourceDb.DbName}" />
-                                            <!--  编辑按钮  -->
-                                            <Button
-                                                x:Name="RadioButtonEditButton"
-                                                Width="24"
-                                                Margin="0,0,30,0"
-                                                Padding="0"
-                                                HorizontalAlignment="Right"
-                                                Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
-                                                BorderThickness="0"
-                                                Click="RadioButtonEditButton_Click"
-                                                Command="{Binding DbSelector_Edit}"
-                                                CommandParameter="{x:Bind}"
-                                                DataContextChanged="Button_DataContextChanged">
-                                                <TextBlock
-                                                    FontFamily="Segoe MDL2 Assets"
-                                                    Text="&#xE70F;"
-                                                    TextAlignment="Center" />
-                                            </Button>
-                                            <!--  删除按钮  -->
-                                            <Button
-                                                x:Name="RadioButtonDeleteButton"
-                                                Width="24"
-                                                Padding="0"
-                                                HorizontalAlignment="Right"
-                                                Background="{Binding ElementName=RadioButtonGrid, Path=Background}"
-                                                BorderThickness="0"
-                                                Click="RadioButtonDeleteButton_Click"
-                                                Command="{Binding DbSelector_Delete}"
-                                                CommandParameter="{x:Bind}"
-                                                DataContextChanged="RadioButtonDeleteButton_DataContextChanged">
-                                                <TextBlock
-                                                    FontFamily="Segoe MDL2 Assets"
-                                                    Text="&#xE74D;"
-                                                    TextAlignment="Center" />
-                                            </Button>
-                                        </Grid>
-                                    </RadioButton>
-                                </DataTemplate>
-                            </RadioButtons.ItemTemplate>
-                        </RadioButtons>
-                    </Grid>
-
-                    <Grid Grid.Column="1">
-                        <StackPanel Orientation="Horizontal">
-                            <Button
-                                x:Name="DbSelector_Refresh"
-                                Margin="15,0,0,0"
-                                Command="{x:Bind VM.DbSelector_Refresh}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE72C;" />
-                            </Button>
-
-                            <Button
-                                x:Name="DbSelector_Add"
-                                Margin="15,0,0,0"
-                                Command="{x:Bind VM.DbSelector_Add}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE710;" />
-                            </Button>
-
-                            <Button
-                                x:Name="DbSelector_Save"
-                                Margin="15,0,0,0"
-                                Command="{x:Bind VM.DbSelector_Save}">
-                                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74E;" />
-                            </Button>
-                        </StackPanel>
-                    </Grid>
                 </Grid>
             </controls:ExpandableSettingControl.ExpandableContent>
         </controls:ExpandableSettingControl>

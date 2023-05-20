@@ -10,7 +10,7 @@
 
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <TextBlock Margin="2,5,4,0" Text="DBName: " />
+            <TextBlock Margin="2,5,4,0" Text="名称: " />
             <TextBox x:Name="DbName" Width="200" />
         </StackPanel>
     </Grid>

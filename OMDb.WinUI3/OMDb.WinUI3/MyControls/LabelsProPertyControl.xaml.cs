@@ -9,6 +9,7 @@ using OMDb.Core.Extensions;
 using OMDb.WinUI3.Events;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -34,9 +35,9 @@ namespace OMDb.WinUI3.MyControls
                 typeof(UserControl),
                 new PropertyMetadata(null, new PropertyChangedCallback(SetLabelPropertyCollection))
             );
-        public IEnumerable<Models.LabelProperty> LabelPropertyCollection
+        public ObservableCollection<Models.LabelProperty> LabelPropertyCollection
         {
-            get { return (IEnumerable<Models.LabelProperty>)GetValue(LabelPropertyCollectionProperty); }
+            get { return (ObservableCollection<Models.LabelProperty>)GetValue(LabelPropertyCollectionProperty); }
 
             set { SetValue(LabelPropertyCollectionProperty, value); }
         }
@@ -86,7 +87,7 @@ namespace OMDb.WinUI3.MyControls
                 var labelDbs = e.NewValue as IEnumerable<Core.DbModels.LabelPropertyDb>;
                 if (labelDbs != null)
                 {
-                    card.LabelPropertyCollection = new List<Models.LabelProperty>(labelDbs.Select(p => new Models.LabelProperty(p)));
+                    card.LabelPropertyCollection = new ObservableCollection<Models.LabelProperty>(labelDbs.Select(p => new Models.LabelProperty(p)));
                 }
             }
         }
@@ -106,6 +107,20 @@ namespace OMDb.WinUI3.MyControls
                 if (this.StrSelectItem.Text.Contains(item.LPDb.Name)) item.IsChecked = true;
                 else item.IsChecked = false;
             }
+        }
+
+        private void btn_Click(object sender, RoutedEventArgs e)
+        {
+            var lpc=LabelPropertyCollection.DepthClone<ObservableCollection<Models.LabelProperty>>();
+            lpc.Clear();
+            foreach (var item in LabelPropertyCollection)
+            {
+                if (!item.IsHiden)
+                {
+                    lpc.Add(item);
+                }
+            }
+            LabelPropertyCollection = lpc;
         }
     }
 }

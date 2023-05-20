@@ -33,7 +33,7 @@ namespace OMDb.WinUI3.Dialogs
         public static async Task<string> ShowDialog(string dbName = null)
         {
             MyContentDialog dialog = new MyContentDialog();
-            dialog.TitleTextBlock.Text = dbName == null ? "新增" : "编辑";
+            dialog.TitleTextBlock.Text = dbName == null ? "新增数据中心" : "编辑数据中心";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
             EditDbSource content = new EditDbSource(dbName);

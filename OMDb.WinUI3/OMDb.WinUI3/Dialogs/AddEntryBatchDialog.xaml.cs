@@ -111,6 +111,7 @@ namespace OMDb.WinUI3.Dialogs
                     ed.FullEntryPath = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
                     ed.Entry = new Core.Models.Entry();
                     ed.Entry.DbId = VM.SelectedEnrtyStorage.StorageName;
+                    ed.PathFolder = ((OMDb.WinUI3.Models.ExplorerItem)item).FullName;
                     VM.EntryDetailCollection.Add(ed);
                 }
             }
@@ -132,18 +133,14 @@ namespace OMDb.WinUI3.Dialogs
             //(ObservableCollection<Models.EntryDetail>)
             Stopwatch swTotal = new Stopwatch();
             swTotal.Start();
-            foreach (EntryDetail item in this.lv_edc.SelectedItems)
+            foreach (EntryDetail item in this.ldv_edc.SelectedItems)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
-                this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
-
                 var entryInfo = new Dictionary<string, object>();
 
-                //Dialogs.WatingDialog.Show("移动文件中");
                 entryInfo = await EntryInfoService.GetEntryInfo(item.Name, Convert.ToString(this.ddb.Content));
-                //Dialogs.WatingDialog.Hide();
+
                 try
                 {
                     var coverStream = (MemoryStream)(entryInfo["封面"]);
@@ -161,6 +158,7 @@ namespace OMDb.WinUI3.Dialogs
 
                 try
                 {
+                    item.Entry.MyRating = Convert.ToDouble(entryInfo["评分"]);
                     //item.Rate = Convert.ToDouble(entryInfo["评分"]);
                 }
                 catch (Exception ex)
@@ -170,6 +168,7 @@ namespace OMDb.WinUI3.Dialogs
 
                 try
                 {
+                    item.Entry.ReleaseDate= Convert.ToDateTime(entryInfo["上映日期"]);
                     //item.Date = Convert.ToDateTime(entryInfo["上映日期"]).ToShortDateString();
                 }
                 catch (Exception ex)
@@ -244,7 +243,7 @@ namespace OMDb.WinUI3.Dialogs
                         var lbc = new LabelsProPertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.StrSelectItem.Text = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>(); ;
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)
@@ -264,7 +263,7 @@ namespace OMDb.WinUI3.Dialogs
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
                         lbc.Name = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
                         n++;
@@ -282,12 +281,20 @@ namespace OMDb.WinUI3.Dialogs
                 this.grid_entryDetail.Visibility = Visibility.Collapsed;
                 return;
             }
+            this.grid_entryDetail.Visibility = Visibility.Visible;
             var ed = this.ldv_edc.SelectedItems.FirstOrDefault() as EntryDetail;
             //this.grid_entryDetail.Visibility = Visibility.Visible;
             this.VM_Detail.Entry = ed.Entry;
             this.VM_Detail.EntryDetail = ed;
-            this.VM_Detail.EntryDetail.Name = "123123";
+
+            this.tb_ctmc.Text = this.VM_Detail.EntryDetail.Name;//词条名称
+            this.tb_ctlj.Text = this.VM_Detail.EntryDetail.FullEntryPath; ;//词条路径
+            this.tb_ccms.Text = "指定文件夹";//存储模式
+            this.tb_zylj.Text = this.VM_Detail.EntryDetail.PathFolder;//资源路径
+            this.Image_CoverImg.Source = this.VM_Detail.EntryDetail.FullCoverImgPath;
             //this.ccms.Text = "folder"+ DateTime.Now;
         }
+
+
     }
 }

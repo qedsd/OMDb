@@ -124,7 +124,7 @@
     <value>主页组件配置</value>
   </data>
 	<data name="Setting_DbSelectorConfig.Title" xml:space="preserve">
-	<value>Db选择器</value>
+	<value>数据中心</value>
   </data>
 	<data name="Setting_PotplayerPlaylist.Description" xml:space="preserve">
     <value>PotPlayer播放列表文件路径</value>

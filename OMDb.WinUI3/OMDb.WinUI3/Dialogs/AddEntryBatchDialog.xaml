@@ -39,30 +39,29 @@
                     Content="选择文件夹">
                     <Button.Flyout>
                         <Flyout x:Name="fly" Placement="Bottom">
-                            <Grid
-                                x:Name="flyGrid"
-                                Width="400"
-                                Height="400">
+                            <Grid x:Name="flyGrid" Height="500">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="615" />
-                                    <RowDefinition Height="55" />
+                                    <RowDefinition Height="450" />
+                                    <RowDefinition Height="50" />
                                 </Grid.RowDefinitions>
-                                <Grid Grid.Row="0" Width="600">
+                                <Grid Grid.Row="0" Width="420">
                                     <myControls:ExplorerControl x:Name="ei" HorizontalAlignment="Left" />
+                                    <!--<Grid.RenderTransform>
+                                        <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
+                                    </Grid.RenderTransform>-->
                                 </Grid>
-                                <Grid Grid.Row="1" Margin="10,0,0,0">
+                                <Grid Grid.Row="1" Margin="10,10,0,0">
                                     <StackPanel Orientation="Horizontal">
-                                        <Button Click="ReturnFolder_Click" Content="确认" />
+                                        <Button
+                                            Margin="0,0,0,0"
+                                            Click="ReturnFolder_Click"
+                                            Content="确认" />
                                         <Button
                                             Margin="30,0,0,0"
                                             Click="Cancel_Click"
                                             Content="取消" />
-
                                     </StackPanel>
                                 </Grid>
-                                <Grid.RenderTransform>
-                                    <CompositeTransform ScaleX="0.6" ScaleY="0.6" />
-                                </Grid.RenderTransform>
 
                             </Grid>
                         </Flyout>
@@ -77,7 +76,11 @@
                     Width="200"
                     Margin="10,0,0,0"
                     Content="Email" />
-                <Button x:Name="btn_GetInfoBatch" Margin="10,0,0,0" Content="获取信息" Click="GetInfoBatch_Click"/>
+                <Button
+                    x:Name="btn_GetInfoBatch"
+                    Margin="10,0,0,0"
+                    Click="GetInfoBatch_Click"
+                    Content="获取信息" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="Collapsed">
@@ -112,8 +115,7 @@
                                         <TextBlock
                                             Width="100"
                                             Margin="0,5,0,0"
-                                            Text="{x:Bind Name, Mode=OneWay}">
-                                        </TextBlock>
+                                            Text="{x:Bind Name, Mode=OneWay}" />
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock
@@ -125,14 +127,14 @@
                                             Margin="0,5,0,0"
                                             Text="{x:Bind FullEntryPath, Mode=OneWay}" />
                                     </StackPanel>
-                                    
+
                                     <!--<StackPanel Orientation="Horizontal">
                                         <TextBlock
                                             Width="70"
                                             Margin="8,5,0,0"
                                             Text="發行日期：" />
-                                        <TextBlock 
-                                            Width="100" 
+                                        <TextBlock
+                                            Width="100"
                                             Margin="0,5,0,0"
                                             Text="{x:Bind Date, Mode=OneWay}" />
                                     </StackPanel>
@@ -152,15 +154,16 @@
         <Grid Grid.Row="1" Visibility="Visible">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="380"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="380" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ListView 
-                    Grid.Column="0"
+                <!--单据头-->
+                <ListView
                     x:Name="ldv_edc"
+                    Grid.Column="0"
                     Margin="0,20,0,0"
-                    ItemsSource="{x:Bind VM.EntryDetailCollection,Mode=TwoWay}"
                     ItemClick="ldv_edc_click"
+                    ItemsSource="{x:Bind VM.EntryDetailCollection, Mode=TwoWay}"
                     SelectionChanged="ldv_edc_SelectionChanged"
                     SelectionMode="Extended">
                     <ListView.ItemTemplate>
@@ -169,12 +172,12 @@
                                 <StackPanel Orientation="Horizontal">
                                     <Grid>
                                         <controls:ImageEx
-                                        x:Name="Image_CoverImg"
-                                        Width="30"
-                                        Height="30"
-                                        CornerRadius="999"
-                                        Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
-                                        Stretch="Fill" />
+                                            x:Name="Image_CoverImg"
+                                            Width="30"
+                                            Height="30"
+                                            CornerRadius="999"
+                                            Source="{x:Bind FullCoverImgPath, Mode=OneWay}"
+                                            Stretch="Fill" />
                                     </Grid>
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
@@ -183,10 +186,9 @@
                                             Margin="8,5,0,0"
                                             Text="詞條名称：" />-->
                                             <TextBlock
-                                            Width="100"
-                                            Margin="8,5,0,0"
-                                            Text="{x:Bind Name, Mode=OneWay}">
-                                            </TextBlock>
+                                                Width="100"
+                                                Margin="8,5,0,0"
+                                                Text="{x:Bind Name, Mode=OneWay}" />
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -194,17 +196,18 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <Grid Grid.Column="1" x:Name="grid_entryDetail">
+                <!--单据体-->
+                <Grid x:Name="grid_entryDetail" Grid.Column="1" Visibility="Collapsed">
                     <Grid Margin="0,20,0,0">
                         <!--  倉庫名稱+詞條名稱  -->
 
                         <StackPanel>
                             <StackPanel Orientation="Horizontal">
                                 <Button
-                        Height="128"
-                        VerticalAlignment="Top"
-                        Background="Transparent"
-                        Click="Button_CoverImg_Click">
+                                    Height="128"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    Click="Button_CoverImg_Click">
                                     <Grid>
                                         <StackPanel HorizontalAlignment="Center">
                                             <SymbolIcon Symbol="Add" />
@@ -222,51 +225,45 @@
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox
                                             x:Name="tb_ctmc"
-                            Grid.Column="1"
-                            Width="435"
-                            Height="20"
-                            Margin="10,0,12,0"
-                            PlaceholderText="词条名称"
-                            Text="{x:Bind VM_Detail.EntryDetail.Name, Mode=TwoWay}"
-                            TextChanged="EntryName_TextChanged" />
+                                            Grid.Column="1"
+                                            Width="435"
+                                            Height="20"
+                                            Margin="10,0,12,0"
+                                            PlaceholderText="词条名称"
+                                            Text="{x:Bind VM_Detail.EntryDetail.Name, Mode=TwoWay}"
+                                            TextChanged="EntryName_TextChanged" />
                                     </StackPanel>
 
 
                                     <!--  路径  -->
                                     <StackPanel>
-                                        <StackPanel Orientation="Horizontal"  Margin="14,10,0,0">
-                                            <TextBlock Margin="0,0,0,0" Text="詞條路徑："/>
+                                        <StackPanel Margin="14,10,0,0" Orientation="Horizontal">
+                                            <TextBlock Margin="0,0,0,0" Text="詞條路徑：" />
                                             <TextBlock
                                                 x:Name="tb_ctlj"
-                                Width="960"
-                                Margin="0,0,0,0"
-                                Text="{Binding VM_Detail.EntryDetail.FullEntryPath, Mode=TwoWay}" />
+                                                Width="960"
+                                                Margin="0,0,0,0"
+                                                Text="{Binding VM_Detail.EntryDetail.FullEntryPath, Mode=TwoWay}" />
                                         </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Margin="14,10,0,0">
+                                        <StackPanel Margin="14,10,0,0" Orientation="Horizontal">
                                             <TextBlock
-                                Width="87"
-                                Margin="0,0,0,0"
-                                Text="存储模式：" />
-
+                                                Margin="0,0,0,0"
+                                                Text="存储模式：" />
                                             <TextBlock
                                                 x:Name="tb_ccms"
-                                Width="960"
-                                Margin="0,0,0,0">
-                                                
-                                            </TextBlock>
+                                                Width="960"
+                                                Margin="0,0,0,0" />
                                         </StackPanel>
 
 
-                                        <StackPanel Orientation="Horizontal" Margin="14,10,0,0">
+                                        <StackPanel Margin="14,10,0,0" Orientation="Horizontal">
                                             <TextBlock
-                                Width="87"
-                                Margin="0,0,0,0"
-                                Text="资源路径：" />
+                                                Margin="0,0,0,0"
+                                                Text="资源路径：" />
                                             <TextBlock
-                                x:Name="PointFolder"
-                                Width="960"
-                                Margin="0,0,0,0">
-                                            </TextBlock>
+                                                x:Name="tb_zylj"
+                                                Width="960"
+                                                Margin="0,0,0,0" />
                                         </StackPanel>
                                     </StackPanel>
                                 </StackPanel>
@@ -276,7 +273,7 @@
                                     <!--  上映日期  -->
                                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                                         <TextBlock Margin="8,5,17,0" Text="上映日期：" />
-                                        <CalendarDatePicker Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
+                                        <CalendarDatePicker x:Name="tb_syrq" Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
                                             <CalendarDatePicker.RenderTransform>
                                                 <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
                                             </CalendarDatePicker.RenderTransform>
@@ -284,15 +281,16 @@
                                     </StackPanel>
 
                                     <!--  評分  -->
-                                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
                                         <TextBlock
-                                        Width="87"
-                                        Margin="29,5,5,0"
-                                        Text="評分：" />
+                                            Width="87"
+                                            Margin="29,5,5,0"
+                                            Text="評分：" />
                                         <RatingControl
-                                        Margin="0,3,0,0"
-                                        HorizontalAlignment="Left"
-                                        Value="{x:Bind VM_Detail.MyRating, Mode=TwoWay}" />
+                                            x:Name="tb_pf"
+                                            Margin="0,3,0,0"
+                                            HorizontalAlignment="Left"
+                                            Value="{x:Bind VM_Detail.MyRating, Mode=TwoWay}" />
                                     </StackPanel>
                                 </StackPanel>
                             </StackPanel>
@@ -304,10 +302,10 @@
                             <StackPanel Margin="10,10,0,0">
                                 <TextBlock Text="标签" />
                                 <myControls:LabelsControl
-                            Margin="0,4,0,0"
-                            HorizontalAlignment="Left"
-                            Labels="{x:Bind VM_Detail.Labels, Mode=TwoWay}"
-                            Mode="Add" />
+                                    Margin="0,4,0,0"
+                                    HorizontalAlignment="Left"
+                                    Labels="{x:Bind VM_Detail.Labels, Mode=TwoWay}"
+                                    Mode="Add" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>

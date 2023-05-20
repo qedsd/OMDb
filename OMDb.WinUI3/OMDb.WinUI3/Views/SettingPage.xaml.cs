@@ -108,49 +108,14 @@ namespace OMDb.WinUI3.Views
             e.DragUIOverride.IsGlyphVisible = false;
         }
 
-        private void RadioButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
 
-        }
-
-        private void Grid_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void Button_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void TextBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void RadioButtonDeleteButton_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-
-        private void sp_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        private void RadioButtonss_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-
-        }
-
-        //删除Db源点击事件
+        //删除数据中心点击事件
         private async void RadioButtonDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             var flag = await Dialogs.QueryDialog.ShowDialog("再次确认", "请确认是否删除");
             if (flag)
             {
-                var dbId = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.Id; 
+                var dbId = ((OMDb.WinUI3.Models.DbSource)this.RadioButtonss.SelectedItem).DbSourceDb.Id; 
                 Services.Settings.DbSelectorService.RemoveDbAsync(dbId);
                 VM.DbSelector_Refresh.Execute(null);
                 Helpers.InfoHelper.ShowSuccess("删除完成");
@@ -161,10 +126,11 @@ namespace OMDb.WinUI3.Views
             }
         }
 
-        //编辑Db源点击事件
+        //编辑数据中心点击事件
         private async void RadioButtonEditButton_Click(object sender, RoutedEventArgs e)
         {
-            var dbName = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName;
+            var dbName = ((OMDb.WinUI3.Models.DbSource)this.RadioButtonss.SelectedItem).DbSourceDb.DbName;
+            //var dbName = ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName;
             var dbName_New = await Dialogs.EditDbSource.ShowDialog(dbName);
 
             if (dbName_New == "04833378-22bb-465b-9582-fb1bab622de")

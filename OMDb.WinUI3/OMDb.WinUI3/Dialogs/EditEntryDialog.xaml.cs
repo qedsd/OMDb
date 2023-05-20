@@ -86,7 +86,7 @@ namespace OMDb.WinUI3.Dialogs
                         var lbc = new LabelsProPertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.StrSelectItem.Text = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)
@@ -106,7 +106,7 @@ namespace OMDb.WinUI3.Dialogs
                         //属性 -> 属性
                         var lbc = new LabelsProPertyControl();
                         lbc.Name = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId);
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
                         n++;

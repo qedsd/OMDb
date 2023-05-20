@@ -29,7 +29,6 @@
                     ItemClicked="BreadcrumbBar_ItemClicked"
                     >
                 </BreadcrumbBar>
-                <!--File Content-->
             </StackPanel>
         </Grid>
 
@@ -50,10 +49,10 @@
 
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:ExplorerItem">
-                    <Grid Width="80" Height="80" DoubleTapped="Grid_DoubleTapped">
+                    <Grid Width="48" Height="48" DoubleTapped="Grid_DoubleTapped">
                         <StackPanel>
-                            <FontIcon Grid.Row="1" Glyph="&#xED25;" FontSize="60"/>
-                            <TextBlock HorizontalAlignment="Center" Grid.Row="1" Text="{x:Bind Name}"></TextBlock>
+                            <FontIcon Grid.Row="1" Glyph="&#xED25;" FontSize="36"/>
+                            <TextBlock FontSize="10" HorizontalAlignment="Center" Grid.Row="1" Text="{x:Bind Name}"></TextBlock>
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

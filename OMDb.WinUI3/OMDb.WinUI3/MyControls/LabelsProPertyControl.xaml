@@ -24,6 +24,7 @@
             IsReadOnly="True" />
         <Button
             x:Name="btn"
+            Click="btn_Click"
             Margin="0,5,0,0"
             HorizontalAlignment="Right"
             BorderThickness="0">
@@ -33,9 +34,10 @@
             </Button.RenderTransform>
             <Button.Flyout>
                 <Flyout Closing="Flyout_Closing">
-                    <StackPanel>
+                    <StackPanel MaxHeight="250">
                         <ListView
                             Width="200"
+                            MaxHeight="200"
                             ItemsSource="{x:Bind LabelPropertyCollection, Mode=TwoWay}"
                             SelectionMode="None">
                             <ListView.ItemTemplate>
