@@ -50,77 +50,13 @@ namespace OMDb.WinUI3.Dialogs
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
-                List<string> result = new List<string>();
-                //数据库新增属性&属性数据 合并返回
-                foreach (var item in content.VM.DtData)
-                {
-                    //手动输入的属性数据
-                    if (item.LPId.IsNullOrEmptyOrWhiteSpace())
-                    {
-                        var childs = content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
-                        var lp_repeat = childs.Where(a => a.LPDb.Name.Equals(item.Name));
-                        //手输的属性数据是原有的：
-                        if (lp_repeat.Count() > 0)
-                        {
-                            result.Add(lp_repeat.FirstOrDefault().LPDb.LPId);
-                        }
-                        //手输新增
-                        else
-                        {
-                            item.LPId = Guid.NewGuid().ToString();
-                            item.DbSourceId = DbSelectorService.dbCurrentId;
-                            Core.Services.LabelPropertyService.AddLabel(item);
-                            var lpt = new LabelPropertyTree(item);
-                            content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
-                            result.Add(item.LPId);
-                        }
-                    }
-                    else 
-                    {
-                        result.Add(item.LPId);
-                    }
-
-                }
+                var result = new List<string>(); ;
+                result.Add(((OMDb.WinUI3.Models.LabelPropertyTree)content.ListView_LabelPropertyTrees.SelectedItem).LPDb.LPId);
                 return result;
             }
             else
             {
                 return null;
-            }
-        }
-
-        private void ImportLink_Click(object sender, RoutedEventArgs e)
-        {
-            var items = this.GridView_Current_LPEZCollection.SelectedItems;
-            var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-            foreach (var item in items)
-            {
-                var lpt=item as LabelPropertyTree;
-                VM.DtData.Add(lpt.LPDb);
-            }
-        }
-
-        private void BroomLink_Click(object sender, RoutedEventArgs e)
-        {
-            VM.DtData.Clear();
-        }
-
-        private void AddLink_Click(object sender, RoutedEventArgs e)
-        {
-            var lp = new LabelPropertyDb();
-            var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-            if (itemsRoot.IsNullOrEmptyOrWhiteSpace()) return;
-            lp.ParentId = itemsRoot.LPDb.LPId;
-            VM.DtData.Add(lp);
-        }
-
-        private void RemoveLink_Click(object sender, RoutedEventArgs e)
-        {
-            var items = this.Link_Table.SelectedItems.ToList();
-            foreach (var item in items)
-            {
-                var lp = (LabelPropertyDb)item;
-                var result=VM.DtData.Remove(lp);
             }
         }
     }

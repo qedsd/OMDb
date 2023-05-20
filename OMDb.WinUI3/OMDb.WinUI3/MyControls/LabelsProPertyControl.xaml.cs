@@ -42,6 +42,19 @@ namespace OMDb.WinUI3.MyControls
             set { SetValue(LabelPropertyCollectionProperty, value); }
         }
 
+        public static readonly DependencyProperty LabelPropertyCollectionNoHideProperty = DependencyProperty.Register
+            (
+                "LabelPropertyCollectionNoHide",
+                typeof(IEnumerable<Models.LabelProperty>),
+                typeof(UserControl),
+                new PropertyMetadata(null, new PropertyChangedCallback(SetLabelPropertyCollectionNoHide))
+            );
+        public ObservableCollection<Models.LabelProperty> LabelPropertyCollectionNoHide
+        {
+            get { return (ObservableCollection<Models.LabelProperty>)GetValue(LabelPropertyCollectionNoHideProperty); }
+
+            set { SetValue(LabelPropertyCollectionNoHideProperty, value); }
+        }
 
         private static void SetLabelPropertyCollection(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -51,22 +64,53 @@ namespace OMDb.WinUI3.MyControls
                 var labels = e.NewValue as IEnumerable<Models.LabelProperty>;
                 if (labels != null)
                 {
-                    var str= labels.Where(a=>a.IsChecked==true).Select(a=>a.LPDb.Name).ToList();
-                    card.StrSelectItem.Text = string.Join("/",str);
+                    var str = labels.Where(a => a.IsChecked == true).Select(a => a.LPDb.Name).ToList();
+                    card.StrSelectItem.Text = string.Join("/", str);
+                }
+            }
+        }
+
+        private static void SetLabelPropertyCollectionNoHide(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var card = d as LabelsProPertyControl;
+            if (card != null)
+            {
+                var labels_new = e.NewValue as IEnumerable<Models.LabelProperty>;
+                var labels_old = e.OldValue as IEnumerable<Models.LabelProperty>;
+                var labels=new List<Models.LabelProperty>();
+                if (labels_new != null)
+                {
+                    foreach (var label in labels_new)
+                    {
+                        labels.Add(label);
+                    }
+                }
+                if (labels_old != null)
+                {
+                    foreach (var label in labels_old)
+                    {
+                        labels.Add(label);
+                    }
+                }
+
+                if (labels != null)
+                {
+                    var str = labels.Where(a => a.IsChecked == true).Select(a => a.LPDb.Name).ToList();
+                    card.StrSelectItem.Text = string.Join("/", str);
                 }
             }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GlobalEvent.NotifyLPSChanged(null, new LPSEventArgs(LabelPropertyCollection.Where(a => a.IsChecked == true).ToList()));
-            if (LabelPropertyCollection != null)
+            GlobalEvent.NotifyLPSChanged(null, new LPSEventArgs(LabelPropertyCollection.ToList()));
+            if (LabelPropertyCollectionNoHide != null)
             {
-                var str = LabelPropertyCollection.Where(a => a.IsChecked == true).Select(a => a.LPDb.Name).ToList();
+                var str = LabelPropertyCollectionNoHide.Where(a => a.IsChecked == true).Select(a => a.LPDb.Name).ToList();
                 this.StrSelectItem.Text = string.Join("/", str);
             }
             this.btn.Flyout.Hide();
-            
+
         }
 
 
@@ -98,29 +142,38 @@ namespace OMDb.WinUI3.MyControls
             set { SetValue(LabelDbsProperty, value); }
         }
 
-        
+
 
         private void Flyout_Closing(FlyoutBase sender, FlyoutBaseClosingEventArgs args)
         {
-            foreach (var item in LabelPropertyCollection)
+            foreach (var item in LabelPropertyCollectionNoHide)
             {
-                if (this.StrSelectItem.Text.Contains(item.LPDb.Name)) item.IsChecked = true;
-                else item.IsChecked = false;
+                if (this.StrSelectItem.Text.Contains(item.LPDb.Name))
+                {
+                    item.IsChecked = true;
+                }
+                else
+                {
+                    item.IsChecked = false;
+                }
             }
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
         {
-            var lpc=LabelPropertyCollection.DepthClone<ObservableCollection<Models.LabelProperty>>();
-            lpc.Clear();
+            LabelPropertyCollectionNoHide = new ObservableCollection<Models.LabelProperty>();
+            LabelPropertyCollectionNoHide.Clear();
             foreach (var item in LabelPropertyCollection)
             {
                 if (!item.IsHiden)
                 {
-                    lpc.Add(item);
+                    LabelPropertyCollectionNoHide.Add(item);
+                }
+                if (item.IsHiden)
+                {
+                    item.IsChecked = false;
                 }
             }
-            LabelPropertyCollection = lpc;
         }
     }
 }

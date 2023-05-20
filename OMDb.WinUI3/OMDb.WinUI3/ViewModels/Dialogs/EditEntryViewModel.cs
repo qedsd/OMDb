@@ -152,30 +152,51 @@ namespace OMDb.WinUI3.ViewModels
         }
         private void GlobalEvent_UpdateLPSEvent(object sender, Events.LPSEventArgs lpe)
         {
+            var lp_checked=lpe.LPS.Where(a => a.IsChecked);
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
-            List<string> lpBabaIds= new List<string>();
-            foreach (var item in lpe.LPS)
+            var lst_label_lp_baba= lst_label_lp.Where(a => a.Level == 1);
+            if (lp_checked.Count() <= 0)
             {
-                var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
-                foreach (var lkid in lst_LK)
+                foreach (var item in Label_Property)
                 {
-                    lpBabaIds.Add(lst_label_lp.Where(a => a.LPId.Equals(lkid)).FirstOrDefault().ParentId);                
-                }
-                lpBabaIds = lpBabaIds.Distinct().ToList();
-                foreach (var lpbabaid in lpBabaIds)
-                {
-                    lst_label_lp.Where(a => a.ParentId.Equals(lpbabaid)).Where(a => lst_LK.Contains(a.LPId));
-                }
-                foreach (var lpdb in lst_label_lp)
-                {
-                    if (lpBabaIds.Contains(lpdb.ParentId))
+                    if (!lpe.LPS.Select(a => a.LPDb.LPId).Contains(item.LPDb.LPId))
                     {
-                        if (!lst_LK.Contains(lpdb.LPId))
+                        item.IsHiden = false;
+                    }
+                }
+            }
+            else 
+            {
+                foreach (var item in lp_checked)
+                {
+                    var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
+                    List<string> lpBabaIds = new List<string>();
+                    foreach (var lkid in lst_LK)
+                    {
+                        lpBabaIds.Add(lst_label_lp.Where(a => a.LPId.Equals(lkid)).FirstOrDefault().ParentId);
+                    }
+                    lpBabaIds = lpBabaIds.Distinct().ToList();
+                    foreach (var lpbabaid in lpBabaIds)
+                    {
+                        lst_label_lp.Where(a => a.ParentId.Equals(lpbabaid)).Where(a => lst_LK.Contains(a.LPId));
+                    }
+                    foreach (var lpdb in lst_label_lp)
+                    {
+                        if (lpBabaIds.Contains(lpdb.ParentId))
                         {
-                            Label_Property.Where(a=>a.LPDb.LPId== lpdb.LPId).FirstOrDefault().IsHiden = true;
+                            if (!lst_LK.Contains(lpdb.LPId))
+                            {
+                                Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsHiden = true;
+                                Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsChecked = false;
+                            }
+                            else 
+                            {
+
+                            }
                         }
                     }
                 }
+
             }
         }
 

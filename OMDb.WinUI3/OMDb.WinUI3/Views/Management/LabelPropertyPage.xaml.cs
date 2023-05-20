@@ -115,28 +115,6 @@ namespace OMDb.WinUI3.Views
             }
         }
 
-        private async void ADD_PropertyDataLink_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
-                return;
-            }
-            var result = await AddLabelPropertyLKDialog.ShowDialog();
-            if (result == null || !(result.Count > 0))
-            {
-                return;
-            }
-            else
-            {
-                Core.Services.LabelPropertyService.AddLabelPropertyLK(DbSelectorService.dbCurrentId, item.LPDb.LPId, result);
-                VM.Init();
-                var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
-                SetLinkTab(lst_LK);
-                Helpers.InfoHelper.ShowSuccess($"“{item.LPDb.Name}”添加关联成功");
-            }
-        }
 
         private void Delete_Property_Click(object sender, RoutedEventArgs e)
         {
@@ -276,6 +254,61 @@ namespace OMDb.WinUI3.Views
             {
                 this.Grid_LPEZ_Link.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private async void ADD_PropertyLink_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
+            if (item == null)
+            {
+                Helpers.InfoHelper.ShowMsg("请选择属性！");
+                return;
+            }
+            var result = await AddLabelPropertyLKDialog.ShowDialog();
+            if (result == null || !(result.Count > 0))
+            {
+                return;
+            }
+            if (result.FirstOrDefault()== item.LPDb.LPId)
+            {
+                Helpers.InfoHelper.ShowError($"Don't be connected oneself with oneself!");
+                return;
+            }
+            else
+            {
+                Core.Services.LabelPropertyService.AddLabelPropertyLK(DbSelectorService.dbCurrentId, item.LPDb.LPId, result);
+                VM.Init();
+                var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
+                SetLinkTab(lst_LK);
+                Helpers.InfoHelper.ShowSuccess($"“{item.LPDb.Name}”添加关联成功");
+            }
+        }
+        private async void ADD_PropertyDataLink_Click(object sender, RoutedEventArgs e)
+        {
+            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
+            if (item == null)
+            {
+                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
+                return;
+            }
+            var result = await AddLabelPropertyDataLKDialog.ShowDialog(item.LPDb.ParentId);
+            if (result == null || !(result.Count > 0))
+            {
+                return;
+            }
+            else
+            {
+                Core.Services.LabelPropertyService.AddLabelPropertyLK(DbSelectorService.dbCurrentId, item.LPDb.LPId, result);
+                VM.Init();
+                var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
+                SetLinkTab(lst_LK);
+                Helpers.InfoHelper.ShowSuccess($"“{item.LPDb.Name}”添加关联成功");
+            }
+        }
+
+        private void Delete_PropertyLink_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -62,9 +62,9 @@
                 <AppBarButton Icon="Add">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Click="ADD_Property_Click" Text="ADD Property" />
-                            <MenuFlyoutItem Click="ADD_PropertyData_Click" Text="ADD PropertyData" />
-                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="ADD PropertyDataLink" />
+                            <MenuFlyoutItem Click="ADD_Property_Click" Text="Add Property" />
+                            <MenuFlyoutItem Click="ADD_PropertyData_Click" Text="Add PropertyData" />
+                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="Add PropertyDataLink" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
@@ -81,6 +81,15 @@
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
                             <MenuFlyoutItem Click="Delete_Property_Click" Text="Delete Property" />
                             <MenuFlyoutItem Click="Delete_PropertyData_Click" Text="Delete PropertyData" />
+                        </MenuFlyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton Icon="Link">
+                    <AppBarButton.Flyout>
+                        <MenuFlyout Placement="LeftEdgeAlignedTop">
+                            <MenuFlyoutItem Click="ADD_PropertyLink_Click" Text="Add Property Link" />
+                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="Add PropertyDataLink" />
+                            <MenuFlyoutItem Click="Delete_PropertyLink_Click" Text="Delete PropertyLink" />
                             <MenuFlyoutItem Click="Delete_PropertyDataLink_Click" Text="Delete PropertyDataLink" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>

@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Data;
 using OMDb.WinUI3.Services.Settings;
 using System.ComponentModel.Design;
 using OMDb.Core.DbModels;
+using Org.BouncyCastle.Crypto;
 
 namespace OMDb.WinUI3.ViewModels
 {
@@ -33,7 +34,10 @@ namespace OMDb.WinUI3.ViewModels
         {
             Init();
         }
-
+        public LabelPropertyViewModel(string parentId)
+        {
+            Init(parentId);
+        }
 
         private ObservableCollection<LabelPropertyTree> _labelPropertyTrees;
         public ObservableCollection<LabelPropertyTree> LabelPropertyTrees
@@ -99,7 +103,41 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-
+        public async void Init(string parentId)
+        {
+            var lpdbs = await Core.Services.LabelPropertyService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
+            var lkids = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, parentId);
+            if (lpdbs != null)
+            {
+                Dictionary<string, LabelPropertyTree> dicLpdbs = new Dictionary<string, LabelPropertyTree>();
+                var root = lpdbs.Where(p => p.ParentId == null).Where(a=> lkids.Contains(a.LPId)).ToList();
+                if (root != null)
+                {
+                    foreach (var lp_Baba in root)
+                    {
+                        dicLpdbs.Add(lp_Baba.LPId, new LabelPropertyTree(lp_Baba));
+                    }
+                }
+                foreach (var lp in lpdbs)
+                {
+                    if (lp.ParentId != null)
+                    {
+                        if (dicLpdbs.TryGetValue(lp.ParentId, out var parent))
+                        {
+                            parent.Children.Add(new LabelPropertyTree(lp));
+                        }
+                    }
+                }
+                Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                {
+                    LabelPropertyTrees = new ObservableCollection<LabelPropertyTree>();
+                    foreach (var item in dicLpdbs)
+                    {
+                        LabelPropertyTrees.Add(item.Value);
+                    }
+                });
+            }
+        }
 
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
