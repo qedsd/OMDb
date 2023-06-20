@@ -115,7 +115,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(relativePath))
             {
-                EntryPath =  selectedEnrtyStorage.StoragePath+ relativePath;
+                EntryPath = System.IO.Path.Combine(selectedEnrtyStorage.StoragePath, relativePath);
             }
         }
         public EditEntryViewModel(Core.Models.Entry entry)

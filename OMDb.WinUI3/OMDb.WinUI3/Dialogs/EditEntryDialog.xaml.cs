@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
@@ -42,6 +43,26 @@ namespace OMDb.WinUI3.Dialogs
             VM = new ViewModels.EditEntryViewModel(entry);
             this.InitializeComponent();
 
+
+            #region 动态加载获取媒体信息服务
+            if (PluginsBaseService.EntryInfos.Count() > 0)
+            {
+                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
+                var mf = new MenuFlyout();
+                foreach (var item in PluginsBaseService.EntryInfos)
+                {
+                    MenuFlyoutItem mfl = new MenuFlyoutItem();
+                    mfl.Text = item.GetType().Assembly.GetName().Name;
+                    mfl.Click += (s, e) => { this.ddb.Content = mfl.Text; };
+                    mf.Items.Add(mfl);
+                }
+                this.ddb.Flyout = mf;
+            }
+            else this.ddb.Content = "无服务";
+            #endregion
+
+            #region 动态加载属性标签
+
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lst_label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
@@ -49,7 +70,6 @@ namespace OMDb.WinUI3.Dialogs
             if (entry != null) lpids = Core.Services.LabelPropertyService.GetLabelIdsOfEntry(entry.EntryId);
             if (entry != null) lcids = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
 
-            //VM.Label_Property = new List<Models.LabelProperty>();
             if (lst_label_lp.Count > 0)
             {
                 foreach (var item in lst_label_lp)
@@ -113,30 +133,35 @@ namespace OMDb.WinUI3.Dialogs
                     }
                 }
             }
-            //封面不为空 -> 设置封面
-            if (entry != null && entry.CoverImg != null) { Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg)); }
 
-            //編輯 -> 設置存儲模式+存儲地址+設置詞條絕對地址
+            #endregion
+
+            //封面不为空 -> 设置封面
+            if (entry != null && entry.CoverImg != null)
+                Image_CoverImg.Source = new BitmapImage(new Uri(VM.Entry.CoverImg));
+
+            #region 編輯 -> 設置存儲模式+存儲地址+設置詞條絕對地址  新增 -> 默認存儲模式為指定文件夾
+            //編輯->設置存儲模式 + 存儲地址 + 設置詞條絕對地址
             if (entry != null)
             {
                 switch (entry.SaveType)
                 {
-                    case '1':
+                    case SaveType.Folder:
                         {
                             this.SetFolder.IsChecked = true;
-                            var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId, FileType.Folder);
+                            var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId).Where(a => a.PathType == PathType.Folder);
                             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
                             if (s != null && !string.IsNullOrWhiteSpace(result?.FirstOrDefault()?.Path))
                                 PointFolder.Text = s + (result?.FirstOrDefault()?.Path.ToString());
                             break;
                         }
-                    case '2':
+                    case SaveType.Files:
                         {
                             this.SetFile.IsChecked = true;
-                            var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId, FileType.All);
+                            var result = Core.Services.EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
                             break;
                         }
-                    case '3':
+                    case SaveType.Local:
                         {
                             this.Local.IsChecked = true;
                             break;
@@ -148,38 +173,22 @@ namespace OMDb.WinUI3.Dialogs
                 VM.SetFullEntryPathByRelativePath(entry.Path);
                 VM.ReleaseDate = (DateTimeOffset)entry.ReleaseDate;
             }
-
-
-
             //新增 -> 默認存儲模式為指定文件夾
             else
             {
                 this.SetFolder.IsChecked = true;
             }
-
-            if (PluginsBaseService.EntryInfos.Count() > 0)
-            {
-                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
-                var mf = new MenuFlyout();
-                foreach (var item in PluginsBaseService.EntryInfos)
-                {
-                    MenuFlyoutItem mfl = new MenuFlyoutItem();
-                    mfl.Text = item.GetType().Assembly.GetName().Name;
-                    mfl.Click += (s, e) => { this.ddb.Content = mfl.Text; };
-                    mf.Items.Add(mfl);
-                }
-                this.ddb.Flyout = mf;
-            }
-            else this.ddb.Content = "无服务";
+            #endregion
 
 
 
-
-
-
+ 
 
 
         }
+
+
+
         /// <summary>
         /// 返回的entry的Path、CoverImg都为全路径
         /// </summary>
@@ -194,47 +203,45 @@ namespace OMDb.WinUI3.Dialogs
             EditEntryDialog content = new EditEntryDialog(entry);
             dialog.ContentFrame.Content = content;
 
-            //保存按鈕
+            //保存
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 //新增 or 編輯
                 if (entry == null)
                 {
                     entry = content.VM.Entry;
-                    //entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
                     entry.Name = content.VM.EntryName;
                     entry.DbId = content.VM.SelectedEnrtyStorage?.StorageName;
                 }
                 else
                 {
                     entry.CopyFrom(content.VM.Entry);
-                    //entry.Name = content.VM.EntryNames.FirstOrDefault(p => p.IsDefault)?.Name;
                     entry.Name = content.VM.EntryName;
                 }
                 var entryDetail = new Models.EntryDetail()
                 {
                     Entry = entry,
-                    //Names = content.VM.EntryNames.ToObservableCollection(),
                     Labels = content.VM.Labels.Select(p => p.LabelDb).ToList(),
-                    //FullCoverImgPath = content.VM.Entry.CoverImg,
                     FullEntryPath = content.VM.Entry.Path,
                 };
 
-                //根據存储模式，選擇存储地址
+                #region 存储模式 存储地址 
                 if (content.SetFolder.IsChecked == true)
                 {
-                    entryDetail.Entry.SaveType = '1';
+                    entryDetail.Entry.SaveType = SaveType.Folder;
                     entryDetail.PathFolder = content.PointFolder.Text;
                 }
                 else if (content.SetFile.IsChecked == true)
                 {
-                    entryDetail.Entry.SaveType = '2';
+                    entryDetail.Entry.SaveType = SaveType.Files;
                 }
                 else
                 {
-                    entryDetail.Entry.SaveType = '3';
+                    entryDetail.Entry.SaveType = SaveType.Local;
                 }
+                #endregion
 
+                #region 封面处理
                 //封面空
                 if (content.VM.Entry.CoverImg == null || content.VM.Entry.CoverImg.Length <= 0)
                 {
@@ -242,17 +249,17 @@ namespace OMDb.WinUI3.Dialogs
                     switch (entryDetail.Entry.SaveType)
                     {
                         //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
-                        case '1':
+                        case SaveType.Folder:
                             lstPath.Add(content.PointFolder.Text);
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, PathType.Folder);
                             break;
                         //封面空 -> 尋找指定地址中圖片 -> 尋找指定地址中視頻縮略圖 -> 設置默認封面
-                        case '2':
+                        case SaveType.Files:
                             //lstPath.AddRange()
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, PathType.Folder);
                             break;
                         //設置默認封面
-                        case '3':
+                        case SaveType.Local:
                             entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath();
                             break;
                         default:
@@ -264,12 +271,18 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     entryDetail.FullCoverImgPath = content.VM.Entry.CoverImg;
                 }
-                //保存：标签 -> 属性
-                var lst = content.VM.Label_Property.Where(a => a.IsChecked == true).Select(a => a.LPDb).ToList();
-                if (lst.Count > 0) entryDetail.Lpdbs.AddRange(lst);
+                #endregion
 
-
-
+                #region 词条关联属性标签数据 （1.关联原有的属性标签数据 2.新增属性标签数据并关联)
+                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPId.IsNullOrEmptyOrWhiteSpace()).Select(a => a.LPDb).ToList();
+                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPId.IsNullOrEmptyOrWhiteSpace()).Select(a => a.LPDb).ToList();
+                foreach (var item in lpdb_new)
+                    Core.Services.LabelPropertyService.AddLabel(item);
+                if (lpdb_original.Count > 0)
+                    entryDetail.Lpdbs.AddRange(lpdb_original);
+                if (lpdb_new.Count > 0)
+                    entryDetail.Lpdbs.AddRange(lpdb_new);
+                #endregion
 
                 return entryDetail;
             }
@@ -298,7 +311,7 @@ namespace OMDb.WinUI3.Dialogs
                 else
                 {
                     this.PointFolder.Text = folder.Path;
-                    VM.EntryName = folder.Path.SubString_A21("\\", 1, false, false);
+                    VM.EntryName = System.IO.Path.GetFileName(folder.Path);
                 }
             }
         }
@@ -311,10 +324,11 @@ namespace OMDb.WinUI3.Dialogs
             {
                 VM.Entry.CoverImg = file.Path;
                 Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));
+                SvgImageSourceLoadStatus adf;
             }
         }
 
-        
+
 
         private async void GetInfo_Click(object sender, RoutedEventArgs e)
         {
@@ -325,7 +339,7 @@ namespace OMDb.WinUI3.Dialogs
             var entryInfo = new Dictionary<string, object>();
             this.btn_GetInfo.IsEnabled = false;
             //Dialogs.WatingDialog.Show("移动文件中");
-            entryInfo =await EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
+            entryInfo = await EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
             //Dialogs.WatingDialog.Hide();
             this.pr.IsActive = false;
             this.btn_GetInfo.IsEnabled = true;
@@ -364,16 +378,30 @@ namespace OMDb.WinUI3.Dialogs
 
             try
             {
-                var lstBaba = VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
+                var lstBaba = this.VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
                 foreach (var ei in entryInfo)
                 {
-
                     if (lstBaba.Select(a => a.LPDb.Name).ToList().Contains(ei.Key))
                     {
                         string[] eiv = (string[])ei.Value;
                         var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
                         lbc.StrSelectItem.Text = string.Join("/", eiv);
+                        foreach (var item in eiv)
+                        {
+                            var lpdb = new LabelPropertyDb()
+                            {
+                                Name = item,
+                                ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPId,
+                                DbSourceId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbSourceId
+                            };
+                            var lp = new LabelProperty(lpdb);
+                            lp.IsChecked = true;
+                            lbc.LabelPropertyCollection.Add(lp);
+                            this.VM.Label_Property.Add(lp);
+                            //Core.Services.LabelPropertyService.AddLabel(lpdb);
+                        }
                     }
+
                 }
 
             }

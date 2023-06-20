@@ -11,6 +11,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
+using OMDb.Core.Services;
+using OMDb.Core.Enums;
 
 namespace OMDb.WinUI3.Services
 {
@@ -43,14 +46,8 @@ namespace OMDb.WinUI3.Services
                 //创建词条文件夹
                 InitFolder(entryDetail);
 
-                //數據庫 詞條路徑&圖片路徑 取相對地址
-                var coverType = Path.GetExtension(entryDetail.FullCoverImgPath);
-                entryDetail.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, $@"Cover{coverType}");
-                entryDetail.Entry.Path = PathService.EntryRelativePath(entryDetail.Entry);
-                //复制封面图(Cover)、并同步修改封面路径
-                string newFullImgCoverPath = Path.Combine(entryDetail.FullEntryPath, entryDetail.Entry.CoverImg);
-                if (newFullImgCoverPath != entryDetail.FullCoverImgPath) { File.Copy(entryDetail.FullCoverImgPath, newFullImgCoverPath, true); }
-                entryDetail.FullCoverImgPath = newFullImgCoverPath;
+
+
 
 
                 //创建元数据(MataData)
@@ -111,40 +108,22 @@ namespace OMDb.WinUI3.Services
         /// <summary>
         /// 保存至数据库
         /// </summary>
-        /// <param name="entry"></param>
+        /// <param name="ed"></param>
         /// <param name="entryNames"></param>
         /// <returns></returns>
-        private static async Task SaveToDbAsync(Models.EntryDetail entry)
+        private static async Task SaveToDbAsync(Models.EntryDetail ed)
         {
             await Task.Run(() =>
             {
-                Core.Services.EntryService.AddEntry(entry.Entry);//词条
-                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(entry.Entry.EntryId, entry.Entry.DbId, entry.Entry.Name);//更新或插入词条默认名称
-                switch (entry.Entry.SaveType)
-                {
-                    case '1':
-                        {
-                            //文件夾地址轉爲相對地址
-                            var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.Entry.DbId).StoragePath;
-                            entry.PathFolder = entry.PathFolder.Replace(s, null);
-                            Core.Services.EntrySourceSerivce.AddEntrySource_PathFolder(entry.Entry.EntryId, entry.PathFolder, entry.Entry.DbId);
-                            break;
-                        }
-                    case '2':
-                        {
-                            break;
-                        }
-                    default:
-                        break;
-                }
-                //
-                //添加分类标签
-                if (entry.Labels?.Count != 0)
-                {
-                    List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(entry.Labels.Count);
-                    entry.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = entry.Entry.EntryId, LCId = p.LCId, DbId = entry.Entry.DbId }));
-                    Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
-                }
+                Core.Services.EntryService.AddEntry(ed.Entry);//词条
+                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
+
+
+
+                TreatEntry(ed);//处理词条主表Entry
+                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatLabelLink(ed);//词条标签关联表
+
             });
         }
 
@@ -159,40 +138,14 @@ namespace OMDb.WinUI3.Services
         {
             await Task.Run(() =>
             {
-
-                //封面变更
-                var coverType = Path.GetExtension(ed.Entry.CoverImg);
-                string newImgCoverPath = Path.Combine(ed.FullEntryPath, Services.ConfigService.InfoFolder, "Cover" + coverType);
-                if (!ed.Entry.CoverImg.Equals(newImgCoverPath)) File.Copy(ed.Entry.CoverImg, newImgCoverPath, true);
-                ed.Entry.CoverImg = ed.Entry.CoverImg.Replace(ed.Entry.CoverImg.SubString_A2B(@"\", @".", 1, 1, true, false), @"\Cover.");
-
-                //數據庫 詞條路徑&圖片路徑 取相對地址
-                ed.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, Path.GetFileName(ed.Entry.CoverImg));
-                ed.Entry.Path = PathService.EntryRelativePath(ed.Entry);
-
-                //数据库表Entry3更新
-                if (ed.Entry.SaveType.Equals('1'))
-                {
-                    var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == ed.Entry.DbId).StoragePath;
-                    ed.PathFolder = ed.PathFolder.Replace(s, null);
-                    Core.Services.EntrySourceSerivce.UpdateEntrySource_PathFolder(ed.Entry.EntryId, ed.PathFolder, ed.Entry.DbId);
-                }
-                else if (ed.Entry.SaveType.Equals('2'))
-                {
-                    List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();
-                    Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, ed.Entry.DbId);
-                }
-
-                //数据库Entry1、Entry2更新
+                //数据库主表and多语言表 更新
                 Core.Services.EntryService.UpdateEntry(ed.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
-                if (ed.Labels?.Count != 0)
-                {
-                    List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(ed.Labels.Count);
-                    ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = ed.Entry.EntryId, LCId = p.LCId, DbId = ed.Entry.DbId }));
-                    Core.Services.LabelService.ClearEntryLabel(ed.Entry.EntryId);//清空词条标签
-                    Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
-                }
+
+                TreatEntry(ed);//处理词条主表Entry
+                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatLabelLink(ed);//词条标签关联表
+
             });
         }
 
@@ -222,9 +175,57 @@ namespace OMDb.WinUI3.Services
             }
         }
 
-
-
-
+        private static void TreatLabelLink(EntryDetail ed)
+        {
+            if (ed.Labels?.Count != 0)
+            {
+                List<Core.DbModels.EntryLabelLKDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLKDb>(ed.Labels.Count);
+                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLKDb() { EntryId = ed.Entry.EntryId, LCId = p.LCId, DbId = ed.Entry.DbId }));
+                Core.Services.LabelService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
+                Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
+            }
+            if (ed.Lpdbs?.Count != 0)
+            {
+                List<Core.DbModels.EntryLabelPropertyLKDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLKDb>(ed.Lpdbs.Count);
+                ed.Lpdbs.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLKDb() { EntryId = ed.Entry.EntryId, LPId = p.LPId, DbId = ed.Entry.DbId }));
+                Core.Services.LabelPropertyService.ClearEntryLabel(ed.Entry.EntryId);//清空词条属性标签
+                Core.Services.LabelPropertyService.AddEntryLabel(entryLabelPropertyDbs);//添加词条属性标签
+            }
+        }
+        private static void TreatEntrySource(EntryDetail ed)
+        {
+            switch (ed.Entry.SaveType)
+            {
+                case SaveType.Folder:
+                    {
+                        //文件夾地址轉爲相對地址
+                        var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == ed.Entry.DbId).StoragePath;
+                        ed.PathFolder = ed.PathFolder.Remove(s);
+                        Core.Services.EntrySourceSerivce.AddEntrySource_PathFolder(ed.Entry.EntryId, ed.PathFolder, ed.Entry.DbId);
+                        break;
+                    }
+                case SaveType.Files:
+                    {
+                        List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();
+                        Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, ed.Entry.DbId);
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        private static void TreatEntry(EntryDetail ed)
+        {
+            #region 词条表：  詞條路徑 and 封面路徑 取相對地址保存
+            var coverType = Path.GetExtension(ed.FullCoverImgPath);//获取封面路径扩展名
+            ed.Entry.CoverImg = Path.Combine(Services.ConfigService.InfoFolder, $"Cover{coverType}");//db封面路径 相对词条（存入数据库)
+            ed.Entry.Path = PathService.EntryRelativePath(ed.Entry);//db词条路径 相对仓库（存入数据库)
+            string newFullImgCoverPath = Path.Combine(ed.FullEntryPath, ed.Entry.CoverImg);//封面 全路径
+            if (newFullImgCoverPath != ed.FullCoverImgPath)
+                System.IO.File.Copy(ed.FullCoverImgPath, newFullImgCoverPath, true);//覆盖保存封面
+            ed.FullCoverImgPath = newFullImgCoverPath;
+            #endregion
+        }
 
 
 

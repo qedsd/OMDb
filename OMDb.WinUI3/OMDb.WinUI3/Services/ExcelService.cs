@@ -344,20 +344,20 @@ namespace OMDb.WinUI3.Services
                     switch (saveMode)
                     {
                         case SaveType.Folder:
-                            edb.SaveType = '1';
+                            edb.SaveType = SaveType.Folder;
                             if (!strPath.StartsWith(enrtyStorage.StorageName, StringComparison.OrdinalIgnoreCase))
                                 strPath = string.Empty;
                             var esdb = new EntrySourceDb()
                             {
                                 EntryId = eid,
-                                FileType = '1',
+                                PathType = PathType.Folder,
                                 Id = Guid.NewGuid().ToString(),
                                 Path = strPath,
                             };
                             esdbs.Add(esdb);
                             break;
                         case SaveType.Files:
-                            edb.SaveType = '2';
+                            edb.SaveType = SaveType.Files;
                             var lstPath = strPath.Substring(1, strPath.Length - 2).Split(">,<").ToList();
                             foreach (var path in lstPath)
                             {
@@ -365,7 +365,7 @@ namespace OMDb.WinUI3.Services
                                 var esdb_s = new EntrySourceDb()
                                 {
                                     EntryId = eid,
-                                    FileType = CommonService.GetFileType(path),
+                                    PathType = CommonService.GetPathType(path),
                                     Id = Guid.NewGuid().ToString(),
                                     Path = path,
                                 };
@@ -373,7 +373,7 @@ namespace OMDb.WinUI3.Services
                             }
                             break;
                         case SaveType.Local:
-                            edb.SaveType = '3';
+                            edb.SaveType = SaveType.Local;
                             break;
                         default:
                             break;
@@ -428,18 +428,18 @@ namespace OMDb.WinUI3.Services
                     }
 
                     //封面路徑不正確
-                    if (edb.CoverImg == null || !System.IO.File.Exists(edb.CoverImg) || CommonService.GetFileType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
+                    if (edb.CoverImg == null || !System.IO.File.Exists(edb.CoverImg) || CommonService.GetPathType(edb.CoverImg).Equals('1'))//不存在该路径或该文件不为图片
                     {
                         List<string> lstPath = new List<string>();
                         switch (saveMode)
                         {
                             case SaveType.Folder:
                                 lstPath.Add(esdbs[0].Path);
-                                edb.CoverImg = CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                                edb.CoverImg = CommonService.GetCoverByPath(lstPath, PathType.Folder);
                                 break;
                             case SaveType.Files:
                                 if (esdbs.Count > 0)
-                                    edb.CoverImg = CommonService.GetCoverByPath(lstPath, FileType.Folder);
+                                    edb.CoverImg = CommonService.GetCoverByPath(lstPath, PathType.Folder);
                                 else
                                     edb.CoverImg = CommonService.GetCoverByPath();
                                 break;

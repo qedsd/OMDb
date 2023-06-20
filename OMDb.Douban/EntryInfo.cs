@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using OMDb.Core.Services;
 
 namespace OMDb.Douban
 {
@@ -92,7 +93,7 @@ namespace OMDb.Douban
             try
             {
                 var actorStr = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""info""]/span[3]").InnerText;
-                var actorStrSub = actorStr.Replace("主演: ", string.Empty);
+                var actorStrSub = actorStr.Remove("主演:").Remove(" ");
                 var actorArray = actorStrSub.Split("/");
                 dic.Add("主演", actorArray);
             }
@@ -108,7 +109,7 @@ namespace OMDb.Douban
             try
             {
                 var directorStr = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""info""]/span[1]").InnerText;
-                var directorStrSub = directorStr.Replace("导演: ", string.Empty);
+                var directorStrSub = directorStr.Remove("导演:").Remove(" ");
                 var directorArray = directorStrSub.Split("/");
                 dic.Add("导演", directorArray);
             }
@@ -153,7 +154,7 @@ namespace OMDb.Douban
                 var InfoStr = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""info""]").InnerText;
                 if (InfoStr.Contains("类型:"))
                 {
-                    var ist = InfoStr.Replace(" ", "").Replace("\n", "");
+                    var ist = InfoStr.Remove(" ").Remove("\n");
                     var stratIndex = ist.IndexOf("类型:") + "类型:".Length;
                     var endIndex = ist.IndexOf("制片国家");
                     var lenth = endIndex - stratIndex;

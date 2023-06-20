@@ -11,18 +11,18 @@ namespace OMDb.Core.Enums
     /// <summary>
     /// 文件類型
     /// </summary>
-    public enum FileType
+    public enum PathType
     {
         [Description("文件夾")]
         Folder,
         [Description("圖片文件")]
-        Img,
+        Image,
         [Description("視頻文件")]
         Video,
         [Description("視頻文件")]
         Audio,
         [Description("視頻文件")]
-        Sub,
+        VideoSub,
         [Description("其他文件")]
         More,
         [Description("全部文件")]

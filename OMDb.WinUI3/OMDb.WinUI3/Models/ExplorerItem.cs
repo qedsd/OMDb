@@ -292,6 +292,6 @@ namespace OMDb.WinUI3.Models
         public bool IsExpanded { get; set; }
         public string Path { get; set; }
         public List<string> PathStack { get; }
-        public FileType Type { get; set; }
+        public PathType Type { get; set; }
     }
 }

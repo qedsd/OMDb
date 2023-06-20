@@ -379,9 +379,7 @@ namespace OMDb.Core.Services
             {
                 entry.EntryId = Guid.NewGuid().ToString();
             }
-            entry.CoverImg = entry.CoverImg.Replace(entry.CoverImg.SubString_A2B(@"\", ".", 1, 1, true, false), @"\Cover.");
-            //EntryDb db = new EntryDb();
-            //db.CopyFrom<EntryDb>(entry);
+            entry.CoverImg = entry.CoverImg.GetDefaultCoverName();
             DbService.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
         }
 

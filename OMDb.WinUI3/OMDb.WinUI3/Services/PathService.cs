@@ -1,4 +1,5 @@
-﻿using OMDb.WinUI3.Services.Settings;
+﻿using OMDb.Core.Services;
+using OMDb.WinUI3.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +22,7 @@ namespace OMDb.WinUI3.Services
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return entry.Path.Replace(s.StoragePath, string.Empty);
+                return entry.Path.Remove(s.StoragePath+ "\\");
             }
             else
             {
@@ -41,7 +42,7 @@ namespace OMDb.WinUI3.Services
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return System.IO.Path.Combine(s.StoragePath + entry.Path, entry.CoverImg);
+                return System.IO.Path.Combine(s.StoragePath , entry.Path, entry.CoverImg);
             }
             else
             {
@@ -61,7 +62,7 @@ namespace OMDb.WinUI3.Services
             var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId);
             if (s != null && !string.IsNullOrEmpty(entry.Path))
             {
-                return System.IO.Path.Combine(s.StoragePath, ConfigService.DefaultEntryFolder, entry.Path);
+                return System.IO.Path.Combine(s.StoragePath, entry.Path);
             }
             else
             {

@@ -153,8 +153,8 @@ namespace OMDb.WinUI3.Views
             }
             else
             {
-                ((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb.DbName = dbName_New;
-                Services.Settings.DbSelectorService.EditDbAsync(((OMDb.WinUI3.Models.DbSource)((Microsoft.UI.Xaml.Controls.Primitives.ButtonBase)e.OriginalSource).CommandParameter).DbSourceDb);
+                ((OMDb.WinUI3.Models.DbSource)this.RadioButtonss.SelectedItem).DbSourceDb.DbName = dbName_New;
+                Services.Settings.DbSelectorService.EditDbAsync(((OMDb.WinUI3.Models.DbSource)this.RadioButtonss.SelectedItem).DbSourceDb);
                 Helpers.InfoHelper.ShowSuccess("编辑完成");
                 VM.DbSelector_Refresh.Execute(null);
             }

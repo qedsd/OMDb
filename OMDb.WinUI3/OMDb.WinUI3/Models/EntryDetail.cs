@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ICSharpCode.SharpZipLib.Core;
+using OMDb.Core.Enums;
 using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
@@ -24,25 +26,39 @@ namespace OMDb.WinUI3.Models
             Entry = entry.DepthClone<Core.Models.Entry>();
             Name = entry.Name;
             FullEntryPath = PathService.EntryFullPath(entry);
-            FullCoverImgPath =PathService.EntryCoverImgFullPath(entry);
+            FullCoverImgPath = PathService.EntryCoverImgFullPath(entry);
             FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
-            if (entry.SaveType.Equals('1') || entry.SaveType.Equals('2'))
+
+            var result = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
+            var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
+
+            switch (entry.SaveType)
             {
-                var result = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
-                if (result.Count > 0)
-                {
-                    var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
-                    if (s != null && !string.IsNullOrEmpty(entry.Path))
+                case SaveType.Folder:
                     {
-                        PathFolder =s+result.Where(a => a.FileType == '1').FirstOrDefault().Path;
-                        PathImg = result.Where(a => a.FileType == '2').Select(a =>s+a.Path).ToObservableCollection();
-                        PathVideo = result.Where(a => a.FileType == '3').Select(a =>s+a.Path).ToObservableCollection();
-                        PathAudio = result.Where(a => a.FileType == '4').Select(a =>s+a.Path).ToObservableCollection();
-                        PathMore = result.Where(a => a.FileType == '5').Select(a =>s+a.Path).ToObservableCollection();
+                        if (s != null && !string.IsNullOrEmpty(entry.Path))
+                            PathFolder = s + result.Where(a => a.PathType == PathType.Folder).FirstOrDefault().Path;
+                        break;
                     }
-                }
+
+                case SaveType.Files:
+                    {
+                        if (s != null && !string.IsNullOrEmpty(entry.Path))
+                        {
+                            PathImg = result.Where(a => a.PathType == PathType.Image).Select(a => s + a.Path).ToObservableCollection();
+                            PathVideo = result.Where(a => a.PathType == PathType.Video).Select(a => s + a.Path).ToObservableCollection();
+                            PathAudio = result.Where(a => a.PathType == PathType.VideoSub).Select(a => s + a.Path).ToObservableCollection();
+                            PathMore = result.Where(a => a.PathType == PathType.More).Select(a => s + a.Path).ToObservableCollection();
+                        }
+                        break;
+                    }
+                case SaveType.Local:
+                    break;
+                default:
+                    break;
             }
         }
+
         private string _pathFolder = string.Empty;
         public string PathFolder
         {
@@ -198,7 +214,7 @@ namespace OMDb.WinUI3.Models
             }
         }
 
-        private List<Core.DbModels.LabelPropertyDb> _lpdbs=new List<Core.DbModels.LabelPropertyDb>();
+        private List<Core.DbModels.LabelPropertyDb> _lpdbs = new List<Core.DbModels.LabelPropertyDb>();
         public List<Core.DbModels.LabelPropertyDb> Lpdbs
         {
             get => _lpdbs;
@@ -237,11 +253,11 @@ namespace OMDb.WinUI3.Models
 
 
 
-            if (this.Entry.SaveType == '1')
+            if (this.Entry.SaveType == SaveType.Folder)
             {
                 LoadPathFolder();
             }
-            else if ((this.Entry.SaveType == '2'))
+            else if ((this.Entry.SaveType == SaveType.Folder))
             {
 
             }

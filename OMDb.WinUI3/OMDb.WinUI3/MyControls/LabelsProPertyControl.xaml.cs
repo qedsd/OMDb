@@ -174,6 +174,11 @@ namespace OMDb.WinUI3.MyControls
                     item.IsChecked = false;
                 }
             }
+            if (LabelPropertyCollectionNoHide != null)
+            {
+                var str = LabelPropertyCollectionNoHide.Where(a => a.IsChecked == true).Select(a => a.LPDb.Name).ToList();
+                this.StrSelectItem.Text = string.Join("/", str);
+            }
         }
     }
 }

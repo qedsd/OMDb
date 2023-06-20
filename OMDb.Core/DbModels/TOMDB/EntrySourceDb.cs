@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using OMDb.Core.Enums;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace OMDb.Core.DbModels
 
         public string Path { get; set; }
 
-        public char FileType { get; set; }
+        public PathType PathType { get; set; }
 
         public EntrySourceDb()
         {

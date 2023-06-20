@@ -32,6 +32,7 @@ using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using static System.Net.WebRequestMethods;
+using OMDb.Core.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -106,7 +107,7 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     ExplorerItem exp = item as ExplorerItem;
                     EntryDetail ed = new EntryDetail();
-                    ed.FullCoverImgPath = CommonService.GetCoverByPath(exp.Name);
+                    ed.FullCoverImgPath = Services.CommonService.GetCoverByPath(exp.Name);
                     ed.Name = System.IO.Path.GetFileName(exp.Name);
                     ed.FullEntryPath = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
                     ed.Entry = new Core.Models.Entry();
