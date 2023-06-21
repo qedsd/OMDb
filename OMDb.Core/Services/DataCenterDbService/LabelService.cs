@@ -12,18 +12,18 @@ namespace OMDb.Core.Services
     {
         private static bool IsLocalDbValid()
         {
-            return DbService.LocalDb != null;
+            return DbService.DCDb != null;
         }
 
         /// <summary>
         /// 获取全部标签
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<LabelDb>> GetAllLabelAsync()
+        public static async Task<List<LabelClassDb>> GetAllLabelAsync()
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<LabelDb>().ToListAsync();
+                return await DbService.DCDb.Queryable<LabelClassDb>().ToListAsync();
             }
             else
             {
@@ -32,25 +32,25 @@ namespace OMDb.Core.Services
         }
 
 
-        public static async Task<List<LabelDb>> GetAllLabelAsync(string currentDb)
+        public static async Task<List<LabelClassDb>> GetAllLabelAsync(string currentDb)
         {
-            if (IsLocalDbValid()) return await DbService.LocalDb.Queryable<LabelDb>().Where(a => a.DbSourceId == currentDb).ToListAsync();
+            if (IsLocalDbValid()) return await DbService.DCDb.Queryable<LabelClassDb>().Where(a => a.DbCenterId == currentDb).ToListAsync();
             else return null;
         }
 
 
-        public static List<LabelDb> GetAllLabel(string currentDb)
+        public static List<LabelClassDb> GetAllLabel(string currentDb)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"select * from Label where DbSourceId='{0}'", currentDb);
-            return DbService.LocalDb.Ado.SqlQuery<LabelDb>(sb.ToString());
+            sb.AppendFormat(@"select * from Label where DbCenterId='{0}'", currentDb);
+            return DbService.DCDb.Ado.SqlQuery<LabelClassDb>(sb.ToString());
         }
 
         public static async Task<int> GetLabelCountAsync()
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<LabelDb>().CountAsync();
+                return await DbService.DCDb.Queryable<LabelClassDb>().CountAsync();
             }
             else
             {
@@ -62,11 +62,11 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="labelId"></param>
         /// <returns></returns>
-        public static async Task<LabelDb> GetLabel(string labelId)
+        public static async Task<LabelClassDb> GetLabel(string labelId)
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<LabelDb>().FirstAsync(p => p.LCId == labelId);
+                return await DbService.DCDb.Queryable<LabelClassDb>().FirstAsync(p => p.LCId == labelId);
             }
             else
             {
@@ -78,11 +78,11 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="labelIds"></param>
         /// <returns></returns>
-        public static List<LabelDb> GetLabels(List<string> labelIds)
+        public static List<LabelClassDb> GetLabels(List<string> labelIds)
         {
             if (IsLocalDbValid())
             {
-                return DbService.LocalDb.Queryable<LabelDb>().In(labelIds).ToList();
+                return DbService.DCDb.Queryable<LabelClassDb>().In(labelIds).ToList();
             }
             else
             {
@@ -94,11 +94,11 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="labelIds"></param>
         /// <returns></returns>
-        public static async Task<List<LabelDb>> GetLabelsAsync(List<string> labelIds)
+        public static async Task<List<LabelClassDb>> GetLabelsAsync(List<string> labelIds)
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<LabelDb>().In(labelIds).ToListAsync();
+                return await DbService.DCDb.Queryable<LabelClassDb>().In(labelIds).ToListAsync();
             }
             else
             {
@@ -115,7 +115,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.LocalDb.Queryable<EntryLabelLKDb>().Where(p => labelIds.Contains(p.LCId)).ToList().Select(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCId)).ToList().Select(p => p.EntryId).ToList();
                 return all.ToHashSet().ToList();
             }
             else
@@ -134,7 +134,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.LocalDb.Queryable<EntryLabelLKDb>().Where(p => p.LCId == labelId).ToList().Select(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.LCId == labelId).ToList().Select(p => p.EntryId).ToList();
                 return all.ToHashSet().ToList();
             }
             else
@@ -151,7 +151,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.LocalDb.Queryable<EntryLabelLKDb>().GroupBy(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().GroupBy(p => p.EntryId).ToList();
                 return all.Select(p => p.EntryId).ToList();
             }
             else
@@ -165,11 +165,11 @@ namespace OMDb.Core.Services
         /// <param name="dbid"></param>
         /// <param name="entryId"></param>
         /// <returns></returns>
-        public static async Task<List<LabelDb>> GetLabelOfEntryAsync(string entryId)
+        public static async Task<List<LabelClassDb>> GetLabelOfEntryAsync(string entryId)
         {
             if (IsLocalDbValid())
             {
-                var labelIds = await DbService.LocalDb.Queryable<EntryLabelLKDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToListAsync();
+                var labelIds = await DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToListAsync();
                 if (labelIds.Count != 0)
                 {
                     return await GetLabelsAsync(labelIds);
@@ -188,7 +188,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return DbService.LocalDb.Queryable<EntryLabelLKDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToList();
+                return DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToList();
             }
             else
             {
@@ -217,9 +217,9 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void ClearEntryLabel(string entryId)
         {
-            DbService.LocalDb.Deleteable<EntryLabelLKDb>(p => p.EntryId == entryId).ExecuteCommand();
+            DbService.DCDb.Deleteable<EntryLabelClassLinkDb>(p => p.EntryId == entryId).ExecuteCommand();
         }
-        public static async Task AddEntryLabelAsync(List<EntryLabelLKDb> entryLabeles)
+        public static async Task AddEntryLabelAsync(List<EntryLabelClassLinkDb> entryLabeles)
         {
             //使用事务确保数据统一
             await Task.Run(() =>
@@ -227,24 +227,24 @@ namespace OMDb.Core.Services
                 AddEntryLabel(entryLabeles);
             });
         }
-        public static void AddEntryLabel(List<EntryLabelLKDb> entryLabeles)
+        public static void AddEntryLabel(List<EntryLabelClassLinkDb> entryLabeles)
         {
-            DbService.LocalDb.Insertable(entryLabeles).ExecuteCommand();
+            DbService.DCDb.Insertable(entryLabeles).ExecuteCommand();
         }
-        public static async Task AddEntryLabelAsyn(EntryLabelLKDb entryLabel)
+        public static async Task AddEntryLabelAsyn(EntryLabelClassLinkDb entryLabel)
         {
             await Task.Run(() =>
             {
-                DbService.LocalDb.Insertable(entryLabel).ExecuteCommand();
+                DbService.DCDb.Insertable(entryLabel).ExecuteCommand();
             });
         }
-        public static void AddLabel(LabelDb labelDb)
+        public static void AddLabel(LabelClassDb labelDb)
         {
             if (string.IsNullOrEmpty(labelDb.LCId))
             {
                 labelDb.LCId = Guid.NewGuid().ToString();
             }
-            DbService.LocalDb.Insertable(labelDb).ExecuteCommand();
+            DbService.DCDb.Insertable(labelDb).ExecuteCommand();
         }
 
         public static void RemoveLabel(string labelId)
@@ -253,16 +253,16 @@ namespace OMDb.Core.Services
         }
         public static void RemoveLabel(List<string> labelIds)
         {
-            DbService.LocalDb.Deleteable<LabelDb>().In(labelIds).ExecuteCommand();
+            DbService.DCDb.Deleteable<LabelClassDb>().In(labelIds).ExecuteCommand();
             //清空关联的子分类
             //DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
-            DbService.LocalDb.Deleteable<LabelDb>().Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
-            DbService.LocalDb.Deleteable<EntryLabelLKDb>().Where(p => labelIds.Contains(p.LCId));//EntryLabelLKDb表是没有主键的，不能用in
+            DbService.DCDb.Deleteable<LabelClassDb>().Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
+            DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCId));//EntryLabelLKDb表是没有主键的，不能用in
         }
 
-        public static void UpdateLabel(LabelDb labelDb)
+        public static void UpdateLabel(LabelClassDb labelDb)
         {
-            DbService.LocalDb.Updateable(labelDb).ExecuteCommand();
+            DbService.DCDb.Updateable(labelDb).ExecuteCommand();
         }
     }
 }

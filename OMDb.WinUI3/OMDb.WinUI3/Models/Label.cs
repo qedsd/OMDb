@@ -9,14 +9,14 @@ namespace OMDb.WinUI3.Models
 {
     public class Label : ObservableObject
     {
-        public Core.DbModels.LabelDb LabelDb { get; set; }
+        public Core.DbModels.LabelClassDb LabelDb { get; set; }
         private bool isChecked;
         public bool IsChecked
         {
             get => isChecked;
             set=>SetProperty(ref isChecked, value);
         }
-        public Label(Core.DbModels.LabelDb labelDb)
+        public Label(Core.DbModels.LabelClassDb labelDb)
         {
             LabelDb = labelDb;
             isChecked = false;

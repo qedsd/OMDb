@@ -30,9 +30,14 @@ namespace OMDb.Core
             Services.DbService.Dbs.Clear();
         }
 
-        public static bool InitLocalDb(string filePath)
+        public static bool InitMCDb(string filePath)
         {
-            return DbService.SetLocalDb($"DataSource={filePath}");
+            return DbService.SetMCDb($"DataSource={filePath}");
+        }
+
+        public static bool InitDCDb(string filePath)
+        {
+            return DbService.SetDCDb($"DataSource={filePath}");
         }
 
         /// <summary>

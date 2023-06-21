@@ -70,7 +70,7 @@ namespace OMDb.WinUI3.Dialogs
                         else
                         {
                             item.LPId = Guid.NewGuid().ToString();
-                            item.DbSourceId = DbSelectorService.dbCurrentId;
+                            item.DbCenterId = DbSelectorService.dbCurrentId;
                             Core.Services.LabelPropertyService.AddLabel(item);
                             var lpt = new LabelPropertyTree(item);
                             content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);

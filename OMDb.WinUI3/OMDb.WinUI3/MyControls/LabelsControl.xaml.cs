@@ -47,11 +47,11 @@ namespace OMDb.WinUI3.MyControls
                     }
                     if(card.Mode == LabelControlMode.Add)
                     {
-                        list.Add(new Models.Label(new Core.DbModels.LabelDb() { Name = "+"}) { IsTemp = true,IsChecked = true});
+                        list.Add(new Models.Label(new Core.DbModels.LabelClassDb() { Name = "+"}) { IsTemp = true,IsChecked = true});
                     }
                     else if(card.Mode == LabelControlMode.Selecte)
                     {
-                        list.Insert(0,new Models.Label(new Core.DbModels.LabelDb() { Name = "全选" }) { IsTemp = true, IsChecked = true });
+                        list.Insert(0,new Models.Label(new Core.DbModels.LabelClassDb() { Name = "全选" }) { IsTemp = true, IsChecked = true });
                     }
                     card.GridView_Label.ItemsSource = list;
                     card.GridViewItemsSource = list;
@@ -74,7 +74,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty LabelDbsProperty = DependencyProperty.Register
            (
            "LabelDbs",
-           typeof(IEnumerable<Core.DbModels.LabelDb>),
+           typeof(IEnumerable<Core.DbModels.LabelClassDb>),
            typeof(UserControl),
            new PropertyMetadata(null, new PropertyChangedCallback(SetLabelDbs))
            );
@@ -83,16 +83,16 @@ namespace OMDb.WinUI3.MyControls
             var card = d as LabelsControl;
             if (card != null)
             {
-                var labelDbs = e.NewValue as IEnumerable<Core.DbModels.LabelDb>;
+                var labelDbs = e.NewValue as IEnumerable<Core.DbModels.LabelClassDb>;
                 if(labelDbs != null)
                 {
                     card.Labels = new List<Models.Label>(labelDbs.Select(p=>new Models.Label(p)));
                 }
             }
         }
-        public IEnumerable<Core.DbModels.LabelDb> LabelDbs
+        public IEnumerable<Core.DbModels.LabelClassDb> LabelDbs
         {
-            get { return (IEnumerable<Core.DbModels.LabelDb>)GetValue(LabelDbsProperty); }
+            get { return (IEnumerable<Core.DbModels.LabelClassDb>)GetValue(LabelDbsProperty); }
 
             set { SetValue(LabelDbsProperty, value); }
         }

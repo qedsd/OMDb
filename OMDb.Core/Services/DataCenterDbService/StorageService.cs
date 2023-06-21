@@ -12,7 +12,7 @@ namespace OMDb.Core.Services
 
         private static bool IsLocalDbValid()
         {
-            return DbService.LocalDb != null;
+            return DbService.DCDb != null;
         }
 
 
@@ -24,7 +24,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<StorageDb>().ToListAsync();
+                return await DbService.DCDb.Queryable<StorageDb>().ToListAsync();
             }
             else
             {
@@ -37,11 +37,11 @@ namespace OMDb.Core.Services
         /// 获取全部仓库
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<StorageDb>> GetAllStorageAsync(string dbSourceId)
+        public static async Task<List<StorageDb>> GetAllStorageAsync(string DbCenterId)
         {
             if (IsLocalDbValid())
             {
-                return await DbService.LocalDb.Queryable<StorageDb>().Where(a=>a.DbSourceId== dbSourceId).ToListAsync();
+                return await DbService.DCDb.Queryable<StorageDb>().Where(a=>a.DbCenterId== DbCenterId).ToListAsync();
             }
             else
             {
@@ -55,21 +55,21 @@ namespace OMDb.Core.Services
             {
                 storageDb.Id = Guid.NewGuid().ToString();
             }
-            DbService.LocalDb.Insertable(storageDb).ExecuteCommand();
+            DbService.DCDb.Insertable(storageDb).ExecuteCommand();
         }
-        public static void RemoveStorage(string dbSourceId,string storageName)
+        public static void RemoveStorage(string DbCenterId,string storageName)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("Delete from Storage where StorageName in ('{0}') and dbSourceId='{1}'", storageName, dbSourceId);
-            DbService.LocalDb.Ado.ExecuteCommand(sb.ToString());
-            //DbService.LocalDb.Deleteable<StorageDb>().Where(a => a.DbSourceId == dbSourceId&&a.StorageName==storageName);
+            sb.AppendFormat("Delete from Storage where StorageName in ('{0}') and DbCenterId='{1}'", storageName, DbCenterId);
+            DbService.DCDb.Ado.ExecuteCommand(sb.ToString());
+            //DbService.LocalDb.Deleteable<StorageDb>().Where(a => a.DbCenterId == DbCenterId&&a.StorageName==storageName);
         }
 
-        public static void RemoveStorage(string dbSourceId, List<string> storageName)
+        public static void RemoveStorage(string DbCenterId, List<string> storageName)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("Delete from Storage where StorageName in '{0}' and dbSourceId='{1}'", string.Join("','",storageName), dbSourceId);
-            DbService.LocalDb.Ado.ExecuteCommand(sb.ToString());
+            sb.AppendFormat("Delete from Storage where StorageName in '{0}' and DbCenterId='{1}'", string.Join("','",storageName), DbCenterId);
+            DbService.DCDb.Ado.ExecuteCommand(sb.ToString());
         }
     }
 }

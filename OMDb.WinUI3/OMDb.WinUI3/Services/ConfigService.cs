@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Shapes;
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Services.Settings;
 using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
@@ -56,7 +57,9 @@ namespace OMDb.WinUI3.Services
 
         public static void Load()
         {
-            Core.Config.InitLocalDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "db.db"));
+            Core.Config.InitMCDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "MCDb.db"));
+            SettingService.Load();
+            
             Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
             LoadStorages();
         }
@@ -89,19 +92,5 @@ namespace OMDb.WinUI3.Services
 
             }
         }
-
-        /*private static string EnrtyStorageFile = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "storages.json");
-        public static void Save()
-        {
-            string json = JsonConvert.SerializeObject(EnrtyStorages.Take(EnrtyStorages.Count - 1));
-            string entryStoragePath = System.IO.Path.GetDirectoryName(EnrtyStorageFile);
-            if (!System.IO.Directory.Exists(entryStoragePath))
-            {
-                System.IO.Directory.CreateDirectory(entryStoragePath);
-            }
-            System.IO.File.WriteAllText(EnrtyStorageFile, json);
-        }*/
-
-
     }
 }

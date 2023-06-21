@@ -392,7 +392,7 @@ namespace OMDb.WinUI3.Dialogs
                             {
                                 Name = item,
                                 ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPId,
-                                DbSourceId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbSourceId
+                                DbCenterId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbCenterId
                             };
                             var lp = new LabelProperty(lpdb);
                             lp.IsChecked = true;

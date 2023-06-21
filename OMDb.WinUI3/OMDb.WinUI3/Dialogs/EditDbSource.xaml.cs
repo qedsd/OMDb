@@ -23,9 +23,9 @@ namespace OMDb.WinUI3.Dialogs
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class EditDbSource : Page
+    public sealed partial class EditDbCenter : Page
     {
-        public EditDbSource(string dbName = null)
+        public EditDbCenter(string dbName = null)
         {
             this.InitializeComponent();
         }
@@ -36,7 +36,7 @@ namespace OMDb.WinUI3.Dialogs
             dialog.TitleTextBlock.Text = dbName == null ? "新增数据中心" : "编辑数据中心";
             dialog.PrimaryButton.Content = "保存";
             dialog.CancelButton.Content = "取消";
-            EditDbSource content = new EditDbSource(dbName);
+            EditDbCenter content = new EditDbCenter(dbName);
             dialog.ContentFrame.Content = content;
             content.DbName.Text = dbName;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)

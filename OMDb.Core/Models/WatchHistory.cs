@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Models
 {
-    public class WatchHistory:DbModels.WatchHistoryDb
+    public class WatchHistory:DbModels.EntryWatchHistoryDb
     {
         /// <summary>
         /// 所属数据库唯一标识
         /// </summary>
         public string DbId { get; set; }
-        public static WatchHistory Create(DbModels.WatchHistoryDb dbItem, string DbId)
+        public static WatchHistory Create(DbModels.EntryWatchHistoryDb dbItem, string DbId)
         {
             var newItem = dbItem.DepthClone<WatchHistory>();
             if (newItem != null)

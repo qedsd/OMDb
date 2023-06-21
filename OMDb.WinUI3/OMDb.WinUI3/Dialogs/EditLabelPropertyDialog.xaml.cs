@@ -53,7 +53,7 @@ namespace OMDb.WinUI3.Dialogs
             {
                 content.Label.Name = content.TextBox_Name.Text;
                 content.Label.Description = content.TextBox_Desc.Text;
-                content.Label.DbSourceId = DbSelectorService.dbCurrentId;
+                content.Label.DbCenterId = DbSelectorService.dbCurrentId;
                 return content.Label;
             }
             else

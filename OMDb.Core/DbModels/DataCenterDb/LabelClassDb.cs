@@ -11,8 +11,8 @@ namespace OMDb.Core.DbModels
     /// 标签->类型
     /// 每个数据库都保存一份，数据统一
     /// </summary>
-    [SugarTable("Label")]
-    public class LabelDb
+    [SugarTable("LabelClass")]
+    public class LabelClassDb
     {
         /// <summary>
         /// 内码
@@ -40,7 +40,7 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 所属媒体库Id
         /// </summary>
-        public string DbSourceId { get; set; }
+        public string DbCenterId { get; set; }
 
         /// <summary>
         /// 是否在分类页签显示

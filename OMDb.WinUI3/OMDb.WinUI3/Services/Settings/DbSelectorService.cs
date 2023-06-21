@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OMDb.Core.DbModels.ManagerCenterDb;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Views.Homes;
 using System;
@@ -19,12 +20,11 @@ namespace OMDb.WinUI3.Services.Settings
         private const string Key = "DbSelector";
         public static string dbCurrentId = string.Empty;
         public static string dbCurrentName = string.Empty;
-        public static List<DbSource> dbsCollection = new List<DbSource>();
+        public static List<DbCenter> dbsCollection = new List<DbCenter>();
         public static async void Initialize()
         {
-            LoadAllDbs();
             LoadFromSettings();
-            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
+            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbCenterDb.DbName;
             ConfigService.DefaultEntryFolder = $@"{ConfigService.OMDbFolder}\{dbCurrentName}";
             ConfigService.LoadStorages();
         }
@@ -38,17 +38,14 @@ namespace OMDb.WinUI3.Services.Settings
         //配置Json获取当前Db源Id
         private static async void LoadFromSettings()
         {
+            LoadAllDbs();//数据库读取所有Db源
             dbCurrentId = Convert.ToString(SettingService.GetValue(Key));
-            //数据库读取所有Db源
-            LoadAllDbs();
-
             //找不到 或 未配置 -> 抽一个赋值
-            if ((!dbsCollection.Select(a => a.DbSourceDb.Id).ToList().Contains(dbCurrentId)) || string.IsNullOrEmpty(dbCurrentId))
-            {
-                dbCurrentId = dbsCollection.FirstOrDefault().DbSourceDb.Id;
-            }
-
-            dbsCollection.Where(a => a.DbSourceDb.Id == dbCurrentId).FirstOrDefault().IsChecked = true;
+            if ((!dbsCollection.Select(a => a.DbCenterDb.Id).ToList().Contains(dbCurrentId)) || string.IsNullOrEmpty(dbCurrentId))
+                dbCurrentId = dbsCollection.FirstOrDefault().DbCenterDb.Id;
+                
+            Core.Config.InitDCDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", $"DCDb_{DbSelectorService.dbCurrentId}.db"));
+            dbsCollection.Where(a => a.DbCenterDb.Id == dbCurrentId).FirstOrDefault().IsChecked = true;
             await SetAsync(dbCurrentId);
         }
 
@@ -56,7 +53,7 @@ namespace OMDb.WinUI3.Services.Settings
         private static async Task SaveInSettingsAsync(string dbc)
         {
             await SettingService.SetValueAsync(Key, dbc.ToString());
-            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbSourceDb.DbName;
+            dbCurrentName = dbsCollection.Where(a => a.IsChecked == true).FirstOrDefault().DbCenterDb.DbName;
             ConfigService.DefaultEntryFolder = @$"{ConfigService.OMDbFolder}\{dbCurrentName}";
             ConfigService.LoadStorages();
 
@@ -65,19 +62,19 @@ namespace OMDb.WinUI3.Services.Settings
         //添加
         public static void AddDbAsync(string DbName)
         {
-            Core.Services.DbSourceService.AddDbSource(DbName);
+            Core.Services.DbCenterService.AddDbCenter(DbName);
         }
 
         //移除
         public static void RemoveDbAsync(string DbId)
         {
-            Core.Services.DbSourceService.RemoveDbSource(DbId);
+            Core.Services.DbCenterService.RemoveDbCenter(DbId);
         }
 
         //修改Db名称源
-        public static void EditDbAsync(Core.DbModels.DbSourceDb db)
+        public static void EditDbAsync(DbCenterDb db)
         {
-            Core.Services.DbSourceService.EditDbSource(db);
+            Core.Services.DbCenterService.EditDbCenter(db);
         }
 
 
@@ -86,11 +83,11 @@ namespace OMDb.WinUI3.Services.Settings
         /// </summary>
         private static void LoadAllDbs()
         {
-            var result = Core.Services.DbSourceService.GetAllDbSource();
+            var result = Core.Services.DbCenterService.GetAllDbCenter();
             dbsCollection.Clear();
             foreach (var item in result)
             {
-                var db = new DbSource(item);
+                var db = new DbCenter(item);
                 dbsCollection.Add(db);
             }
         }

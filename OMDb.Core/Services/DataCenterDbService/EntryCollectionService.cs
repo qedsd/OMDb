@@ -12,7 +12,7 @@ namespace OMDb.Core.Services
     {
         private static bool IsLocalDbValid()
         {
-            return DbService.LocalDb != null;
+            return DbService.DCDb != null;
         }
 
         /// <summary>
@@ -24,8 +24,8 @@ namespace OMDb.Core.Services
             if (IsLocalDbValid())
             {
                 List<EntryCollection> entryCollections = new List<EntryCollection>();   
-                var collectionDbs = await DbService.LocalDb.Queryable<EntryCollectionDb>().ToListAsync();
-                var items = await DbService.LocalDb.Queryable<EntryCollectionItemDb>().ToListAsync();
+                var collectionDbs = await DbService.DCDb.Queryable<EntryCollectionDb>().ToListAsync();
+                var items = await DbService.DCDb.Queryable<EntryCollectionItemDb>().ToListAsync();
                 await Task.Run(() =>
                 {
                     var group = items.GroupBy(p => p.CollectionId).ToList();
@@ -83,28 +83,28 @@ namespace OMDb.Core.Services
                 {
                     entryCollectionDb.Id = Guid.NewGuid().ToString();
                 }
-                DbService.LocalDb.Insertable(entryCollectionDb).ExecuteCommand();
+                DbService.DCDb.Insertable(entryCollectionDb).ExecuteCommand();
             }
         }
         public static void RemoveCollection(string key)
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
+                DbService.DCDb.Deleteable<EntryCollectionDb>(key).ExecuteCommand();
             }
         }
         public static void AddCollectionItem(EntryCollectionItemDb item)
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Insertable(item).ExecuteCommand();
+                DbService.DCDb.Insertable(item).ExecuteCommand();
             }
         }
         public static bool RemoveCollectionItem(List<string> keys)
         {
             if (IsLocalDbValid())
             {
-                return DbService.LocalDb.Deleteable<EntryCollectionItemDb>().In(keys).ExecuteCommand() > 0;
+                return DbService.DCDb.Deleteable<EntryCollectionItemDb>().In(keys).ExecuteCommand() > 0;
             }
             else
             {
@@ -115,7 +115,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return DbService.LocalDb.Deleteable<EntryCollectionItemDb>().In(key).ExecuteCommand() > 0;
+                return DbService.DCDb.Deleteable<EntryCollectionItemDb>().In(key).ExecuteCommand() > 0;
             }
             else
             {
@@ -128,18 +128,18 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                DbService.LocalDb.Updateable(entryCollectionDb).ExecuteCommand();
+                DbService.DCDb.Updateable(entryCollectionDb).ExecuteCommand();
             }
         }
 
         public static async Task<EntryCollectionItemDb> QueryFirstAsync(string collectionId,string entryId)
         {
-            return await DbService.LocalDb.Queryable<EntryCollectionItemDb>().FirstAsync(p=>p.CollectionId == collectionId && p.EntryId == entryId);
+            return await DbService.DCDb.Queryable<EntryCollectionItemDb>().FirstAsync(p=>p.CollectionId == collectionId && p.EntryId == entryId);
         }
 
         public static EntryCollectionItemDb QueryFirst(string collectionId, string entryId)
         {
-            return DbService.LocalDb.Queryable<EntryCollectionItemDb>().First(p => p.CollectionId == collectionId && p.EntryId == entryId);
+            return DbService.DCDb.Queryable<EntryCollectionItemDb>().First(p => p.CollectionId == collectionId && p.EntryId == entryId);
         }
     }
 }

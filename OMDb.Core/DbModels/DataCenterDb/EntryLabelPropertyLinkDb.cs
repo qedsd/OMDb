@@ -10,14 +10,14 @@ namespace OMDb.Core.DbModels
     /// <summary>
     /// 关联词条与标签
     /// </summary>
-    [SugarTable("EntryLabelLK")]
-    public class EntryLabelLKDb
+    [SugarTable("EntryLabelPropertyLink")]
+    public class EntryLabelPropertyLinkDb
     {
         /// <summary>
         /// 词条所在的dbid
         /// </summary>
         public string DbId { get; set; }
         public string EntryId { get; set; }
-        public string LCId { get; set; }
+        public string LPId { get; set; }
     }
 }

@@ -29,7 +29,7 @@
 		<None Remove="Assets\Img\defaultbanneritem.jpg" />
 		<None Remove="Dialogs\AddEntryBatchDialog.xaml" />
 		<None Remove="Dialogs\AddLabelPropertyLKDialog.xaml" />
-		<None Remove="Dialogs\EditDbSource.xaml" />
+		<None Remove="Dialogs\EditDbCenter.xaml" />
 		<None Remove="Dialogs\EditEntryDialog.xaml" />
 		<None Remove="Dialogs\EditLabelDialog.xaml" />
 		<None Remove="Dialogs\EditLabelPropertyDialog.xaml" />
@@ -397,7 +397,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Update="Dialogs\EditDbSource.xaml">
+		<Page Update="Dialogs\EditDbCenter.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

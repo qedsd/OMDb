@@ -373,7 +373,7 @@
                             ItemsSource="{x:Bind VM.Entry.WatchHistory, Mode=OneWay}"
                             SelectionMode="Extended">
                             <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="DbModels:WatchHistoryDb">
+                                <DataTemplate x:DataType="DbModels:EntryWatchHistoryDb">
                                     <Grid>
                                         <Grid.ContextFlyout>
                                             <MenuFlyout>

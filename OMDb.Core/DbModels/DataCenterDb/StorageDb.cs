@@ -43,6 +43,6 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public int? EntryCount { get; set; }
 
-        public string DbSourceId { get; set; }
+        public string DbCenterId { get; set; }
     }
 }

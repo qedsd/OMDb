@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    public static class EntryLabelPropertyService
+    public static class EntryLabelService
     {
         /// <summary>
         /// 查詢所有Entry&Label對應關係
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static List<EntryLabelPropertyLKDb> SelectAllEntryLabel()
+        public static List<EntryLabelClassLinkDb> SelectAllEntryLabel()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat(@"select * from EntryLabel ");
-            return DbService.LocalDb.Ado.SqlQuery<EntryLabelPropertyLKDb>(sb.ToString());
+            return DbService.DCDb.Ado.SqlQuery<EntryLabelClassLinkDb>(sb.ToString());
         }
 
 
@@ -28,23 +28,23 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static List<EntryLabelPropertyLKDb> SelectAllEntryLabel(string dbId)
+        public static List<EntryLabelClassLinkDb> SelectAllEntryLabel(string dbId)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat($@"select * from EntryLabel where DbId='{dbId}'");
-            return DbService.LocalDb.Ado.SqlQuery<EntryLabelPropertyLKDb>(sb.ToString());
+            return DbService.DCDb.Ado.SqlQuery<EntryLabelClassLinkDb>(sb.ToString());
         }
 
 
 
         /// <summary>
-        /// 查詢所有Entry&Label對應關係
+        /// 添加Entry&Label 关联关系
         /// </summary>
         /// <param name="dbId"></param>
         /// <returns></returns>
-        public static void AddEntryLabel(EntryLabelPropertyLKDb eldb)
+        public static void AddEntryLabel(EntryLabelClassLinkDb eldb)
         {
-            DbService.LocalDb.Insertable<EntryLabelPropertyLKDb>(eldb).ExecuteCommand();
+            DbService.DCDb.Insertable<EntryLabelClassLinkDb>(eldb).ExecuteCommand();
         }
     }
 }

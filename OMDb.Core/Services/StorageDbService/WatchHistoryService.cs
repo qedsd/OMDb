@@ -18,7 +18,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<WatchHistory>> QueryWatchHistoriesAsync(string id, string dbId)
         {
-            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<WatchHistoryDb>().Where(p => p.EntryId == id).ToList());
+            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<EntryWatchHistoryDb>().Where(p => p.EntryId == id).ToList());
             if (entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => WatchHistory.Create(p, dbId)).ToList();
@@ -37,7 +37,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<WatchHistory>> QueryWatchHistoriesAsync(List<string> ids, string dbId)
         {
-            var entryNameDbs = await DbService.GetConnection(dbId).Queryable<WatchHistoryDb>().Where(p => ids.Contains(p.EntryId)).ToListAsync();
+            var entryNameDbs = await DbService.GetConnection(dbId).Queryable<EntryWatchHistoryDb>().Where(p => ids.Contains(p.EntryId)).ToListAsync();
             if (entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => WatchHistory.Create(p, dbId)).ToList();
@@ -55,7 +55,7 @@ namespace OMDb.Core.Services
         /// <param name="watchHistory"></param>
         public static bool AddWatchHistory(Models.WatchHistory watchHistory)
         {
-            if(DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0)
+            if(DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0)
             {
                 if (watchHistory.Done)
                 {
@@ -77,10 +77,10 @@ namespace OMDb.Core.Services
         public static bool UpdateWatchHistory(Models.WatchHistory watchHistory)
         {
             //需要判断是否修改了观看完成
-            var source = DbService.GetConnection(watchHistory.DbId).Queryable<WatchHistoryDb>().In(watchHistory.Id).First();
+            var source = DbService.GetConnection(watchHistory.DbId).Queryable<EntryWatchHistoryDb>().In(watchHistory.Id).First();
             if(source != null)
             {
-                var update = DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0;
+                var update = DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0;
                 if(!update)
                 {
                     return false;
@@ -110,7 +110,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static bool DeleteWatchHistory(Models.WatchHistory watchHistory)
         {
-            if(DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.WatchHistoryDb).ExecuteCommand() > 0)
+            if(DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0)
             {
                 if (watchHistory.Done)
                 {

@@ -20,13 +20,13 @@ namespace OMDb.WinUI3.Dialogs
 {
     public sealed partial class EditLabelDialog : Page
     {
-        private Core.DbModels.LabelDb Label;
-        public EditLabelDialog(bool IsRoot, Core.DbModels.LabelDb label)
+        private Core.DbModels.LabelClassDb Label;
+        public EditLabelDialog(bool IsRoot, Core.DbModels.LabelClassDb label)
         {
             this.InitializeComponent();
             if (label == null)
             {
-                Label = new Core.DbModels.LabelDb();
+                Label = new Core.DbModels.LabelClassDb();
 
                 if (IsRoot)
                 {
@@ -65,7 +65,7 @@ namespace OMDb.WinUI3.Dialogs
         /// <param name="IsRoot"></param>大标签
         /// <param name="label"></param>
         /// <returns></returns>
-        public static async Task<Core.DbModels.LabelDb> ShowDialog(bool IsRoot, Core.DbModels.LabelDb label = null)
+        public static async Task<Core.DbModels.LabelClassDb> ShowDialog(bool IsRoot, Core.DbModels.LabelClassDb label = null)
         {
             bool IsNew = (label == null);
             MyContentDialog dialog = new MyContentDialog();
@@ -78,7 +78,7 @@ namespace OMDb.WinUI3.Dialogs
             {
                 content.Label.Name = content.TextBox_Name.Text;
                 content.Label.Description = content.TextBox_Desc.Text;
-                content.Label.DbSourceId = DbSelectorService.dbCurrentId;
+                content.Label.DbCenterId = DbSelectorService.dbCurrentId;
                 content.Label.IsShow = content.IsShowOnClassificationPage.IsOn;
                 return content.Label;
             }

@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMDb.Core.DbModels
+namespace OMDb.Core.DbModels.ManagerCenterDb
 {
     /// <summary>
-    /// Db源
-    /// 每个Db源有各自的标签、仓库、词条明细
+    /// 数据中心
+    /// 每个数据中心有各自的标签、仓库、词条明细
     /// </summary>
-    [SugarTable("DbSource")]
-    public class DbSourceDb
+    [SugarTable("DbCenter")]
+    public class DbCenterDb
     {
         [SugarColumn(IsPrimaryKey = true)]
         public string Id { get; set; }

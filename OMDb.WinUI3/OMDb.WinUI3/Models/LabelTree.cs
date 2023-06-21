@@ -10,8 +10,8 @@ namespace OMDb.WinUI3.Models
 {
     public class LabelTree : ObservableObject
     {
-        private Core.DbModels.LabelDb label;
-        public Core.DbModels.LabelDb Label
+        private Core.DbModels.LabelClassDb label;
+        public Core.DbModels.LabelClassDb Label
         {
             get => label;
             set => SetProperty(ref label, value);
@@ -25,7 +25,7 @@ namespace OMDb.WinUI3.Models
         }
 
         public LabelTree() { }
-        public LabelTree(Core.DbModels.LabelDb labelDb) 
+        public LabelTree(Core.DbModels.LabelClassDb labelDb) 
         { 
             label = labelDb;
             children = new ObservableCollection<LabelTree>();

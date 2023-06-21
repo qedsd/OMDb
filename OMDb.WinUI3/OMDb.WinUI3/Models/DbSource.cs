@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OMDb.Core.DbModels.ManagerCenterDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Models
 {
-    public class DbSource : ObservableObject
+    public class DbCenter : ObservableObject
     {
-        public Core.DbModels.DbSourceDb DbSourceDb { get; set; }
+        public DbCenterDb DbCenterDb { get; set; }
         private bool isChecked;
         public bool IsChecked
         {
             get => isChecked;
             set=>SetProperty(ref isChecked, value);
         }
-        public DbSource(Core.DbModels.DbSourceDb dbSourceDb)
+        public DbCenter(DbCenterDb DbCenterDb)
         {
-            this.DbSourceDb = dbSourceDb;
+            this.DbCenterDb = DbCenterDb;
             IsChecked = false;
         }
 

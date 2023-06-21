@@ -128,7 +128,7 @@ namespace OMDb.WinUI3.ViewModels
                                     StoragePath =enrtyStorage.StoragePath,
                                     EntryCount = enrtyStorage.EntryCount,
                                     CoverImg = path_omdb_Cover,
-                                    DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
+                                    DbCenterId = Services.Settings.DbSelectorService.dbCurrentId
                                 };
                                 Core.Services.StorageService.AddStorage(storageDb);
                             }
@@ -144,7 +144,7 @@ namespace OMDb.WinUI3.ViewModels
                                     StoragePath = enrtyStorage.StoragePath,
                                     EntryCount = 0,
                                     CoverImg = path_omdb_Cover,
-                                    DbSourceId = Services.Settings.DbSelectorService.dbCurrentId
+                                    DbCenterId = Services.Settings.DbSelectorService.dbCurrentId
                                 };
                                 Core.Services.StorageService.AddStorage(storageDb);
                             }

@@ -106,7 +106,7 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand DbSelector_Add => new RelayCommand(async () =>
         {
-            var dbName = await EditDbSource.ShowDialog();
+            var dbName = await EditDbCenter.ShowDialog();
             if (dbName.Equals(@"04833378-22bb-465b-9582-fb1bab622de"))
             {
                 LoadDbs();
@@ -116,9 +116,9 @@ namespace OMDb.WinUI3.ViewModels
             {
                 Helpers.InfoHelper.ShowError("请输入DbName");
             }
-            else if (DbsCollection.Select(a => a.DbSourceDb.DbName).ToList().Contains(dbName))
+            else if (DbsCollection.Select(a => a.DbCenterDb.DbName).ToList().Contains(dbName))
             {
-                Helpers.InfoHelper.ShowError("已存在同名DbSource");
+                Helpers.InfoHelper.ShowError("已存在同名DbCenter");
             }
             else
             {
@@ -134,8 +134,8 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand DbSelector_Save => new RelayCommand(async () =>
         {
-            //await DbSelectorService.SetAsync(DbCurrent.DbSourceDb.Id);
-            await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbSourceDb.Id == DbCurrent.DbSourceDb.Id).FirstOrDefault().DbSourceDb.Id);
+            //await DbSelectorService.SetAsync(DbCurrent.DbCenterDb.Id);
+            await DbSelectorService.SetAsync(DbsCollection.Where(a => a.DbCenterDb.Id == DbCurrent.DbCenterDb.Id).FirstOrDefault().DbCenterDb.Id);
             this.LoadDbs();
             Helpers.InfoHelper.ShowSuccess("保存成功");
         });
@@ -143,26 +143,26 @@ namespace OMDb.WinUI3.ViewModels
         private void LoadDbs()
         {
             Services.Settings.DbSelectorService.Initialize();
-            if(DbsCollection==null) DbsCollection = new ObservableCollection<DbSource>();
+            if(DbsCollection==null) DbsCollection = new ObservableCollection<DbCenter>();
             DbsCollection.Clear();
             foreach (var item in DbSelectorService.dbsCollection)
             {
                 DbsCollection.Add(item);
             }
-            DbCurrent = DbsCollection.Where(a=>a.DbSourceDb.Id==DbSelectorService.dbCurrentId).FirstOrDefault().DepthClone<DbSource>();
+            DbCurrent = DbsCollection.Where(a=>a.DbCenterDb.Id==DbSelectorService.dbCurrentId).FirstOrDefault().DepthClone<DbCenter>();
         }
 
 
-        public ObservableCollection<DbSource> _dbsCollection;
-        public ObservableCollection<DbSource> DbsCollection
+        public ObservableCollection<DbCenter> _dbsCollection;
+        public ObservableCollection<DbCenter> DbsCollection
         {
             get => _dbsCollection;
             set => SetProperty(ref _dbsCollection, value);
         }
 
-        private DbSource _dbCurrent;
+        private DbCenter _dbCurrent;
 
-        public DbSource DbCurrent
+        public DbCenter DbCurrent
         {
             get => _dbCurrent;
             set => SetProperty(ref _dbCurrent, value);

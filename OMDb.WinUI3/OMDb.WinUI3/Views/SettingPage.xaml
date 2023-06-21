@@ -17,7 +17,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <coverters:DbSourceToBool x:Key="DbSourceToBool" />
+        <coverters:DbCenterToBool x:Key="DbCenterToBool" />
         <coverters:ObjecTotString x:Key="ObjecTotString" />
     </Page.Resources>
     <Page.DataContext>
@@ -88,7 +88,7 @@
                             MaxColumns="5"
                             SelectedItem="{x:Bind VM.DbCurrent, Mode=TwoWay}">
                                 <RadioButtons.ItemTemplate>
-                                    <DataTemplate x:DataType="models:DbSource">
+                                    <DataTemplate x:DataType="models:DbCenter">
                                         <Interactivity:Interaction.Behaviors>
                                             <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=RB}">
                                                 <Core:ChangePropertyAction
@@ -113,7 +113,7 @@
                                             Height="24">
                                                 <TextBlock
                                                 x:Name="RadioButtonText"
-                                                Text="{x:Bind DbSourceDb.DbName}" />
+                                                Text="{x:Bind DbCenterDb.DbName}" />
                                                 <!--  编辑按钮  -->
                                                 <!--<Button
                                                 x:Name="RadioButtonEditButton"

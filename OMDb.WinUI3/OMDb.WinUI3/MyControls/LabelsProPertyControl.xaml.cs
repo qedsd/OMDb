@@ -119,7 +119,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty LabelDbsProperty = DependencyProperty.Register
            (
            "LabelDbs",
-           typeof(IEnumerable<Core.DbModels.LabelDb>),
+           typeof(IEnumerable<Core.DbModels.LabelClassDb>),
            typeof(UserControl),
            new PropertyMetadata(null, new PropertyChangedCallback(SetLabelDbs))
            );
@@ -135,9 +135,9 @@ namespace OMDb.WinUI3.MyControls
                 }
             }
         }
-        public IEnumerable<Core.DbModels.LabelDb> LabelDbs
+        public IEnumerable<Core.DbModels.LabelClassDb> LabelDbs
         {
-            get { return (IEnumerable<Core.DbModels.LabelDb>)GetValue(LabelDbsProperty); }
+            get { return (IEnumerable<Core.DbModels.LabelClassDb>)GetValue(LabelDbsProperty); }
 
             set { SetValue(LabelDbsProperty, value); }
         }

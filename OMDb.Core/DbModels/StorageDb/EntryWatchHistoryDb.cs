@@ -10,8 +10,8 @@ namespace OMDb.Core.DbModels
     /// <summary>
     /// 观看记录
     /// </summary>
-    [SugarTable("WatchHistory")]
-    public class WatchHistoryDb
+    [SugarTable("EntryWatchHistory")]
+    public class EntryWatchHistoryDb
     {
         [SugarColumn(IsPrimaryKey = true)]
         public string Id { get; set; }

@@ -197,7 +197,7 @@ namespace OMDb.WinUI3.Services
                     var lpdb = new LabelPropertyDb()
                     {
                         Name = item.ColumnName,
-                        DbSourceId = Settings.DbSelectorService.dbCurrentId,
+                        DbCenterId = Settings.DbSelectorService.dbCurrentId,
                         Level = 1,
                     };
                     Core.Services.LabelPropertyService.AddLabel(lpdb);
@@ -304,12 +304,12 @@ namespace OMDb.WinUI3.Services
                                 {
                                     LPId = Guid.NewGuid().ToString(),
                                     Name = lpdbName,
-                                    DbSourceId = Settings.DbSelectorService.dbCurrentId,
+                                    DbCenterId = Settings.DbSelectorService.dbCurrentId,
                                     ParentId = lpdb_Yeye.FirstOrDefault().LPId,
                                 };
                                 lpdbs.Add(lpdb);
                                 Core.Services.LabelPropertyService.AddLabel(lpdb);
-                                var eldb = new EntryLabelPropertyLKDb()
+                                var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
                                     LPId = lpdb.LPId,
@@ -322,7 +322,7 @@ namespace OMDb.WinUI3.Services
                             else
                             {
                                 var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPId;
-                                var eldb = new EntryLabelPropertyLKDb()
+                                var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
                                     LPId = lpid,
