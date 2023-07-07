@@ -2,9 +2,10 @@
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Core;
 using OMDb.Core.Enums;
-using OMDb.Core.Extensions;
+using OMDb.Core.Helpers;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
 using SqlSugar;
@@ -203,12 +204,12 @@ namespace OMDb.WinUI3.Models
                 SetProperty(ref labels, value);
                 Task.Run(() =>
                 {
-                    Core.Services.LabelService.ClearEntryLabel(Entry.EntryId);//清空词条标签
+                    Core.Services.LabelClassService.ClearEntryLabel(Entry.EntryId);//清空词条标签
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(labels.Count);
                         labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = Entry.EntryId, LCId = p.LCId, DbId = Entry.DbId }));
-                        Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
+                        Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
             }
@@ -223,7 +224,7 @@ namespace OMDb.WinUI3.Models
                 SetProperty(ref _lpdbs, value);
                 Task.Run(() =>
                 {
-                    Core.Services.LabelService.ClearEntryLabel(Entry.EntryId);//清空词条标签
+                    Core.Services.LabelClassService.ClearEntryLabel(Entry.EntryId);//清空词条标签
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(_lpdbs.Count);
@@ -233,6 +234,7 @@ namespace OMDb.WinUI3.Models
                 });
             }
         }
+
         private ObservableCollection<string> imgs;
         public ObservableCollection<string> Imgs
         {
@@ -247,7 +249,7 @@ namespace OMDb.WinUI3.Models
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
             await UpdateWatchHistoryAsync();
-            labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.EntryId);
+            labels = await Core.Services.LabelClassService.GetLabelOfEntryAsync(Entry.EntryId);
             Labels ??= new List<Core.DbModels.LabelClassDb>();
             WatchHistory ??= new ObservableCollection<Core.Models.WatchHistory>();
 
@@ -271,7 +273,7 @@ namespace OMDb.WinUI3.Models
         }
         public async Task UpdateWatchHistoryAsync()
         {
-            var histories = (await Core.Services.WatchHistoryService.QueryWatchHistoriesAsync(Entry.EntryId, Entry.DbId)).ToObservableCollection();
+            var histories = (await Core.Services.EntryWatchHistoryService.QueryWatchHistoriesAsync(Entry.EntryId, Entry.DbId)).ToObservableCollection();
             if (histories == null)
             {
                 WatchHistory = new ObservableCollection<Core.Models.WatchHistory>();
@@ -294,7 +296,7 @@ namespace OMDb.WinUI3.Models
                 {
                     foreach (var file in items)
                     {
-                        if (Helpers.ImgHelper.IsSupportImg(file.FullName))
+                        if (ImageHelper.IsSupportImg(file.FullName))
                         {
                             Imgs.Add(file.FullName);
                         }

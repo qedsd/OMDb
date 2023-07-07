@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

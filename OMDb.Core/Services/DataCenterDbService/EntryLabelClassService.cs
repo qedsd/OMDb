@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    public static class EntryLabelService
+    public static class EntryLabelClassService
     {
         /// <summary>
         /// 查詢所有Entry&Label對應關係

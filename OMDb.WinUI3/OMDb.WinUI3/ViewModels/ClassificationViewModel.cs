@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using MySqlX.XDevAPI.Common;
 using OMDb.Core.Enums;
+using OMDb.Core.Helpers;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -89,7 +90,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 LabelsDic.Clear();
             }
-            var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+            var labels = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
             if (labels != null)
             {
                 foreach (var label in labels)
@@ -252,7 +253,7 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         foreach (var file in Core.Helpers.RandomHelper.RandomList(items,100))//仅对100张照片计算
                         {
-                            if (Helpers.ImgHelper.IsSupportImg(file.FullName))
+                            if (ImageHelper.IsSupportImg(file.FullName))
                             {
                                 infos.Add(Core.Helpers.ImageHelper.GetImageInfo(file.FullName));
                             }

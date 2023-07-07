@@ -22,7 +22,6 @@ using OMDb.Core.Enums;
 using OMDb.WinUI3.Models;
 using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.Utils;
-using OMDb.Core.Extensions;
 using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,

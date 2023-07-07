@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using OMDb.Core.Helpers;
 using OMDb.Core.Interfaces;
 using OMDb.Core.Models;
 using SixLabors.ImageSharp.Processing;
@@ -12,6 +11,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using OMDb.Core.Services;
+using OMDb.Core.Utils;
 
 namespace OMDb.Douban
 {
@@ -38,7 +38,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("获取信息失败" + ex);
+                Logger.Error("获取信息失败" + ex);
             }
             return dic;
 
@@ -61,7 +61,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("封面获取失败" + ex);
+                Logger.Error("封面获取失败" + ex);
             }
         }
 
@@ -79,7 +79,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("评分获取失败" + ex);
+                Logger.Error("评分获取失败" + ex);
             }
         }
 
@@ -99,7 +99,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("主演获取失败" + ex);
+                Logger.Error("主演获取失败" + ex);
             }
         }
 
@@ -115,7 +115,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("导演获取失败" + ex);
+                Logger.Error("导演获取失败" + ex);
             }
         }
 
@@ -143,7 +143,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("上映日期获取失败" + ex);
+                Logger.Info("上映日期获取失败" + ex);
             }
         }
 
@@ -165,7 +165,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("分类获取失败" + ex);
+                Logger.Error("分类获取失败" + ex);
             }
         }
 

@@ -38,29 +38,30 @@ namespace OMDb.WinUI3.Services
             //用于支持gb2312         
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            //創建數據表            
-            DataTable dataTable = new DataTable();
-            //基本信息列
-            dataTable.Columns.Add("Name", typeof(string));
-            dataTable.Columns.Add("ReleaseDate", typeof(string));
-            dataTable.Columns.Add("MyRating", typeof(double));
+
 
             //数据库查询 属性标签&分类标签
-            var label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
             var label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
 
             //标签&词条 关联关系
-            var result_EntryLabel = Core.Services.EntryLabelService.SelectAllEntryLabel(enrtyStorage.StorageName);
+            var result_EntryLabelClass = Core.Services.EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
             var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
-            label_lp.Where(a => a.Level == 1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));
-            //分類列
-            dataTable.Columns.Add("Classification", typeof(string));
+                       
+            DataTable dataTable = new DataTable();//創建數據表 
 
-            dataTable.Columns.Add("SaveType", typeof(string));
-            dataTable.Columns.Add("path_source", typeof(string));
-            dataTable.Columns.Add("path_entry", typeof(string));
-            dataTable.Columns.Add("path_cover", typeof(string));
+            dataTable.Columns.Add("Name", typeof(string));//词条名称
+            dataTable.Columns.Add("Alias", typeof(string));//词条名称（别名）
+            dataTable.Columns.Add("ReleaseDate", typeof(string));
+            dataTable.Columns.Add("MyRating", typeof(double));
+            label_lp.Where(a => a.Level == 1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));//属性标签列
+            
+            dataTable.Columns.Add("Classification", typeof(string));//分類列
+            dataTable.Columns.Add("SaveType", typeof(string));//存储模式
+            dataTable.Columns.Add("path_source", typeof(string));//存储路径
+            dataTable.Columns.Add("path_entry", typeof(string));//词条路径
+            dataTable.Columns.Add("path_cover", typeof(string));//封面路径（全路径）
 
 
 
@@ -90,7 +91,7 @@ namespace OMDb.WinUI3.Services
                 row["MyRating"] = myRating;
 
                 //屬性
-                var elc = result_EntryLabel.Where(a => a.EntryId == Convert.ToString(eid));
+                var elc = result_EntryLabelClass.Where(a => a.EntryId == Convert.ToString(eid));
                 var elp = result_EntryLabelProperty.Where(a => a.EntryId == Convert.ToString(eid));
                 foreach (var lp in label_lp)
                 {
@@ -434,17 +435,16 @@ namespace OMDb.WinUI3.Services
                         switch (saveMode)
                         {
                             case SaveType.Folder:
-                                lstPath.Add(esdbs[0].Path);
-                                edb.CoverImg = CommonService.GetCoverByPath(lstPath, PathType.Folder);
+                                edb.CoverImg = CommonService.GetCover(esdbs[0].Path);
                                 break;
                             case SaveType.Files:
                                 if (esdbs.Count > 0)
-                                    edb.CoverImg = CommonService.GetCoverByPath(lstPath, PathType.Folder);
+                                    edb.CoverImg = CommonService.GetCover(lstPath);
                                 else
-                                    edb.CoverImg = CommonService.GetCoverByPath();
+                                    edb.CoverImg = CommonService.GetCover();
                                 break;
                             case SaveType.Local:
-                                edb.CoverImg = CommonService.GetCoverByPath();
+                                edb.CoverImg = CommonService.GetCover();
                                 break;
                             default:
                                 break;

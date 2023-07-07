@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using NLog;
 using NPOI.SS.Formula.Functions;
-using OMDb.Core.Extensions;
 using OMDb.Core.Services.PluginsService;
 using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
@@ -33,6 +32,8 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using static System.Net.WebRequestMethods;
 using OMDb.Core.Services;
+using OMDb.Core.Utils.Extensions;
+using OMDb.Core.Utils.PathUtils;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -69,7 +70,7 @@ namespace OMDb.WinUI3.Dialogs
 
         }
 
-        public static async Task<string> ShowDialog()
+        public static async Task<List<EntryDetail>> ShowDialog()
         {
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = "词条批量新增";
@@ -101,13 +102,13 @@ namespace OMDb.WinUI3.Dialogs
         private void ReturnFolder_Click(object sender, RoutedEventArgs e)
         {
             var result = this.ei.BasicGridView.SelectedItems.ToList();
-            if (!result.IsNullOrEmptyOrWhiteSpace())
+            if (!result.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 foreach (var item in result)
                 {
                     ExplorerItem exp = item as ExplorerItem;
                     EntryDetail ed = new EntryDetail();
-                    ed.FullCoverImgPath = Services.CommonService.GetCoverByPath(exp.Name);
+                    ed.FullCoverImgPath = Services.CommonService.GetCover(exp.Name);
                     ed.Name = System.IO.Path.GetFileName(exp.Name);
                     ed.FullEntryPath = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
                     ed.Entry = new Core.Models.Entry();
@@ -145,16 +146,13 @@ namespace OMDb.WinUI3.Dialogs
                 try
                 {
                     var coverStream = (MemoryStream)(entryInfo["封面"]);
-                    TempFileHelper.CreateTempImg(item.Name + ".jpg");
-                    FileStream fs = new FileStream(TempFileHelper.fullTempImgPath, FileMode.Create);
-                    coverStream.WriteTo(fs);
-                    fs.Close();
-                    item.FullCoverImgPath = TempFileHelper.fullTempImgPath;
-                    //Image_CoverImg.Source = ImgHelper.CreateBitmapImage(coverStream);
+                    var newFileName = item.Name + ".jpg";
+                    TempPathUtils.CreateTempImage(newFileName, coverStream);
+                    item.FullCoverImgPath = TempPathUtils.GetTempFile(newFileName);
                 }
                 catch (Exception ex)
                 {
-                    Core.Helpers.LogHelper.Instance._logger.Error("封面" + ex.Message);
+                    Core.Utils.Logger.Error("封面" + ex.Message);
                 }
 
                 try
@@ -164,7 +162,7 @@ namespace OMDb.WinUI3.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    Core.Helpers.LogHelper.Instance._logger.Error("评分" + ex.Message);
+                    Core.Utils.Logger.Error("评分" + ex.Message);
                 }
 
                 try
@@ -174,13 +172,13 @@ namespace OMDb.WinUI3.Dialogs
                 }
                 catch (Exception ex)
                 {
-                    Core.Helpers.LogHelper.Instance._logger.Error("上映日期" + ex.Message);
+                    Core.Utils.Logger.Error("上映日期" + ex.Message);
                 }
                 sw.Stop();
-                Core.Helpers.LogHelper.Instance._logger.Info($"获取“{item.Name}”信息耗时：{sw.Elapsed}");
+                Core.Utils.Logger.Info($"获取“{item.Name}”信息耗时：{sw.Elapsed}");
             }
             swTotal.Stop();
-            Core.Helpers.LogHelper.Instance._logger.Info($"获取信息总耗时：{swTotal.Elapsed}");
+            Core.Utils.Logger.Info($"获取信息总耗时：{swTotal.Elapsed}");
             //this.pr.IsActive = false;
             //this.btn_GetInfo.IsEnabled = true;
         }
@@ -204,7 +202,7 @@ namespace OMDb.WinUI3.Dialogs
         private void LoadLabelControl()
         {
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var lst_label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
             var lcids = new List<string>();//分类标签
 

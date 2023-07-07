@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
-using OMDb.Core.Helpers;
 using OMDb.Core.Interfaces;
 using OMDb.Core.Models;
+using OMDb.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Composition;
@@ -37,7 +37,7 @@ namespace OMDb.Douban
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("评分获取失败" + ex);
+                Logger.Error("评分获取失败" + ex);
                 return 0;
             }
         }

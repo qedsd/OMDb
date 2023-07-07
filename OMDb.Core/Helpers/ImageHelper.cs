@@ -1,9 +1,13 @@
 ﻿using ImageMagick;
+using OMDb.Core.Const;
 using OMDb.Core.Models;
+using OMDb.Core.Services;
+using OMDb.Core.Utils.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Processing.Processors;
+using System.Net;
 
 namespace OMDb.Core.Helpers
 {
@@ -49,6 +53,9 @@ namespace OMDb.Core.Helpers
         }
 
 
+
+
+
         private static async Task<MemoryStream> ToMemoryStreamAsync(Image image)
         {
             MemoryStream stream = new MemoryStream();
@@ -57,7 +64,7 @@ namespace OMDb.Core.Helpers
             return stream;
         }
 
-        public static async void DrawBannerCoverAsync(List<ImageInfo> covers, ImageInfo bg,string savedPath)
+        public static async void DrawBannerCoverAsync(List<ImageInfo> covers, ImageInfo bg, string savedPath)
         {
             using (Image image = Image.Load(bg.FullPath))
             {
@@ -67,9 +74,9 @@ namespace OMDb.Core.Helpers
                     images.Add(Image.Load(cover.FullPath));
                 }
                 int width = (int)(bg.Width * 0.16);
-                foreach(Image coverImage in images)
+                foreach (Image coverImage in images)
                 {
-                    coverImage.Mutate(x => x.Resize(width, coverImage.Height * (width/ coverImage.Width)));
+                    coverImage.Mutate(x => x.Resize(width, coverImage.Height * (width / coverImage.Width)));
                 }
                 double span = bg.Width * 0.025;
                 Point[] points = new Point[images.Count];
@@ -157,7 +164,7 @@ namespace OMDb.Core.Helpers
                         }
                     }
                 }
-                foreach(var temp in images)
+                foreach (var temp in images)
                 {
                     temp.Dispose();
                 }
@@ -182,7 +189,7 @@ namespace OMDb.Core.Helpers
                 foreach (Image coverImage in images)
                 {
                     var cutRect = CalPerfectResizeRectangle(coverImage.Width, coverImage.Height, width, height);
-                    coverImage.Mutate(x => x.Resize(width, height, KnownResamplers.Bicubic, cutRect,new Rectangle(0,0,width,height),true));
+                    coverImage.Mutate(x => x.Resize(width, height, KnownResamplers.Bicubic, cutRect, new Rectangle(0, 0, width, height), true));
                 }
                 int columCount = (int)Math.Ceiling(image.Width / (float)width);
                 int rowCount = (int)Math.Ceiling(image.Height / (float)height) + 1;
@@ -219,19 +226,19 @@ namespace OMDb.Core.Helpers
         /// <param name="savedPath"></param>
         /// <param name="width">如果为0则依据height等比例缩放</param>
         /// <param name="height">如果为0则依据width等比例缩放</param>
-        public static async void ResetSizeAsync(string path,string savedPath, int width, int height)
+        public static async void ResetSizeAsync(string path, string savedPath, int width, int height)
         {
             using (Image image = Image.Load(path))
             {
-                if(width != 0 && height != 0)
+                if (width != 0 && height != 0)
                 {
                     image.Mutate(x => x.Resize(width, height));
                 }
-                else if(width != 0)
+                else if (width != 0)
                 {
                     image.Mutate(x => x.Resize(width, image.Height * (width / image.Width)));
                 }
-                else if(height != 0)
+                else if (height != 0)
                 {
                     image.Mutate(x => x.Resize(image.Width * (height / image.Height), height));
                 }
@@ -333,7 +340,7 @@ namespace OMDb.Core.Helpers
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static async Task<MemoryStream> BlurAsync(string path,float sigma = 10)
+        public static async Task<MemoryStream> BlurAsync(string path, float sigma = 10)
         {
             using (Image image = Image.Load(path))
             {
@@ -350,7 +357,7 @@ namespace OMDb.Core.Helpers
         /// <param name="targetWidth"></param>
         /// <param name="targetHeight"></param>
         /// <returns></returns>
-        private static Rectangle CalPerfectResizeRectangle(int srcWidth,int srcHeight,int targetWidth,int targetHeight)
+        private static Rectangle CalPerfectResizeRectangle(int srcWidth, int srcHeight, int targetWidth, int targetHeight)
         {
             Rectangle resultRect;
             //宽高比越大，图片越矮胖
@@ -373,9 +380,81 @@ namespace OMDb.Core.Helpers
                 //原图宽高比小于目标宽高比，说明目标图片要变矮胖
                 //保留X，Y要裁剪
                 double srcCutHeight = targetHeight * srcWidth / targetWidth;
-                resultRect = new Rectangle(0,(int)(srcHeight / 2 - srcCutHeight / 2),srcWidth, (int)srcCutHeight);
+                resultRect = new Rectangle(0, (int)(srcHeight / 2 - srcCutHeight / 2), srcWidth, (int)srcCutHeight);
             }
             return resultRect;
         }
+
+
+        /// <summary>
+        /// 获取图片最佳排序
+        /// </summary>
+        /// <param name="paths">图片路径</param>
+        /// <param name="scale">期望长宽比</param>
+        /// <returns></returns>
+        public static List<string> GetBestImg(IEnumerable<string> paths, double scale)
+        {
+            List<ImageInfo> infos = new List<Core.Models.ImageInfo>();
+            var path_imgs = paths.Where(a => MediaTypes.Image.Contains(Path.GetExtension(a).Remove(".").ToUpper())).Where(a => File.Exists(a));
+            if (!path_imgs.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            {
+                foreach (var path in Core.Helpers.RandomHelper.RandomList(path_imgs, 100))//仅对100张照片计算
+                    infos.Add(Core.Helpers.ImageHelper.GetImageInfo(path));
+
+                //优先长宽比更适配的图片
+                List<ImageInfo> sortedInfos;
+                sortedInfos = infos.OrderBy(p => Math.Abs(p.Scale - scale)).OrderByDescending(p => p.Length).ToList();
+
+                int[] weights = new int[sortedInfos.Count];
+                for (int i = 0; i < sortedInfos.Count; i++)
+                {
+                    weights[i] = i + 1;//权重从1开始递增
+                }
+                var coverItems = Core.Helpers.RandomHelper.RandomList(sortedInfos, weights, 1);//获取最优的
+                return coverItems?.Select(p => p.FullPath).ToList();
+            }
+            else
+                return null;
+        }
+
+
+        /// <summary>
+        /// 用远程地址获取文件字节流
+        /// </summary>
+        /// <param name="path">URL</param>
+        /// <returns></returns>
+        public static byte[] GetUrlMemoryStream(string path)
+        {
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(path);
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+
+            List<byte> btlst = new List<byte>();
+            int b = responseStream.ReadByte();
+            while (b > -1)
+            {
+                btlst.Add((byte)b);
+                b = responseStream.ReadByte();
+            }
+            byte[] bts = btlst.ToArray();
+            return bts;
+        }
+
+        public static bool IsSupportImg(string file)
+        {
+            if (!string.IsNullOrEmpty(file))
+            {
+                var ext = System.IO.Path.GetExtension(file).Replace(".", "");
+                return MediaTypes.Image.Contains(ext.ToLower());
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
     }
 }

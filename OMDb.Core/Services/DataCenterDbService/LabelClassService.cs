@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    public static class LabelService
+    public static class LabelClassService
     {
         private static bool IsLocalDbValid()
         {
@@ -42,7 +42,7 @@ namespace OMDb.Core.Services
         public static List<LabelClassDb> GetAllLabel(string currentDb)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"select * from Label where DbCenterId='{0}'", currentDb);
+            sb.AppendFormat(@"select * from LabelClass where DbCenterId='{0}'", currentDb);
             return DbService.DCDb.Ado.SqlQuery<LabelClassDb>(sb.ToString());
         }
 

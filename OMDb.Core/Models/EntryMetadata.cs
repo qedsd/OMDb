@@ -33,6 +33,7 @@ namespace OMDb.Core.Models
         {
             try
             {
+                JsonSerializerSettings settings = new JsonSerializerSettings { Formatting = Formatting.Indented };
                 var json = JsonConvert.SerializeObject(this);
                 System.IO.File.WriteAllText(file, json);
                 return true;

@@ -48,6 +48,7 @@ namespace OMDb.WinUI3.Services
         public static string InfoFolder { get; } = "Info";
         public static string OMDbFolder { get; } = ".omdb";
         public static string StorageDbName { get; } = "omdb.db";
+        public static string DefaultCover { get; private set; } = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets\\Img", "DefaultCover.jpg");
         /// <summary>
         /// 元文件文件名
         /// </summary>
@@ -59,7 +60,7 @@ namespace OMDb.WinUI3.Services
         {
             Core.Config.InitMCDb(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs", "MCDb.db"));
             SettingService.Load();
-            
+
             Core.Config.SetFFmpegExecutablesPath(System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "FFmpeg"));
             LoadStorages();
         }

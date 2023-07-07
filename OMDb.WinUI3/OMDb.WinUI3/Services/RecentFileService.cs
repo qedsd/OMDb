@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml.CustomAttributes;
 using Newtonsoft.Json;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Services.Settings;
 using System;

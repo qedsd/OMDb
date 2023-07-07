@@ -1,4 +1,5 @@
-﻿using OMDb.WinUI3.Models;
+﻿using OMDb.Core.Utils;
+using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -222,7 +223,7 @@ namespace OMDb.WinUI3.Helpers
             catch (Exception e)
             {
                 Helpers.InfoHelper.ShowError(e.Message);
-                Core.Helpers.LogHelper.Instance._logger.Error(e);
+                Logger.Error(e);
                 return 0;
             }
 

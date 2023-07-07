@@ -1,7 +1,7 @@
 ﻿using OMDb.Core.DbModels;
 using OMDb.Core.DbModels.ManagerCenterDb;
-using OMDb.Core.Helpers;
 using OMDb.Core.Models;
+using OMDb.Core.Utils;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -167,7 +167,7 @@ namespace OMDb.Core.Services
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error(ex);
+                Logger.Error(ex);
                 return false;
             }
         }
@@ -215,7 +215,7 @@ namespace OMDb.Core.Services
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error(ex);
+                Logger.Error(ex);
                 return false;
             }
         }

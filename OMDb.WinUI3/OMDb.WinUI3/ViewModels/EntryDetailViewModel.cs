@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Models;
 using System;
@@ -141,7 +141,7 @@ namespace OMDb.WinUI3.ViewModels
                     Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0),
                     Mark = NewHistorMark
                 };
-                Core.Services.WatchHistoryService.AddWatchHistory(watchHistory);
+                Core.Services.EntryWatchHistoryService.AddWatchHistory(watchHistory);
                 Entry.WatchHistory.Add(watchHistory);
             }
             else//编辑
@@ -149,7 +149,7 @@ namespace OMDb.WinUI3.ViewModels
                 EditingWatchHistory.Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0);
                 EditingWatchHistory.Mark = NewHistorMark;
                 EditingWatchHistory.Done = NewHistorDone;
-                Core.Services.WatchHistoryService.UpdateWatchHistory(EditingWatchHistory);
+                Core.Services.EntryWatchHistoryService.UpdateWatchHistory(EditingWatchHistory);
             }
             CancelEditHistoryCommand.Execute(null);
             await Entry.UpdateWatchHistoryAsync();//确保按时间倒序
@@ -172,7 +172,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认删除记录？", $"{item.Time} - {item.Mark}"))
                 {
-                    Core.Services.WatchHistoryService.DeleteWatchHistory(item);
+                    Core.Services.EntryWatchHistoryService.DeleteWatchHistory(item);
                     Entry.WatchHistory.Remove(item);
                     if(item.Done)
                     {
@@ -209,7 +209,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             Rating = value;
             Entry.Entry.MyRating = Rating;
-            Core.Services.EntryService.UpdateEntry(Entry.Entry);
+            Core.Services.EntryService.UpdateOrAddEntry(Entry.Entry);
             Helpers.InfoHelper.ShowSuccess("已更新评分");
         });
         public ICommand RefreshCommand => new RelayCommand(async() =>
@@ -249,7 +249,7 @@ namespace OMDb.WinUI3.ViewModels
                             });
                             string newRelPath = System.IO.Path.Combine(Entry.Entry.Path.Substring(0, Entry.Entry.Path.LastIndexOf(oldEntryName)), Entry.Name);
                             Entry.Entry.Path = newRelPath;
-                            Core.Services.EntryService.UpdateEntry(Entry.Entry);
+                            Core.Services.EntryService.UpdateOrAddEntry(Entry.Entry);
                             Dialogs.WatingDialog.Hide();
                             RefreshCommand.Execute(null);
                         }

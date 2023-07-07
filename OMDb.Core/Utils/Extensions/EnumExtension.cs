@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OMDb.Core.Extensions
+namespace OMDb.Core.Utils.Extensions
 {
     public static class EnumExtension
     {

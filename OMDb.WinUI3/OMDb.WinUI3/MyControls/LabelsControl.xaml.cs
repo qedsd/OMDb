@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -171,7 +171,7 @@ namespace OMDb.WinUI3.MyControls
         {
             if(AllLabels == null)
             {
-                var labels = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+                var labels = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
                 if (labels != null)
                 {
                     AllLabels = labels.Select(p => new Models.Label(p)).ToList();

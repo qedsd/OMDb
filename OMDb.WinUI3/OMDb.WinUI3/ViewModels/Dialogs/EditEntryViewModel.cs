@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
@@ -208,7 +208,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             else
             {
-                var labels = await Core.Services.LabelService.GetLabelOfEntryAsync(entry.EntryId);
+                var labels = await Core.Services.LabelClassService.GetLabelOfEntryAsync(entry.EntryId);
                 if (labels != null)
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>

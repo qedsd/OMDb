@@ -7,8 +7,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using NPOI.POIFS.Properties;
 using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
 using OMDb.Core.Utils;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -57,7 +57,7 @@ namespace OMDb.WinUI3.Dialogs
                 foreach (var item in content.VM.DtData)
                 {
                     //手动输入的属性数据
-                    if (item.LPId.IsNullOrEmptyOrWhiteSpace())
+                    if (item.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero())
                     {
                         var childs = content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
                         var lp_repeat = childs.Where(a => a.LPDb.Name.Equals(item.Name));
@@ -111,7 +111,7 @@ namespace OMDb.WinUI3.Dialogs
         {
             var lp = new LabelPropertyDb();
             var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-            if (itemsRoot.IsNullOrEmptyOrWhiteSpace()) return;
+            if (itemsRoot.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
             lp.ParentId = itemsRoot.LPDb.LPId;
             VM.DtData.Add(lp);
         }

@@ -6,7 +6,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
 using OMDb.Core.Utils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;

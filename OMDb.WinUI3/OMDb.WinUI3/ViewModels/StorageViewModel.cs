@@ -96,7 +96,7 @@ namespace OMDb.WinUI3.ViewModels
                 bool isPathCorrect_Cover = File.Exists(enrtyStorage.CoverImg);
                 if (!isPathCorrect_Cover)
                 {
-                    enrtyStorage.CoverImg= CommonService.GetCoverByPath();
+                    enrtyStorage.CoverImg= CommonService.GetCover();
                 }
 
                 var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.DefaultEntryFolder);

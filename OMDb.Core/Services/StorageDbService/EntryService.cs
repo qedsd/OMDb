@@ -1,7 +1,7 @@
 ﻿using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace OMDb.Core.Services
             {
                 return sortType switch
                 {
-                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds,labelIds),
+                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds, labelIds),
                     Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, dbIds, labelIds),
                     Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, dbIds, labelIds),
                     Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, dbIds, labelIds),
@@ -41,7 +41,7 @@ namespace OMDb.Core.Services
         }
         public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
         {
-            return await Task.Run(()=> QueryEntry(sortType, sortWay, dbIds, labelIds));
+            return await Task.Run(() => QueryEntry(sortType, sortWay, dbIds, labelIds));
         }
         private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
         {
@@ -49,7 +49,7 @@ namespace OMDb.Core.Services
             List<string> inLabelEntryIds = null;
             if (labelIds != null && labelIds.Count != 0)
             {
-                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
             }
             foreach (var item in DbService.Dbs)
             {
@@ -79,7 +79,7 @@ namespace OMDb.Core.Services
                         queryResults.Add(new QueryResult(p.EntryId, p.CreateTime, item.Key));
                     });
                 }
-                
+
             }
             if (sortWay == Enums.SortWay.Positive)
             {
@@ -96,7 +96,7 @@ namespace OMDb.Core.Services
             List<string> inLabelEntryIds = null;
             if (labelIds != null && labelIds.Count != 0)
             {
-                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
             }
             foreach (var item in DbService.Dbs)
             {
@@ -142,7 +142,7 @@ namespace OMDb.Core.Services
             List<string> inLabelEntryIds = null;
             if (labelIds != null && labelIds.Count != 0)
             {
-                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
             }
             foreach (var item in DbService.Dbs)
             {
@@ -189,7 +189,7 @@ namespace OMDb.Core.Services
             List<string> inLabelEntryIds = null;
             if (labelIds != null && labelIds.Count != 0)
             {
-                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
             }
             foreach (var item in DbService.Dbs)
             {
@@ -238,7 +238,7 @@ namespace OMDb.Core.Services
             List<string> inLabelEntryIds = null;
             if (labelIds != null && labelIds.Count != 0)
             {
-                inLabelEntryIds = LabelService.GetEntrys(labelIds);
+                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
             }
             foreach (var item in DbService.Dbs)
             {
@@ -298,7 +298,7 @@ namespace OMDb.Core.Services
             {
                 return await Task.Run(() =>
                 {
-                    Dictionary<string,Entry> dic = new Dictionary<string, Entry>();
+                    Dictionary<string, Entry> dic = new Dictionary<string, Entry>();
                     var group = queryItems.GroupBy(p => p.DbId);
                     foreach (var item in group)
                     {
@@ -318,9 +318,9 @@ namespace OMDb.Core.Services
                         }
                     }
                     List<Entry> entries = new List<Entry>();
-                    foreach(var item in queryItems)
+                    foreach (var item in queryItems)
                     {
-                        if(dic.TryGetValue(item.Id, out Entry entry))
+                        if (dic.TryGetValue(item.Id, out Entry entry))
                         {
                             entries.Add(entry);
                         }
@@ -369,23 +369,19 @@ namespace OMDb.Core.Services
         }
 
         /// <summary>
-        /// 添加前需指定数据库id
-        /// 若未设词条id将自动赋值
+        /// 新增或编辑词条主表
         /// </summary>
         /// <param name="entry"></param>
-        public static void AddEntry(Entry entry)
+        public static void UpdateOrAddEntry(Entry entry)
         {
-            if(string.IsNullOrEmpty(entry.EntryId))
-            {
+            if (string.IsNullOrEmpty(entry.EntryId))
                 entry.EntryId = Guid.NewGuid().ToString();
-            }
             entry.CoverImg = entry.CoverImg.GetDefaultCoverName();
-            DbService.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
-        }
-
-        public static void UpdateEntry(Entry entry)
-        {
-            DbService.GetConnection(entry.DbId).Updateable<EntryDb>(entry as EntryDb).RemoveDataCache().ExecuteCommand();
+            var existingEntry = DbService.GetConnection(entry.DbId).Queryable<EntryDb>().Where(s => s.EntryId == entry.EntryId).First();
+            if (existingEntry != null)
+                DbService.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
+            else
+                DbService.GetConnection(entry.DbId).Updateable<EntryDb>(entry as EntryDb).RemoveDataCache().ExecuteCommand();
         }
 
         /// <summary>
@@ -398,8 +394,8 @@ namespace OMDb.Core.Services
             var connet = DbService.GetConnection(entry.DbId);
             connet.BeginTran();
             connet.Deleteable<EntryDb>().In(entry.EntryId).ExecuteCommand();
-            connet.Deleteable<EntryNameDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
-            connet.Deleteable<EntryWatchHistoryDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
+            connet.Deleteable<EntryNameDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
+            connet.Deleteable<EntryWatchHistoryDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             DbService.DCDb.Deleteable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             connet.CommitTran();
@@ -442,9 +438,9 @@ namespace OMDb.Core.Services
         /// <param name="dbId"></param>
         /// <param name="increment">变化量，可用正负来表示增加减少</param>
         /// <returns></returns>
-        public static bool UpdateWatchTime(string entryId,string dbId,int increment)
+        public static bool UpdateWatchTime(string entryId, string dbId, int increment)
         {
-            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p=>p.WatchTimes == p.WatchTimes+increment).Where(p=>p.EntryId == entryId).ExecuteCommand() > 0;
+            return DbService.GetConnection(dbId).Updateable<EntryDb>().SetColumns(p => p.WatchTimes == p.WatchTimes + increment).Where(p => p.EntryId == entryId).ExecuteCommand() > 0;
         }
 
         /// <summary>
@@ -458,8 +454,8 @@ namespace OMDb.Core.Services
             {
                 return null;
             }
-            List<Tuple<DbModels.EntryDb,string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
-            foreach(var dbId in DbService.Dbs.Keys)
+            List<Tuple<DbModels.EntryDb, string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
+            foreach (var dbId in DbService.Dbs.Keys)
             {
                 int max = await QueryEntryCountAsync(dbId);
                 var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);
@@ -486,13 +482,13 @@ namespace OMDb.Core.Services
         }
 
 
-        public static void AddEntry(EntryDb edb,string dbId)
+        public static void AddEntry(EntryDb edb, string dbId)
         {
             DbService.GetConnection(dbId).Insertable(edb).ExecuteCommand();
         }
         public static void UpdateEntry(EntryDb edb, string dbId)
         {
-            DbService.GetConnection(dbId).Updateable(edb).Where(a=>a.EntryId.Equals(edb.EntryId)).ExecuteCommand();
+            DbService.GetConnection(dbId).Updateable(edb).Where(a => a.EntryId.Equals(edb.EntryId)).ExecuteCommand();
         }
     }
 }

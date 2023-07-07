@@ -6,9 +6,9 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using MySqlX.XDevAPI.Common;
-using OMDb.Core.Extensions;
 using OMDb.Core.Services;
 using OMDb.Core.Utils;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services.Settings;
@@ -76,7 +76,7 @@ namespace OMDb.WinUI3.Views
             if (result == null)
                 return;
             //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpace())
+            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
                 return;
@@ -98,7 +98,7 @@ namespace OMDb.WinUI3.Views
             if (result == null)
                 return;
             //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpace())
+            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
                 return;
@@ -170,7 +170,7 @@ namespace OMDb.WinUI3.Views
             if (result == null)
                 return;
             //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpace())
+            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
                 return;
@@ -197,7 +197,7 @@ namespace OMDb.WinUI3.Views
             if (result == null)
                 return;
             //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpace())
+            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
                 return;

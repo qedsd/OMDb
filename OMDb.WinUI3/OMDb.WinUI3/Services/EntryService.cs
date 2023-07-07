@@ -14,143 +14,41 @@ using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
 using OMDb.Core.Services;
 using OMDb.Core.Enums;
+using System.Transactions;
 
 namespace OMDb.WinUI3.Services
 {
     public static class EntryService
     {
         /// <summary>
-        /// 新建词条
+        /// 新增
         /// </summary>
         /// <returns>词条唯一id</returns>
-        public static async Task<string> AddEntryAsync()
+        public static async Task AddEntryAsync()
         {
             var entryDetail = await Dialogs.EditEntryDialog.ShowDialog();
             if (entryDetail != null)
             {
-                if (Directory.Exists(entryDetail.FullEntryPath))
-                {
-                    int i = 1;
-                    while (true)
-                    {
-                        string newPath = $"{entryDetail.FullEntryPath}({i++})";
-                        if (!Directory.Exists(newPath))
-                        {
-                            entryDetail.FullEntryPath = newPath;
-                            entryDetail.Entry.Path = newPath;
-                            break;
-                        }
-                    }
-                }
+                await NewEntryAsync(entryDetail);
 
-                //创建词条文件夹
-                InitFolder(entryDetail);
-
-
-
-
-
-                //创建元数据(MataData)
-                InitFile(entryDetail);
-
-                //保存至数据库
-                await SaveToDbAsync(entryDetail);
-
-                //这时已经是相对路径
                 Helpers.InfoHelper.ShowSuccess("创建成功");
-                GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(entryDetail.Entry));
-                return entryDetail.Entry.EntryId;
-            }
-            else
-            {
-                return null;
+
             }
         }
-        /// <summary>
-        /// 创建元数据(MataData)
-        /// </summary>
-        /// <param name="entry"></param>
-        private static void InitFile(Models.EntryDetail entry)
-        {
-            string metaDateFile = Path.Combine(entry.FullEntryPath, Services.ConfigService.MetadataFileNmae);
-            Core.Models.EntryMetadata metadata;
-            if (System.IO.File.Exists(metaDateFile))
-            {
-                metadata = Core.Models.EntryMetadata.Read(metaDateFile);
-                metadata.Name = entry.Entry.Name;
-            }
-            else
-            {
-                metadata = new Core.Models.EntryMetadata()
-                {
-                    Id = entry.Entry.EntryId,
-                    Name = entry.Entry.Name,
-                };
-            }
-            metadata.Save(metaDateFile);
-        }
-
-
-        //创建词条(Entry)路径 (仓库 -> .omdb -> Db源 -> 词条)
-        private static void InitFolder(Models.EntryDetail entry)
-        {
-            Directory.CreateDirectory(entry.FullEntryPath);
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.AudioFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ImgFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.VideoFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ResourceFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
-            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.MoreFolder));
-        }
-
 
         /// <summary>
-        /// 保存至数据库
+        /// 批量新增
         /// </summary>
-        /// <param name="ed"></param>
-        /// <param name="entryNames"></param>
         /// <returns></returns>
-        private static async Task SaveToDbAsync(Models.EntryDetail ed)
+        public static async Task AddEntryBatchAsync()
         {
-            await Task.Run(() =>
-            {
-                Core.Services.EntryService.AddEntry(ed.Entry);//词条
-                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
-
-
-
-                TreatEntry(ed);//处理词条主表Entry
-                TreatEntrySource(ed);//资源路径表EntrySource更新
-                TreatLabelLink(ed);//词条标签关联表
-
-            });
-        }
-
-
-        /// <summary>
-        /// 保存至数据库
-        /// </summary>
-        /// <param name="entry"></param>
-        /// <param name="entryNames"></param>
-        /// <returns></returns>
-        private static async Task UpdateDbAsync(Models.EntryDetail ed)
-        {
-            await Task.Run(() =>
-            {
-                //数据库主表and多语言表 更新
-                Core.Services.EntryService.UpdateEntry(ed.Entry);//词条
-                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
-
-                TreatEntry(ed);//处理词条主表Entry
-                TreatEntrySource(ed);//资源路径表EntrySource更新
-                TreatLabelLink(ed);//词条标签关联表
-
-            });
+            var eds = await Dialogs.AddEntryBatchDialog.ShowDialog();
+            foreach (var ed in eds)
+                await NewEntryAsync(ed);
         }
 
         /// <summary>
-        /// 编辑词条
+        /// 编辑
         /// </summary>
         /// <returns>词条唯一id</returns>
         public static async Task EditEntryAsync(Core.Models.Entry entry)
@@ -165,6 +63,13 @@ namespace OMDb.WinUI3.Services
             }
         }
 
+
+
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         public static async Task RemoveEntryAsync(Core.Models.Entry entry)
         {
             if (await Dialogs.QueryDialog.ShowDialog("删除", $"是否删除 {entry.Name} 词条?不会删除本地文件"))
@@ -175,14 +80,80 @@ namespace OMDb.WinUI3.Services
             }
         }
 
+
+        /// <summary>
+        /// 保存至数据库
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <param name="entryNames"></param>
+        /// <returns></returns>
+        private static async Task UpdateDbAsync(Models.EntryDetail ed)
+        {
+            await Task.Run(() =>
+            {
+                Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
+                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
+
+                TreatEntry(ed);//处理词条主表Entry
+                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatLabelLink(ed);//词条标签关联表
+
+            });
+        }
+
+
+        /// <summary>
+        /// 保存至数据库
+        /// </summary>
+        /// <param name="ed"></param>
+        /// <param name="entryNames"></param>
+        /// <returns></returns>
+        private static async Task SaveToDbAsync(Models.EntryDetail ed)
+        {
+            await Task.Run(() =>
+            {
+                Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//词条
+                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
+
+                TreatEntry(ed);//处理词条主表Entry
+                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatLabelLink(ed);//词条标签关联表
+
+            });
+        }
+
+        public static async Task NewEntryAsync(EntryDetail ed, bool isNew = true)
+        {
+            if (isNew)
+            {
+                //创建词条根目录
+                if (Directory.Exists(ed.FullEntryPath))
+                {
+                    var my_format = "yyyyMMddHHmmss";
+                    string newPath = $"{ed.FullEntryPath}_{DateTime.Now.ToString(my_format)}";
+                    ed.FullEntryPath = newPath;
+                    ed.Entry.Path = newPath;
+                }
+                InitFolder(ed);//创建词条文件夹
+                InitFile(ed);//创建元数据(MataData)
+                await SaveToDbAsync(ed);//保存至数据库
+            }
+            else
+            {
+
+            }
+            GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(ed.Entry));
+        }
+
+
         private static void TreatLabelLink(EntryDetail ed)
         {
             if (ed.Labels?.Count != 0)
             {
                 List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.Labels.Count);
                 ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCId = p.LCId, DbId = ed.Entry.DbId }));
-                Core.Services.LabelService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
-                Core.Services.LabelService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
+                Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
+                Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }
             if (ed.Lpdbs?.Count != 0)
             {
@@ -229,14 +200,50 @@ namespace OMDb.WinUI3.Services
 
 
 
+
+
+
+
+
+
+
         /// <summary>
-        /// 批量新增
+        /// 创建元数据(MataData)
         /// </summary>
-        /// <returns></returns>
-        public static async Task<string> AddEntryBatchAsync()
+        /// <param name="entry"></param>
+        private static void InitFile(Models.EntryDetail entry)
         {
-            var entryDetail = await Dialogs.AddEntryBatchDialog.ShowDialog();
-            return null;
+            string metaDateFile = Path.Combine(entry.FullEntryPath, Services.ConfigService.MetadataFileNmae);
+            Core.Models.EntryMetadata metadata;
+            if (System.IO.File.Exists(metaDateFile))
+            {
+                metadata = Core.Models.EntryMetadata.Read(metaDateFile);
+                metadata.Name = entry.Entry.Name;
+            }
+            else
+            {
+                metadata = new Core.Models.EntryMetadata()
+                {
+                    Id = entry.Entry.EntryId,
+                    Name = entry.Entry.Name,
+                };
+            }
+            metadata.Save(metaDateFile);
+        }
+
+
+        //创建词条(Entry)路径 (仓库 -> .omdb -> Db源 -> 词条)
+        private static void InitFolder(Models.EntryDetail entry)
+        {
+            Directory.CreateDirectory(entry.FullEntryPath);
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.AudioFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ImgFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.VideoFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.ResourceFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.SubFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
+            Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.MoreFolder));
         }
     }
 }
+

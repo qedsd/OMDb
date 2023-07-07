@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +51,7 @@ namespace OMDb.WinUI3.Dialogs
             }
             catch (Exception ex)
             {
-                Core.Helpers.LogHelper.Instance._logger.Error(ex);
+                Logger.Error(ex);
                 throw ex;
             }
             

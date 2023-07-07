@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services
 {
-    public static class WatchHistoryService
+    public static class EntryWatchHistoryService
     {
         /// <summary>
         /// 查询词条所有观看记录

@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
@@ -17,7 +17,7 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class EntryViewModel : ObservableObject
     {
-        public static EntryViewModel Current { get;private set; }
+        public static EntryViewModel Current { get; private set; }
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
         private ObservableCollection<Core.Models.Entry> entries;
         public ObservableCollection<Core.Models.Entry> Entries
@@ -41,7 +41,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref sortType, value);
-                _=UpdateEntryListAsync();
+                _ = UpdateEntryListAsync();
             }
         }
         private Core.Enums.SortWay sortWay = Core.Enums.SortWay.Positive;
@@ -87,7 +87,7 @@ namespace OMDb.WinUI3.ViewModels
         private string autoSuggestText;
         public string AutoSuggestText
         {
-            get=> autoSuggestText;
+            get => autoSuggestText;
             set
             {
                 SetProperty(ref autoSuggestText, value);
@@ -146,7 +146,7 @@ namespace OMDb.WinUI3.ViewModels
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
-            var labelDbs = await Core.Services.LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+            var labelDbs = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
             List<Label> labels = null;
             if (labelDbs != null)
             {
@@ -154,7 +154,7 @@ namespace OMDb.WinUI3.ViewModels
                 Labels = new ObservableCollection<Label>(labels);
             }
             EntryStorages = ConfigService.EnrtyStorages;
-            foreach(var item in EntryStorages)
+            foreach (var item in EntryStorages)
             {
                 item.IsChecked = true;
             }
@@ -202,7 +202,7 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async void UpdateSuggest(string input)
         {
-            if(!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))
             {
                 AutoSuggestItems = await Core.Services.EntryNameSerivce.QueryLikeNamesAsync(input);
             }
@@ -217,7 +217,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 var ls = await Core.Services.EntryNameSerivce.QueryFullNamesAsync(name);
                 List<Core.Models.Entry> items = new List<Core.Models.Entry>();
-                foreach(var p in  ls.GroupBy(p => p.DbId))
+                foreach (var p in ls.GroupBy(p => p.DbId))
                 {
                     var entryIds = p.Select(p => p.Id).ToList().Distinct();
                     items.AddRange(await Core.Services.EntryService.GetEntryByIdsAsync(entryIds, p.Key));
@@ -249,11 +249,11 @@ namespace OMDb.WinUI3.ViewModels
         {
             _ = UpdateEntryListAsync();
         });
-        public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async(item) =>
+        public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async (item) =>
         {
-            if(item == null)
+            if (item == null)
             {
-                if(string.IsNullOrEmpty(AutoSuggestText))
+                if (string.IsNullOrEmpty(AutoSuggestText))
                 {
                     _ = UpdateEntryListAsync();
                 }
@@ -317,7 +317,7 @@ namespace OMDb.WinUI3.ViewModels
 
         private void GlobalEvent_AddEntryEvent(object sender, Events.EntryEventArgs e)
         {
-            if(IsFitFilter(e.Entry))
+            if (IsFitFilter(e.Entry))
             {
                 if (Entries == null)
                 {
@@ -343,21 +343,21 @@ namespace OMDb.WinUI3.ViewModels
         private bool IsFitFilter(Entry entry)
         {
             var s = EntryStorages.Where(p => p.IsChecked).ToList();
-            if(s != null && s.Count != 0)
+            if (s != null && s.Count != 0)
             {
-                if(s.FirstOrDefault(p=>p.StorageName == entry.DbId) != null)
+                if (s.FirstOrDefault(p => p.StorageName == entry.DbId) != null)
                 {
-                    if(!IsFilterLabel)
+                    if (!IsFilterLabel)
                     {
                         return true;
                     }
                     else
                     {
-                        var labelIds = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
-                        if(labelIds != null && labelIds.Count != 0)
+                        var labelIds = Core.Services.LabelClassService.GetLabelIdsOfEntry(entry.EntryId);
+                        if (labelIds != null && labelIds.Count != 0)
                         {
                             var l = Labels.Where(p => p.IsChecked).ToList();
-                            if(l != null && l.Count != 0)
+                            if (l != null && l.Count != 0)
                             {
                                 return l.FirstOrDefault(p => labelIds.Contains(p.LabelDb.LCId)) != null;
                             }

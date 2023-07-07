@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;

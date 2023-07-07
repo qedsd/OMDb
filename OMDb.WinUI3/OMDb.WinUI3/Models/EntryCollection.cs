@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -98,7 +98,7 @@ namespace OMDb.WinUI3.Models
             {
                 foreach(var g in result.Items.GroupBy(p => p.DbId).ToList())
                 {
-                    var histories = await WatchHistoryService.QueryWatchHistoriesAsync(g.Select(p => p.Id).ToList(), g.Key);
+                    var histories = await EntryWatchHistoryService.QueryWatchHistoriesAsync(g.Select(p => p.Id).ToList(), g.Key);
                     if(histories != null && histories.Count != 0)
                     {
                         result.WatchedCount += histories.GroupBy(p => p.EntryId).Count();

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Services;
 using System;

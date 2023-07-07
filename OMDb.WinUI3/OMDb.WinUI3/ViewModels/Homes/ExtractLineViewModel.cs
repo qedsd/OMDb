@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
 using System;

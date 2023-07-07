@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;

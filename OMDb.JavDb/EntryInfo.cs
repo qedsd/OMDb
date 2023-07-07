@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using OMDb.Core.Helpers;
 using OMDb.Core.Interfaces;
 using OMDb.Core.Models;
 using SixLabors.ImageSharp.Processing;
@@ -11,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using OMDb.Core.Utils;
 
 namespace OMDb.JavDb
 {
@@ -46,7 +46,7 @@ namespace OMDb.JavDb
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("JavDb获取信息失败！"+ex);
+                Logger.Error("JavDb获取信息失败！"+ex);
             }
             return dic;
 
@@ -68,7 +68,7 @@ namespace OMDb.JavDb
             }
             catch (Exception ex)
             {
-                LogHelper.Instance._logger.Error("封面获取失败！"+ex);
+                Logger.Error("封面获取失败！"+ex);
             }
         }
 

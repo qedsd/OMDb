@@ -13,10 +13,11 @@ using NPOI.POIFS.Properties;
 using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
-using OMDb.Core.Extensions;
 using OMDb.Core.Services;
 using OMDb.Core.Services.PluginsService;
 using OMDb.Core.Utils;
+using OMDb.Core.Utils.Extensions;
+using OMDb.Core.Utils.PathUtils;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.MyControls;
@@ -64,11 +65,11 @@ namespace OMDb.WinUI3.Dialogs
             #region 动态加载属性标签
 
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var lst_label_lc = Core.Services.LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
             var lcids = new List<string>();//分类标签
             if (entry != null) lpids = Core.Services.LabelPropertyService.GetLabelIdsOfEntry(entry.EntryId);
-            if (entry != null) lcids = Core.Services.LabelService.GetLabelIdsOfEntry(entry.EntryId);
+            if (entry != null) lcids = Core.Services.LabelClassService.GetLabelIdsOfEntry(entry.EntryId);
 
             if (lst_label_lp.Count > 0)
             {
@@ -182,7 +183,7 @@ namespace OMDb.WinUI3.Dialogs
 
 
 
- 
+
 
 
         }
@@ -250,20 +251,18 @@ namespace OMDb.WinUI3.Dialogs
                     {
                         //封面空 -> 尋找指定文件夾中圖片 -> 尋找指定文件夾中視頻縮略圖 -> 設置默認封面
                         case SaveType.Folder:
-                            lstPath.Add(content.PointFolder.Text);
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, PathType.Folder);
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCover(content.PointFolder.Text);
                             break;
                         //封面空 -> 尋找指定地址中圖片 -> 尋找指定地址中視頻縮略圖 -> 設置默認封面
                         case SaveType.Files:
-                            //lstPath.AddRange()
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath(lstPath, PathType.Folder);
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCover();
                             break;
                         //設置默認封面
                         case SaveType.Local:
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath();
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCover();
                             break;
                         default:
-                            entryDetail.FullCoverImgPath = Services.CommonService.GetCoverByPath();
+                            entryDetail.FullCoverImgPath = Services.CommonService.GetCover();
                             break;
                     }
                 }
@@ -274,8 +273,8 @@ namespace OMDb.WinUI3.Dialogs
                 #endregion
 
                 #region 词条关联属性标签数据 （1.关联原有的属性标签数据 2.新增属性标签数据并关联)
-                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPId.IsNullOrEmptyOrWhiteSpace()).Select(a => a.LPDb).ToList();
-                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPId.IsNullOrEmptyOrWhiteSpace()).Select(a => a.LPDb).ToList();
+                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
+                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
                 foreach (var item in lpdb_new)
                     Core.Services.LabelPropertyService.AddLabel(item);
                 if (lpdb_original.Count > 0)
@@ -333,82 +332,52 @@ namespace OMDb.WinUI3.Dialogs
         private async void GetInfo_Click(object sender, RoutedEventArgs e)
         {
             if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
-            /*var rate=RatingService.GetRatings(this.VM.EntryName,Convert.ToString(this.ddb.Content));
-            this.VM.MyRating = rate.Rate / rate.Max * 5.0;*/
             this.pr.IsActive = true;
             var entryInfo = new Dictionary<string, object>();
             this.btn_GetInfo.IsEnabled = false;
-            //Dialogs.WatingDialog.Show("移动文件中");
             entryInfo = await EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
-            //Dialogs.WatingDialog.Hide();
             this.pr.IsActive = false;
             this.btn_GetInfo.IsEnabled = true;
-            try
-            {
-                var coverStream = (MemoryStream)(entryInfo["封面"]);
-                TempFileHelper.CreateTempImg();
-                FileStream fs = new FileStream(TempFileHelper.fullTempImgPath, FileMode.Create);
-                coverStream.WriteTo(fs);
-                fs.Close();
-                VM.Entry.CoverImg = TempFileHelper.fullTempImgPath;
-                Image_CoverImg.Source = ImgHelper.CreateBitmapImage(coverStream);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
 
-            try
-            {
-                this.VM.MyRating = Convert.ToDouble(entryInfo["评分"]);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            #region 基本信息
+            entryInfo.TryGetValue("封面", out object stream_cover);
+            TempPathUtils.CreateTempImage((MemoryStream)stream_cover);
+            VM.Entry.CoverImg = TempPathUtils.GetDefaultTempImage();
+            Image_CoverImg.Source = ImgHelper.CreateBitmapImage((MemoryStream)stream_cover);
 
-            try
-            {
-                this.VM.ReleaseDate = Convert.ToDateTime(entryInfo["上映日期"]);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            entryInfo.TryGetValue("评分", out object rate);
+            this.VM.MyRating = Convert.ToDouble(rate);
 
-            try
+            entryInfo.TryGetValue("上映日期", out object date);
+            this.VM.ReleaseDate = Convert.ToDateTime(date);
+            #endregion
+
+            #region 属性标签数据
+            var lstBaba = this.VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
+            foreach (var ei in entryInfo)
             {
-                var lstBaba = this.VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
-                foreach (var ei in entryInfo)
+                if (lstBaba.Select(a => a.LPDb.Name).ToList().Contains(ei.Key))
                 {
-                    if (lstBaba.Select(a => a.LPDb.Name).ToList().Contains(ei.Key))
+                    string[] eiv = (string[])ei.Value;
+                    var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
+                    lbc.StrSelectItem.Text = string.Join("/", eiv);
+                    foreach (var item in eiv)
                     {
-                        string[] eiv = (string[])ei.Value;
-                        var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
-                        lbc.StrSelectItem.Text = string.Join("/", eiv);
-                        foreach (var item in eiv)
+                        var lpdb = new LabelPropertyDb()
                         {
-                            var lpdb = new LabelPropertyDb()
-                            {
-                                Name = item,
-                                ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPId,
-                                DbCenterId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbCenterId
-                            };
-                            var lp = new LabelProperty(lpdb);
-                            lp.IsChecked = true;
-                            lbc.LabelPropertyCollection.Add(lp);
-                            this.VM.Label_Property.Add(lp);
-                            //Core.Services.LabelPropertyService.AddLabel(lpdb);
-                        }
+                            Name = item,
+                            ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPId,
+                            DbCenterId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbCenterId
+                        };
+                        var lp = new LabelProperty(lpdb);
+                        lp.IsChecked = true;
+                        lbc.LabelPropertyCollection.Add(lp);
+                        this.VM.Label_Property.Add(lp);
+                        //Core.Services.LabelPropertyService.AddLabel(lpdb);
                     }
-
                 }
-
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            #endregion
 
         }
 

@@ -1,5 +1,4 @@
 ﻿using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -66,7 +65,7 @@ namespace OMDb.WinUI3.Extensions
                 {
                     foreach (var file in Core.Helpers.RandomHelper.RandomList(items, 100))//仅对100张照片计算
                     {
-                        if (Helpers.ImgHelper.IsSupportImg(file.FullName))
+                        if (Core.Helpers.ImageHelper.IsSupportImg(file.FullName))
                         {
                             infos.Add(Core.Helpers.ImageHelper.GetImageInfo(file.FullName));
                         }

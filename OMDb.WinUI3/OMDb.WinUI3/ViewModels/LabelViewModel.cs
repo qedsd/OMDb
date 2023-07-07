@@ -219,7 +219,7 @@ namespace OMDb.WinUI3.ViewModels
             ConfigPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Assets/Config/LabelConfig.xml";
             xe = XElement.Load(ConfigPath);
 
-            var labels = await Core.Services.LabelService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
+            var labels = await Core.Services.LabelClassService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
             if (labels != null)
             {
                 Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();
@@ -317,7 +317,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    Core.Services.LabelService.AddLabel(result);
+                    Core.Services.LabelClassService.AddLabel(result);
                     LabelTrees.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
@@ -335,7 +335,7 @@ namespace OMDb.WinUI3.ViewModels
                 else
                 {
                     result.ParentId = parent.Label.LCId;
-                    Core.Services.LabelService.AddLabel(result);
+                    Core.Services.LabelClassService.AddLabel(result);
                     parent.Children.Add(new LabelTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
@@ -358,7 +358,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     else
                     {
-                        Core.Services.LabelService.UpdateLabel(result);
+                        Core.Services.LabelClassService.UpdateLabel(result);
                         var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == result.ParentId);
                         if (parent != null)
                         {
@@ -389,7 +389,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     else
                     {
-                        Core.Services.LabelService.UpdateLabel(result);
+                        Core.Services.LabelClassService.UpdateLabel(result);
                         var index = LabelTrees.IndexOf(item);
                         LabelTrees.Remove(item);
                         LabelTrees.Insert(index, new LabelTree()
@@ -409,7 +409,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Label.Name}标签"))
                 {
-                    Core.Services.LabelService.RemoveLabel(item.Label.LCId);
+                    Core.Services.LabelClassService.RemoveLabel(item.Label.LCId);
                     if (item.Label.ParentId != null)//子类
                     {
                         var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == item.Label.ParentId);

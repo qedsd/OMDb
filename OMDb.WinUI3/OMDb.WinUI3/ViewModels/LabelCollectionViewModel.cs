@@ -3,9 +3,9 @@ using CommunityToolkit.Mvvm.Input;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.UI.Xaml.Controls;
 using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Services;
 using SqlSugar;
 using System;
@@ -182,7 +182,7 @@ namespace OMDb.WinUI3.ViewModels
             var groupEntries = Entries.GroupBy(p => p.DbId).ToList();
             foreach (var group in groupEntries)
             {
-                var allIds = await WatchHistoryService.QueryWatchHistoriesAsync(group.Select(p => p.EntryId).ToList(), group.Key);
+                var allIds = await EntryWatchHistoryService.QueryWatchHistoriesAsync(group.Select(p => p.EntryId).ToList(), group.Key);
                 if(allIds != null && allIds.Count != 0)
                 {
                     //有观看记录的

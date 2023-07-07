@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using OMDb.Core.Extensions;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models.Tools;
 using System;
 using System.Collections.Generic;

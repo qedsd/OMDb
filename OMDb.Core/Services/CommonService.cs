@@ -1,5 +1,4 @@
-﻿using OMDb.Core.Extensions;
-using OMDb.Core.Models;
+﻿using OMDb.Core.Models;
 using OMDb.Core.Utils.StringUtil;
 using System;
 using System.Collections.Generic;

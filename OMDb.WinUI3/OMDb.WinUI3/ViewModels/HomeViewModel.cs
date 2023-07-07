@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using OMDb.Core.DbModels;
-using OMDb.Core.Extensions;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
