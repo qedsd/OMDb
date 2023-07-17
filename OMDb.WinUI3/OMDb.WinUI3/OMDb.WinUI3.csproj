@@ -388,10 +388,10 @@
 	  <Page Update="MyControls\ExplorerControl.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
-	  <None Update="logo_32.ico">
+	  <None Update="Assets\Img\logo_32.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	  <None Update="logo_32.png">
+	  <None Update="logo_32.ico">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="nlog.config">

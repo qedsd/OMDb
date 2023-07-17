@@ -22,7 +22,7 @@ namespace OMDb.WinUI3
             Helpers.WindowHelper.TrackWindow(this);
             Helpers.WindowHelper.SetMainWindow(this);
             ExtendsContentIntoTitleBar = true;
-            SetTitleBar(AppTitleBar);
+            //SetTitleBar(AppTitleBar);
             PluginsBaseService.Init();
             Instance = this;
             if (Content is FrameworkElement rootElement)

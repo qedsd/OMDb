@@ -39,186 +39,197 @@
 
     <Grid x:Name="MainContentGrid">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="42" />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Button
-                Height="36"
-                VerticalContentAlignment="Center"
-                Click="Button_Click"
-                IsEnabled="{x:Bind ViewModel.CanGoBack, Mode=OneWay}"
-                Style="{StaticResource NavButtonStyle}">
-                <SymbolIcon Symbol="Back">
-                    <SymbolIcon.RenderTransform>
-                        <ScaleTransform CenterY="12" ScaleX="0.6" ScaleY="0.6" />
-                    </SymbolIcon.RenderTransform>
-                </SymbolIcon>
-            </Button>
-            <Grid Grid.Row="1" Background="Transparent">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid Margin="0,0,0,4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <!--  主功能列表  -->
-                    <StackPanel>
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:HomePage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="HomePage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="Home">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="主页" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=HomePage}" />
-                            </Grid>
-                        </Button>
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:ClassificationPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="ClassificationPage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="AlignCenter">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="分类" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ClassificationPage}" />
-                            </Grid>
-                        </Button>
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:CollectionsPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="CollectionsPage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="List">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="片单" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=CollectionsPage}" />
-                            </Grid>
-                        </Button>
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:EntryPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="EntryPage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="ViewAll">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="词条" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=EntryPage}" />
-                            </Grid>
-                        </Button>
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:ManagementPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="ManagementPage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="Library">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="管理" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ManagementPage}" />
-                            </Grid>
-                        </Button>
-                    </StackPanel>
-                    <!--  Foot  -->
-                    <StackPanel Grid.Row="1">
-                        <Button
-                            helpers:NavHelper.NavigateTo="views:ToolsPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="ToolsPage">
-                            <Grid HorizontalAlignment="Center">
-                                <StackPanel Orientation="Vertical">
-                                    <SymbolIcon Symbol="Repair">
-                                        <SymbolIcon.RenderTransform>
-                                            <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
-                                        </SymbolIcon.RenderTransform>
-                                    </SymbolIcon>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        FontSize="12"
-                                        Text="工具" />
-                                </StackPanel>
-                                <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=ViewModel.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ToolsPage}" />
-                            </Grid>
-                        </Button>
-                        <Button
-                            Height="38"
-                            helpers:NavHelper.NavigateTo="views:SettingPage"
-                            Command="{x:Bind ViewModel.NavClickCommand}"
-                            CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
-                            Style="{StaticResource NavButtonStyle}"
-                            Tag="SettingPage">
-                            <Grid HorizontalAlignment="Center">
-                                <SymbolIcon VerticalAlignment="Center" Symbol="Setting">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Margin="0,0,0,4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <StackPanel Height="32" Orientation="Horizontal">
+                    <Grid Margin="8,0" CornerRadius="8">
+                        <Image
+                            Width="18"
+                            Height="18"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Source="/Assets/Img/logo_32.png" />
+                    </Grid>
+                    <TextBlock
+                        x:Uid="AppDisplayNameTextBlock"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <!--  主功能列表  -->
+                <StackPanel Grid.Row="1">
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:HomePage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="HomePage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="Home">
                                     <SymbolIcon.RenderTransform>
-                                        <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
                                     </SymbolIcon.RenderTransform>
                                 </SymbolIcon>
-                            </Grid>
-                        </Button>
-                    </StackPanel>
-
-                </Grid>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="主页" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=HomePage}" />
+                        </Grid>
+                    </Button>
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:ClassificationPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="ClassificationPage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="AlignCenter">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="分类" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ClassificationPage}" />
+                        </Grid>
+                    </Button>
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:CollectionsPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="CollectionsPage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="List">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="片单" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=CollectionsPage}" />
+                        </Grid>
+                    </Button>
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:EntryPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="EntryPage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="ViewAll">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="词条" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=EntryPage}" />
+                        </Grid>
+                    </Button>
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:ManagementPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="ManagementPage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="Library">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="管理" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ManagementPage}" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+                <!--  Foot  -->
+                <StackPanel Grid.Row="2">
+                    <Button
+                        helpers:NavHelper.NavigateTo="views:ToolsPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="ToolsPage">
+                        <Grid HorizontalAlignment="Center">
+                            <StackPanel Orientation="Vertical">
+                                <SymbolIcon Symbol="Repair">
+                                    <SymbolIcon.RenderTransform>
+                                        <ScaleTransform CenterX="12" ScaleX="0.8" ScaleY="0.8" />
+                                    </SymbolIcon.RenderTransform>
+                                </SymbolIcon>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontSize="12"
+                                    Text="工具" />
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource NavRectangleStyle}" Visibility="{Binding ElementName=page, Path=VM.SelectedPage, Mode=OneWay, Converter={StaticResource EqualStringToVisibilityConvertercs}, ConverterParameter=ToolsPage}" />
+                        </Grid>
+                    </Button>
+                    <Button
+                        Height="38"
+                        helpers:NavHelper.NavigateTo="views:SettingPage"
+                        Command="{x:Bind VM.NavClickCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=Self}}"
+                        Style="{StaticResource NavButtonStyle}"
+                        Tag="SettingPage">
+                        <Grid HorizontalAlignment="Center">
+                            <SymbolIcon VerticalAlignment="Center" Symbol="Setting">
+                                <SymbolIcon.RenderTransform>
+                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8" />
+                                </SymbolIcon.RenderTransform>
+                            </SymbolIcon>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="1" Background="Transparent">
+                <TabView
+                    x:Name="ContentTabView"
+                    AddTabButtonClick="ContentTabView_AddTabButtonClick"
+                    SelectionChanged="ContentTabView_SelectionChanged"
+                    IsAddTabButtonVisible="False">
+                    <TabView.TabStripFooter>
+                        <Grid
+                            x:Name="CustomDragRegion"
+                            MinWidth="150"
+                            Background="Transparent" />
+                    </TabView.TabStripFooter>
+                </TabView>
                 <Frame
-                    x:Name="shellFrame"
-                    Grid.Column="1"
+                    x:Name="ShellFrame"
+                    Margin="0,36,0,0"
                     Background="Transparent"
-                    CornerRadius="8" />
+                    CornerRadius="8"
+                    Visibility="{x:Bind VM.IsInTabView, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
             </Grid>
         </Grid>
         <InfoBar

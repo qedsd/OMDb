@@ -24,6 +24,14 @@ namespace OMDb.WinUI3.ViewModels
         {
             Current = this;
         }
+
+        private bool isInTabView;
+        public bool IsInTabView
+        {
+            get => isInTabView;
+            set => SetProperty(ref isInTabView, value);
+        }
+
         private string selectedPage;
         public string SelectedPage
         {
@@ -34,12 +42,6 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        private bool canGoBack;
-        public bool CanGoBack
-        {
-            get => canGoBack;
-            set => SetProperty(ref canGoBack, value);
-        }
         public void Init(Frame frame)
         {
             NavigationService.Frame = frame;
@@ -48,13 +50,11 @@ namespace OMDb.WinUI3.ViewModels
         public void GoBack()
         {
             NavigationService.GoBack();
-            CanGoBack = NavigationService.CanGoBack;
         }
 
         public void SetSelected(Type type)
         {
             SelectedPage = type.Name;
-            CanGoBack = NavigationService.CanGoBack;
         }
 
         public ICommand NavClickCommand => new RelayCommand<Button>((item) =>
@@ -63,7 +63,7 @@ namespace OMDb.WinUI3.ViewModels
             if (pageType != null)
             {
                 NavigationService.Navigate(pageType, null);
-                CanGoBack = NavigationService.CanGoBack;
+                IsInTabView = false;
             }
         });
     }

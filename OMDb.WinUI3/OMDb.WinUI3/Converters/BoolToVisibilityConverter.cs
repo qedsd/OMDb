@@ -30,7 +30,7 @@ namespace OMDb.WinUI3.Converters
             {
                 return Visibility.Collapsed;
             }
-            if ((bool)value)
+            if (value.GetType() == typeof(bool) && (bool)value)
             {
                 return IsReverse ? Visibility.Collapsed : Visibility.Visible;
             }
