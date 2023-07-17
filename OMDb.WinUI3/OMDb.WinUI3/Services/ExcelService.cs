@@ -152,6 +152,7 @@ namespace OMDb.WinUI3.Services
             //DataTable的列名和excel的列名对应字典，因为excel的列名一般是中文的，DataTable的列名是英文的，字典主要是存储excel和DataTable列明的对应关系，当然我们也可以把这个对应关系存在配置文件或者其他地方
             Dictionary<string, string> dir = new Dictionary<string, string>();
             dir.Add("Name", "詞條名稱");
+            dir.Add("Alias", "别稱");
             dir.Add("ReleaseDate", "發行日期");
             dir.Add("MyRating", "評分");
 
