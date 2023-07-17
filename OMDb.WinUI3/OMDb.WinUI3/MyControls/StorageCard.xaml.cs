@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Navigation;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.ViewModels;
-using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.IO;

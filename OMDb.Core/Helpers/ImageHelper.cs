@@ -1,13 +1,9 @@
-﻿using ImageMagick;
-using OMDb.Core.Const;
+﻿using OMDb.Core.Const;
 using OMDb.Core.Models;
 using OMDb.Core.Services;
 using OMDb.Core.Utils.Extensions;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors;
 using System.Net;
+using ImageInfo = OMDb.Core.Models.ImageInfo;
 
 namespace OMDb.Core.Helpers
 {
@@ -17,12 +13,12 @@ namespace OMDb.Core.Helpers
         {
             try
             {
-                MagickImageInfo image = new MagickImageInfo(path);
+                ImageMagick.MagickImageInfo image = new ImageMagick.MagickImageInfo(path);
                 int w = image.Width;//宽
                 int h = image.Height;//高
                 Wpx = image.Density.X;//分辨率
                 Hpx = image.Density.Y;//分辨率
-                if (image.Density.Units == DensityUnit.PixelsPerCentimeter)//判断分辨率单位
+                if (image.Density.Units == ImageMagick.DensityUnit.PixelsPerCentimeter)//判断分辨率单位
                 {
                     Wpx *= 2.54;
                     Hpx *= 2.54;
@@ -38,7 +34,7 @@ namespace OMDb.Core.Helpers
             try
             {
                 ImageInfo imageInfo = new ImageInfo();
-                MagickImageInfo image = new MagickImageInfo(path);
+                ImageMagick.MagickImageInfo image = new ImageMagick.MagickImageInfo(path);
                 imageInfo.Width = image.Width;
                 imageInfo.Height = image.Height;
                 imageInfo.FullPath = path;

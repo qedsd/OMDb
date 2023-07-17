@@ -2,7 +2,9 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using OMDb.Core.Services.PluginsService;
+using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Services;
+using System;
 using System.Runtime.InteropServices; // For DllImport
 using WinRT; // required to support Window.As<ICompositionSupportsSystemBackdrop>()
 
@@ -16,6 +18,7 @@ namespace OMDb.WinUI3
         {
             this.InitializeComponent();
             this.Title = "OMDb";
+            WindowHelper.GetAppWindow(this).SetIcon(System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logo_32.ico"));
             Helpers.WindowHelper.TrackWindow(this);
             Helpers.WindowHelper.SetMainWindow(this);
             ExtendsContentIntoTitleBar = true;

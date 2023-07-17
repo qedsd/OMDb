@@ -10,7 +10,7 @@ namespace OMDb.WinUI3.Services
     {
         public static void Init()
         {
-            Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "zh-CN";
+            //Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride = "zh-CN";
             ConfigService.Load();
             //SettingService.Load();
             RecentFileService.Init();

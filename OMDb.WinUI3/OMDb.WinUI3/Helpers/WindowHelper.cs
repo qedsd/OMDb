@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
+using System;
 using System.Collections.Generic;
 
 namespace OMDb.WinUI3.Helpers
@@ -45,6 +46,15 @@ namespace OMDb.WinUI3.Helpers
         {
             MainWindow = window;
         }
-
+        public static IntPtr GetWindowHandle(Window window)
+        {
+            return WinRT.Interop.WindowNative.GetWindowHandle(window);
+        }
+        public static Microsoft.UI.Windowing.AppWindow GetAppWindow(Window window)
+        {
+            var hWnd = GetWindowHandle(window);
+            Microsoft.UI.WindowId windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hWnd);
+            return Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
+        }
     }
 }
