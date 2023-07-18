@@ -47,7 +47,12 @@ namespace OMDb.Core.Services
             else return null;
         }
 
-
+        public static List<LabelPropertyDb> Get1stLabel()
+        {
+            if (IsLocalDbValid())
+                return DbService.DCDb.Queryable<LabelPropertyDb>().Where(a=>a.Level==1).ToList();
+            else return null;
+        }
 
         /// <summary>
         /// 获取属性标签数量
@@ -279,7 +284,7 @@ namespace OMDb.Core.Services
             var lst1 = DbService.DCDb.Ado.SqlQuery<string>(sb1.ToString());
             var lst2 = DbService.DCDb.Ado.SqlQuery<string>(sb2.ToString());
             lst1.AddRange(lst2);
-            var lst=lst1.Distinct();
+            var lst = lst1.Distinct();
             return lst.ToList();
         }
 
@@ -291,7 +296,10 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void ClearLabelPropertyLK(string DbCenterId, string lpid)
         {
-            DbService.DCDb.Deleteable<LabelPropertyLinkDb>(p => p.LPIdA == lpid||p.LPIdB==lpid).ExecuteCommand();
+            DbService.DCDb.Deleteable<LabelPropertyLinkDb>(p => p.LPIdA == lpid || p.LPIdB == lpid).ExecuteCommand();
         }
+
+
+
     }
 }

@@ -17,23 +17,37 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class EntryViewModel : ObservableObject
     {
+        public EntryViewModel()
+        {
+            InitEnumItemsource();
+            sortType = Core.Enums.SortType.LastUpdateTime;
+            sortWay = Core.Enums.SortWay.Positive;
+            Init();
+            Current = this;
+            Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
+            Events.GlobalEvent.AddEntryEvent += GlobalEvent_AddEntryEvent;
+            Events.GlobalEvent.RemoveEntryEvent += GlobalEvent_RemoveEntryEvent;
+        }
         public static EntryViewModel Current { get; private set; }
+
+        #region 字段
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
-        private ObservableCollection<Core.Models.Entry> entries;
+        private ObservableCollection<Core.Models.Entry> _entries;
         public ObservableCollection<Core.Models.Entry> Entries
         {
-            get => entries;
+            get => _entries;
             set
             {
-                SetProperty(ref entries, value);
+                SetProperty(ref _entries, value);
             }
         }
-        private ObservableCollection<Label> labels;
+        private ObservableCollection<Label> _labels;
         public ObservableCollection<Label> Labels
         {
-            get => labels;
-            set => SetProperty(ref labels, value);
+            get => _labels;
+            set => SetProperty(ref _labels, value);
         }
+
         private Core.Enums.SortType sortType = Core.Enums.SortType.LastUpdateTime;
         public Core.Enums.SortType SortType
         {
@@ -116,7 +130,6 @@ namespace OMDb.WinUI3.ViewModels
                 ConfirmSuggest(value.Value as string);
             }
         }
-
         private bool isFilterLabel = false;
         /// <summary>
         /// 是否按选择的标签进行筛选
@@ -131,18 +144,115 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
 
-        public EntryViewModel()
+        private ObservableCollection<EntrySortInfoTree> _entrySortInfoTrees = new ObservableCollection<EntrySortInfoTree>();
+        public ObservableCollection<EntrySortInfoTree> EntrySortInfoTrees
         {
-            InitEnumItemsource();
-            sortType = Core.Enums.SortType.LastUpdateTime;
-            sortWay = Core.Enums.SortWay.Positive;
-            Init();
-            Current = this;
-            Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
-            Events.GlobalEvent.AddEntryEvent += GlobalEvent_AddEntryEvent;
-            Events.GlobalEvent.RemoveEntryEvent += GlobalEvent_RemoveEntryEvent;
+            get => _entrySortInfoTrees;
+            set => SetProperty(ref _entrySortInfoTrees, value);
         }
 
+        private EntrySortInfoTree _entrySortInfoCurrents;
+        public EntrySortInfoTree EntrySortInfoCurrents
+        {
+            get => _entrySortInfoCurrents;
+            set => SetProperty(ref _entrySortInfoCurrents, value);
+        }
+
+
+        private ObservableCollection<EntrySortInfoResult> _entrySortInfoResults = new ObservableCollection<EntrySortInfoResult>();
+        public ObservableCollection<EntrySortInfoResult> EntrySortInfoResults
+        {
+            get => _entrySortInfoResults;
+            set => SetProperty(ref _entrySortInfoResults, value);
+        }
+        #endregion
+
+        #region ICommand
+        public ICommand RefreshCommand => new RelayCommand(() =>
+        {
+            Init();
+            Helpers.InfoHelper.ShowMsg("刷新完成");
+        });
+        public ICommand ItemClickCommand => new RelayCommand<Core.Models.Entry>((entry) =>
+        {
+            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
+        });
+        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
+        {
+            _ = UpdateEntryListAsync();
+        });
+        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>((items) =>
+        {
+            _ = UpdateEntryListAsync();
+        });
+        public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async (item) =>
+        {
+            if (item == null)
+            {
+                if (string.IsNullOrEmpty(AutoSuggestText))
+                {
+                    _ = UpdateEntryListAsync();
+                }
+                else
+                {
+                    List<Core.Models.Entry> items = new List<Core.Models.Entry>();
+                    foreach (var p in AutoSuggestItems.GroupBy(p => p.DbId))
+                    {
+                        var entryIds = p.Select(p => p.Id).ToList().Distinct();
+                        items.AddRange(await Core.Services.EntryService.GetEntryByIdsAsync(entryIds, p.Key));
+                    }
+                    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        Entries = items.ToObservableCollection();
+                    });
+                }
+            }
+            else
+            {
+                AutoSuggestItem = item;
+            }
+        });
+        public ICommand AddEntryCommand => new RelayCommand(async () =>
+        {
+            Services.ConfigService.LoadStorages();
+            if (Services.ConfigService.EnrtyStorages.Count == 0)
+            {
+                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
+            }
+            else
+            {
+                await Services.EntryService.AddEntryAsync();
+            }
+        });
+        public ICommand AddEntryBatchCommand => new RelayCommand(async () =>
+        {
+            Services.ConfigService.LoadStorages();
+            if (Services.ConfigService.EnrtyStorages.Count == 0)
+            {
+                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
+            }
+            else
+            {
+                await Services.EntryService.AddEntryBatchAsync();
+            }
+        });
+
+        public ICommand AddEntrySortInfoCommand => new RelayCommand(() =>
+        {
+            EntrySortInfoResult ESIR = new EntrySortInfoResult(EntrySortInfoCurrents.Title);
+            EntrySortInfoResults.Add(ESIR);
+        });
+        public ICommand RemoveEntrySortInfoCommand => new RelayCommand(() =>
+        {
+
+        });
+        public ICommand ClearEntrySortInfoCommand => new RelayCommand(() =>
+        {
+
+        });
+        #endregion
+
+        #region Methon
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
@@ -160,6 +270,25 @@ namespace OMDb.WinUI3.ViewModels
             }
             await UpdateEntryListAsync();
             Helpers.InfoHelper.HideWaiting();
+
+            #region 排序模式加载
+
+            EntrySortInfoTree eit_base = new EntrySortInfoTree("基本信息");
+            eit_base.Children = new ObservableCollection<EntrySortInfoTree>();
+            eit_base.Children.Add(new EntrySortInfoTree("业务日期"));
+            eit_base.Children.Add(new EntrySortInfoTree("词条名称"));
+
+            EntrySortInfoTree eit_property = new EntrySortInfoTree("属性");
+            eit_property.Children = new ObservableCollection<EntrySortInfoTree>();
+            var lpdbs = Core.Services.LabelPropertyService.Get1stLabel();
+            foreach (var item in lpdbs)
+                eit_property.Children.Add(new EntrySortInfoTree(item.Name));
+            EntrySortInfoTrees.Add(eit_base);
+            EntrySortInfoTrees.Add(eit_property);
+
+            #endregion
+
+
         }
         private void InitEnumItemsource()
         {
@@ -232,77 +361,6 @@ namespace OMDb.WinUI3.ViewModels
                 _ = UpdateEntryListAsync();
             }
         }
-        public ICommand RefreshCommand => new RelayCommand(() =>
-        {
-            Init();
-            Helpers.InfoHelper.ShowMsg("刷新完成");
-        });
-        public ICommand ItemClickCommand => new RelayCommand<Core.Models.Entry>((entry) =>
-        {
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
-        });
-        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
-        {
-            _ = UpdateEntryListAsync();
-        });
-        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>((items) =>
-        {
-            _ = UpdateEntryListAsync();
-        });
-        public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async (item) =>
-        {
-            if (item == null)
-            {
-                if (string.IsNullOrEmpty(AutoSuggestText))
-                {
-                    _ = UpdateEntryListAsync();
-                }
-                else
-                {
-                    List<Core.Models.Entry> items = new List<Core.Models.Entry>();
-                    foreach (var p in AutoSuggestItems.GroupBy(p => p.DbId))
-                    {
-                        var entryIds = p.Select(p => p.Id).ToList().Distinct();
-                        items.AddRange(await Core.Services.EntryService.GetEntryByIdsAsync(entryIds, p.Key));
-                    }
-                    Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
-                    {
-                        Entries = items.ToObservableCollection();
-                    });
-                }
-            }
-            else
-            {
-                AutoSuggestItem = item;
-            }
-        });
-
-        public ICommand AddEntryCommand => new RelayCommand(async () =>
-        {
-            Services.ConfigService.LoadStorages();
-            if (Services.ConfigService.EnrtyStorages.Count == 0)
-            {
-                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
-            }
-            else
-            {
-                await Services.EntryService.AddEntryAsync();
-            }
-        });
-
-        public ICommand AddEntryBatchCommand => new RelayCommand(async () =>
-        {
-            Services.ConfigService.LoadStorages();
-            if (Services.ConfigService.EnrtyStorages.Count == 0)
-            {
-                await Dialogs.MsgDialog.ShowDialog("请先创建仓库");
-            }
-            else
-            {
-                await Services.EntryService.AddEntryBatchAsync();
-            }
-        });
-
         private void GlobalEvent_RemoveEntryEvent(object sender, Events.EntryEventArgs e)
         {
             if (Entries != null)
@@ -314,7 +372,6 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
         }
-
         private void GlobalEvent_AddEntryEvent(object sender, Events.EntryEventArgs e)
         {
             if (IsFitFilter(e.Entry))
@@ -326,7 +383,6 @@ namespace OMDb.WinUI3.ViewModels
                 Entries.Add(e.Entry);
             }
         }
-
         private void GlobalEvent_UpdateEntryEvent(object sender, Events.EntryEventArgs e)
         {
             if (Entries != null)
@@ -367,5 +423,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             return false;
         }
+
+        #endregion 
     }
 }

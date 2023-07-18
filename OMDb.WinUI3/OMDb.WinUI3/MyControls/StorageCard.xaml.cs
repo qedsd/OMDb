@@ -101,7 +101,7 @@ namespace OMDb.WinUI3.MyControls
             //var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
-            var outputPath = await Helpers.PickHelper.PickSaveFileAsync(".xlsx");
+            var outputPath = await Helpers.PickHelper.PickSaveFileAsync(".xls");
             if (outputPath== null )
             {
                 InfoHelper.ShowError("導出路徑有誤！");

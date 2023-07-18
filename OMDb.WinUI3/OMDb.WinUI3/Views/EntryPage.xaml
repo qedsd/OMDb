@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls" xmlns:models="using:OMDb.WinUI3.Models"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -145,6 +145,67 @@
                                 <Grid Grid.Row="2">
                                     <mycontrols:EntryStoragesControl CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}" EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
                                 </Grid>
+                            </Grid>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+
+                <AppBarButton Icon="Sort" Label="排序">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <Grid Width="400">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <TreeView x:Name="MyTreeView" ItemsSource="{x:Bind VM.EntrySortInfoTrees,Mode=OneWay}" SelectedItem="{x:Bind VM.EntrySortInfoCurrents,Mode=TwoWay}">
+                                    <TreeView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:EntrySortInfoTree">
+                                            <TreeViewItem ItemsSource="{x:Bind Children}">
+                                                <TextBlock Text="{x:Bind Title}"></TextBlock>
+                                            </TreeViewItem>
+                                        </DataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+
+
+                                <StackPanel Grid.Column="1">
+                                    <Button Margin="0,15,0,0" Command="{x:Bind VM.AddEntrySortInfoCommand}">
+                                        <FontIcon Glyph="&#xECC8;" />
+                                    </Button>
+                                    <Button Margin="0,15,0,0" Command="{x:Bind VM.RemoveEntrySortInfoCommand}">
+                                        <FontIcon Glyph="&#xECC9;" />
+                                    </Button>
+                                    <Button Margin="0,15,0,0" Command="{x:Bind VM.ClearEntrySortInfoCommand}">
+                                        <FontIcon Glyph="&#xEA99;" />
+                                    </Button>
+                                </StackPanel>
+
+                                <ListView ItemsSource="{x:Bind VM.EntrySortInfoResults,Mode=OneWay}" Grid.Column="2">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:EntrySortInfoResult">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{x:Bind Title}" VerticalAlignment="Center" Width="50">
+                                                    
+                                                </TextBlock>
+                                                <ComboBox ItemsSource="{x:Bind SortTypes}" SelectedItem="{x:Bind SortType,Mode=OneWay}">
+
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                    <!--分隔符-->
+                                <!--<Rectangle
+                                    Grid.Row="1"
+                                    Height="1"
+                                    Margin="10,20"
+                                    Fill="{ThemeResource SystemAccentColor}" />-->
+                                <!--<Grid Grid.Row="2">
+                                    <mycontrols:EntryStoragesControl CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}" EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
+                                </Grid>-->
                             </Grid>
                         </Flyout>
                     </AppBarButton.Flyout>

@@ -18,7 +18,7 @@ namespace OMDb.Core.Services
         public static List<EntryLabelPropertyLinkDb> SelectAllEntryLabel()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat(@"select * from EntryLabel ");
+            sb.AppendFormat(@"select * from EntryLabelPropertyLink");
             return DbService.DCDb.Ado.SqlQuery<EntryLabelPropertyLinkDb>(sb.ToString());
         }
 
@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
         public static List<EntryLabelPropertyLinkDb> SelectAllEntryLabel(string dbId)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat($@"select * from EntryLabel where DbId='{dbId}'");
+            sb.AppendFormat($@"select * from EntryLabelPropertyLink where DbId='{dbId}'");
             return DbService.DCDb.Ado.SqlQuery<EntryLabelPropertyLinkDb>(sb.ToString());
         }
 

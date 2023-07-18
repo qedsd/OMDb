@@ -112,10 +112,10 @@ namespace OMDb.WinUI3.Services
         {
             await Task.Run(() =>
             {
+                TreatEntry(ed);//处理词条主表Entry
                 Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//词条
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
 
-                TreatEntry(ed);//处理词条主表Entry
                 TreatEntrySource(ed);//资源路径表EntrySource更新
                 TreatLabelLink(ed);//词条标签关联表
 

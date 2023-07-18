@@ -378,7 +378,7 @@ namespace OMDb.Core.Services
                 entry.EntryId = Guid.NewGuid().ToString();
             entry.CoverImg = entry.CoverImg.GetDefaultCoverName();
             var existingEntry = DbService.GetConnection(entry.DbId).Queryable<EntryDb>().Where(s => s.EntryId == entry.EntryId).First();
-            if (existingEntry != null)
+            if (existingEntry == null)
                 DbService.GetConnection(entry.DbId).Insertable(entry as EntryDb).ExecuteCommand();
             else
                 DbService.GetConnection(entry.DbId).Updateable<EntryDb>(entry as EntryDb).RemoveDataCache().ExecuteCommand();
