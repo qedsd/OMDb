@@ -57,13 +57,12 @@ namespace OMDb.WinUI3.ViewModels
             SelectedPage = type.Name;
         }
 
-        public ICommand NavClickCommand => new RelayCommand<Button>((item) =>
+        public ICommand NavClickCommand => new RelayCommand<ListViewItem>((item) =>
         {
             var pageType = item?.GetValue(NavHelper.NavigateToProperty) as Type;
             if (pageType != null)
             {
                 NavigationService.Navigate(pageType, null);
-                IsInTabView = false;
             }
         });
     }

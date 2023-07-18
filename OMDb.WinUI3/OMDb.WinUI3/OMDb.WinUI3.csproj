@@ -19,10 +19,15 @@
 		<!--package需注释掉-->
 	</PropertyGroup>
 	<ItemGroup>
+		<Compile Remove="Assets\FFmpeg\**" />
 		<Compile Remove="Enums\**" />
+		<Content Remove="Assets\FFmpeg\**" />
 		<Content Remove="Enums\**" />
+		<EmbeddedResource Remove="Assets\FFmpeg\**" />
 		<EmbeddedResource Remove="Enums\**" />
+		<None Remove="Assets\FFmpeg\**" />
 		<None Remove="Enums\**" />
+		<Page Remove="Assets\FFmpeg\**" />
 		<Page Remove="Enums\**" />
 		<PRIResource Remove="Enums\**" />
 	</ItemGroup>
@@ -96,6 +101,7 @@
 		<None Remove="Views\LabelPropertyPage.xaml" />
 		<None Remove="Views\ShellPage.xaml" />
 		<None Remove="Views\StoragePage.xaml" />
+		<None Remove="Views\TestTabViewPage.xaml" />
 		<None Remove="Views\ToolsPage.xaml" />
 		<None Remove="Views\Tools\AVCodecToolPage.xaml" />
 		<None Remove="Views\Tools\SubToolPage.xaml" />
@@ -377,10 +383,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Assets\FFmpeg\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Include="Properties\PublishProfiles\win10-x64.pubxml.user" />
 	</ItemGroup>
 
@@ -409,6 +411,9 @@
 	  <None Update="Plugins\OMDb.JavDb.dll">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
+	  <Page Update="Views\TestTabViewPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	  <Page Update="Resource\EntryBatchDatatemplate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
@@ -502,5 +507,9 @@
 		<Page Update="MyControls\EntryCollectionCard2.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PRIResource Remove="Assets\FFmpeg\**" />
 	</ItemGroup>
 </Project>

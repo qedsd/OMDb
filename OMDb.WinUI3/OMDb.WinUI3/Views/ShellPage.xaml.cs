@@ -1,5 +1,8 @@
 ﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using OMDb.WinUI3.Interfaces;
+using OMDb.WinUI3.Services;
 
 namespace OMDb.WinUI3.Views
 {
@@ -15,6 +18,7 @@ namespace OMDb.WinUI3.Views
             Helpers.InfoHelper.WaitingProgressRing = WaitingProgressRing;
             Helpers.InfoHelper.DialogFrame = DialogFrame;
             VM.Init(ShellFrame);
+            TabViewService.Init(ContentTabView);
         }
 
         private void ShellPage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
@@ -24,12 +28,7 @@ namespace OMDb.WinUI3.Views
 
         private void ContentTabView_AddTabButtonClick(TabView sender, object args)
         {
-            TabViewItem item = new TabViewItem()
-            {
-                Header = "Test",
-                IsSelected = true,
-            };
-            sender.TabItems.Add(item);
+            TabViewService.AddItem(new TestTabViewPage());
         }
 
         private void ContentTabView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,6 +41,19 @@ namespace OMDb.WinUI3.Views
             {
                 VM.IsInTabView = true;
             }
+        }
+
+        private void ContentTabView_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+        {
+            ((args.Item as TabViewItem).Content as ITabViewItemPage)?.Close();
+            sender.TabItems.Remove(args.Item);
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ContentTabView.SelectedItem = null;
+            VM.NavClickCommand.Execute((e.ClickedItem as FrameworkElement).Parent as ListViewItem);
+            MenuFlyout.Hide();
         }
     }
 }
