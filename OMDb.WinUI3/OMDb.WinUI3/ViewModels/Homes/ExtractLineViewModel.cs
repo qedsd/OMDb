@@ -87,7 +87,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
         {
             Helpers.InfoHelper.ShowWaiting();
             var entry = await Core.Services.EntryService.QueryEntryAsync(new QueryItem(ExtractsLine.EntryId, ExtractsLine.DbId));
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
+            TabViewService.AddItem(new Views.EntryDetailPage(entry));
             Helpers.InfoHelper.HideWaiting();
         });
     }

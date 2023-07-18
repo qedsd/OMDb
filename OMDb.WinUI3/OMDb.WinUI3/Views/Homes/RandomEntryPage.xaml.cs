@@ -35,7 +35,7 @@ namespace OMDb.WinUI3.Views.Homes
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), e.ClickedItem);
+            TabViewService.AddItem(new Views.EntryDetailPage(e.ClickedItem as Core.Models.Entry));
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.WinUI3.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,21 +16,33 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Views
 {
-    public sealed partial class EntryDetailPage : Page
+    public sealed partial class EntryDetailPage : Page, ITabViewItemPage
     {
         public ViewModels.EntryDetailViewModel VM { get; set; } = new ViewModels.EntryDetailViewModel(null);
-        public EntryDetailPage()
+
+        public string Title { get; private set; }
+
+        public EntryDetailPage(Core.Models.Entry entry)
         {
             this.InitializeComponent();
+            Init(entry);
         }
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        private async void Init(Core.Models.Entry entry)
         {
-            var entry = e.Parameter as Core.Models.Entry;
-            if(entry != null)
+            if (entry != null)
             {
                 VM.Entry = await Models.EntryDetail.CreateAsync(entry);
+                Title = VM.Entry.Name;
             }
         }
+        //protected async override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+        //    var entry = e.Parameter as Core.Models.Entry;
+        //    if(entry != null)
+        //    {
+        //        VM.Entry = await Models.EntryDetail.CreateAsync(entry);
+        //    }
+        //}
 
         private void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
@@ -60,6 +73,11 @@ namespace OMDb.WinUI3.Views
         private void LineListView_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             VM.LineDetailCommand.Execute((sender as ListView).SelectedItem);
+        }
+
+        public void Close()
+        {
+            throw new NotImplementedException();
         }
     }
 }

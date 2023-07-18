@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using NPOI.POIFS.FileSystem;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Interfaces;
 using OMDb.WinUI3.Services;
@@ -36,7 +37,7 @@ namespace OMDb.WinUI3.Views.Homes
 
         private void GridView_ItemClick(object sender, ItemClickEventArgs e)
         {
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), e.ClickedItem);
+            TabViewService.AddItem(new Views.EntryDetailPage(e.ClickedItem as Core.Models.Entry));
         }
     }
 }

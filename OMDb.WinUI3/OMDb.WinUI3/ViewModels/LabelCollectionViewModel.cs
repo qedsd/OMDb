@@ -231,7 +231,7 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand ItemClickCommand => new RelayCommand<Core.Models.Entry>((entry) =>
         {
-            NavigationService.Navigate(typeof(Views.EntryDetailPage), entry);
+            TabViewService.AddItem(new Views.EntryDetailPage(entry));
         });
     }
 }
