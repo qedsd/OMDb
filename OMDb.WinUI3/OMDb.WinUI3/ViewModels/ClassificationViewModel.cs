@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using MySqlX.XDevAPI.Common;
 using OMDb.Core.Enums;
 using OMDb.Core.Helpers;
 using OMDb.Core.Models;

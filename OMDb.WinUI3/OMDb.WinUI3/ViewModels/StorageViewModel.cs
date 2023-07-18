@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;

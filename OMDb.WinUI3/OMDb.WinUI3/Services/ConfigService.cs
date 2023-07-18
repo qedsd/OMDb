@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services.Settings;
-using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

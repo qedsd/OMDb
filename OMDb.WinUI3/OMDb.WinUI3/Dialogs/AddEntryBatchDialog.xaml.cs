@@ -18,7 +18,6 @@ using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
 using OMDb.WinUI3.Services.Settings;
 using OMDb.WinUI3.ViewModels;
-using Org.BouncyCastle.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

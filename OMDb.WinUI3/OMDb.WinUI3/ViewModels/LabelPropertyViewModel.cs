@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
-using MySqlX.XDevAPI.Common;
 using Newtonsoft.Json;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -14,7 +13,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-//using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using System.Xml.Linq;
 using Microsoft.UI.Xaml;
@@ -24,7 +22,6 @@ using Microsoft.UI.Xaml.Data;
 using OMDb.WinUI3.Services.Settings;
 using System.ComponentModel.Design;
 using OMDb.Core.DbModels;
-using Org.BouncyCastle.Crypto;
 
 namespace OMDb.WinUI3.ViewModels
 {

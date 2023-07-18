@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using MySqlX.XDevAPI.Common;
 using OMDb.Core.Services;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
