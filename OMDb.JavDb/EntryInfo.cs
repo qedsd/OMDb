@@ -137,7 +137,7 @@ namespace OMDb.JavDb
             var bytes = GetUrlMemoryStream(path);
             using (SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(bytes))
             {
-                var size = image.Size();
+                var size = image.Size;
                 var l = 19 * (size.Width / 40);
                 var t = 0;
                 var r = size.Width;
