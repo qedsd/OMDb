@@ -47,10 +47,6 @@ namespace OMDb.WinUI3.ViewModels
             NavigationService.Frame = frame;
             NavigationService.Navigate(typeof(Views.HomePage), null);
         }
-        public void GoBack()
-        {
-            NavigationService.GoBack();
-        }
 
         public void SetSelected(Type type)
         {

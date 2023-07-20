@@ -77,7 +77,7 @@ namespace OMDb.WinUI3.Views
 
         public void Close()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

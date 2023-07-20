@@ -46,7 +46,7 @@ namespace OMDb.WinUI3.Views
         private void ContentTabView_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
         {
             ((args.Item as TabViewItem).Content as ITabViewItemPage)?.Close();
-            sender.TabItems.Remove(args.Item);
+            TabViewService.ReomveItem(args.Item as TabViewItem);
         }
 
         private void ListView_ItemClick(object sender, ItemClickEventArgs e)
@@ -54,6 +54,16 @@ namespace OMDb.WinUI3.Views
             ContentTabView.SelectedItem = null;
             VM.NavClickCommand.Execute((e.ClickedItem as FrameworkElement).Parent as ListViewItem);
             MenuFlyout.Hide();
+        }
+
+        private void Button_BackToMenuPage_Click(object sender, RoutedEventArgs e)
+        {
+            ContentTabView.SelectedItem = null;
+        }
+
+        private void TabViewLeftPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            TabStripHeaderGrid.Width = (sender as FrameworkElement).ActualWidth;
         }
     }
 }

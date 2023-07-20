@@ -49,11 +49,11 @@
                 Margin="0,-10,0,0"
                 AddTabButtonClick="ContentTabView_AddTabButtonClick"
                 CloseButtonOverlayMode="OnPointerOver"
-                IsAddTabButtonVisible="True"
+                IsAddTabButtonVisible="False"
                 SelectionChanged="ContentTabView_SelectionChanged"
                 TabCloseRequested="ContentTabView_TabCloseRequested">
                 <TabView.TabStripHeader>
-                    <Grid Width="100" />
+                    <Grid x:Name="TabStripHeaderGrid" Width="100" />
                 </TabView.TabStripHeader>
                 <TabView.TabStripFooter>
                     <Grid
@@ -68,95 +68,125 @@
                 Background="Transparent"
                 CornerRadius="8"
                 Visibility="{x:Bind VM.IsInTabView, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}" />
-            <StackPanel Height="32" Orientation="Horizontal">
-                <Grid Margin="12,0" CornerRadius="8">
-                    <Image
-                        Width="16"
-                        Height="16"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Source="/Assets/Img/logo_32.png" />
-                </Grid>
-                <Button
-                    Width="50"
-                    VerticalContentAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontFamily="Segoe MDL2 Assets"
-                        FontSize="16"
-                        Text="&#xE700;"
-                        TextAlignment="Center" />
-                    <Button.Flyout>
-                        <Flyout x:Name="MenuFlyout">
-                            <StackPanel Width="260" Margin="-20,-18">
-                                <ListView
-                                    IsItemClickEnabled="True"
-                                    ItemClick="ListView_ItemClick"
-                                    Style="{StaticResource StretchListView}">
-                                    <ListView.Resources>
-                                        <Style x:Key="SymbolText" TargetType="TextBlock">
-                                            <Setter Property="Width" Value="70" />
-                                            <Setter Property="VerticalAlignment" Value="Center" />
-                                            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
-                                            <Setter Property="FontSize" Value="16" />
-                                            <Setter Property="TextAlignment" Value="Center" />
-                                        </Style>
-                                        <Style TargetType="StackPanel">
-                                            <Setter Property="Height" Value="60" />
-                                            <Setter Property="Orientation" Value="Horizontal" />
-                                        </Style>
-                                    </ListView.Resources>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:HomePage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE80F;" />
-                                            <TextBlock VerticalAlignment="Center" Text="主页" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:ClassificationPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE81E;" />
-                                            <TextBlock VerticalAlignment="Center" Text="分类" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:CollectionsPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE7BC;" />
-                                            <TextBlock VerticalAlignment="Center" Text="片单" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:EntryPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE74C;" />
-                                            <TextBlock VerticalAlignment="Center" Text="词条" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:ManagementPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE8F1;" />
-                                            <TextBlock VerticalAlignment="Center" Text="管理" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:ToolsPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE9E9;" />
-                                            <TextBlock VerticalAlignment="Center" Text="工具" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                    <ListViewItem helpers:NavHelper.NavigateTo="views:SettingPage">
-                                        <StackPanel>
-                                            <TextBlock Style="{StaticResource SymbolText}" Text="&#xE115;" />
-                                            <TextBlock VerticalAlignment="Center" Text="设置" />
-                                        </StackPanel>
-                                    </ListViewItem>
-                                </ListView>
-                            </StackPanel>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
-            </StackPanel>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Height="32"
+                    Orientation="Horizontal"
+                    SizeChanged="TabViewLeftPanel_SizeChanged">
+                    <Grid Margin="12,0" CornerRadius="8">
+                        <Image
+                            Width="16"
+                            Height="16"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Source="/Assets/Img/logo_32.png" />
+                    </Grid>
+                    <Button
+                        Width="50"
+                        VerticalContentAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="16"
+                            Text="&#xE700;"
+                            TextAlignment="Center" />
+                        <Button.Flyout>
+                            <Flyout x:Name="MenuFlyout">
+                                <StackPanel Width="260" Margin="-20,-18">
+                                    <ListView
+                                        IsItemClickEnabled="True"
+                                        ItemClick="ListView_ItemClick"
+                                        Style="{StaticResource StretchListView}">
+                                        <ListView.Resources>
+                                            <Style x:Key="SymbolText" TargetType="TextBlock">
+                                                <Setter Property="Width" Value="70" />
+                                                <Setter Property="VerticalAlignment" Value="Center" />
+                                                <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+                                                <Setter Property="FontSize" Value="16" />
+                                                <Setter Property="TextAlignment" Value="Center" />
+                                            </Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Height" Value="56" />
+                                                <Setter Property="Orientation" Value="Horizontal" />
+                                            </Style>
+                                        </ListView.Resources>
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:HomePage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE80F;" />
+                                                <TextBlock VerticalAlignment="Center" Text="主页" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem Margin="0,-10" IsEnabled="False">
+                                            <Rectangle
+                                                Height="1"
+                                                Margin="10,0"
+                                                Fill="{ThemeResource SystemAccentColor}" />
+                                        </ListViewItem>
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:ClassificationPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE81E;" />
+                                                <TextBlock VerticalAlignment="Center" Text="分类" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:CollectionsPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE7BC;" />
+                                                <TextBlock VerticalAlignment="Center" Text="片单" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:EntryPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE74C;" />
+                                                <TextBlock VerticalAlignment="Center" Text="词条" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem Margin="0,10,0,0" helpers:NavHelper.NavigateTo="views:ManagementPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE8F1;" />
+                                                <TextBlock VerticalAlignment="Center" Text="管理" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem Margin="0,0,0,10" helpers:NavHelper.NavigateTo="views:ToolsPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE9E9;" />
+                                                <TextBlock VerticalAlignment="Center" Text="工具" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:SettingPage">
+                                            <StackPanel>
+                                                <TextBlock Style="{StaticResource SymbolText}" Text="&#xE115;" />
+                                                <TextBlock VerticalAlignment="Center" Text="设置" />
+                                            </StackPanel>
+                                        </ListViewItem>
+                                    </ListView>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <Button
+                        Width="50"
+                        VerticalContentAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="Button_BackToMenuPage_Click"
+                        Visibility="{x:Bind VM.IsInTabView, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="14"
+                            Text="&#xE0A6;"
+                            TextAlignment="Center" />
+                    </Button>
+                </StackPanel>
+            </Grid>
         </Grid>
         <InfoBar
             x:Name="InfoBar"
