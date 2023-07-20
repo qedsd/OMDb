@@ -108,7 +108,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<EntryName>> QueryNamesAsync(string id, string dbId)
         {
-            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.EntryId == id).ToList());
+            var entryNameDbs = await DbService.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.EntryId == id).ToListAsync();
             if (entryNameDbs != null && entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => EntryName.Create(p, dbId)).ToList();

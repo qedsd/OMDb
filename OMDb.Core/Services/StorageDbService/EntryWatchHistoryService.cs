@@ -18,7 +18,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static async Task<List<WatchHistory>> QueryWatchHistoriesAsync(string id, string dbId)
         {
-            var entryNameDbs = await Task.Run(() => DbService.GetConnection(dbId).Queryable<EntryWatchHistoryDb>().Where(p => p.EntryId == id).ToList());
+            var entryNameDbs = await DbService.GetConnection(dbId).Queryable<EntryWatchHistoryDb>().Where(p => p.EntryId == id).ToListAsync();
             if (entryNameDbs.Any())
             {
                 return entryNameDbs.Select(p => WatchHistory.Create(p, dbId)).ToList();
