@@ -27,8 +27,8 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref bannerItemsSource, value);
         }
 
-        private ObservableCollection<LabelTree> labelTrees;
-        public ObservableCollection<LabelTree> LabelTrees
+        private ObservableCollection<LabelClassTree> labelTrees;
+        public ObservableCollection<LabelClassTree> LabelTrees
         {
             get => labelTrees;
             set => SetProperty(ref labelTrees, value);
@@ -41,19 +41,19 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref labelCollectionTrees, value);
         }
 
-        private ObservableCollection<Label> labels;
+        private ObservableCollection<LabelClass> labelClasses;
         /// <summary>
         /// 只包括没有子类的
         /// </summary>
-        public ObservableCollection<Label> Labels
+        public ObservableCollection<LabelClass> Labels
         {
-            get => labels;
-            set => SetProperty(ref labels, value);
+            get => labelClasses;
+            set => SetProperty(ref labelClasses, value);
         }
         /// <summary>
         /// 所有标签
         /// </summary>
-        private Dictionary<string, Label> LabelsDic;
+        private Dictionary<string, LabelClass> LabelsDic;
         private bool isList;
         /// <summary>
         /// 列表显示
@@ -83,7 +83,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if(LabelsDic == null)
             {
-                LabelsDic = new Dictionary<string, Label>();
+                LabelsDic = new Dictionary<string, LabelClass>();
             }
             else
             {
@@ -94,17 +94,17 @@ namespace OMDb.WinUI3.ViewModels
             {
                 foreach (var label in labels)
                 {
-                    LabelsDic.Add(label.LCId, new Label(label));
+                    LabelsDic.Add(label.LCId, new LabelClass(label));
                 }
 
-                Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();//string为父节点id
-                Labels = new ObservableCollection<Label>();
+                Dictionary<string, LabelClassTree> labelsDb = new Dictionary<string, LabelClassTree>();//string为父节点id
+                Labels = new ObservableCollection<LabelClass>();
                 var root = labels.Where(p => p.ParentId == null).ToList();
                 if (root != null)//建立所有父节点
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.LCId, new LabelTree(label));
+                        labelsDb.Add(label.LCId, new LabelClassTree(label));
                     }
                 }
                 foreach (var label in labels)
@@ -113,19 +113,19 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         if (labelsDb.TryGetValue(label.ParentId, out var parent))
                         {
-                            parent.Children.Add(new LabelTree(label));
+                            parent.Children.Add(new LabelClassTree(label));
                         }
-                        Labels.Add(new Label(label));//保存所有子节点
+                        Labels.Add(new LabelClass(label));//保存所有子节点
                     }
                 }
                 foreach (var item in labelsDb)
                 {
                     if (item.Value.Children.Count == 0)//没有实际子节点的父节点也保存到Labels
                     {
-                        Labels.Add(new Label(item.Value.Label));
+                        Labels.Add(new LabelClass(item.Value.LabelClass.LabelClassDb));
                     }
                 }
-                LabelTrees = new ObservableCollection<LabelTree>();
+                LabelTrees = new ObservableCollection<LabelClassTree>();
                 foreach (var item in labelsDb)
                 {
                     LabelTrees.Add(item.Value);
@@ -142,10 +142,10 @@ namespace OMDb.WinUI3.ViewModels
             }
             var items = new List<BannerItem>();
             items.Add(await GetAllBannerItem());
-            List<Label> target = Core.Helpers.RandomHelper.RandomList(Labels, 10);
+            List<LabelClass> target = Core.Helpers.RandomHelper.RandomList(Labels, 10);
             foreach(var item in target)
             {
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { item.LabelDb.LCId });
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { item.LabelClassDb.LCId });
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults,3);
                 if(result?.Any() == true)
                 {
@@ -158,9 +158,9 @@ namespace OMDb.WinUI3.ViewModels
                             var samllStream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 400, 0);
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelDb.LCId,
-                                Title = item.LabelDb.Name,
-                                Description = item.LabelDb.Description,
+                                Id = item.LabelClassDb.LCId,
+                                Title = item.LabelClassDb.Name,
+                                Description = item.LabelClassDb.Description,
                                 Img = new BitmapImage(new Uri(bg)),
                                 PreviewImg = await Helpers.ImgHelper.CreateBitmapImageAsync(samllStream)
                             });
@@ -170,9 +170,9 @@ namespace OMDb.WinUI3.ViewModels
                         {
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelDb.LCId,
-                                Title = item.LabelDb.Name,
-                                Description = item.LabelDb.Description,
+                                Id = item.LabelClassDb.LCId,
+                                Title = item.LabelClassDb.Name,
+                                Description = item.LabelClassDb.Description,
                                 Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
                                 PreviewImg = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanneritem.jpg")))
                             });
@@ -184,7 +184,7 @@ namespace OMDb.WinUI3.ViewModels
         }
         private async Task<BannerItem> GetAllBannerItem()
         {
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelDb.LCId).ToList());
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, Labels.Select(p=>p.LabelClassDb.LCId).ToList());
             if(queryResults?.Count > 2)
             {
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults, 40);
@@ -315,14 +315,14 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         LabelCollection = new LabelCollection()
                         {
-                            Title = labelTree.Label.Name,
-                            Description = labelTree.Label.Description,
+                            Title = labelTree.LabelClass.LabelClassDb.Name,
+                            Description = labelTree.LabelClass.LabelClassDb.Description,
                         },
                         Children = new List<LabelCollection>()
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.LCId });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelClass.LabelClassDb.LCId });
                         int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                         var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                         if (result?.Any() == true)
@@ -333,12 +333,12 @@ namespace OMDb.WinUI3.ViewModels
                                 var bgStream = await Core.Helpers.ImageHelper.BlurAsync(PathService.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
-                                    Title = label.Label.Name,
-                                    Description = label.Label.Description,
+                                    Title = label.LabelClass.LabelClassDb.Name,
+                                    Description = label.LabelClass.LabelClassDb.Description,
                                     Entries = entrys,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                     Template = entryCount == 6 ? 1 : 2,
-                                    Id = label.Label.LCId
+                                    Id = label.LabelClass.LabelClassDb.LCId
                                 });
                             }
                         }
@@ -347,7 +347,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.LCId });
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.LabelClass.LabelClassDb.LCId });
                     int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                     var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
                     if (result?.Any() == true)
@@ -358,12 +358,12 @@ namespace OMDb.WinUI3.ViewModels
                             var bgStream = await Core.Helpers.ImageHelper.BlurAsync(PathService.EntryCoverImgFullPath(entrys.FirstOrDefault()));
                             otherCollectionTree.Children.Add(new LabelCollection()
                             {
-                                Title = labelTree.Label.Name,
-                                Description = labelTree.Label.Description,
+                                Title = labelTree.LabelClass.LabelClassDb.Name,
+                                Description = labelTree.LabelClass.LabelClassDb.Description,
                                 Entries = entrys,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                 Template = entryCount == 6 ? 1 : 2,
-                                Id = labelTree.Label.LCId
+                                Id = labelTree.LabelClass.LabelClassDb.LCId
                             });
                         }
                     }
@@ -399,14 +399,14 @@ namespace OMDb.WinUI3.ViewModels
                     {
                         LabelCollection = new LabelCollection()
                         {
-                            Title = labelTree.Label.Name,
-                            Description = labelTree.Label.Description,
+                            Title = labelTree.LabelClass.LabelClassDb.Name,
+                            Description = labelTree.LabelClass.LabelClassDb.Description,
                         },
                         Children = new List<LabelCollection>()
                     };
                     foreach (var label in labelTree.Children)
                     {
-                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.Label.LCId });
+                        var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelClass.LabelClassDb.LCId });
                         var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                         if (showItem != null)
                         {
@@ -416,10 +416,10 @@ namespace OMDb.WinUI3.ViewModels
                                 var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(PathService.EntryCoverImgFullPath(entry), 600, 0);
                                 labelCollectionTree.Children.Add(new LabelCollection()
                                 {
-                                    Title = label.Label.Name,
-                                    Description = label.Label.Description,
+                                    Title = label.LabelClass.LabelClassDb.Name,
+                                    Description = label.LabelClass.LabelClassDb.Description,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                    Id = label.Label.LCId,
+                                    Id = label.LabelClass.LabelClassDb.LCId,
                                 });
                             }
                         }
@@ -428,7 +428,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.Label.LCId });
+                    var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { labelTree.LabelClass.LabelClassDb.LCId });
                     var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                     if (showItem != null)
                     {
@@ -438,10 +438,10 @@ namespace OMDb.WinUI3.ViewModels
                             var bgStream = await Core.Helpers.ImageHelper.ResetSizeAsync(PathService.EntryCoverImgFullPath(entry), 600, 0);
                             otherCollectionTree.Children.Add(new LabelCollection()
                             {
-                                Title = labelTree.Label.Name,
-                                Description = labelTree.Label.Description,
+                                Title = labelTree.LabelClass.LabelClassDb.Name,
+                                Description = labelTree.LabelClass.LabelClassDb.Description,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                Id = labelTree.Label.LCId
+                                Id = labelTree.LabelClass.LabelClassDb.LCId
                             });
                         }
                     }
@@ -490,16 +490,16 @@ namespace OMDb.WinUI3.ViewModels
             if(LabelsDic.TryGetValue(id, out var label))
             {
                 Helpers.InfoHelper.ShowWaiting();
-                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelDb.LCId });
+                var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType.LastUpdateTime, SortWay.Positive, null, new List<string>() { label.LabelClassDb.LCId });
                 var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 if (entrys?.Any() == true)
                 {
                     LabelCollection labelCollection = new LabelCollection()
                     {
-                        Title = label.LabelDb.Name,
-                        Description = label.LabelDb.Description,
+                        Title = label.LabelClassDb.Name,
+                        Description = label.LabelClassDb.Description,
                         Entries = entrys,
-                        Id = label.LabelDb.LCId
+                        Id = label.LabelClassDb.LCId
                     };
                     Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
                 }

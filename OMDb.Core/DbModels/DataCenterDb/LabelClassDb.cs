@@ -51,5 +51,10 @@ namespace OMDb.Core.DbModels
         /// 位置
         /// </summary>
         public int Seq { get; set; }
+
+        /// <summary>
+        /// 分类等级
+        /// </summary>
+        public int Level { get; set; }
     }
 }

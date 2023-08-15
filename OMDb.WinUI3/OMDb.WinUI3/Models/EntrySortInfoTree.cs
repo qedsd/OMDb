@@ -24,9 +24,17 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref _children, value);
         }
 
-        public EntrySortInfoTree(string title) 
+        private string _parentTag;
+        public string ParentTag
+        {
+            get => _parentTag;
+            set => SetProperty(ref _parentTag, value);
+        }
+
+        public EntrySortInfoTree(string title, string parentTag) 
         {
             _title = title;
+            _parentTag = parentTag;
         }
         public EntrySortInfoTree()
         {

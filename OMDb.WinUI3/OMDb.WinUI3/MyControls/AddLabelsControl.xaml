@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <ListBox x:Name="ListBox_Labels" Background="Transparent">
             <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="Models:Label">
+                <DataTemplate x:DataType="Models:LabelClass">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="32" />
@@ -28,7 +28,7 @@
                         <TextBlock
                             Grid.Column="1"
                             VerticalAlignment="Center"
-                            Text="{x:Bind LabelDb.Name}" />
+                            Text="{x:Bind LabelClassDb.Name}" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

@@ -56,6 +56,7 @@
 		<None Remove="Dialogs\QueryDialog.xaml" />
 		<None Remove="Dialogs\WatingDialog.xaml" />
 		<None Remove="MyControls\AddEntryBatchControl.xaml" />
+		<None Remove="MyControls\AddLabelsControl - 复制.xaml" />
 		<None Remove="MyControls\AddLabelsControl.xaml" />
 		<None Remove="MyControls\Banner.xaml" />
 		<None Remove="MyControls\DropArea.xaml" />
@@ -135,6 +136,9 @@
 		</Page>
 		<Page Update="Dialogs\ExplorerItemVerifyFaiedDialog.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MyControls\AddLabelsControl - 复制.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="MyControls\DropArea.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
@@ -511,5 +515,10 @@
 
 	<ItemGroup>
 	  <PRIResource Remove="Assets\FFmpeg\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="MyControls\EntryPageControls\EditEntryDialogControls\" />
+	  <Folder Include="MyControls\EntryPageControls\AddEntryBatchDialogControls\" />
 	</ItemGroup>
 </Project>

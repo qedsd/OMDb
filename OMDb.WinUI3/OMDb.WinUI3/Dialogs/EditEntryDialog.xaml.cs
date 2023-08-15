@@ -222,7 +222,7 @@ namespace OMDb.WinUI3.Dialogs
                 var entryDetail = new Models.EntryDetail()
                 {
                     Entry = entry,
-                    Labels = content.VM.Labels.Select(p => p.LabelDb).ToList(),
+                    Labels = content.VM.Labels.Select(p => p.LabelClassDb).ToList(),
                     FullEntryPath = content.VM.Entry.Path,
                 };
 
@@ -341,15 +341,21 @@ namespace OMDb.WinUI3.Dialogs
 
             #region 基本信息
             entryInfo.TryGetValue("封面", out object stream_cover);
-            TempPathUtils.CreateTempImage((MemoryStream)stream_cover);
-            VM.Entry.CoverImg = TempPathUtils.GetDefaultTempImage();
-            Image_CoverImg.Source = ImgHelper.CreateBitmapImage((MemoryStream)stream_cover);
+            if (stream_cover!=null)
+            {
+                TempImageUtils.CreateTempImage((MemoryStream)stream_cover);
+                VM.Entry.CoverImg = TempImageUtils.GetDefaultTempImage();
+                Image_CoverImg.Source = ImgHelper.CreateBitmapImage((MemoryStream)stream_cover);
+            }
 
             entryInfo.TryGetValue("评分", out object rate);
             this.VM.MyRating = Convert.ToDouble(rate);
 
             entryInfo.TryGetValue("上映日期", out object date);
-            this.VM.ReleaseDate = Convert.ToDateTime(date);
+            if (date!=null)
+            {
+                this.VM.ReleaseDate = Convert.ToDateTime(date);
+            }
             #endregion
 
             #region 属性标签数据

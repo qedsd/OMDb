@@ -146,7 +146,7 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     var coverStream = (MemoryStream)(entryInfo["封面"]);
                     var newFileName = item.Name + ".jpg";
-                    TempPathUtils.CreateTempImage(newFileName, coverStream);
+                    TempImageUtils.CreateTempImage(newFileName, coverStream);
                     item.FullCoverImgPath = TempPathUtils.GetTempFile(newFileName);
                 }
                 catch (Exception ex)

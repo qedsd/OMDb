@@ -84,17 +84,17 @@ namespace OMDb.WinUI3.ViewModels
                 SetFullEntryPathByName(EntryName);
             }
         }
-        private List<Models.Label> labels;
+        private List<Models.LabelClass> labels;
         /// <summary>
         /// 绑定的标签
         /// </summary>
-        public List<Models.Label> Labels
+        public List<Models.LabelClass> Labels
         {
             get => labels;
             set => SetProperty(ref labels, value);
         }
 
-        private ObservableCollection<Models.LabelProperty> _label_Property=new ObservableCollection<Models.LabelProperty>();
+        private ObservableCollection<Models.LabelProperty> _label_Property = new ObservableCollection<Models.LabelProperty>();
         /// <summary>
         /// 绑定的标签
         /// </summary>
@@ -108,7 +108,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (SelectedEntryDicPath != null && !string.IsNullOrEmpty(name))
             {
-                EntryPath = PathService.GetFullEntryPathByEntryName( name, selectedEnrtyStorage.StoragePath);
+                EntryPath = PathService.GetFullEntryPathByEntryName(name, selectedEnrtyStorage.StoragePath);
             }
         }
         public void SetFullEntryPathByRelativePath(string relativePath)
@@ -152,51 +152,64 @@ namespace OMDb.WinUI3.ViewModels
         }
         private void GlobalEvent_UpdateLPSEvent(object sender, Events.LPSEventArgs lpe)
         {
-            var lp_checked=lpe.LPS.Where(a => a.IsChecked);
-            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var lst_label_lp_baba= lst_label_lp.Where(a => a.Level == 1);
-            if (lp_checked.Count() <= 0)
+            var lpsChecked = lpe.LPS.Where(a => a.IsChecked);
+            var lpAll = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lpAllParents = lpAll.Where(a => a.Level == 1);
+            if (lpsChecked.Count() <= 0)
             {
-                foreach (var item in Label_Property)
+                foreach (var lp in Label_Property)
                 {
-                    if (!lpe.LPS.Select(a => a.LPDb.LPId).Contains(item.LPDb.LPId))
+                    if (!lpe.LPS.Select(a => a.LPDb.LPId).Contains(lp.LPDb.LPId))
                     {
-                        item.IsHiden = false;
+                        lp.IsHiden = false;
                     }
                 }
             }
-            else 
+            else
             {
-                foreach (var item in lp_checked)
+                #region 先全部隐藏
+                var lpAllParentLinks = new List<string>();//所有需要隐藏的标签 属性标题 初始化
+                foreach (var lpChecked in lpsChecked)
                 {
-                    var lst_LK = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, item.LPDb.LPId);
-                    List<string> lpBabaIds = new List<string>();
-                    foreach (var lkid in lst_LK)
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性数据（父）的关联信息
+                    lpAllParentLinks = lpAllParentLinks.Union(lpParentLinks).Distinct().ToList();
+                }
+                foreach (var lp in lpAll)
+                {
+                    if (lpAllParentLinks.Contains(lp.ParentId))
                     {
-                        lpBabaIds.Add(lst_label_lp.Where(a => a.LPId.Equals(lkid)).FirstOrDefault().ParentId);
+                        Label_Property.Where(a => a.LPDb.LPId == lp.LPId).FirstOrDefault().IsHiden = true;
                     }
-                    lpBabaIds = lpBabaIds.Distinct().ToList();
-                    foreach (var lpbabaid in lpBabaIds)
-                    {
-                        lst_label_lp.Where(a => a.ParentId.Equals(lpbabaid)).Where(a => lst_LK.Contains(a.LPId));
-                    }
-                    foreach (var lpdb in lst_label_lp)
-                    {
-                        if (lpBabaIds.Contains(lpdb.ParentId))
-                        {
-                            if (!lst_LK.Contains(lpdb.LPId))
-                            {
-                                Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsHiden = true;
-                                Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsChecked = false;
-                            }
-                            else 
-                            {
+                }
+                #endregion
 
+                #region 显示关联数据
+                foreach (var lpChecked in lpsChecked)
+                {
+                    var lpDataLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.LPId);//获取该标签属性数据（子）的关联信息
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性标题（父）的关联信息
+
+                    //该数据没有数据关联，显示所有父级关联的数据
+                    if (lpDataLinks.Count == 0)
+                    {
+                        foreach (var lpParentLink in lpParentLinks)
+                        {
+                            foreach (var item in Label_Property.Where(a => lpParentLinks.Contains(a.LPDb.ParentId)))
+                            {
+                                item.IsHiden = false;
                             }
                         }
                     }
-                }
 
+
+                    var lpChildren = lpAll.Where(a => lpParentLinks.Contains(a.ParentId)).Where(a => lpDataLinks.Contains(a.LPId));
+
+                    foreach (var lpdb in lpChildren)
+                    {
+                        Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsHiden = false;
+                    }
+                }
+                #endregion
             }
         }
 
@@ -204,7 +217,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (entry == null)
             {
-                Labels = new List<Models.Label>();
+                Labels = new List<Models.LabelClass>();
             }
             else
             {
@@ -213,12 +226,12 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                     {
-                        Labels = new List<Models.Label>(labels.Select(p => new Models.Label(p)));
+                        Labels = new List<Models.LabelClass>(labels.Select(p => new Models.LabelClass(p)));
                     });
                 }
                 else
                 {
-                    Labels = new List<Models.Label>();
+                    Labels = new List<Models.LabelClass>();
                 }
                 var names = await Core.Services.EntryNameSerivce.QueryNamesAsync(entry.EntryId, entry.DbId);
                 if (names != null)

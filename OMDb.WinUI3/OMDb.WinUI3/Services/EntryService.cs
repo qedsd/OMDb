@@ -15,6 +15,7 @@ using static System.Net.WebRequestMethods;
 using OMDb.Core.Services;
 using OMDb.Core.Enums;
 using System.Transactions;
+using OMDb.Core.Utils.Extensions;
 
 namespace OMDb.WinUI3.Services
 {
@@ -27,13 +28,9 @@ namespace OMDb.WinUI3.Services
         public static async Task AddEntryAsync()
         {
             var entryDetail = await Dialogs.EditEntryDialog.ShowDialog();
-            if (entryDetail != null)
-            {
-                await NewEntryAsync(entryDetail);
-
-                Helpers.InfoHelper.ShowSuccess("创建成功");
-
-            }
+            if (entryDetail.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
+            await NewEntryAsync(entryDetail);
+            Helpers.InfoHelper.ShowSuccess("创建成功");
         }
 
         /// <summary>
@@ -43,6 +40,7 @@ namespace OMDb.WinUI3.Services
         public static async Task AddEntryBatchAsync()
         {
             var eds = await Dialogs.AddEntryBatchDialog.ShowDialog();
+            if (eds.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
             foreach (var ed in eds)
                 await NewEntryAsync(ed);
         }
@@ -54,13 +52,12 @@ namespace OMDb.WinUI3.Services
         public static async Task EditEntryAsync(Core.Models.Entry entry)
         {
             var entryDetail = await Dialogs.EditEntryDialog.ShowDialog(entry);
-            if (entryDetail != null)
-            {
-                InitFile(entryDetail);
-                await UpdateDbAsync(entryDetail);
-                Helpers.InfoHelper.ShowSuccess("已保存");
-                GlobalEvent.NotifyUpdateEntry(null, new EntryEventArgs(entryDetail.Entry));
-            }
+            if (entryDetail.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
+            InitFile(entryDetail);
+            await InsertOrUpdateDbAsync(entryDetail);
+            Helpers.InfoHelper.ShowSuccess("已保存");
+            GlobalEvent.NotifyUpdateEntry(null, new EntryEventArgs(entryDetail.Entry));
+
         }
 
 
@@ -72,12 +69,10 @@ namespace OMDb.WinUI3.Services
         /// <returns></returns>
         public static async Task RemoveEntryAsync(Core.Models.Entry entry)
         {
-            if (await Dialogs.QueryDialog.ShowDialog("删除", $"是否删除 {entry.Name} 词条?不会删除本地文件"))
-            {
-                Core.Services.EntryService.RemoveEntry(entry);
-                Helpers.InfoHelper.ShowSuccess("已删除");
-                GlobalEvent.NotifyRemoveEntry(null, new EntryEventArgs(entry));
-            }
+            if (!await Dialogs.QueryDialog.ShowDialog("删除", $"是否删除 {entry.Name} 词条?不会删除本地文件")) return;
+            Core.Services.EntryService.RemoveEntry(entry);
+            Helpers.InfoHelper.ShowSuccess("已删除");
+            GlobalEvent.NotifyRemoveEntry(null, new EntryEventArgs(entry));
         }
 
 
@@ -87,40 +82,19 @@ namespace OMDb.WinUI3.Services
         /// <param name="entry"></param>
         /// <param name="entryNames"></param>
         /// <returns></returns>
-        private static async Task UpdateDbAsync(Models.EntryDetail ed)
+        private static async Task InsertOrUpdateDbAsync(Models.EntryDetail ed)
         {
             await Task.Run(() =>
             {
+                TreatEntry(ed);//处理词条主表Entry
+                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatLabelLink(ed);//词条标签关联表
+
                 Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
-
-                TreatEntry(ed);//处理词条主表Entry
-                TreatEntrySource(ed);//资源路径表EntrySource更新
-                TreatLabelLink(ed);//词条标签关联表
-
             });
         }
 
-
-        /// <summary>
-        /// 保存至数据库
-        /// </summary>
-        /// <param name="ed"></param>
-        /// <param name="entryNames"></param>
-        /// <returns></returns>
-        private static async Task SaveToDbAsync(Models.EntryDetail ed)
-        {
-            await Task.Run(() =>
-            {
-                TreatEntry(ed);//处理词条主表Entry
-                Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//词条
-                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
-
-                TreatEntrySource(ed);//资源路径表EntrySource更新
-                TreatLabelLink(ed);//词条标签关联表
-
-            });
-        }
 
         public static async Task NewEntryAsync(EntryDetail ed, bool isNew = true)
         {
@@ -136,7 +110,7 @@ namespace OMDb.WinUI3.Services
                 }
                 InitFolder(ed);//创建词条文件夹
                 InitFile(ed);//创建元数据(MataData)
-                await SaveToDbAsync(ed);//保存至数据库
+                await InsertOrUpdateDbAsync(ed);//保存至数据库
             }
             else
             {

@@ -264,5 +264,13 @@ namespace OMDb.Core.Services
         {
             DbService.DCDb.Updateable(labelDb).ExecuteCommand();
         }
+
+        //获取一级分类标签
+        public static List<LabelClassDb> Get1stLabel()
+        {
+            if (IsLocalDbValid())
+                return DbService.DCDb.Queryable<LabelClassDb>().Where(a => a.Level == 1).ToList();
+            else return null;
+        }
     }
 }

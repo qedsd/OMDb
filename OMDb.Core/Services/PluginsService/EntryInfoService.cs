@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.Interfaces;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Composition;
@@ -15,6 +16,10 @@ namespace OMDb.Core.Services.PluginsService
     {
         public static Task<Dictionary<string,object>> GetEntryInfo(string keyword, string dllName)
         {
+            if (keyword.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            {
+                return Task.FromResult(new Dictionary<string, object>());
+            }
             if (Rates != null)
             {
                 foreach (var entryInfo in EntryInfos)

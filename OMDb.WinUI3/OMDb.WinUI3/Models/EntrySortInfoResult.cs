@@ -10,6 +10,12 @@ namespace OMDb.WinUI3.Models
 {
     public class EntrySortInfoResult : ObservableObject
     {
+        private EntrySortInfoTree _esit;
+        public EntrySortInfoTree ESIT
+        {
+            get => _esit;
+            set => SetProperty(ref _esit, value);
+        }
         private string _title;
         public string Title
         {
@@ -17,19 +23,19 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref _title, value);
         }
 
-        private string _sortType;
-        public string SortType
+        
+        private bool _isDescending;
+        public bool IsDescending
         {
-            get => _sortType;
-            set => SetProperty(ref _sortType, value);
+            get => _isDescending;
+            set => SetProperty(ref _isDescending, value);
         }
 
-        public List<string> SortTypes= new List<string>() { "升序","降序"};
-
-        public EntrySortInfoResult(string title) 
+        public EntrySortInfoResult(EntrySortInfoTree esit) 
         {
-            _title = title;
-            _sortType = "升序";
+            _esit = esit;
+            _title = esit.Title;
+            _isDescending = true;
         }
     }
 }

@@ -1,0 +1,72 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.LabelClassSelectControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Models="using:OMDb.WinUI3.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.MyControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
+    MinWidth="140"
+    MaxHeight="400"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+        <!--  次级标签模板  -->
+        <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelClassTree">
+            <StackPanel x:Name="Grid_Tag2nd">
+                <Border Margin="10,0,0,10" BorderBrush="{x:Bind LabelClass.IsChecked, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}" CornerRadius="3">
+                <Grid 
+                    Background="{x:Bind LabelClass.IsChecked, Converter={StaticResource BooleanToBrushConverter}, Mode=OneWay}"
+                    Tag="{x:Bind LabelClass}"
+                    Tapped="Grid_Tapped">
+                        <TextBlock
+                        Padding="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="Normal"
+                        Foreground="White"
+                        Text="{x:Bind LabelClass.Name}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <!--  嵌套样式  -->
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
+            <ItemsRepeater x:Name="ItemsRepeater_LabelTree" VerticalAlignment="Top">
+                <ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelClassTree">
+                        <StackPanel>
+                            <Grid
+                                x:Name="Grid_Tag1st"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Left">
+                                <ToggleButton
+                                    Width="80"
+                                    Height="30"
+                                    Content="{x:Bind LabelClass.Name}" />
+                            </Grid>
+
+                            <ItemsRepeater
+                                Margin="0,5,0,5"
+                                ItemTemplate="{StaticResource StringDataTemplateColor}"
+                                ItemsSource="{x:Bind Children}">
+                                <ItemsRepeater.Layout>
+                                    <StackLayout Orientation="Horizontal" />
+                                </ItemsRepeater.Layout>
+                            </ItemsRepeater>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsRepeater.ItemTemplate>
+
+            </ItemsRepeater>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

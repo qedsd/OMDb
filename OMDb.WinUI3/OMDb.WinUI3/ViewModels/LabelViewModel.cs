@@ -20,18 +20,19 @@ using System.IO;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using OMDb.WinUI3.Services.Settings;
+using OMDb.Core.Utils.Extensions;
 
 namespace OMDb.WinUI3.ViewModels
 {
     public class LabelViewModel : ObservableObject
     {
         //Propriety
-        # region
+
         XElement xe = null;
         string ConfigPath = null;
-
-        private ObservableCollection<LabelTree> labelTrees;
-        public ObservableCollection<LabelTree> LabelTrees
+        # region 字段
+        private ObservableCollection<LabelClassTree> labelTrees;
+        public ObservableCollection<LabelClassTree> LabelTrees
         {
             get => labelTrees;
             set => SetProperty(ref labelTrees, value);
@@ -211,43 +212,22 @@ namespace OMDb.WinUI3.ViewModels
         }
 
         #endregion
+
+
+
         //初始化
         private async void Init()
         {
             ConfigPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Assets/Config/LabelConfig.xml";
             xe = XElement.Load(ConfigPath);
 
-            var labels = await Core.Services.LabelClassService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
-            if (labels != null)
+            var labelTrees = await CommonService.GetLabelTrees();
+
+            Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
-                Dictionary<string, LabelTree> labelsDb = new Dictionary<string, LabelTree>();
-                var root = labels.Where(p => p.ParentId == null).ToList();
-                if (root != null)
-                {
-                    foreach (var label in root)
-                    {
-                        labelsDb.Add(label.LCId, new LabelTree(label));
-                    }
-                }
-                foreach (var label in labels)
-                {
-                    if (label.ParentId != null)
-                    {
-                        if (labelsDb.TryGetValue(label.ParentId, out var parent))
-                        {
-                            parent.Children.Add(new LabelTree(label));
-                        }
-                    }
-                }
-                Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
-                {
-                    LabelTrees = new ObservableCollection<LabelTree>();
-                    foreach (var item in labelsDb)
-                    {
-                        LabelTrees.Add(item.Value);
-                    }
-                });
-            }
+               LabelTrees = labelTrees.ToObservableCollection();
+            });
+
 
             GetTag1stInfo();
             GetTag2ndInfo();
@@ -299,7 +279,7 @@ namespace OMDb.WinUI3.ViewModels
 
 
 
-        public ICommand RefreshCommand => new RelayCommand(async() =>
+        public ICommand RefreshCommand => new RelayCommand(async () =>
         {
             Init();
             Helpers.InfoHelper.ShowSuccess("刷新完成");
@@ -316,12 +296,12 @@ namespace OMDb.WinUI3.ViewModels
                 else
                 {
                     Core.Services.LabelClassService.AddLabel(result);
-                    LabelTrees.Add(new LabelTree(result));
+                    LabelTrees.Add(new LabelClassTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
             }
         });
-        public ICommand AddSubCommand => new RelayCommand<LabelTree>(async (parent) =>
+        public ICommand AddSubCommand => new RelayCommand<LabelClassTree>(async (parent) =>
         {
             var result = await Dialogs.EditLabelDialog.ShowDialog(false);
             if (result != null)
@@ -332,9 +312,9 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    result.ParentId = parent.Label.LCId;
+                    result.ParentId = parent.LabelClass.LabelClassDb.LCId;
                     Core.Services.LabelClassService.AddLabel(result);
-                    parent.Children.Add(new LabelTree(result));
+                    parent.Children.Add(new LabelClassTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
             }
@@ -343,11 +323,11 @@ namespace OMDb.WinUI3.ViewModels
         /// <summary>
         /// 编辑二级标签 Edit 2nd Tag 
         /// </summary>
-        public ICommand EditSubCommand => new RelayCommand<LabelTree>(async (item) =>
+        public ICommand EditSubCommand => new RelayCommand<LabelClassTree>(async (item) =>
         {
             if (item != null)
             {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(false,item.Label);
+                var result = await Dialogs.EditLabelDialog.ShowDialog(false, item.LabelClass.LabelClassDb);
                 if (result != null)
                 {
                     if (string.IsNullOrEmpty(result.Name))
@@ -357,13 +337,13 @@ namespace OMDb.WinUI3.ViewModels
                     else
                     {
                         Core.Services.LabelClassService.UpdateLabel(result);
-                        var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == result.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCId == result.ParentId);
                         if (parent != null)
                         {
-                            var removeWhere = parent.Children.FirstOrDefault(t => t.Label == result);
+                            var removeWhere = parent.Children.FirstOrDefault(t => t.LabelClass.LabelClassDb == result);
                             var index = parent.Children.IndexOf(removeWhere);
                             parent.Children.Remove(removeWhere);
-                            parent.Children.Insert(index, new LabelTree(result));
+                            parent.Children.Insert(index, new LabelClassTree(result));
                         }
                         Helpers.InfoHelper.ShowSuccess("已保存标签");
                     }
@@ -374,11 +354,11 @@ namespace OMDb.WinUI3.ViewModels
         /// <summary>
         /// 编辑一级标签 Edit 1st Tag
         /// </summary>
-        public ICommand EditRootCommand => new RelayCommand<LabelTree>(async (item) =>
+        public ICommand EditRootCommand => new RelayCommand<LabelClassTree>(async (item) =>
         {
             if (item != null)
             {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(true,item.Label);
+                var result = await Dialogs.EditLabelDialog.ShowDialog(true, item.LabelClass.LabelClassDb);
                 if (result != null)
                 {
                     if (string.IsNullOrEmpty(result.Name))
@@ -390,9 +370,9 @@ namespace OMDb.WinUI3.ViewModels
                         Core.Services.LabelClassService.UpdateLabel(result);
                         var index = LabelTrees.IndexOf(item);
                         LabelTrees.Remove(item);
-                        LabelTrees.Insert(index, new LabelTree()
+                        LabelTrees.Insert(index, new LabelClassTree()
                         {
-                            Label = result,
+                            LabelClass = new LabelClass(result),
                             Children = item.Children
                         });
                         Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -401,16 +381,16 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
-        public ICommand RemoveCommand => new RelayCommand<LabelTree>(async (item) =>
+        public ICommand RemoveCommand => new RelayCommand<LabelClassTree>(async (item) =>
         {
             if (item != null)
             {
-                if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.Label.Name}标签"))
+                if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.LabelClass.LabelClassDb.Name}标签"))
                 {
-                    Core.Services.LabelClassService.RemoveLabel(item.Label.LCId);
-                    if (item.Label.ParentId != null)//子类
+                    Core.Services.LabelClassService.RemoveLabel(item.LabelClass.LabelClassDb.LCId);
+                    if (item.LabelClass.LabelClassDb.ParentId != null)//子类
                     {
-                        var parent = LabelTrees.FirstOrDefault(p => p.Label.LCId == item.Label.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCId == item.LabelClass.LabelClassDb.ParentId);
                         if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t == item);

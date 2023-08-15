@@ -1,13 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using OMDb.Core.Models;
+using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,8 +44,8 @@ namespace OMDb.WinUI3.ViewModels
                 SetProperty(ref _entries, value);
             }
         }
-        private ObservableCollection<Label> _labels;
-        public ObservableCollection<Label> Labels
+        private ObservableCollection<LabelClass> _labels;
+        public ObservableCollection<LabelClass> Labels
         {
             get => _labels;
             set => SetProperty(ref _labels, value);
@@ -151,11 +154,11 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _entrySortInfoTrees, value);
         }
 
-        private EntrySortInfoTree _entrySortInfoCurrents;
-        public EntrySortInfoTree EntrySortInfoCurrents
+        private EntrySortInfoTree _entrySortInfoCurrent;
+        public EntrySortInfoTree EntrySortInfoCurrent
         {
-            get => _entrySortInfoCurrents;
-            set => SetProperty(ref _entrySortInfoCurrents, value);
+            get => _entrySortInfoCurrent;
+            set => SetProperty(ref _entrySortInfoCurrent, value);
         }
 
 
@@ -165,6 +168,15 @@ namespace OMDb.WinUI3.ViewModels
             get => _entrySortInfoResults;
             set => SetProperty(ref _entrySortInfoResults, value);
         }
+
+        private EntrySortInfoResult _entrySortInfoResultCurrent;
+        public EntrySortInfoResult EntrySortInfoResultCurrent
+        {
+            get => _entrySortInfoResultCurrent;
+            set => SetProperty(ref _entrySortInfoResultCurrent, value);
+        }
+
+
         #endregion
 
         #region ICommand
@@ -177,7 +189,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             TabViewService.AddItem(new Views.EntryDetailPage(entry));
         });
-        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.Label>>((items) =>
+        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.LabelClass>>((items) =>
         {
             _ = UpdateEntryListAsync();
         });
@@ -239,16 +251,35 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand AddEntrySortInfoCommand => new RelayCommand(() =>
         {
-            EntrySortInfoResult ESIR = new EntrySortInfoResult(EntrySortInfoCurrents.Title);
+            if (EntrySortInfoCurrent == null) return;
+            if (EntrySortInfoCurrent.ParentTag == null) return;
+            if (EntrySortInfoResults.Select(a=>a.Title).Contains(EntrySortInfoCurrent.Title)&& EntrySortInfoResults.Select(a => a.ESIT.ParentTag).Contains(EntrySortInfoCurrent.ParentTag))
+                return;
+            EntrySortInfoResult ESIR = new EntrySortInfoResult(EntrySortInfoCurrent);
             EntrySortInfoResults.Add(ESIR);
         });
         public ICommand RemoveEntrySortInfoCommand => new RelayCommand(() =>
         {
-
+            EntrySortInfoResults.Remove(EntrySortInfoResultCurrent);
         });
         public ICommand ClearEntrySortInfoCommand => new RelayCommand(() =>
         {
+            EntrySortInfoResults.Clear();
+        });
 
+        public ICommand ConfirmSortCommand => new RelayCommand<Flyout>((flyoutParameter) =>
+        {
+            //排序逻辑
+
+            Flyout flyout = (Flyout)flyoutParameter;
+            flyout.Hide();
+        });
+
+        public ICommand CancelSortCommand => new RelayCommand<Flyout>((flyoutParameter) =>
+        {
+            Flyout flyout = (Flyout)flyoutParameter;
+            flyout.Hide();
+            EntrySortInfoResults.Clear();
         });
         #endregion
 
@@ -256,12 +287,14 @@ namespace OMDb.WinUI3.ViewModels
         private async void Init()
         {
             Helpers.InfoHelper.ShowWaiting();
+
+            #region 筛选信息加载
             var labelDbs = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
-            List<Label> labels = null;
+            List<LabelClass> labels = null;
             if (labelDbs != null)
             {
-                labels = labelDbs.Select(p => new Label(p)).ToList();
-                Labels = new ObservableCollection<Label>(labels);
+                labels = labelDbs.Select(p => new LabelClass(p)).ToList();
+                Labels = new ObservableCollection<LabelClass>(labels);
             }
             EntryStorages = ConfigService.EnrtyStorages;
             foreach (var item in EntryStorages)
@@ -269,26 +302,35 @@ namespace OMDb.WinUI3.ViewModels
                 item.IsChecked = true;
             }
             await UpdateEntryListAsync();
-            Helpers.InfoHelper.HideWaiting();
+            #endregion
 
             #region 排序模式加载
 
-            EntrySortInfoTree eit_base = new EntrySortInfoTree("基本信息");
-            eit_base.Children = new ObservableCollection<EntrySortInfoTree>();
-            eit_base.Children.Add(new EntrySortInfoTree("业务日期"));
-            eit_base.Children.Add(new EntrySortInfoTree("词条名称"));
+            EntrySortInfoTree eitBase = new EntrySortInfoTree("基本信息",null);
+            eitBase.Children = new ObservableCollection<EntrySortInfoTree>();
+            eitBase.Children.Add(new EntrySortInfoTree("业务日期", "Base"));
+            eitBase.Children.Add(new EntrySortInfoTree("词条名称", "Base"));
 
-            EntrySortInfoTree eit_property = new EntrySortInfoTree("属性");
-            eit_property.Children = new ObservableCollection<EntrySortInfoTree>();
+            EntrySortInfoTree eitLabelProperty = new EntrySortInfoTree("属性标签",null);
+            eitLabelProperty.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
             var lpdbs = Core.Services.LabelPropertyService.Get1stLabel();
             foreach (var item in lpdbs)
-                eit_property.Children.Add(new EntrySortInfoTree(item.Name));
-            EntrySortInfoTrees.Add(eit_base);
-            EntrySortInfoTrees.Add(eit_property);
+                eitLabelProperty.Children.Add(new EntrySortInfoTree(item.Name,"LabelProperty"));
+
+            EntrySortInfoTree eitLabelClass = new EntrySortInfoTree("分类标签", null);
+            eitLabelClass.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
+            var lcdbs = Core.Services.LabelClassService.Get1stLabel();
+            foreach (var item in lcdbs)
+                eitLabelClass.Children.Add(new EntrySortInfoTree(item.Name, "LabelClass"));
+
+            //加载待排序树
+            EntrySortInfoTrees.Add(eitBase);
+            EntrySortInfoTrees.Add(eitLabelProperty);
+            EntrySortInfoTrees.Add(eitLabelClass);
 
             #endregion
 
-
+            Helpers.InfoHelper.HideWaiting();
         }
         private void InitEnumItemsource()
         {
@@ -309,7 +351,7 @@ namespace OMDb.WinUI3.ViewModels
             List<string> filterLabel = null;
             if (IsFilterLabel && Labels != null)
             {
-                filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelDb.LCId).ToList();
+                filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelClassDb.LCId).ToList();
             }
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList(), filterLabel);
             if (queryResults?.Count > 0)
@@ -415,7 +457,7 @@ namespace OMDb.WinUI3.ViewModels
                             var l = Labels.Where(p => p.IsChecked).ToList();
                             if (l != null && l.Count != 0)
                             {
-                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelDb.LCId)) != null;
+                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelClassDb.LCId)) != null;
                             }
                         }
                     }

@@ -15,6 +15,8 @@ using OMDb.Core.Const;
 using OMDb.Core.Models;
 using OMDb.WinUI3.Extensions;
 using OMDb.Core.Helpers;
+using OMDb.WinUI3.Services.Settings;
+using System.Collections.ObjectModel;
 
 namespace OMDb.WinUI3.Services
 {
@@ -88,6 +90,49 @@ namespace OMDb.WinUI3.Services
 
             return PathType.More;
         }
+
+
+
+
+
+        public static async Task<List<LabelClassTree>> GetLabelTrees()
+        {
+            var labels = await Core.Services.LabelClassService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
+            var labelTrees = new List<LabelClassTree>();
+            if (labels != null)
+            {
+                Dictionary<string, LabelClassTree> labelsDb = new Dictionary<string, LabelClassTree>();
+                var root = labels.Where(p => p.ParentId == null).ToList();
+                if (root != null)
+                {
+                    foreach (var label in root)
+                    {
+                        labelsDb.Add(label.LCId, new LabelClassTree(label));
+                    }
+                }
+                foreach (var label in labels)
+                {
+                    if (label.ParentId != null)
+                    {
+                        if (labelsDb.TryGetValue(label.ParentId, out var parent))
+                        {
+                            parent.Children.Add(new LabelClassTree(label));
+                        }
+                    }
+                }
+                foreach (var item in labelsDb)
+                {
+                    labelTrees.Add(item.Value);
+                }
+            }
+            return labelTrees;
+        }
+
+
+
+
+
+
     }
 }
 

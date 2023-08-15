@@ -22,7 +22,7 @@
                 </Style>
             </GridView.ItemContainerStyle>
             <GridView.ItemTemplate>
-                <DataTemplate x:DataType="Models:Label">
+                <DataTemplate x:DataType="Models:LabelClass">
                     <Button
                         Width="72"
                         Background="Transparent"
@@ -31,8 +31,8 @@
                         <TextBlock
                             Grid.Column="1"
                             Opacity="{x:Bind IsChecked, Mode=OneWay, Converter={StaticResource CheckToOpacityConverter}}"
-                            Text="{x:Bind LabelDb.Name}"
-                            ToolTipService.ToolTip="{x:Bind LabelDb.Name}" />
+                            Text="{x:Bind LabelClassDb.Name}"
+                            ToolTipService.ToolTip="{x:Bind LabelClassDb.Name}" />
                     </Button>
                 </DataTemplate>
             </GridView.ItemTemplate>

@@ -10,36 +10,33 @@ namespace OMDb.Core.Utils.PathUtils
 {
     public static class TempPathUtils
     {
-        private const string _defaultImageName = @"temp_img.jpg";
         private const string _defaultFileName = @"temp_file";
 
         private static List<string> lstFullTempFilePath = new List<string>();
 
-        public static void CreateTempImage(string fileName , Stream stream )
-        {
-            CreateTempFile(Path.Combine(Path.GetTempPath(), fileName.IsNullOrEmptyOrWhiteSpazeOrCountZero() ? fileName : _defaultImageName), stream);
-        }
-        public static void CreateTempImage(Stream stream)
-        {
-            CreateTempFile(Path.Combine(Path.GetTempPath(), _defaultImageName), stream);
-        }
-        public static void CreateTempImage(string fileName)
-        {
-            CreateTempFile(Path.Combine(Path.GetTempPath(), fileName.IsNullOrEmptyOrWhiteSpazeOrCountZero() ? fileName : _defaultImageName), null);
-        }
-        public static void CreateTempImage()
-        {
-            CreateTempFile(Path.Combine(Path.GetTempPath(),  _defaultImageName), null);
-        }
 
-        public static void CreateTempFile(string? fileName = null, Stream? stream = null)
+
+
+        public static void CreateTempFile(string fileName, MemoryStream ms)
         {
             var newTempFile = Path.Combine(Path.GetTempPath(), fileName ?? _defaultFileName);
             //删除原临时文件
             if (lstFullTempFilePath.Contains(newTempFile))
+            {
                 DeleteTempFile(newTempFile);
-            using (var fs = File.Create(newTempFile))
-                stream?.CopyTo(fs);
+            }
+            else
+            {
+                lstFullTempFilePath.Add(newTempFile);
+            }
+
+            if (ms!=null)
+            {
+                using (var fs = File.Create(newTempFile))
+                    ms.WriteTo(fs);
+            }
+
+
         }
 
 
@@ -57,14 +54,7 @@ namespace OMDb.Core.Utils.PathUtils
                 return string.Empty;
         }
 
-        public static string GetDefaultTempImage()
-        {
-            var path_DefaultTempImage = Path.Combine(Path.GetTempPath(), _defaultImageName);
-            if (lstFullTempFilePath.Contains(path_DefaultTempImage))
-                return path_DefaultTempImage;
-            else
-                return string.Empty;
-        }
+
 
 
         public static void DeleteTempFileAll()

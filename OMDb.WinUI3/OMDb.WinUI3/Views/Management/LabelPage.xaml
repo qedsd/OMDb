@@ -24,7 +24,7 @@
         <coverters:StringToFontFamily x:Key="StringToFontFamily" />
         <coverters:StringToObject x:Key="StringToObject" />
         <!--  次级标签模板  -->
-        <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelTree">
+        <DataTemplate x:Key="StringDataTemplateColor" x:DataType="models:LabelClassTree">
             <StackPanel x:Name="Grid_Tag2nd">
                 <Interactivity:Interaction.Behaviors>
                     <Core:EventTriggerBehavior EventName="PointerEntered" SourceObject="{Binding ElementName=Grid_Tag2nd}">
@@ -103,7 +103,7 @@
                             FontFamily="{Binding Path=FontFamilyCurrent, Mode=OneWay}"
                             FontSize="{Binding Path=FontSize2nd, Mode=OneWay}"
                             FontWeight="Normal"
-                            Text="{x:Bind Label.Name}" />
+                            Text="{x:Bind LabelClass.Name}" />
                     </Grid>
                 </Border>
             </StackPanel>
@@ -320,7 +320,7 @@
             Visibility="{x:Bind VM.IsRepeaterShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <ItemsRepeater VerticalAlignment="Top" ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}">
                 <ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelTree">
+                    <DataTemplate x:DataType="models:LabelClassTree">
                         <StackPanel>
                             <Grid
                                 x:Name="Grid_Tag1st"
@@ -384,7 +384,7 @@
                                                 FontSize="{Binding Path=FontSize1st, Mode=OneWay}"
                                                 FontStretch="ExtraExpanded"
                                                 FontWeight="Normal"
-                                                Text="{x:Bind Label.Name}" />
+                                                Text="{x:Bind LabelClass.Name}" />
                                         </Grid>
                                     </Border>
                                 </Grid>
@@ -467,10 +467,10 @@
         <!--  树形样式  -->
         <TreeView ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}" Visibility="{x:Bind VM.IsTreeShow, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <TreeView.ItemTemplate>
-                <DataTemplate x:DataType="models:LabelTree">
+                <DataTemplate x:DataType="models:LabelClassTree">
                     <TreeViewItem Height="36" ItemsSource="{x:Bind Children}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{x:Bind Label.Name}" />
+                            <TextBlock Text="{x:Bind LabelClass.Name}" />
                         </StackPanel>
                     </TreeViewItem>
                 </DataTemplate>
@@ -495,12 +495,12 @@
                 ItemsSource="{x:Bind VM.LabelTrees, Mode=OneWay}"
                 SelectionMode="None">
                 <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelTree">
+                    <DataTemplate x:DataType="models:LabelClassTree">
                         <Expander
                             Width="300"
                             VerticalAlignment="Top"
-                            Header="{x:Bind Label.Name}"
-                            ToolTipService.ToolTip="{x:Bind Label.Description}">
+                            Header="{x:Bind LabelClass.Name}"
+                            ToolTipService.ToolTip="{x:Bind LabelClass.Description}">
                             <Expander.Content>
                                 <Grid Margin="-10,-10,-10,-8">
                                     <Grid.RowDefinitions>
@@ -515,11 +515,11 @@
                                             </Style>
                                         </ListBox.ItemContainerStyle>
                                         <ListBox.ItemTemplate>
-                                            <DataTemplate x:DataType="models:LabelTree">
+                                            <DataTemplate x:DataType="models:LabelClassTree">
                                                 <Grid
                                                     Height="32"
                                                     DataContextChanged="Grid_DataContextChanged"
-                                                    ToolTipService.ToolTip="{x:Bind Label.Description}">
+                                                    ToolTipService.ToolTip="{x:Bind LabelClass.Description}">
                                                     <Grid.ContextFlyout>
                                                         <MenuFlyout>
                                                             <MenuFlyoutItem
@@ -532,7 +532,7 @@
                                                                 Text="删除" />
                                                         </MenuFlyout>
                                                     </Grid.ContextFlyout>
-                                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind Label.Name}" />
+                                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind LabelClass.Name}" />
                                                 </Grid>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>
