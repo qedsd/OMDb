@@ -19,11 +19,24 @@ namespace OMDb.WinUI3.Views
             Helpers.InfoHelper.DialogFrame = DialogFrame;
             VM.Init(ShellFrame);
             TabViewService.Init(ContentTabView);
+            TabViewService.OnVisibilityChanged += TabViewService_OnVisibilityChanged;
+        }
+
+        private void TabViewService_OnVisibilityChanged(Visibility visible)
+        {
+            if(visible == Visibility.Visible)
+            {
+                Helpers.WindowHelper.GetWindowForElement(this).SetTitleBar(CustomDragRegion1);
+            }
+            else
+            {
+                Helpers.WindowHelper.GetWindowForElement(this).SetTitleBar(CustomDragRegion2);
+            }
         }
 
         private void ShellPage_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
-            Helpers.WindowHelper.GetWindowForElement(this).SetTitleBar(CustomDragRegion);
+            Helpers.WindowHelper.GetWindowForElement(this).SetTitleBar(CustomDragRegion2);
         }
 
         private void ContentTabView_AddTabButtonClick(TabView sender, object args)
@@ -54,11 +67,6 @@ namespace OMDb.WinUI3.Views
             ContentTabView.SelectedItem = null;
             VM.NavClickCommand.Execute((e.ClickedItem as FrameworkElement).Parent as ListViewItem);
             MenuFlyout.Hide();
-        }
-
-        private void Button_BackToMenuPage_Click(object sender, RoutedEventArgs e)
-        {
-            ContentTabView.SelectedItem = null;
         }
 
         private void TabViewLeftPanel_SizeChanged(object sender, SizeChangedEventArgs e)
