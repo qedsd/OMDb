@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Models
 {
-    internal class LabelCollection
+    public class LabelCollection
     {
         public string Title { get; set; }
         public string Description { get; set; }

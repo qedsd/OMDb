@@ -19,16 +19,14 @@ using WinRT;
 
 namespace OMDb.WinUI3.Views
 {
-    public sealed partial class EntryCollectionDetailPage : Page
+    public sealed partial class EntryCollectionDetailPage : Page,Interfaces.ITabViewItemPage
     {
-        public EntryCollectionDetailPage()
+        public string Title { get; private set; }
+        public EntryCollectionDetailPage(EntryCollection entryCollection)
         {
             this.InitializeComponent();
-        }
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            var collection = e.Parameter as EntryCollection;
-            (DataContext as EntryCollectionDetailViewModel).EntryCollection = collection;
+            (DataContext as EntryCollectionDetailViewModel).EntryCollection = entryCollection;
+            Title = entryCollection.Title;
         }
 
         private void EditFlyout_Button_Click(object sender, RoutedEventArgs e)
@@ -48,6 +46,11 @@ namespace OMDb.WinUI3.Views
             {
                 (DataContext as EntryCollectionDetailViewModel).RemoveOneCommand.Execute(item);
             }
+        }
+
+        public void Close()
+        {
+            
         }
     }
 }
