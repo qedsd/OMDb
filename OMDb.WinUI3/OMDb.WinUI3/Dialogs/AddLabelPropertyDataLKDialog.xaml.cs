@@ -59,12 +59,12 @@ namespace OMDb.WinUI3.Dialogs
                     //手动输入的属性数据
                     if (item.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero())
                     {
-                        var childs = content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
-                        var lp_repeat = childs.Where(a => a.LPDb.Name.Equals(item.Name));
+                        var childs = content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
+                        var lp_repeat = childs.Where(a => a.LabelProperty.LPDb.Name.Equals(item.Name));
                         //手输的属性数据是原有的：
                         if (lp_repeat.Count() > 0)
                         {
-                            result.Add(lp_repeat.FirstOrDefault().LPDb.LPId);
+                            result.Add(lp_repeat.FirstOrDefault().LabelProperty.LPDb.LPId);
                         }
                         //手输新增
                         else
@@ -73,7 +73,7 @@ namespace OMDb.WinUI3.Dialogs
                             item.DbCenterId = DbSelectorService.dbCurrentId;
                             Core.Services.LabelPropertyService.AddLabel(item);
                             var lpt = new LabelPropertyTree(item);
-                            content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
+                            content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
                             result.Add(item.LPId);
                         }
                     }
@@ -98,7 +98,7 @@ namespace OMDb.WinUI3.Dialogs
             foreach (var item in items)
             {
                 var lpt = item as LabelPropertyTree;
-                VM.DtData.Add(lpt.LPDb);
+                VM.DtData.Add(lpt.LabelProperty.LPDb);
             }
         }
 
@@ -112,7 +112,7 @@ namespace OMDb.WinUI3.Dialogs
             var lp = new LabelPropertyDb();
             var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
             if (itemsRoot.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
-            lp.ParentId = itemsRoot.LPDb.LPId;
+            lp.ParentId = itemsRoot.LabelProperty.LPDb.LPId;
             VM.DtData.Add(lp);
         }
 

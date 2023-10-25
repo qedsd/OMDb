@@ -50,7 +50,7 @@ namespace OMDb.WinUI3.Dialogs
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
             {
                 var result = new List<string>(); ;
-                result.Add(((OMDb.WinUI3.Models.LabelPropertyTree)content.ListView_LabelPropertyTrees.SelectedItem).LPDb.LPId);
+                result.Add(((OMDb.WinUI3.Models.LabelPropertyTree)content.ListView_LabelPropertyTrees.SelectedItem).LabelProperty.LPDb.LPId);
                 return result;
             }
             else

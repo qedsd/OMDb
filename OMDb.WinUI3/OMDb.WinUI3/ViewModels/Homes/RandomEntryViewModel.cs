@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels.Homes
 {
-    public class RandomEntryViewModel : ObservableObject
+    public class RandomEntryHomeViewModel : ObservableObject
     {
         private ObservableCollection<Core.Models.Entry> randomEntries;
         public ObservableCollection<Core.Models.Entry> RandomEntries

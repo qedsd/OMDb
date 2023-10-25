@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="OMDb.WinUI3.Views.EntryPage"
+    x:Class="OMDb.WinUI3.Views.EntryHomePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DbModels="using:OMDb.Core.DbModels"
@@ -24,7 +24,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid>
-            <!--  筛选区  -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
@@ -113,7 +112,7 @@
 
                 <AppBarButton Icon="Filter" Label="筛选">
                     <AppBarButton.Flyout>
-                        <Flyout>
+                        <Flyout x:Name="FlyoutFilter">
                             <Grid Width="420" Height="600">
                                 <StackPanel>
                                     <Pivot Height="520">
@@ -141,12 +140,19 @@
                                                     HorizontalAlignment="Left"
                                                     Content="标签筛选"
                                                     IsChecked="{x:Bind VM.IsFilterLabel, Mode=TwoWay}" />
-                                                <mycontrols:LabelsControl
+
+                                                <mycontrols:LabelClassFilterSelectControl
+                                                    Grid.Row="1"
+                                                    IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
+                                                    LabelClassTrees="{x:Bind VM.LabelClassTrees, Mode=TwoWay}" />
+
+
+                                                <!--<mycontrols:LabelsControl
                                                     Grid.Row="1"
                                                     CheckChangedCommand="{x:Bind VM.LabelChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
-                                                    Labels="{x:Bind VM.Labels, Mode=OneWay}"
-                                                    Mode="Selecte" />
+                                                    LabelClasses="{x:Bind VM.Labels, Mode=OneWay}"
+                                                    Mode="Selecte" />-->
                                             </Grid>
 
                                         </PivotItem>
@@ -156,7 +162,11 @@
                                                 <TextBlock FontSize="16" Text="属性标签" />
                                             </PivotItem.Header>
                                             <Grid>
-                                                <!--  属性  -->
+                                                <mycontrols:LabelPropertyFilterSelectControl
+                                                    IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
+                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" 
+                                                   />
+                                                
                                             </Grid>
 
                                         </PivotItem>
@@ -169,13 +179,13 @@
                                     <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                         <Button
                                             Margin="10,10,10,10"
-                                            Command="{x:Bind VM.ConfirmSortCommand}"
-                                            CommandParameter="{x:Bind FlyoutSort}"
+                                            Command="{x:Bind VM.ConfirmFilterCommand}"
+                                            CommandParameter="{x:Bind FlyoutFilter}"
                                             Content="确定" />
                                         <Button
                                             Margin="10,10,10,10"
-                                            Command="{x:Bind VM.CancelSortCommand}"
-                                            CommandParameter="{x:Bind FlyoutSort}"
+                                            Command="{x:Bind VM.CancelFilterCommand}"
+                                            CommandParameter="{x:Bind FlyoutFilter}"
                                             Content="取消" />
 
                                     </StackPanel>

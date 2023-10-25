@@ -19,9 +19,9 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.MyControls
 {
-    public sealed partial class LabelsProPertyControl : UserControl
+    public sealed partial class LabelsPropertyControl : UserControl
     {
-        public LabelsProPertyControl()
+        public LabelsPropertyControl()
         {
             this.InitializeComponent();
         }
@@ -57,7 +57,7 @@ namespace OMDb.WinUI3.MyControls
 
         private static void SetLabelPropertyCollection(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var card = d as LabelsProPertyControl;
+            var card = d as LabelsPropertyControl;
             if (card != null)
             {
                 var labels = e.NewValue as IEnumerable<Models.LabelProperty>;
@@ -71,7 +71,7 @@ namespace OMDb.WinUI3.MyControls
 
         private static void SetLabelPropertyCollectionNoHide(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var card = d as LabelsProPertyControl;
+            var card = d as LabelsPropertyControl;
             if (card != null)
             {
                 var labels_new = e.NewValue as IEnumerable<Models.LabelProperty>;
@@ -124,7 +124,7 @@ namespace OMDb.WinUI3.MyControls
            );
         private static void SetLabelDbs(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var card = d as LabelsProPertyControl;
+            var card = d as LabelsPropertyControl;
             if (card != null)
             {
                 var labelDbs = e.NewValue as IEnumerable<Core.DbModels.LabelPropertyDb>;

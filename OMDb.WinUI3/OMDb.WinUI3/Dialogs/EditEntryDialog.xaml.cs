@@ -38,10 +38,10 @@ namespace OMDb.WinUI3.Dialogs
 {
     public sealed partial class EditEntryDialog : Page
     {
-        public ViewModels.EditEntryViewModel VM { get; set; }
+        public ViewModels.EditEntryHomeViewModel VM { get; set; }
         public EditEntryDialog(Core.Models.Entry entry)
         {
-            VM = new ViewModels.EditEntryViewModel(entry);
+            VM = new ViewModels.EditEntryHomeViewModel(entry);
             this.InitializeComponent();
 
 
@@ -104,7 +104,7 @@ namespace OMDb.WinUI3.Dialogs
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsProPertyControl();
+                        var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.StrSelectItem.Text = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
@@ -125,7 +125,7 @@ namespace OMDb.WinUI3.Dialogs
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsProPertyControl();
+                        var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
@@ -365,7 +365,7 @@ namespace OMDb.WinUI3.Dialogs
                 if (lstBaba.Select(a => a.LPDb.Name).ToList().Contains(ei.Key))
                 {
                     string[] eiv = (string[])ei.Value;
-                    var lbc = (LabelsProPertyControl)this.stp.FindChild(ei.Key);
+                    var lbc = (LabelsPropertyControl)this.stp.FindChild(ei.Key);
                     lbc.StrSelectItem.Text = string.Join("/", eiv);
                     foreach (var item in eiv)
                     {

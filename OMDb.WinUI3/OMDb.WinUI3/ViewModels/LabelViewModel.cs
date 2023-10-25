@@ -221,7 +221,7 @@ namespace OMDb.WinUI3.ViewModels
             ConfigPath = System.AppDomain.CurrentDomain.BaseDirectory + @"Assets/Config/LabelConfig.xml";
             xe = XElement.Load(ConfigPath);
 
-            var labelTrees = await CommonService.GetLabelTrees();
+            var labelTrees = await CommonService.GetLabelClassTrees();
 
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {

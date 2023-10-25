@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="OMDb.WinUI3.MyControls.LabelsProPertyControl"
+    x:Class="OMDb.WinUI3.MyControls.LabelsPropertyControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Models="using:OMDb.WinUI3.Models"
@@ -17,17 +17,17 @@
     </UserControl.Resources>
     <Grid Margin="0,3,0,0">
         <TextBox
-            x:FieldModifier="public"
             x:Name="StrSelectItem"
             Width="220"
+            x:FieldModifier="public"
             FontSize="16"
             IsReadOnly="True" />
         <Button
             x:Name="btn"
-            Click="btn_Click"
             Margin="0,5,0,0"
             HorizontalAlignment="Right"
-            BorderThickness="0">
+            BorderThickness="0"
+            Click="btn_Click">
             <SymbolIcon Symbol="Find" />
             <Button.RenderTransform>
                 <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
@@ -42,7 +42,7 @@
                             SelectionMode="None">
                             <ListView.ItemTemplate>
                                 <DataTemplate x:DataType="Models:LabelProperty">
-                                    <Grid Visibility="{x:Bind IsHiden, Converter={StaticResource ReverseBoolToVisibilityConverter},Mode=OneWay}">
+                                    <Grid Visibility="{x:Bind IsHiden, Converter={StaticResource ReverseBoolToVisibilityConverter}, Mode=OneWay}">
                                         <CheckBox Width="10" IsChecked="{x:Bind IsChecked, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="30,4,0,0"

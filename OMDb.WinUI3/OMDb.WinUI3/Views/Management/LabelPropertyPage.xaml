@@ -21,7 +21,7 @@
                 <TextBlock
                     Padding="8"
                     Style="{StaticResource TitleTextBlockStyle}"
-                    Text="{x:Bind LPDb.Name}" />
+                    Text="{x:Bind LabelProperty.Name}" />
                 <ItemsRepeater
                     x:Name="innerRepeater"
                     ItemTemplate="{StaticResource StringDataTemplateColor}"
@@ -40,7 +40,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource SystemControlForegroundAltHighBrush}"
-                    Text="{x:Bind LPDb.Name}"
+                    Text="{x:Bind LabelProperty.Name}"
                     TextWrapping="Wrap" />
             </Grid>
         </DataTemplate>
@@ -121,7 +121,7 @@
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
                                 <ListViewItem Width="200" IsSelected="True">
-                                    <TextBlock Text="{x:Bind LPDb.Name, Mode=OneWay}" />
+                                    <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}" />
                                 </ListViewItem>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -157,7 +157,7 @@
                                         Width="110"
                                         Margin="10,10,10,10"
                                         HorizontalAlignment="Center"
-                                        Text="{x:Bind LPDb.Name, Mode=OneWay}"
+                                        Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
                                         TextAlignment="Center" />
                                 </Border>
                             </DataTemplate>

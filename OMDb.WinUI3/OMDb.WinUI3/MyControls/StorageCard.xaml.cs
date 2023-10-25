@@ -146,8 +146,8 @@ namespace OMDb.WinUI3.MyControls
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             if (enrtyStorage != null && !string.IsNullOrEmpty(enrtyStorage.StoragePath))
             {
-                Services.NavigationService.Navigate(typeof(Views.EntryPage), enrtyStorage.StorageName);
-                await EntryViewModel.Current.UpdateEntryListAsync();
+                Services.NavigationService.Navigate(typeof(Views.EntryHomePage), enrtyStorage.StorageName);
+                await EntryHomeViewModel.Current.UpdateEntryListAsync();
             }
         }
 

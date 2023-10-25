@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public class EditEntryViewModel : ObservableObject
+    public class EditEntryHomeViewModel : ObservableObject
     {
         public Models.EntryDetail EntryDetail { get; set; }
         public Core.Models.Entry Entry { get; set; }
@@ -118,7 +118,7 @@ namespace OMDb.WinUI3.ViewModels
                 EntryPath = System.IO.Path.Combine(selectedEnrtyStorage.StoragePath, relativePath);
             }
         }
-        public EditEntryViewModel(Core.Models.Entry entry)
+        public EditEntryHomeViewModel(Core.Models.Entry entry)
         {
             //EntryNames = new List<Models.EntryName>();
             if (entry == null)

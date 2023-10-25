@@ -23,7 +23,7 @@ namespace OMDb.WinUI3.Views.Homes
 {
     public sealed partial class RecentlyUpdatedEntryPage : HomeItemBasePage, IHomeItem
     {
-        public RecentlyUpdatedEntryViewModel VM { get; set; } = new RecentlyUpdatedEntryViewModel();
+        public RecentlyUpdatedEntryHomeViewModel VM { get; set; } = new RecentlyUpdatedEntryHomeViewModel();
         public new static string ItemName = "最近更新词条";
         public RecentlyUpdatedEntryPage()
         {

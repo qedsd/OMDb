@@ -16,13 +16,13 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Views
 {
-    public sealed partial class EntryPage : Page
+    public sealed partial class EntryHomePage : Page
     {
-        public ViewModels.EntryViewModel VM { get; set; }
-        public EntryPage()
+        public ViewModels.EntryHomeViewModel VM { get; set; }
+        public EntryHomePage()
         {
             this.InitializeComponent();
-            VM = new ViewModels.EntryViewModel();
+            VM = new ViewModels.EntryHomeViewModel();
         }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {

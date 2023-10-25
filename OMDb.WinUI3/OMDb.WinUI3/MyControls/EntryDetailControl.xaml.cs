@@ -31,7 +31,7 @@ namespace OMDb.WinUI3.MyControls
 {
     public sealed partial class EntryDetailControl : UserControl
     {
-        public ViewModels.EditEntryViewModel VM = new EditEntryViewModel(null);
+        public ViewModels.EditEntryHomeViewModel VM = new EditEntryHomeViewModel(null);
         public EntryDetailControl()
         {
             this.InitializeComponent();

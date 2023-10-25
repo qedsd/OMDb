@@ -43,7 +43,7 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:LabelPropertyTree">
                             <ListViewItem Width="200" IsSelected="True">
-                                <TextBlock Text="{x:Bind LPDb.Name, Mode=OneWay}" />
+                                <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}" />
                             </ListViewItem>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -67,7 +67,7 @@
                                         Margin="5,0,5,0"
                                         HorizontalAlignment="Center"
                                         FontSize="11"
-                                        Text="{x:Bind LPDb.Name, Mode=OneWay}"
+                                        Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
                                         TextAlignment="Center" />
                                 </Border>
                             </Grid>

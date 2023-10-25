@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.ViewModels.Homes
 {
-    public class RecentlyUpdatedEntryViewModel : ObservableObject
+    public class RecentlyUpdatedEntryHomeViewModel : ObservableObject
     {
         private ObservableCollection<Core.Models.Entry> recentlyUpdatedEntries;
         public ObservableCollection<Core.Models.Entry> RecentlyUpdatedEntries

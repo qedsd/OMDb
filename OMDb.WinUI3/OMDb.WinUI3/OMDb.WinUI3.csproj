@@ -66,6 +66,8 @@
 		<None Remove="MyControls\EntryCollectionCard.xaml" />
 		<None Remove="MyControls\EntryCollectionCard2.xaml" />
 		<None Remove="MyControls\EntryDetailControl.xaml" />
+		<None Remove="MyControls\EntryPageControls\EntryHomePageControls\LabelClassFilterSelectControl.xaml" />
+		<None Remove="MyControls\EntryPageControls\EntryHomePageControls\LabelPropertyFilterSelectControl.xaml" />
 		<None Remove="MyControls\EntryStoragesControl.xaml" />
 		<None Remove="MyControls\ExpandableSettingControl.xaml" />
 		<None Remove="MyControls\ExpandableSettingHeaderControl.xaml" />
@@ -89,7 +91,7 @@
 		<None Remove="Views\CollectionsPage.xaml" />
 		<None Remove="Views\EntryCollectionDetailPage.xaml" />
 		<None Remove="Views\EntryDetailPage.xaml" />
-		<None Remove="Views\EntryPage.xaml" />
+		<None Remove="Views\EntryHomePage.xaml" />
 		<None Remove="Views\HomePage.xaml" />
 		<None Remove="Views\Homes\ExtractLinePage.xaml" />
 		<None Remove="Views\Homes\RandomEntryPage.xaml" />
@@ -144,6 +146,13 @@
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="MyControls\EntryDetailControl.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		</Page>
+		<Page Update="MyControls\EntryPageControls\EntryHomePageControls\LabelPropertyFilterSelectControl.xaml">
+		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+		  <SubType>Designer</SubType>
+		</Page>
+		<Page Update="MyControls\EntryPageControls\EntryHomePageControls\LabelClassFilterSelectControl.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		</Page>
 		<Page Update="MyControls\LabelsControl.xaml">
@@ -242,7 +251,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Page Update="Views\EntryPage.xaml">
+		<Page Update="Views\EntryHomePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
@@ -520,5 +529,6 @@
 	<ItemGroup>
 	  <Folder Include="MyControls\EntryPageControls\EditEntryDialogControls\" />
 	  <Folder Include="MyControls\EntryPageControls\AddEntryBatchDialogControls\" />
+	  <Folder Include="MyControls\ManagementControls\" />
 	</ItemGroup>
 </Project>

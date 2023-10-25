@@ -46,7 +46,7 @@ namespace OMDb.WinUI3.Dialogs
     {
         public AddEntryBatchViewModel VM = new AddEntryBatchViewModel();
 
-        public ViewModels.EditEntryViewModel VM_Detail = new EditEntryViewModel(null);
+        public ViewModels.EditEntryHomeViewModel VM_Detail = new EditEntryHomeViewModel(null);
         public AddEntryBatchDialog()
         {
             this.InitializeComponent();
@@ -238,7 +238,7 @@ namespace OMDb.WinUI3.Dialogs
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsProPertyControl();
+                        var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.StrSelectItem.Text = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>(); ;
@@ -259,7 +259,7 @@ namespace OMDb.WinUI3.Dialogs
                         };
                         stack.Children.Add(tBlock);
                         //属性 -> 属性
-                        var lbc = new LabelsProPertyControl();
+                        var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.LabelPropertyCollection = VM_Detail.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);

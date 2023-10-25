@@ -36,7 +36,7 @@
                 <GridView.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelPropertyTree">
                         <GridViewItem Width="120" IsSelected="True">
-                            <TextBlock Text="{x:Bind LPDb.Name, Mode=OneWay}" />
+                            <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}" />
                         </GridViewItem>
                     </DataTemplate>
                 </GridView.ItemTemplate>
