@@ -59,7 +59,7 @@
             <mycontrols:Banner
                 x:Name="Banner"
                 Height="650"
-                Margin="4,4"
+                Margin="4,0"
                 VerticalAlignment="Top"
                 DetailCommand="{Binding BannerDetailCommand}"
                 ItemsSource="{Binding BannerItemSource, Mode=OneWay}" />

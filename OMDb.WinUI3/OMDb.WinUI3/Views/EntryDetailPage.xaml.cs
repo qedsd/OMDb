@@ -35,14 +35,6 @@ namespace OMDb.WinUI3.Views
                 Title = VM.Entry.Name;
             }
         }
-        //protected async override void OnNavigatedTo(NavigationEventArgs e)
-        //{
-        //    var entry = e.Parameter as Core.Models.Entry;
-        //    if(entry != null)
-        //    {
-        //        VM.Entry = await Models.EntryDetail.CreateAsync(entry);
-        //    }
-        //}
 
         private void Image_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {

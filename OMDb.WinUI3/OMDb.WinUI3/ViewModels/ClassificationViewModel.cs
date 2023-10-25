@@ -476,7 +476,7 @@ namespace OMDb.WinUI3.ViewModels
                         Entries = entrys,
                         Id = null
                     };
-                    Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
+                    Services.TabViewService.AddItem(new Views.LabelCollectionPage(labelCollection));
                 }
                 Helpers.InfoHelper.HideWaiting();
             }
@@ -501,7 +501,7 @@ namespace OMDb.WinUI3.ViewModels
                         Entries = entrys,
                         Id = label.LabelClassDb.LCId
                     };
-                    Services.NavigationService.Navigate(typeof(Views.LabelCollectionPage), labelCollection);
+                    Services.TabViewService.AddItem(new Views.LabelCollectionPage(labelCollection));
                 }
                 Helpers.InfoHelper.HideWaiting();
             }

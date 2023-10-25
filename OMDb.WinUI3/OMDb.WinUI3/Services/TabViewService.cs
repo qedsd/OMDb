@@ -49,6 +49,10 @@ namespace OMDb.WinUI3.Services
             {
                 TabView.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
             }
+            OnVisibilityChanged?.Invoke(TabView.Visibility);
         }
+
+        public delegate void VisibilityChangedDelegate(Microsoft.UI.Xaml.Visibility visible);
+        public static event VisibilityChangedDelegate OnVisibilityChanged;
     }
 }

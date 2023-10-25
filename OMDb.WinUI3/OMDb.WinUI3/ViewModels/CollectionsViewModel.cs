@@ -110,7 +110,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (selectedItem != null)
             {
-                Services.NavigationService.Navigate(typeof(Views.EntryCollectionDetailPage), selectedItem);
+                Services.TabViewService.AddItem(new Views.EntryCollectionDetailPage(selectedItem));
             }
         });
 
