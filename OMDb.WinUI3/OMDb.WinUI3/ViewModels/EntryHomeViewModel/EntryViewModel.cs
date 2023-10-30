@@ -7,6 +7,7 @@ using OMDb.Core.Models;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
+using OMDb.WinUI3.Models.EntryModels;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
 using System;
@@ -123,7 +124,11 @@ namespace OMDb.WinUI3.ViewModels
             var labelClassFilterList = IsFilterLabel ? GetLabelClassId() : null;
             var labelPrpertyFilterList =  GetLabelPropertyId();
 
+            var sortModel = new SortModel();
+            var filterModel=new FilterModel();
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, storageFilterList, labelClassFilterList);
+
+
             if (queryResults?.Count > 0)
             {
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
