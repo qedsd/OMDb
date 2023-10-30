@@ -20,7 +20,7 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public partial class EntryHomeViewModel: ObservableObject
+    public partial class EntryHomeViewModel : ObservableObject
     {
         public EntryHomeViewModel()
         {
@@ -76,16 +76,16 @@ namespace OMDb.WinUI3.ViewModels
 
             #region 排序模式加载
 
-            EntrySortInfoTree eitBase = new EntrySortInfoTree("基本信息",null);
+            EntrySortInfoTree eitBase = new EntrySortInfoTree("基本信息", null);
             eitBase.Children = new ObservableCollection<EntrySortInfoTree>();
             eitBase.Children.Add(new EntrySortInfoTree("业务日期", "Base"));
             eitBase.Children.Add(new EntrySortInfoTree("词条名称", "Base"));
 
-            EntrySortInfoTree eitLabelProperty = new EntrySortInfoTree("属性标签",null);
+            EntrySortInfoTree eitLabelProperty = new EntrySortInfoTree("属性标签", null);
             eitLabelProperty.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
             var lpdbs = Core.Services.LabelPropertyService.Get1stLabel();
             foreach (var item in lpdbs)
-                eitLabelProperty.Children.Add(new EntrySortInfoTree(item.Name,"LabelProperty"));
+                eitLabelProperty.Children.Add(new EntrySortInfoTree(item.Name, "LabelProperty"));
 
             EntrySortInfoTree eitLabelClass = new EntrySortInfoTree("分类标签", null);
             eitLabelClass.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
@@ -118,12 +118,12 @@ namespace OMDb.WinUI3.ViewModels
         public async Task UpdateEntryListAsync()
         {
             Helpers.InfoHelper.ShowWaiting();
-            List<string> filterLabel = null;
-            if (IsFilterLabel && Labels != null)
-            {
-                filterLabel = Labels.Where(p => p.IsChecked).Select(p => p.LabelClassDb.LCId).ToList();
-            }
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList(), filterLabel);
+
+            var storageFilterList = EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList();
+            var labelClassFilterList = IsFilterLabel ? GetLabelClassId() : null;
+            var labelPrpertyFilterList =  GetLabelPropertyId();
+
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, storageFilterList, labelClassFilterList);
             if (queryResults?.Count > 0)
             {
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
@@ -170,7 +170,7 @@ namespace OMDb.WinUI3.ViewModels
             }
             else
             {
-                _ = UpdateEntryListAsync();
+                await UpdateEntryListAsync();
             }
         }
         private void GlobalEvent_RemoveEntryEvent(object sender, Events.EntryEventArgs e)
@@ -234,6 +234,43 @@ namespace OMDb.WinUI3.ViewModels
                 }
             }
             return false;
+        }
+
+        private List<string> GetLabelClassId()
+        {
+            var labelFilterList = new List<string>();
+            foreach (var labelClass1st in this.LabelClassTrees)
+            {
+                if (labelClass1st.LabelClass.IsChecked)
+                    labelFilterList.Add(labelClass1st.LabelClass.LabelClassDb.LCId);
+
+
+                foreach (var lableClass2nd in labelClass1st.Children)
+                {
+                    if (lableClass2nd.LabelClass.IsChecked)
+                        labelFilterList.Add(lableClass2nd.LabelClass.LabelClassDb.LCId);
+                }
+            }
+            return labelFilterList;
+        }
+
+
+        private List<string> GetLabelPropertyId()
+        {
+            var labelFilterList = new List<string>();
+            foreach (var labelProperty1st in this.LabelPropertyTrees)
+            {
+                if (labelProperty1st.LabelProperty.IsChecked)
+                    labelFilterList.Add(labelProperty1st.LabelProperty.LPDb.LPId);
+
+
+                foreach (var lableClass2nd in labelProperty1st.Children)
+                {
+                    if (lableClass2nd.LabelProperty.IsChecked)
+                        labelFilterList.Add(lableClass2nd.LabelProperty.LPDb.LPId);
+                }
+            }
+            return labelFilterList;
         }
 
         #endregion 

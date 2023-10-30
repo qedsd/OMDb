@@ -23,7 +23,8 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Grid.Row="0">
+            <!--  控件区  -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
@@ -116,6 +117,7 @@
                             <Grid Width="420" Height="600">
                                 <StackPanel>
                                     <Pivot Height="520">
+                                        <!--  基本信息过滤  -->
                                         <PivotItem>
                                             <PivotItem.Header>
                                                 <TextBlock FontSize="16" Text="基本信息" />
@@ -124,7 +126,7 @@
                                                 <mycontrols:EntryStoragesControl CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}" EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
                                             </Grid>
                                         </PivotItem>
-
+                                        <!--  分类标签过滤  -->
                                         <PivotItem>
                                             <PivotItem.Header>
                                                 <TextBlock FontSize="16" Text="分类标签" />
@@ -143,30 +145,22 @@
 
                                                 <mycontrols:LabelClassFilterSelectControl
                                                     Grid.Row="1"
+                                                    CheckChangedCommand="{x:Bind VM.LabelClassTreeChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
                                                     LabelClassTrees="{x:Bind VM.LabelClassTrees, Mode=TwoWay}" />
-
-
-                                                <!--<mycontrols:LabelsControl
-                                                    Grid.Row="1"
-                                                    CheckChangedCommand="{x:Bind VM.LabelChangedCommand}"
-                                                    IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
-                                                    LabelClasses="{x:Bind VM.Labels, Mode=OneWay}"
-                                                    Mode="Selecte" />-->
                                             </Grid>
 
                                         </PivotItem>
-
+                                        <!--  属性标签过滤  -->
                                         <PivotItem>
                                             <PivotItem.Header>
                                                 <TextBlock FontSize="16" Text="属性标签" />
                                             </PivotItem.Header>
                                             <Grid>
                                                 <mycontrols:LabelPropertyFilterSelectControl
+                                                    CheckChangedCommand="{x:Bind VM.LabelPropertyTreeChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
-                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" 
-                                                   />
-                                                
+                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" />
                                             </Grid>
 
                                         </PivotItem>
@@ -195,7 +189,10 @@
                     </AppBarButton.Flyout>
                 </AppBarButton>
 
-                <AppBarButton Icon="Sort" Label="排序">
+                <AppBarButton
+                    Icon="Sort"
+                    Label="排序"
+                    Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <Flyout x:Name="FlyoutSort">
                             <StackPanel>
@@ -297,6 +294,7 @@
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
+
                 <AppBarButton
                     AllowFocusOnInteraction="True"
                     Icon="Find"

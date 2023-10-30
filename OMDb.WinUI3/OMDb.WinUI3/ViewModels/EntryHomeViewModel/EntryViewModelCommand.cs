@@ -23,6 +23,10 @@ namespace OMDb.WinUI3.ViewModels
     public partial class EntryHomeViewModel: ObservableObject
     {
         #region ICommand
+
+        /// <summary>
+        /// 刷新
+        /// </summary>
         public ICommand RefreshCommand => new RelayCommand(() =>
         {
             Init();
@@ -32,21 +36,26 @@ namespace OMDb.WinUI3.ViewModels
         {
             TabViewService.AddItem(new Views.EntryDetailPage(entry));
         });
-        public ICommand LabelChangedCommand => new RelayCommand<IEnumerable<Models.LabelClass>>((items) =>
+        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>(async (items) =>
         {
-            _ = UpdateEntryListAsync();
+            await UpdateEntryListAsync();
         });
-        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>((items) =>
+        public ICommand LabelClassTreeChangedCommand => new RelayCommand<IEnumerable<Models.LabelClassTree>>(async (items) =>
         {
-            _ = UpdateEntryListAsync();
+            await UpdateEntryListAsync();
         });
+        public ICommand LabelPropertyTreeChangedCommand => new RelayCommand<IEnumerable<Models.LabelPropertyTree>>(async (items) =>
+        {
+            await UpdateEntryListAsync();
+        });
+
         public ICommand QuerySubmittedCommand => new RelayCommand<Core.Models.QueryResult>(async (item) =>
         {
             if (item == null)
             {
                 if (string.IsNullOrEmpty(AutoSuggestText))
                 {
-                    _ = UpdateEntryListAsync();
+                    await UpdateEntryListAsync();
                 }
                 else
                 {
@@ -67,6 +76,10 @@ namespace OMDb.WinUI3.ViewModels
                 AutoSuggestItem = item;
             }
         });
+
+        /// <summary>
+        /// 添加词条
+        /// </summary>
         public ICommand AddEntryCommand => new RelayCommand(async () =>
         {
             Services.ConfigService.LoadStorages();
@@ -79,6 +92,10 @@ namespace OMDb.WinUI3.ViewModels
                 await Services.EntryService.AddEntryAsync();
             }
         });
+
+        /// <summary>
+        /// 批量添加词条
+        /// </summary>
         public ICommand AddEntryBatchCommand => new RelayCommand(async () =>
         {
             Services.ConfigService.LoadStorages();
@@ -92,38 +109,59 @@ namespace OMDb.WinUI3.ViewModels
             }
         });
 
+
+        #region 排序
+
+        /// <summary>
+        /// 添加排序字段
+        /// </summary>
         public ICommand AddEntrySortInfoCommand => new RelayCommand(() =>
         {
             if (EntrySortInfoCurrent == null) return;
             if (EntrySortInfoCurrent.ParentTag == null) return;
-            if (EntrySortInfoResults.Select(a=>a.Title).Contains(EntrySortInfoCurrent.Title)&& EntrySortInfoResults.Select(a => a.ESIT.ParentTag).Contains(EntrySortInfoCurrent.ParentTag))
+            if (EntrySortInfoResults.Select(a => a.Title).Contains(EntrySortInfoCurrent.Title) && EntrySortInfoResults.Select(a => a.ESIT.ParentTag).Contains(EntrySortInfoCurrent.ParentTag))
                 return;
             EntrySortInfoResult ESIR = new EntrySortInfoResult(EntrySortInfoCurrent);
             EntrySortInfoResults.Add(ESIR);
         });
+
+        /// <summary>
+        /// 移除排序字段
+        /// </summary>
         public ICommand RemoveEntrySortInfoCommand => new RelayCommand(() =>
         {
             EntrySortInfoResults.Remove(EntrySortInfoResultCurrent);
         });
+
+        /// <summary>
+        /// 清空排序字段
+        /// </summary>
         public ICommand ClearEntrySortInfoCommand => new RelayCommand(() =>
         {
             EntrySortInfoResults.Clear();
         });
 
+        /// <summary>
+        /// 确认排序
+        /// </summary>
         public ICommand ConfirmSortCommand => new RelayCommand<Flyout>((flyoutParameter) =>
         {
-            //排序逻辑
-            var sb2 = LabelClassTrees;
+            var sb2 = LabelClassTrees;//排序逻辑
             Flyout flyout = (Flyout)flyoutParameter;
             flyout.Hide();
         });
 
+        /// <summary>
+        /// 取消
+        /// </summary>
         public ICommand CancelSortCommand => new RelayCommand<Flyout>((flyoutParameter) =>
         {
             Flyout flyout = (Flyout)flyoutParameter;
             flyout.Hide();
             EntrySortInfoResults.Clear();
         });
+        #endregion
+
 
         public ICommand ConfirmFilterCommand => new RelayCommand<Flyout>((flyoutParameter) =>
         {

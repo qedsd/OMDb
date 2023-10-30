@@ -20,7 +20,7 @@ namespace OMDb.Core.Services
         /// <param name="sortType"></param>
         /// <param name="sortWay"></param>
         /// <returns></returns>
-        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
+        public static List<QueryResult> QueryEntry(SortModel sortModel, FilterModel filterModel)
         {
             if (DbService.IsEmpty)
             {
@@ -28,32 +28,36 @@ namespace OMDb.Core.Services
             }
             else
             {
-                return sortType switch
+                return SortByCreateTime(sortModel, filterModel);
+                /*return sortType switch
                 {
-                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, dbIds, labelIds),
-                    Enums.SortType.MyRating => SortByMyRating(sortWay, dbIds, labelIds),
+                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds, labelClassIds),
+                    Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, dbIds, labelClassIds),
+                    Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, dbIds, labelClassIds),
+                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, dbIds, labelClassIds),
+                    Enums.SortType.MyRating => SortByMyRating(sortWay, dbIds, labelClassIds),
                     _ => null,
-                };
+                };*/
             }
         }
-        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
+        public static async Task<List<QueryResult>> QueryEntryAsync(SortModel sortModel, FilterModel filterModel)
         {
-            return await Task.Run(() => QueryEntry(sortType, sortWay, dbIds, labelIds));
+            return await Task.Run(() => QueryEntry(sortModel, filterModel));
         }
-        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
+        private static List<QueryResult> SortByCreateTime(SortModel sortModel, FilterModel filterModel)
         {
             List<QueryResult> queryResults = new List<QueryResult>();
             List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
+            if (filterModel.LabelClassIds != null && filterModel.LabelClassIds.Count != 0)
+                inLabelEntryIds = LabelClassService.GetEntrys(filterModel.LabelClassIds);
+
+            if (filterModel.LabelPropertyIds != null && filterModel.LabelPropertyIds.Count != 0)
+                inLabelEntryIds = LabelClassService.GetEntrys(filterModel.LabelPropertyIds);
+
+
             foreach (var item in DbService.Dbs)
             {
-                if (dbIds != null && !dbIds.Contains(item.Key))
+                if (filterModel.StorageIds != null && !filterModel.StorageIds.Contains(item.Key))
                 {
                     continue;
                 }
@@ -81,7 +85,7 @@ namespace OMDb.Core.Services
                 }
 
             }
-            if (sortWay == Enums.SortWay.Positive)
+            if (sortModel.SortWay == Enums.SortWay.Positive)
             {
                 return queryResults.OrderBy(p => p.Value).ToList();
             }

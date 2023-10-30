@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -74,12 +75,40 @@ namespace OMDb.WinUI3.MyControls
                     lbc.LabelClass.IsChecked = true;
                 }
             }
+            CallChanged();
         }
 
         private void Grid_2nd_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var labelClass = (sender as FrameworkElement)?.Tag as LabelClass;
             labelClass.IsChecked = !labelClass.IsChecked;
+            CallChanged();
         }
+
+
+        private void CallChanged()
+        {
+            var ls = LabelClassTrees.ToList();
+            CheckChangedCommand?.Execute(ls);
+        }
+
+        public delegate void CheckChangedEventHandel(IEnumerable<Models.LabelClassTree> allItems);
+        private CheckChangedEventHandel CheckChanged;
+
+        public static readonly DependencyProperty CheckChangedCommandProperty
+           = DependencyProperty.Register(
+               nameof(CheckChangedCommand),
+               typeof(string),
+               typeof(LabelClassFilterSelectControl),
+               new PropertyMetadata(string.Empty));
+
+        public ICommand CheckChangedCommand
+        {
+            get => (ICommand)GetValue(CheckChangedCommandProperty);
+            set => SetValue(CheckChangedCommandProperty, value);
+        }
+
+
+
     }
 }

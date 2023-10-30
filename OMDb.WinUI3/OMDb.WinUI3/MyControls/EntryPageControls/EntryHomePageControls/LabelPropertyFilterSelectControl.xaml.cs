@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 
@@ -57,6 +58,32 @@ namespace OMDb.WinUI3.MyControls
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             GridView_Current_LPEZCollection.ItemsSource = ((LabelPropertyTree)e.AddedItems[0]).Children;
+            CallChanged();
         }
+
+
+        private void CallChanged()
+        {
+            var ls = LabelPropertyTrees.ToList();
+            CheckChangedCommand?.Execute(ls);
+        }
+
+        public delegate void CheckChangedEventHandel(IEnumerable<Models.LabelPropertyTree> allItems);
+        private CheckChangedEventHandel CheckChanged;
+
+        public static readonly DependencyProperty CheckChangedCommandProperty
+           = DependencyProperty.Register(
+               nameof(CheckChangedCommand),
+               typeof(string),
+               typeof(LabelPropertyFilterSelectControl),
+               new PropertyMetadata(string.Empty));
+
+        public ICommand CheckChangedCommand
+        {
+            get => (ICommand)GetValue(CheckChangedCommandProperty);
+            set => SetValue(CheckChangedCommandProperty, value);
+        }
+
+
     }
 }
