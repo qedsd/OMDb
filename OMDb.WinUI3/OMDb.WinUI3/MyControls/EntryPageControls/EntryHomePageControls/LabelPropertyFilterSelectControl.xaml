@@ -54,7 +54,8 @@
                                         HorizontalAlignment="Left"
                                         VerticalAlignment="Center"
                                         Checked="CheckBox_Checked"
-                                        Unchecked="CheckBox_Checked" />
+                                        Unchecked="CheckBox_Checked" 
+                                        IsChecked="{x:Bind LabelProperty.IsChecked,Mode=OneWay}"/>
                                     <TextBlock
                                         Grid.Column="1"
                                         Width="120"

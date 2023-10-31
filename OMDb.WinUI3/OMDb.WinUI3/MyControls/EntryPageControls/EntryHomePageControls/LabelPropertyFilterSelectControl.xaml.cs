@@ -86,7 +86,16 @@ namespace OMDb.WinUI3.MyControls
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
+
             ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+            foreach (var lpt1st in LabelPropertyTrees)
+            {
+                foreach (var lpt2ndt in lpt1st.Children)
+                {
+                    if (lpt2ndt.LabelProperty.LPDb.LPId == ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.LPDb.LPId)
+                        lpt2ndt.LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+                }
+            }
             CallChanged();
         }
     }
