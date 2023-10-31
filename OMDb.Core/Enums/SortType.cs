@@ -9,15 +9,17 @@ namespace OMDb.Core.Enums
 {
     public enum SortType
     {
-        [Description("词条创建时间")]
+        [Description("创建日期")]
         CreateTime,
-        [Description("最近观看")]
-        LastWatchTime,
-        [Description("我的评分")]
+        [Description("上映日期")]
+        BusinessDate,
+        [Description("评分")]
         MyRating,
+        [Description("观看日期")]
+        LastWatchTime,
         [Description("观看次数")]
         WatchTimes,
-        [Description("最近更新")]
+        [Description("更新日期")]
         LastUpdateTime,
     }
 }

@@ -46,23 +46,25 @@
                             <Border BorderBrush="CadetBlue" BorderThickness="0">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="20"></ColumnDefinition>
-                                        <ColumnDefinition Width="70"></ColumnDefinition>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="70" />
                                     </Grid.ColumnDefinitions>
                                     <CheckBox
-                                            Width="20"
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            IsChecked="{x:Bind LabelProperty.IsChecked, Mode=TwoWay}" />
-                                    <TextBlock Grid.Column="1"
-                                            Width="120"
-                                            Height="30"
-                                            Margin="3,6,0,0"
-                                            FontSize="14"
-                                            HorizontalAlignment="Left"
-                                             VerticalAlignment="Center"
-                                            Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
-                                            TextAlignment="Left" />
+                                        Width="20"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Checked="CheckBox_Checked"
+                                        Unchecked="CheckBox_Checked" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="3,6,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
+                                        TextAlignment="Left" />
                                 </Grid>
                             </Border>
                         </DataTemplate>

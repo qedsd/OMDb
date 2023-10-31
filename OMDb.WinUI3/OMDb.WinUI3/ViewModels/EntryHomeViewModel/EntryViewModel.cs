@@ -7,7 +7,6 @@ using OMDb.Core.Models;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
-using OMDb.WinUI3.Models.EntryModels;
 using OMDb.WinUI3.MyControls;
 using OMDb.WinUI3.Services;
 using System;
@@ -30,8 +29,7 @@ namespace OMDb.WinUI3.ViewModels
             sortWay = Core.Enums.SortWay.Positive;
             Init();
             Current = this;
-            LabelClassTrees = Services.CommonService.GetLabelClassTrees().Result.ToObservableCollection();
-            LabelPropertyTrees = Services.CommonService.GetLabelPropertyTrees().Result.ToObservableCollection();
+
             Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
             Events.GlobalEvent.AddEntryEvent += GlobalEvent_AddEntryEvent;
             Events.GlobalEvent.RemoveEntryEvent += GlobalEvent_RemoveEntryEvent;
@@ -57,6 +55,8 @@ namespace OMDb.WinUI3.ViewModels
                 item.IsChecked = true;
             }
 
+            this.LabelClassTrees = Services.CommonService.GetLabelClassTrees().Result.ToObservableCollection();
+            this.LabelPropertyTrees = Services.CommonService.GetLabelPropertyTrees().Result.ToObservableCollection();
 
             /*foreach (var LabelClass in LabelClasses)
             {
@@ -121,12 +121,20 @@ namespace OMDb.WinUI3.ViewModels
             Helpers.InfoHelper.ShowWaiting();
 
             var storageFilterList = EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList();
-            var labelClassFilterList = IsFilterLabel ? GetLabelClassId() : null;
+            var labelClassFilterList = GetLabelClassId() ;
             var labelPrpertyFilterList =  GetLabelPropertyId();
 
-            var sortModel = new SortModel();
+            
+            var sortModel = new SortModel(this.SortType,this.SortWay);
             var filterModel=new FilterModel();
-            var queryResults = await Core.Services.EntryService.QueryEntryAsync(SortType, SortWay, storageFilterList, labelClassFilterList);
+            filterModel.IsFilterStorage = true;
+            filterModel.IsFilterLabelClass = IsFilterLabelClass;
+            filterModel.IsFilterLabelProperty = IsFilterLabelProperty;
+            filterModel.StorageIds = storageFilterList;
+            filterModel.LabelClassIds = labelClassFilterList;
+            filterModel.LabelPropertyIds= labelPrpertyFilterList;
+            
+            var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
 
 
             if (queryResults?.Count > 0)
@@ -220,7 +228,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (s.FirstOrDefault(p => p.StorageName == entry.DbId) != null)
                 {
-                    if (!IsFilterLabel)
+                    if (!IsFilterLabelClass)
                     {
                         return true;
                     }

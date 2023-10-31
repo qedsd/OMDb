@@ -140,13 +140,13 @@
                                                     Grid.Row="0"
                                                     Margin="12,0,0,0"
                                                     HorizontalAlignment="Left"
-                                                    Content="标签筛选"
-                                                    IsChecked="{x:Bind VM.IsFilterLabel, Mode=TwoWay}" />
+                                                    Content="分类标签筛选"
+                                                    IsChecked="{x:Bind VM.IsFilterLabelClass, Mode=TwoWay}" />
 
                                                 <mycontrols:LabelClassFilterSelectControl
                                                     Grid.Row="1"
                                                     CheckChangedCommand="{x:Bind VM.LabelClassTreeChangedCommand}"
-                                                    IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
+                                                    IsEnabled="{x:Bind VM.IsFilterLabelClass, Mode=OneWay}"
                                                     LabelClassTrees="{x:Bind VM.LabelClassTrees, Mode=TwoWay}" />
                                             </Grid>
 
@@ -157,9 +157,20 @@
                                                 <TextBlock FontSize="16" Text="属性标签" />
                                             </PivotItem.Header>
                                             <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
+                                                <CheckBox
+                                                    Grid.Row="0"
+                                                    Margin="12,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    Content="属性标签筛选"
+                                                    IsChecked="{x:Bind VM.IsFilterLabelProperty, Mode=TwoWay}" />
                                                 <mycontrols:LabelPropertyFilterSelectControl
+                                                    Grid.Row="1"
                                                     CheckChangedCommand="{x:Bind VM.LabelPropertyTreeChangedCommand}"
-                                                    IsEnabled="{x:Bind VM.IsFilterLabel, Mode=OneWay}"
+                                                    IsEnabled="{x:Bind VM.IsFilterLabelProperty, Mode=OneWay}"
                                                     LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" />
                                             </Grid>
 

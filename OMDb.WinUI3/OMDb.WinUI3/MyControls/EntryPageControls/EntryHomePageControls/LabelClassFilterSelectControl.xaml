@@ -48,6 +48,8 @@
         <!--  嵌套样式  -->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
             <ItemsRepeater x:Name="ItemsRepeater_LabelTree" VerticalAlignment="Top">
+
+
                 <ItemsRepeater.ItemTemplate>
                     <DataTemplate x:DataType="models:LabelClassTree">
                         <StackPanel>
@@ -76,11 +78,12 @@
                             </Border>
 
                             <ItemsRepeater
+                                Width="395"
                                 Margin="0,5,0,5"
                                 ItemTemplate="{StaticResource StringDataTemplateColor}"
                                 ItemsSource="{x:Bind Children}">
                                 <ItemsRepeater.Layout>
-                                    <StackLayout Orientation="Horizontal" />
+                                    <UniformGridLayout MinItemWidth="77" Orientation="Horizontal" />
                                 </ItemsRepeater.Layout>
                             </ItemsRepeater>
                         </StackPanel>

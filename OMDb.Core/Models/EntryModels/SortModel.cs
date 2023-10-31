@@ -9,6 +9,16 @@ namespace OMDb.Core.Models
 {
     public class SortModel
     {
+        public SortModel()
+        {
+            SortType = SortType.CreateTime;
+            SortWay =SortWay.Positive;
+        }
+        public SortModel(SortType st, SortWay sw)
+        {
+            SortType = st;
+            SortWay = sw;
+        }
         public SortType SortType { get; set; }
 
         public SortWay SortWay { get; set; }

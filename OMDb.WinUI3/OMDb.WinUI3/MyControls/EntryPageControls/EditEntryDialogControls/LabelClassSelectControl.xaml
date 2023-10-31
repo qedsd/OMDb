@@ -76,11 +76,12 @@
                             </Border>
 
                             <ItemsRepeater
+                                Width="395"
                                 Margin="0,5,0,5"
                                 ItemTemplate="{StaticResource StringDataTemplateColor}"
                                 ItemsSource="{x:Bind Children}">
                                 <ItemsRepeater.Layout>
-                                    <StackLayout Orientation="Horizontal" />
+                                    <UniformGridLayout MinItemWidth="77" Orientation="Horizontal" />
                                 </ItemsRepeater.Layout>
                             </ItemsRepeater>
                         </StackPanel>

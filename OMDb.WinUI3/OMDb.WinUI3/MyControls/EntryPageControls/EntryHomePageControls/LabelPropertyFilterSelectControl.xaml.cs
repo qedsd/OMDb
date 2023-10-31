@@ -57,8 +57,8 @@ namespace OMDb.WinUI3.MyControls
         }
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            GridView_Current_LPEZCollection.ItemsSource = ((LabelPropertyTree)e.AddedItems[0]).Children;
-            CallChanged();
+            GridView_Current_LPEZCollection.ItemsSource = ((LabelPropertyTree)e.AddedItems[0]).Children as ObservableCollection<Models.LabelPropertyTree>;
+            //CallChanged();
         }
 
 
@@ -84,6 +84,10 @@ namespace OMDb.WinUI3.MyControls
             set => SetValue(CheckChangedCommandProperty, value);
         }
 
-
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+            CallChanged();
+        }
     }
 }

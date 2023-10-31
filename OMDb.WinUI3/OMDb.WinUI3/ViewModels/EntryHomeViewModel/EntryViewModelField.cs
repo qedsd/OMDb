@@ -122,17 +122,31 @@ namespace OMDb.WinUI3.ViewModels
                 ConfirmSuggest(value.Value as string);
             }
         }
-        private bool isFilterLabel = false;
+        private bool isFilterLabelClass = false;
         /// <summary>
         /// 是否按选择的标签进行筛选
         /// </summary>
-        public bool IsFilterLabel
+        public bool IsFilterLabelClass
         {
-            get => isFilterLabel;
+            get => isFilterLabelClass;
             set
             {
-                SetProperty(ref isFilterLabel, value);
-                _ = UpdateEntryListAsync();
+                SetProperty(ref isFilterLabelClass, value);
+                UpdateEntryListAsync();
+            }
+        }
+
+        private bool isFilterLabelProperty = false;
+        /// <summary>
+        /// 是否按选择的标签进行筛选
+        /// </summary>
+        public bool IsFilterLabelProperty
+        {
+            get => isFilterLabelProperty;
+            set
+            {
+                SetProperty(ref isFilterLabelProperty, value);
+                UpdateEntryListAsync();
             }
         }
 
