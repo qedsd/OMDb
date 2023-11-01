@@ -17,8 +17,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <coverters:LPIdToLPNameConverter x:Key="LPIdToLPNameConverter" />
-        <coverters:LPIdToReadOnlyConverter x:Key="LPIdToReadOnlyConverter" />
+        <coverters:LPIDToLPNameConverter x:Key="LPIDToLPNameConverter" />
+        <coverters:LPIDToReadOnlyConverter x:Key="LPIDToReadOnlyConverter" />
     </Page.Resources>
     <Grid Width="500" Height="200">
         <Grid.ColumnDefinitions>

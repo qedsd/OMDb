@@ -312,7 +312,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    result.ParentId = parent.LabelClass.LabelClassDb.LCId;
+                    result.ParentId = parent.LabelClass.LabelClassDb.LCID;
                     Core.Services.LabelClassService.AddLabel(result);
                     parent.Children.Add(new LabelClassTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -337,7 +337,7 @@ namespace OMDb.WinUI3.ViewModels
                     else
                     {
                         Core.Services.LabelClassService.UpdateLabel(result);
-                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCId == result.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCID == result.ParentId);
                         if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t.LabelClass.LabelClassDb == result);
@@ -387,10 +387,10 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.LabelClass.LabelClassDb.Name}标签"))
                 {
-                    Core.Services.LabelClassService.RemoveLabel(item.LabelClass.LabelClassDb.LCId);
+                    Core.Services.LabelClassService.RemoveLabel(item.LabelClass.LabelClassDb.LCID);
                     if (item.LabelClass.LabelClassDb.ParentId != null)//子类
                     {
-                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCId == item.LabelClass.LabelClassDb.ParentId);
+                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCID == item.LabelClass.LabelClassDb.ParentId);
                         if (parent != null)
                         {
                             var removeWhere = parent.Children.FirstOrDefault(t => t == item);

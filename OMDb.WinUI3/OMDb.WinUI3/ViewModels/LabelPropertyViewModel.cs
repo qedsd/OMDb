@@ -76,7 +76,7 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     foreach (var lp_Baba in root)
                     {
-                        dicLpdbs.Add(lp_Baba.LPId, new LabelPropertyTree(lp_Baba));
+                        dicLpdbs.Add(lp_Baba.LPID, new LabelPropertyTree(lp_Baba));
                     }
                 }
                 foreach (var lp in lpdbs)
@@ -103,16 +103,16 @@ namespace OMDb.WinUI3.ViewModels
         public async void Init(string parentId)
         {
             var lpdbs = await Core.Services.LabelPropertyService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
-            var lkids = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, parentId);
+            var lkids = Core.Services.LabelPropertyService.GetLinkId(DbSelectorService.dbCurrentId, parentId);
             if (lpdbs != null)
             {
                 Dictionary<string, LabelPropertyTree> dicLpdbs = new Dictionary<string, LabelPropertyTree>();
-                var root = lpdbs.Where(p => p.ParentId == null).Where(a=> lkids.Contains(a.LPId)).ToList();
+                var root = lpdbs.Where(p => p.ParentId == null).Where(a=> lkids.Contains(a.LPID)).ToList();
                 if (root != null)
                 {
                     foreach (var lp_Baba in root)
                     {
-                        dicLpdbs.Add(lp_Baba.LPId, new LabelPropertyTree(lp_Baba));
+                        dicLpdbs.Add(lp_Baba.LPID, new LabelPropertyTree(lp_Baba));
                     }
                 }
                 foreach (var lp in lpdbs)

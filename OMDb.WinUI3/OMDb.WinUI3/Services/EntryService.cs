@@ -125,14 +125,14 @@ namespace OMDb.WinUI3.Services
             if (ed.Labels?.Count != 0)
             {
                 List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.Labels.Count);
-                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCId = p.LCId, DbId = ed.Entry.DbId }));
+                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCId = p.LCID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
                 Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }
             if (ed.Lpdbs?.Count != 0)
             {
                 List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(ed.Lpdbs.Count);
-                ed.Lpdbs.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPId = p.LPId, DbId = ed.Entry.DbId }));
+                ed.Lpdbs.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPID = p.LPID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelPropertyService.ClearEntryLabel(ed.Entry.EntryId);//清空词条属性标签
                 Core.Services.LabelPropertyService.AddEntryLabel(entryLabelPropertyDbs);//添加词条属性标签
             }

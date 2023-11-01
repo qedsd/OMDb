@@ -113,7 +113,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => labelIds.Contains(p.LPId)).ToList().Select(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => labelIds.Contains(p.LPID)).ToList().Select(p => p.EntryId).ToList();
                 return all.ToHashSet().ToList();
             }
             else
@@ -165,7 +165,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var labelIds = await DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LPId).ToListAsync();
+                var labelIds = await DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LPID).ToListAsync();
                 if (labelIds.Count != 0) return await GetLabelsAsync(labelIds);
                 else return null;
             }
@@ -177,7 +177,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LPId).ToList();
+                return DbService.DCDb.Queryable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LPID).ToList();
             }
             else
             {
@@ -229,9 +229,9 @@ namespace OMDb.Core.Services
         }
         public static void AddLabel(LabelPropertyDb labelDb)
         {
-            if (string.IsNullOrEmpty(labelDb.LPId))
+            if (string.IsNullOrEmpty(labelDb.LPID))
             {
-                labelDb.LPId = Guid.NewGuid().ToString();
+                labelDb.LPID = Guid.NewGuid().ToString();
             }
             DbService.DCDb.Insertable(labelDb).ExecuteCommand();
         }
@@ -249,9 +249,9 @@ namespace OMDb.Core.Services
             //清空关联的子分类
             //DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
             DbService.DCDb.Deleteable<LabelPropertyDb>().Where(p => lpids.Contains(p.ParentId)).ExecuteCommand();
-            DbService.DCDb.Deleteable<EntryLabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPId));//EntryLabelDb表是没有主键的，不能用in
-            DbService.DCDb.Deleteable<LabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPIdA));
-            DbService.DCDb.Deleteable<LabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPIdB));
+            DbService.DCDb.Deleteable<EntryLabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPID));//EntryLabelDb表是没有主键的，不能用in
+            DbService.DCDb.Deleteable<LabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPIDA));
+            DbService.DCDb.Deleteable<LabelPropertyLinkDb>().Where(p => lpids.Contains(p.LPIDB));
         }
 
         public static void UpdateLabel(LabelPropertyDb labelDb)
@@ -267,20 +267,20 @@ namespace OMDb.Core.Services
                 lst_lplk.Add(new LabelPropertyLinkDb()
                 {
                     DbCenterId = DbCenterId,
-                    LPIdA = lpid,
-                    LPIdB = item
+                    LPIDA = lpid,
+                    LPIDB = item
                 });
 
             }
             DbService.DCDb.Insertable(lst_lplk).ExecuteCommand();
         }
 
-        public static List<string> GetLKId(string DbCenterId, string lpid)
+        public static List<string> GetLinkId(string DbCenterId, string lpid)
         {
             var sb1 = new StringBuilder();
             var sb2 = new StringBuilder();
-            sb1.AppendLine($@"select LPIdA from LabelPropertyLKDb where LPIdB='{lpid}' and DbCenterId='{DbCenterId}'");
-            sb2.AppendLine($@"select LPIdB from LabelPropertyLKDb where LPIdA='{lpid}' and DbCenterId='{DbCenterId}'");
+            sb1.AppendLine($@"select LPIDA from LabelPropertyLKDb where LPIDB='{lpid}' and DbCenterId='{DbCenterId}'");
+            sb2.AppendLine($@"select LPIDB from LabelPropertyLKDb where LPIDA='{lpid}' and DbCenterId='{DbCenterId}'");
             var lst1 = DbService.DCDb.Ado.SqlQuery<string>(sb1.ToString());
             var lst2 = DbService.DCDb.Ado.SqlQuery<string>(sb2.ToString());
             lst1.AddRange(lst2);
@@ -296,7 +296,7 @@ namespace OMDb.Core.Services
         /// <returns></returns>
         public static void ClearLabelPropertyLK(string DbCenterId, string lpid)
         {
-            DbService.DCDb.Deleteable<LabelPropertyLinkDb>(p => p.LPIdA == lpid || p.LPIdB == lpid).ExecuteCommand();
+            DbService.DCDb.Deleteable<LabelPropertyLinkDb>(p => p.LPIDA == lpid || p.LPIDB == lpid).ExecuteCommand();
         }
 
 

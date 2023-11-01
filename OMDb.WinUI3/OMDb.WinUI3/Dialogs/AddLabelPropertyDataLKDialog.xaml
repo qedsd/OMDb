@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="OMDb.WinUI3.Dialogs.AddLabelPropertyDataLKDialog"
+    x:Class="OMDb.WinUI3.Dialogs.EditLabelPropertyDataLinkDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -17,8 +17,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <coverters:LPIdToLPNameConverter x:Key="LPIdToLPNameConverter" />
-        <coverters:LPIdToReadOnlyConverter x:Key="LPIdToReadOnlyConverter" />
+        <coverters:LPIDToLPNameConverter x:Key="LPIDToLPNameConverter" />
+        <coverters:LPIDToReadOnlyConverter x:Key="LPIDToReadOnlyConverter" />
     </Page.Resources>
     <Grid Width="1000" Height="300">
         <Grid.ColumnDefinitions>
@@ -112,11 +112,11 @@
                                     <TextBox
                                         Width="80"
                                         Margin="20,0,10,0"
-                                        IsReadOnly="{x:Bind ParentId, Converter={StaticResource LPIdToReadOnlyConverter}}"
-                                        Text="{x:Bind ParentId, Converter={StaticResource LPIdToLPNameConverter}}" />
+                                        IsReadOnly="{x:Bind ParentId, Converter={StaticResource LPIDToReadOnlyConverter}}"
+                                        Text="{x:Bind ParentId, Converter={StaticResource LPIDToLPNameConverter}}" />
                                     <TextBox
                                         Width="140"
-                                        IsReadOnly="{x:Bind LPId, Converter={StaticResource LPIdToReadOnlyConverter}}"
+                                        IsReadOnly="{x:Bind LPID, Converter={StaticResource LPIDToReadOnlyConverter}}"
                                         Text="{x:Bind Name, Mode=TwoWay}" />
                                 </StackPanel>
                             </DataTemplate>

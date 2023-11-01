@@ -66,7 +66,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return await DbService.DCDb.Queryable<LabelClassDb>().FirstAsync(p => p.LCId == labelId);
+                return await DbService.DCDb.Queryable<LabelClassDb>().FirstAsync(p => p.LCID == labelId);
             }
             else
             {
@@ -240,9 +240,9 @@ namespace OMDb.Core.Services
         }
         public static void AddLabel(LabelClassDb labelDb)
         {
-            if (string.IsNullOrEmpty(labelDb.LCId))
+            if (string.IsNullOrEmpty(labelDb.LCID))
             {
-                labelDb.LCId = Guid.NewGuid().ToString();
+                labelDb.LCID = Guid.NewGuid().ToString();
             }
             DbService.DCDb.Insertable(labelDb).ExecuteCommand();
         }

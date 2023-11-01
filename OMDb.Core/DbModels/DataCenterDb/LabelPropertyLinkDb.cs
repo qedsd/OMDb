@@ -17,7 +17,7 @@ namespace OMDb.Core.DbModels
         /// 词条所在的dbid
         /// </summary>
         public string DbCenterId { get; set; }
-        public string LPIdA { get; set; }
-        public string LPIdB { get; set; }
+        public string LPIDA { get; set; }
+        public string LPIDB { get; set; }
     }
 }

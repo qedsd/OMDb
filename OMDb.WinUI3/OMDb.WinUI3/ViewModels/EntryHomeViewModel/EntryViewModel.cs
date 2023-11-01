@@ -240,7 +240,7 @@ namespace OMDb.WinUI3.ViewModels
                             var l = Labels.Where(p => p.IsChecked).ToList();
                             if (l != null && l.Count != 0)
                             {
-                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelClassDb.LCId)) != null;
+                                return l.FirstOrDefault(p => labelIds.Contains(p.LabelClassDb.LCID)) != null;
                             }
                         }
                     }
@@ -255,13 +255,13 @@ namespace OMDb.WinUI3.ViewModels
             foreach (var labelClass1st in this.LabelClassTrees)
             {
                 if (labelClass1st.LabelClass.IsChecked)
-                    labelFilterList.Add(labelClass1st.LabelClass.LabelClassDb.LCId);
+                    labelFilterList.Add(labelClass1st.LabelClass.LabelClassDb.LCID);
 
 
                 foreach (var lableClass2nd in labelClass1st.Children)
                 {
                     if (lableClass2nd.LabelClass.IsChecked)
-                        labelFilterList.Add(lableClass2nd.LabelClass.LabelClassDb.LCId);
+                        labelFilterList.Add(lableClass2nd.LabelClass.LabelClassDb.LCID);
                 }
             }
             return labelFilterList;
@@ -274,13 +274,13 @@ namespace OMDb.WinUI3.ViewModels
             foreach (var labelProperty1st in this.LabelPropertyTrees)
             {
                 if (labelProperty1st.LabelProperty.IsChecked)
-                    labelFilterList.Add(labelProperty1st.LabelProperty.LPDb.LPId);
+                    labelFilterList.Add(labelProperty1st.LabelProperty.LPDb.LPID);
 
 
                 foreach (var lableClass2nd in labelProperty1st.Children)
                 {
                     if (lableClass2nd.LabelProperty.IsChecked)
-                        labelFilterList.Add(lableClass2nd.LabelProperty.LPDb.LPId);
+                        labelFilterList.Add(lableClass2nd.LabelProperty.LPDb.LPID);
                 }
             }
             return labelFilterList;

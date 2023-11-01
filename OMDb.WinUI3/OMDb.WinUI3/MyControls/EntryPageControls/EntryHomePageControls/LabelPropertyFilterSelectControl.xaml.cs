@@ -92,7 +92,7 @@ namespace OMDb.WinUI3.MyControls
             {
                 foreach (var lpt2ndt in lpt1st.Children)
                 {
-                    if (lpt2ndt.LabelProperty.LPDb.LPId == ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.LPDb.LPId)
+                    if (lpt2ndt.LabelProperty.LPDb.LPID == ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.LPDb.LPID)
                         lpt2ndt.LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
                 }
             }

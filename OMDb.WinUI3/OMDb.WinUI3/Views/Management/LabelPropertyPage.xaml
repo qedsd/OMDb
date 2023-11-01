@@ -68,7 +68,7 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Edit">
+                <AppBarButton Icon="Edit" Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="Left">
                             <MenuFlyoutItem Click="Edit_Property_Click" Text="Edit Property" />
@@ -76,7 +76,7 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Delete">
+                <AppBarButton Icon="Delete" Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
                             <MenuFlyoutItem Click="Delete_Property_Click" Text="Delete Property" />
@@ -84,7 +84,7 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Link">
+                <AppBarButton Icon="Link" Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
                             <MenuFlyoutItem Click="ADD_PropertyLink_Click" Text="Add Property Link" />
@@ -152,14 +152,34 @@
                         </i:Interaction.Behaviors>-->
                         <GridView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
-                                <Border BorderBrush="CadetBlue" BorderThickness="0">
-                                    <TextBlock
-                                        Width="110"
-                                        Margin="10,10,10,10"
-                                        HorizontalAlignment="Center"
-                                        Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
-                                        TextAlignment="Center" />
-                                </Border>
+                                <Grid>
+                                    <Grid.ContextFlyout>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem
+                                                Click="ADD_PropertyDataLink_Click_Right"
+                                                Icon="Link"
+                                                Text="关联" />
+                                            <MenuFlyoutItem
+                                                Click="Edit_PropertyData_Click_Right"
+                                                Icon="Edit"
+                                                Text="编辑" />
+                                            <MenuFlyoutItem
+                                                Click="Delete_PropertyData_Click_Right"
+                                                Icon="Delete"
+                                                Text="删除" />
+                                        </MenuFlyout>
+                                    </Grid.ContextFlyout>
+                                    <Border BorderBrush="CadetBlue" BorderThickness="0">
+
+                                        <TextBlock
+                                            Width="110"
+                                            Margin="10,10,10,10"
+                                            HorizontalAlignment="Center"
+                                            Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
+                                            TextAlignment="Center" />
+
+                                    </Border>
+                                </Grid>
                             </DataTemplate>
                         </GridView.ItemTemplate>
                     </GridView>

@@ -6,7 +6,7 @@ using System;
 
 namespace OMDb.WinUI3.Converters
 {
-    public sealed class LPIdToLPNameConverter : IValueConverter
+    public sealed class LPIDToLPNameConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, string language)

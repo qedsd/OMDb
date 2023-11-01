@@ -107,7 +107,7 @@ namespace OMDb.WinUI3.Services
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.LCId, new LabelClassTree(label));
+                        labelsDb.Add(label.LCID, new LabelClassTree(label));
                     }
                 }
                 foreach (var label in labels)
@@ -140,7 +140,7 @@ namespace OMDb.WinUI3.Services
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.LPId, new LabelPropertyTree(label));
+                        labelsDb.Add(label.LPID, new LabelPropertyTree(label));
                     }
                 }
                 foreach (var label in labels)

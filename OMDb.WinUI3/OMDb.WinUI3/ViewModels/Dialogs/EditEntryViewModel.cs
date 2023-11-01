@@ -159,7 +159,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 foreach (var lp in Label_Property)
                 {
-                    if (!lpe.LPS.Select(a => a.LPDb.LPId).Contains(lp.LPDb.LPId))
+                    if (!lpe.LPS.Select(a => a.LPDb.LPID).Contains(lp.LPDb.LPID))
                     {
                         lp.IsHiden = false;
                     }
@@ -171,14 +171,14 @@ namespace OMDb.WinUI3.ViewModels
                 var lpAllParentLinks = new List<string>();//所有需要隐藏的标签 属性标题 初始化
                 foreach (var lpChecked in lpsChecked)
                 {
-                    var lpParentLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性数据（父）的关联信息
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性数据（父）的关联信息
                     lpAllParentLinks = lpAllParentLinks.Union(lpParentLinks).Distinct().ToList();
                 }
                 foreach (var lp in lpAll)
                 {
                     if (lpAllParentLinks.Contains(lp.ParentId))
                     {
-                        Label_Property.Where(a => a.LPDb.LPId == lp.LPId).FirstOrDefault().IsHiden = true;
+                        Label_Property.Where(a => a.LPDb.LPID == lp.LPID).FirstOrDefault().IsHiden = true;
                     }
                 }
                 #endregion
@@ -186,8 +186,8 @@ namespace OMDb.WinUI3.ViewModels
                 #region 显示关联数据
                 foreach (var lpChecked in lpsChecked)
                 {
-                    var lpDataLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.LPId);//获取该标签属性数据（子）的关联信息
-                    var lpParentLinks = Core.Services.LabelPropertyService.GetLKId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性标题（父）的关联信息
+                    var lpDataLinks = Core.Services.LabelPropertyService.GetLinkId(DbSelectorService.dbCurrentId, lpChecked.LPDb.LPID);//获取该标签属性数据（子）的关联信息
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkId(DbSelectorService.dbCurrentId, lpChecked.LPDb.ParentId);//获取该标签属性标题（父）的关联信息
 
                     //该数据没有数据关联，显示所有父级关联的数据
                     if (lpDataLinks.Count == 0)
@@ -202,11 +202,11 @@ namespace OMDb.WinUI3.ViewModels
                     }
 
 
-                    var lpChildren = lpAll.Where(a => lpParentLinks.Contains(a.ParentId)).Where(a => lpDataLinks.Contains(a.LPId));
+                    var lpChildren = lpAll.Where(a => lpParentLinks.Contains(a.ParentId)).Where(a => lpDataLinks.Contains(a.LPID));
 
                     foreach (var lpdb in lpChildren)
                     {
-                        Label_Property.Where(a => a.LPDb.LPId == lpdb.LPId).FirstOrDefault().IsHiden = false;
+                        Label_Property.Where(a => a.LPDb.LPID == lpdb.LPID).FirstOrDefault().IsHiden = false;
                     }
                 }
                 #endregion

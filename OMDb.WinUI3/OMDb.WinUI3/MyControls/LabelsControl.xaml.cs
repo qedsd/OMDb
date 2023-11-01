@@ -178,10 +178,10 @@ namespace OMDb.WinUI3.MyControls
                     AllLabels = labels.Select(p => new Models.LabelClass(p)).ToList();
                     if (labels?.Count != 0)
                     {
-                        var dic = LabelClasses.ToDictionary(p => p.LabelClassDb.LCId);
+                        var dic = LabelClasses.ToDictionary(p => p.LabelClassDb.LCID);
                         foreach (var label in AllLabels)
                         {
-                            if (dic.ContainsKey(label.LabelClassDb.LCId))
+                            if (dic.ContainsKey(label.LabelClassDb.LCID))
                             {
                                 label.IsChecked = true;
                             }
@@ -208,12 +208,12 @@ namespace OMDb.WinUI3.MyControls
                 {
                     if (LabelClass.LabelClassDb.ParentId == null)
                     {
-                        var lc = labelClassSelectControl.LabelClassTrees.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCId == LabelClass.LabelClassDb.LCId).LabelClass.IsChecked = true;
+                        var lc = labelClassSelectControl.LabelClassTrees.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCID == LabelClass.LabelClassDb.LCID).LabelClass.IsChecked = true;
                     }
                     else
                     {
-                        var lc = labelClassSelectControl.LabelClassTrees.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCId == LabelClass.LabelClassDb.ParentId);
-                        lc.Children.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCId == LabelClass.LabelClassDb.LCId).LabelClass.IsChecked = true;
+                        var lc = labelClassSelectControl.LabelClassTrees.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCID == LabelClass.LabelClassDb.ParentId);
+                        lc.Children.FirstOrDefault(a => a.LabelClass.LabelClassDb.LCID == LabelClass.LabelClassDb.LCID).LabelClass.IsChecked = true;
                     }
                 }
                 // 将分类选择控件放置在第一行
@@ -261,10 +261,10 @@ namespace OMDb.WinUI3.MyControls
             AddLabelFlyout.Hide();
             if (confirm)
             {
-                var dic = labels.ToDictionary(p => p.LabelClassDb.LCId);
+                var dic = labels.ToDictionary(p => p.LabelClassDb.LCID);
                 foreach (var label in AllLabels)
                 {
-                    if (dic.TryGetValue(label.LabelClassDb.LCId, out var value))
+                    if (dic.TryGetValue(label.LabelClassDb.LCID, out var value))
                     {
                         label.IsChecked = value.IsChecked;
                     }

@@ -94,10 +94,10 @@ namespace OMDb.WinUI3.Services
                 var elp = result_EntryLabelProperty.Where(a => a.EntryId == Convert.ToString(eid));
                 foreach (var lp in label_lp)
                 {
-                    var label_Property_Child = label_lp.Where(a => a.ParentId == lp.LPId);
+                    var label_Property_Child = label_lp.Where(a => a.ParentId == lp.LPID);
                     foreach (var lpc in label_Property_Child)
                     {
-                        if (elp.Select(a => a.LPId).Contains(lpc.LPId))
+                        if (elp.Select(a => a.LPID).Contains(lpc.LPID))
                         {
                             if (row[lp.Name].ToString().Length > 0)
                                 row[lp.Name] += "/";
@@ -108,7 +108,7 @@ namespace OMDb.WinUI3.Services
                 //分類
                 foreach (var lc in label_lc)
                 {
-                    if (elc.Select(a => a.LCId).Contains(lc.LCId))
+                    if (elc.Select(a => a.LCId).Contains(lc.LCID))
                     {
                         if (row["Classification"].ToString().Length > 0) row["Classification"] += "/";
                         row["Classification"] += lc.Name;
@@ -294,7 +294,7 @@ namespace OMDb.WinUI3.Services
                         var lpdb_Yeye = lpdbs_Yeye.Where(a => a.Name.Equals(item.ColumnName));
                         if (lpdb_Yeye.Count() > 0)
                         {
-                            var lpdbs_Baba = lpdbs.Where(a => a.ParentId == lpdb_Yeye.FirstOrDefault().LPId);
+                            var lpdbs_Baba = lpdbs.Where(a => a.ParentId == lpdb_Yeye.FirstOrDefault().LPID);
                             var lpdbName = Convert.ToString(row[n]);
                             if (string.IsNullOrWhiteSpace(lpdbName))
                                 continue;
@@ -303,17 +303,17 @@ namespace OMDb.WinUI3.Services
                             {
                                 var lpdb = new LabelPropertyDb()
                                 {
-                                    LPId = Guid.NewGuid().ToString(),
+                                    LPID = Guid.NewGuid().ToString(),
                                     Name = lpdbName,
                                     DbCenterId = Settings.DbSelectorService.dbCurrentId,
-                                    ParentId = lpdb_Yeye.FirstOrDefault().LPId,
+                                    ParentId = lpdb_Yeye.FirstOrDefault().LPID,
                                 };
                                 lpdbs.Add(lpdb);
                                 Core.Services.LabelPropertyService.AddLabel(lpdb);
                                 var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LPId = lpdb.LPId,
+                                    LPID = lpdb.LPID,
                                     EntryId = eid,
                                 };
                                 Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);
@@ -322,11 +322,11 @@ namespace OMDb.WinUI3.Services
                             //已存在 属性_儿子
                             else
                             {
-                                var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPId;
+                                var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPID;
                                 var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LPId = lpid,
+                                    LPID = lpid,
                                     EntryId = eid,
                                 };
                                 Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);

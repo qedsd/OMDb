@@ -77,7 +77,7 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     var lp = new Models.LabelProperty(item);
                     //根据词条&属性数据の关联关系 设置 □√
-                    if (lpids.Count > 0 && lpids.Contains(item.LPId))
+                    if (lpids.Count > 0 && lpids.Contains(item.LPID))
                         lp.IsChecked = true;
                     VM.Label_Property.Add(lp);
                 }
@@ -107,7 +107,7 @@ namespace OMDb.WinUI3.Dialogs
                         var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
                         lbc.StrSelectItem.Text = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPID == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
                         n++;
                         if (lstBaba.Count() == n - 2)
@@ -127,7 +127,7 @@ namespace OMDb.WinUI3.Dialogs
                         //属性 -> 属性
                         var lbc = new LabelsPropertyControl();
                         lbc.Name = item.LPDb.Name;
-                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPId == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
+                        lbc.LabelPropertyCollection = VM.Label_Property.Where(a => a.LPDb.ParentId.NotNullAndEmpty()).Where(a => item.LPDb.LPID == a.LPDb.ParentId).ToObservableCollection<LabelProperty>();
                         stack.Children.Add(lbc);
                         stp.Children.Add(stack);
                         n++;
@@ -273,8 +273,8 @@ namespace OMDb.WinUI3.Dialogs
                 #endregion
 
                 #region 词条关联属性标签数据 （1.关联原有的属性标签数据 2.新增属性标签数据并关联)
-                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
-                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
+                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
+                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
                 foreach (var item in lpdb_new)
                     Core.Services.LabelPropertyService.AddLabel(item);
                 if (lpdb_original.Count > 0)
@@ -372,7 +372,7 @@ namespace OMDb.WinUI3.Dialogs
                         var lpdb = new LabelPropertyDb()
                         {
                             Name = item,
-                            ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPId,
+                            ParentId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.LPID,
                             DbCenterId = lstBaba.Where(a => a.LPDb.Name == ei.Key).FirstOrDefault().LPDb.DbCenterId
                         };
                         var lp = new LabelProperty(lpdb);
