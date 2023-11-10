@@ -208,7 +208,7 @@ namespace OMDb.WinUI3.Models
                     if (value != null)
                     {
                         List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(labels.Count);
-                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = Entry.EntryId, LCId = p.LCID, DbId = Entry.DbId }));
+                        labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = Entry.EntryId, LCID = p.LCID, DbId = Entry.DbId }));
                         Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });

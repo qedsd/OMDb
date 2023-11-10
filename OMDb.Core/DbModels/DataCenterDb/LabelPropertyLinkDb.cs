@@ -8,15 +8,11 @@ using System.Threading.Tasks;
 namespace OMDb.Core.DbModels
 {
     /// <summary>
-    /// 关联词条与标签
+    /// 关联属性标签关联
     /// </summary>
-    [SugarTable("LabelPropertyLKDb")]
+    [SugarTable("LabelPropertyLink")]
     public class LabelPropertyLinkDb
     {
-        /// <summary>
-        /// 词条所在的dbid
-        /// </summary>
-        public string DbCenterId { get; set; }
         public string LPIDA { get; set; }
         public string LPIDB { get; set; }
     }

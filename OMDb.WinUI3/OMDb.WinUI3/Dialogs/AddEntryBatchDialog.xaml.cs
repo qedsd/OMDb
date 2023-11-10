@@ -200,7 +200,7 @@ namespace OMDb.WinUI3.Dialogs
 
         private void LoadLabelControl()
         {
-            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
             var lst_label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
             var lcids = new List<string>();//分类标签

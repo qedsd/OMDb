@@ -101,17 +101,12 @@ namespace OMDb.WinUI3.MyControls
             //var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
-            var outputPath = await Helpers.PickHelper.PickSaveFileAsync(".xls");
-            if (outputPath== null )
-            {
-                InfoHelper.ShowError("導出路徑有誤！");
-            }
-            else
-            {
-                /*if (Directory.Exists(outputPath.Path)&&!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息", "是否覆蓋？"))
-                    return;*/
-                Services.ExcelService.ExportExcel(outputPath.Path, enrtyStorage);
-            }
+            var outputPath = await Helpers.PickHelper.PickSaveFileAsync($"{dbId}.xls");
+            if (outputPath == null) return;
+            string directoryPath = Path.GetDirectoryName(outputPath.Path);
+            if (!Directory.Exists(directoryPath)) InfoHelper.ShowError("導出路徑有誤！");
+            else Services.ExcelService.ExportExcel(outputPath.Path, enrtyStorage);
+            /*if (Directory.Exists(outputPath.Path)&&!await Dialogs.QueryDialog.ShowDialog("該路徑已存在詞條導出信息", "是否覆蓋？"))return;*/
 
         }
 
@@ -129,10 +124,8 @@ namespace OMDb.WinUI3.MyControls
             var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
             var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             var inputPath = await Helpers.PickHelper.PickFileAsync();
-            if (inputPath.Path != null&& await Dialogs.QueryDialog.ShowDialog("確認", "確認導入？"))
-            {
+            if (inputPath.Path != null && await Dialogs.QueryDialog.ShowDialog("確認", "確認導入？"))
                 Services.ExcelService.ImportExcel(inputPath.Path, enrtyStorage);
-            }
         }
 
 

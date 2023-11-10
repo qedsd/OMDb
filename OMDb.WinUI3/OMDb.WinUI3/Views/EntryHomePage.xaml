@@ -15,7 +15,8 @@
     <Grid Margin="{StaticResource MediumLeftRightMargin}">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Text="刷新" />
+                <MenuFlyoutItem Command="{x:Bind VM.AddEntryCommand}" Icon="Add" Text="新增" />
+                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" Text="刷新" />
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid.RowDefinitions>

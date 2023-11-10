@@ -9,7 +9,7 @@ namespace OMDb.Core.Utils.Extensions
 {
     public static class IEnumerableExtension
     {
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> ls)
+        public static HashSet<T> ToHashSetExt<T>(this IEnumerable<T> ls)
         {
             if (ls is null)
             {

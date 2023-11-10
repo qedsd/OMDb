@@ -126,7 +126,7 @@
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		  <SubType>Designer</SubType>
 		</Page>
-		<Page Update="Dialogs\AddLabelPropertyDataLKDialog.xaml">
+		<Page Update="Dialogs\EditLabelPropertyDataLinkDialog.xaml">
 		  <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 		  <SubType>Designer</SubType>
 		</Page>

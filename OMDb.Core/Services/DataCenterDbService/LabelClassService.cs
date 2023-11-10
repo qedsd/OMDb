@@ -115,7 +115,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCId)).ToList().Select(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCID)).ToList().Select(p => p.EntryId).ToList();
                 return all.ToHashSet().ToList();
             }
             else
@@ -134,7 +134,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.LCId == labelId).ToList().Select(p => p.EntryId).ToList();
+                var all = DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.LCID == labelId).ToList().Select(p => p.EntryId).ToList();
                 return all.ToHashSet().ToList();
             }
             else
@@ -169,7 +169,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                var labelIds = await DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToListAsync();
+                var labelIds = await DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCID).ToListAsync();
                 if (labelIds.Count != 0)
                 {
                     return await GetLabelsAsync(labelIds);
@@ -188,7 +188,7 @@ namespace OMDb.Core.Services
         {
             if (IsLocalDbValid())
             {
-                return DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCId).ToList();
+                return DbService.DCDb.Queryable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entryId).Select(p => p.LCID).ToList();
             }
             else
             {
@@ -257,7 +257,7 @@ namespace OMDb.Core.Services
             //清空关联的子分类
             //DbService.LocalDb.Updateable<LabelDb>().SetColumns(p => p.ParentId == null).Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
             DbService.DCDb.Deleteable<LabelClassDb>().Where(p => labelIds.Contains(p.ParentId)).ExecuteCommand();
-            DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCId));//EntryLabelLKDb表是没有主键的，不能用in
+            DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCID));//EntryLabelLKDb表是没有主键的，不能用in
         }
 
         public static void UpdateLabel(LabelClassDb labelDb)

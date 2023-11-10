@@ -40,7 +40,7 @@ namespace OMDb.WinUI3.Dialogs
         public EditLabelPropertyDataLinkDialog(LabelPropertyDb labelPropertyDb)
         {
             this.InitializeComponent();
-            var linkIdList=Core.Services.LabelPropertyService.GetLinkId(DbSelectorService.dbCurrentId, labelPropertyDb.LPID);
+            var linkIdList=Core.Services.LabelPropertyService.GetLinkId(labelPropertyDb.LPID);
             var linkDbList=Core.Services.LabelPropertyService.GetLabels(linkIdList);
             linkDbList.ForEach(a => VM.DtData.Add(a));
         }
@@ -58,7 +58,7 @@ namespace OMDb.WinUI3.Dialogs
                 return null;   
 
             List<string> result = new List<string>();
-            //数据库新增属性&属性数据 合并返回
+            //数据库新增属性标签数据 合并返回
             foreach (var item in content.VM.DtData)
             {
                 if (!item.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero())
@@ -70,21 +70,21 @@ namespace OMDb.WinUI3.Dialogs
                 if (item.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())//属性标签数据名称为空
                     continue;
 
-                //手动输入的属性数据
+                //手工输入的数据
 
                 var childs = content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children;
                 var lp_repeat = childs.Where(a => a.LabelProperty.LPDb.Name.Equals(item.Name));
-                //手输的属性数据是原有的：
+                //手工输入的数据名称已存在
                 if (lp_repeat.Count() > 0)
                 {
                     result.Add(lp_repeat.FirstOrDefault().LabelProperty.LPDb.LPID);
                     continue;
                 }
 
-                //手输新增
+                //手输新增，插入属性标签数据
                 item.LPID = Guid.NewGuid().ToString();
                 item.DbCenterId = DbSelectorService.dbCurrentId;
-                Core.Services.LabelPropertyService.AddLabel(item);
+                Core.Services.LabelPropertyService.AddLabelProperty(item);
                 var lpt = new LabelPropertyTree(item);
                 content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
                 result.Add(item.LPID);

@@ -125,7 +125,7 @@ namespace OMDb.WinUI3.Services
             if (ed.Labels?.Count != 0)
             {
                 List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.Labels.Count);
-                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCId = p.LCID, DbId = ed.Entry.DbId }));
+                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCID = p.LCID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
                 Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }

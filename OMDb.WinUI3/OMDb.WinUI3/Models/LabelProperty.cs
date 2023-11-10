@@ -26,12 +26,12 @@ namespace OMDb.WinUI3.Models
             get => _isHiden;
             set => SetProperty(ref _isHiden, value);
         }
-        public LabelProperty(Core.DbModels.LabelPropertyDb lpdb)
+        public LabelProperty(Core.DbModels.LabelPropertyDb labelPropertyDb)
         {
-            LPDb = lpdb;
+            LPDb = labelPropertyDb;
             _isChecked = false;
             _isHiden = false;
-            _name=lpdb.Name;
+            _name=labelPropertyDb.Name;
         }
 
         private string _name;

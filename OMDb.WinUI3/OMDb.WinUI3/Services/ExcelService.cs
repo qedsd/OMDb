@@ -41,7 +41,7 @@ namespace OMDb.WinUI3.Services
 
             //数据库查询 属性标签&分类标签
             var label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
 
             //标签&词条 关联关系
             var result_EntryLabelClass = Core.Services.EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
@@ -108,7 +108,7 @@ namespace OMDb.WinUI3.Services
                 //分類
                 foreach (var lc in label_lc)
                 {
-                    if (elc.Select(a => a.LCId).Contains(lc.LCID))
+                    if (elc.Select(a => a.LCID).Contains(lc.LCID))
                     {
                         if (row["Classification"].ToString().Length > 0) row["Classification"] += "/";
                         row["Classification"] += lc.Name;
@@ -188,7 +188,7 @@ namespace OMDb.WinUI3.Services
             //基本信息
             List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "分類", "存儲模式", "存儲地址", "詞條路徑", "封面路徑" };
             //已有屬性
-            var lpdbs = Core.Services.LabelPropertyService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
+            var lpdbs = Core.Services.LabelPropertyService.GetAllLabelProperty(Settings.DbSelectorService.dbCurrentId);
             var lpdbs_Yeye = lpdbs.Where(a => a.Level == 1);
 
             foreach (DataColumn item in dt.Columns)
@@ -201,7 +201,7 @@ namespace OMDb.WinUI3.Services
                         DbCenterId = Settings.DbSelectorService.dbCurrentId,
                         Level = 1,
                     };
-                    Core.Services.LabelPropertyService.AddLabel(lpdb);
+                    Core.Services.LabelPropertyService.AddLabelProperty(lpdb);
                     lpdbs.Add(lpdb);
                 }
             }
@@ -309,7 +309,7 @@ namespace OMDb.WinUI3.Services
                                     ParentId = lpdb_Yeye.FirstOrDefault().LPID,
                                 };
                                 lpdbs.Add(lpdb);
-                                Core.Services.LabelPropertyService.AddLabel(lpdb);
+                                Core.Services.LabelPropertyService.AddLabelProperty(lpdb);
                                 var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,

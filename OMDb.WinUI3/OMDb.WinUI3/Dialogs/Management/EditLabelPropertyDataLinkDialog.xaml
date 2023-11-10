@@ -37,7 +37,7 @@
                 <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}">
                     <i:Interaction.Behaviors>
                         <Core:EventTriggerBehavior EventName="SelectionChanged">
-                            <Core:InvokeCommandAction Command="{x:Bind VM.Property_SelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />
+                            <Core:InvokeCommandAction Command="{x:Bind VM.LabelPropertySelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />
                         </Core:EventTriggerBehavior>
                     </i:Interaction.Behaviors>
                     <ListView.ItemTemplate>
@@ -55,18 +55,16 @@
                     x:Name="GridView_Current_LPEZCollection"
                     BorderBrush="Blue"
                     BorderThickness="0"
-                    ItemsSource="{x:Bind VM.Current_LPEZCollection, Mode=OneWay}"
+                    ItemsSource="{x:Bind VM.CurrentLabelPropertyDataCollection, Mode=OneWay}"
                     SelectionMode="Extended">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="models:LabelPropertyTree">
-                            <Grid Height="14">
+                            <Grid>
                                 <Border BorderBrush="CadetBlue" BorderThickness="0">
                                     <TextBlock
-                                        Width="60"
-                                        Height="14"
+                                        Width="110"
                                         Margin="5,0,5,0"
                                         HorizontalAlignment="Center"
-                                        FontSize="11"
                                         Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
                                         TextAlignment="Center" />
                                 </Border>
@@ -80,7 +78,7 @@
             <StackPanel Orientation="Horizontal">
                 <StackPanel>
                     <Button Margin="0,23,0,0" Click="ImportLink_Click">
-                        <FontIcon Glyph="&#xE8B5;" />
+                        <FontIcon Glyph="&#xEDE1;" />
                     </Button>
                     <Button Margin="0,15,0,0" Click="AddLink_Click">
                         <FontIcon Glyph="&#xECC8;" />

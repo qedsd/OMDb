@@ -87,7 +87,7 @@
                 <AppBarButton Icon="Link" Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Click="ADD_PropertyLink_Click" Text="Add Property Link" />
+                            <!--<MenuFlyoutItem Click="ADD_PropertyLink_Click" Text="Add Property Link" />-->
                             <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="Add PropertyDataLink" />
                             <MenuFlyoutItem Click="Delete_PropertyLink_Click" Text="Delete PropertyLink" />
                             <MenuFlyoutItem Click="Delete_PropertyDataLink_Click" Text="Delete PropertyDataLink" />
@@ -111,17 +111,41 @@
                     controls:DockPanel.Dock="Left"
                     BorderBrush="BlueViolet"
                     BorderThickness="0">
-                    <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}">
+                    <ListView
+                        x:Name="ListView_LabelPropertyTrees"
+                        ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}"
+                        SelectedItem="{x:Bind VM.CurrentLabelPropertyTree,Mode=TwoWay}">
                         <!--  SelectionChanged="ListView_SelectionChanged">  -->
                         <i:Interaction.Behaviors>
                             <Core:EventTriggerBehavior EventName="SelectionChanged">
-                                <Core:InvokeCommandAction Command="{x:Bind VM.Property_SelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />
+                                <Core:InvokeCommandAction Command="{x:Bind VM.LabelPropertySelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />
                             </Core:EventTriggerBehavior>
                         </i:Interaction.Behaviors>
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
                                 <ListViewItem Width="200" IsSelected="True">
-                                    <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}" />
+                                    <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}">
+                                        <TextBlock.ContextFlyout>
+                                            <MenuFlyout>
+                                                <MenuFlyoutItem
+                                                    Click="ADD_PropertyData_Click_Right"
+                                                    Icon="Add"
+                                                    Text="新增" />
+                                                <MenuFlyoutItem
+                                                    Click="Edit_Property_Click_Right"
+                                                    Icon="Edit"
+                                                    Text="编辑" />
+                                                <MenuFlyoutItem
+                                                    Click="Delete_Property_Click_Right"
+                                                    Icon="Delete"
+                                                    Text="删除" />
+                                                <MenuFlyoutItem
+                                                    Click="Edit_PropertyLink_Click_Right"
+                                                    Icon="Link"
+                                                    Text="关联" />
+                                            </MenuFlyout>
+                                        </TextBlock.ContextFlyout>
+                                    </TextBlock>
                                 </ListViewItem>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -142,7 +166,7 @@
                         x:Name="GridView_Current_LPEZCollection"
                         BorderBrush="Blue"
                         BorderThickness="0"
-                        ItemsSource="{x:Bind VM.Current_LPEZCollection, Mode=OneWay}"
+                        ItemsSource="{x:Bind VM.CurrentLabelPropertyDataCollection, Mode=OneWay}"
                         SelectionChanged="GridView_SelectionChanged"
                         SelectionMode="Single">
                         <!--<i:Interaction.Behaviors>
@@ -155,18 +179,20 @@
                                 <Grid>
                                     <Grid.ContextFlyout>
                                         <MenuFlyout>
-                                            <MenuFlyoutItem
-                                                Click="ADD_PropertyDataLink_Click_Right"
-                                                Icon="Link"
-                                                Text="关联" />
+
                                             <MenuFlyoutItem
                                                 Click="Edit_PropertyData_Click_Right"
                                                 Icon="Edit"
                                                 Text="编辑" />
                                             <MenuFlyoutItem
+                                                Click="Edit_PropertyDataLink_Click_Right"
+                                                Icon="Link"
+                                                Text="关联" />
+                                            <MenuFlyoutItem
                                                 Click="Delete_PropertyData_Click_Right"
                                                 Icon="Delete"
                                                 Text="删除" />
+
                                         </MenuFlyout>
                                     </Grid.ContextFlyout>
                                     <Border BorderBrush="CadetBlue" BorderThickness="0">

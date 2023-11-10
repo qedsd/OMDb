@@ -130,7 +130,7 @@ namespace OMDb.WinUI3.Services
 
         public static async Task<List<LabelPropertyTree>> GetLabelPropertyTrees()
         {
-            var labels = await Core.Services.LabelPropertyService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
+            var labels = await Core.Services.LabelPropertyService.GetAllLabelPropertyAsync(DbSelectorService.dbCurrentId);
             var labelTrees = new List<LabelPropertyTree>();
             if (labels != null)
             {

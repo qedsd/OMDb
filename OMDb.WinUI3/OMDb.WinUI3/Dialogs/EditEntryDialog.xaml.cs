@@ -64,7 +64,7 @@ namespace OMDb.WinUI3.Dialogs
 
             #region 动态加载属性标签
 
-            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
             var lst_label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
             var lcids = new List<string>();//分类标签
@@ -276,7 +276,7 @@ namespace OMDb.WinUI3.Dialogs
                 var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
                 var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
                 foreach (var item in lpdb_new)
-                    Core.Services.LabelPropertyService.AddLabel(item);
+                    Core.Services.LabelPropertyService.AddLabelProperty(item);
                 if (lpdb_original.Count > 0)
                     entryDetail.Lpdbs.AddRange(lpdb_original);
                 if (lpdb_new.Count > 0)

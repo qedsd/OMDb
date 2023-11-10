@@ -15,12 +15,23 @@
     <Grid Margin="4" CornerRadius="4">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Click="Edit_Click" Text="編輯倉庫" />
-                <MenuFlyoutItem Click="Remove_Click" Text="移除倉庫" />
-                <MenuFlyoutItem Click="Enter_Click" Text="已有詞條" />
-                <MenuFlyoutItem Click="BatchAdd_Click" Text="批量添加" />
-                <MenuFlyoutItem Click="Export_Click" Text="導出詞條" />
-                <MenuFlyoutItem Click="Import_Click" Text="導入詞條" />
+                <MenuFlyoutItem Click="Edit_Click" Icon="Edit" Text="編輯倉庫" />
+                <MenuFlyoutItem Click="Remove_Click" Icon="Delete" Text="移除倉庫" />
+                <MenuFlyoutItem Click="Enter_Click" Text="已有詞條" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74C;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <!--<MenuFlyoutItem Click="BatchAdd_Click" Icon="Add" Text="批量添加" />-->
+                <MenuFlyoutItem Click="Export_Click"  Text="導出詞條" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDE1;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Click="Import_Click" Icon="Import" Text="導入詞條" >
+
+                </MenuFlyoutItem>
+
 
             </MenuFlyout>
         </Grid.ContextFlyout>
