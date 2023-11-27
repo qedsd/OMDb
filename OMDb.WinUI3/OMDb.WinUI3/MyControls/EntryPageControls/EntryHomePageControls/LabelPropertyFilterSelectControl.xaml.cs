@@ -57,7 +57,10 @@ namespace OMDb.WinUI3.MyControls
         }
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            GridView_Current_LPEZCollection.ItemsSource = ((LabelPropertyTree)e.AddedItems[0]).Children as ObservableCollection<Models.LabelPropertyTree>;
+            if (e.AddedItems.Count > 0)
+                GridView_Current_LPEZCollection.ItemsSource = ((LabelPropertyTree)e.AddedItems[0]).Children as ObservableCollection<Models.LabelPropertyTree>;
+            else
+                GridView_Current_LPEZCollection.ItemsSource = null;
             //CallChanged();
         }
 

@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
+using OMDb.Core.Models.EntryModels;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
@@ -20,7 +21,11 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
-    public partial class EntryHomeViewModel: ObservableObject
+
+    /// <summary>
+    /// 字段
+    /// </summary>
+    public partial class EntryHomeViewModel : ObservableObject
     {
         #region 字段
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
@@ -193,6 +198,40 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _labelPropertyTrees, value);
         }
 
+        private int _minTime;
+        public int MinTime
+        {
+            get => _minTime;
+            set
+            {
+                value = value <= 0 ? 0 : value;
+                SetProperty(ref _minTime, value);
+            }
+        }
+        private int _maxTime;
+        public int MaxTime
+        {
+            get => _maxTime;
+            set
+            {
+                value = value >= 275 ? 275 : value;
+                SetProperty(ref _maxTime, value);
+            }
+        }
+
+        private double _minRank;
+        public double MinRank
+        {
+            get => _minRank;
+            set { SetProperty(ref _minRank, value); }
+        }
+
+        private MaxMinDateModel _maxMinDate;
+        public MaxMinDateModel MaxMinDate
+        {
+            get => _maxMinDate;
+            set => SetProperty(ref _maxMinDate, value);
+        }
         #endregion
     }
 }

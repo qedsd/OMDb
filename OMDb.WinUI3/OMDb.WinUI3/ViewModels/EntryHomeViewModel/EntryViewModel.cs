@@ -27,12 +27,21 @@ namespace OMDb.WinUI3.ViewModels
             InitEnumItemsource();
             sortType = Core.Enums.SortType.LastUpdateTime;
             sortWay = Core.Enums.SortWay.Positive;
-            Init();
+            
             Current = this;
 
             Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
             Events.GlobalEvent.AddEntryEvent += GlobalEvent_AddEntryEvent;
             Events.GlobalEvent.RemoveEntryEvent += GlobalEvent_RemoveEntryEvent;
+
+            MinTime = 0;
+            MaxTime = 275;
+
+            MaxMinDate = Core.Services.EntryService.GetMaxMinDate();
+            EntryService.MaxMinDateModel = MaxMinDate;
+
+            Init();
+
         }
         public static EntryHomeViewModel Current { get; private set; }
 
@@ -121,19 +130,22 @@ namespace OMDb.WinUI3.ViewModels
             Helpers.InfoHelper.ShowWaiting();
 
             var storageFilterList = EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList();
-            var labelClassFilterList = GetLabelClassId() ;
-            var labelPrpertyFilterList =  GetLabelPropertyId();
+            var labelClassFilterList = GetLabelClassId();
+            var labelPrpertyFilterList = GetLabelPropertyId();
 
-            
-            var sortModel = new SortModel(this.SortType,this.SortWay);
-            var filterModel=new FilterModel();
+
+            var sortModel = new SortModel(this.SortType, this.SortWay);
+            var filterModel = new FilterModel();
+            filterModel.BusinessDateBegin = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate,MaxMinDate.MaxDate,MinTime);
+            filterModel.BusinessDateEnd = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MaxTime);
+            filterModel.RateMin = MinRank;
             filterModel.IsFilterStorage = true;
             filterModel.IsFilterLabelClass = IsFilterLabelClass;
             filterModel.IsFilterLabelProperty = IsFilterLabelProperty;
             filterModel.StorageIds = storageFilterList;
             filterModel.LabelClassIds = labelClassFilterList;
-            filterModel.LabelPropertyIds= labelPrpertyFilterList;
-            
+            filterModel.LabelPropertyIds = labelPrpertyFilterList;
+
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
 
 

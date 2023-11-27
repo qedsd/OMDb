@@ -20,6 +20,9 @@ using System.Windows.Input;
 
 namespace OMDb.WinUI3.ViewModels
 {
+    /// <summary>
+    /// 命令
+    /// </summary>
     public partial class EntryHomeViewModel: ObservableObject
     {
         #region ICommand
@@ -37,6 +40,10 @@ namespace OMDb.WinUI3.ViewModels
             TabViewService.AddItem(new Views.EntryDetailPage(entry));
         });
         public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>(async (items) =>
+        {
+            await UpdateEntryListAsync();
+        });
+        public ICommand EmptyChangedCommand => new RelayCommand(async () =>
         {
             await UpdateEntryListAsync();
         });

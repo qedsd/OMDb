@@ -52,5 +52,15 @@ namespace OMDb.WinUI3.Views
         {
             VM.QuerySubmittedCommand?.Execute(args.ChosenSuggestion);
         }
+
+        private void Slider_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
+
+        private void Slider_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+
+        }
     }
 }

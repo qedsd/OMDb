@@ -1,6 +1,8 @@
-﻿using OMDb.Core.DbModels;
+﻿using NPOI.SS.Formula.Functions;
+using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.Core.Models.EntryModels;
 using OMDb.Core.Utils.Extensions;
 using SqlSugar;
 using System;
@@ -24,6 +26,24 @@ namespace OMDb.Core.Services
             return await Task.Run(() => QueryEntry(sortModel, filterModel));
         }
 
+
+        public static MaxMinDateModel GetMaxMinDate()
+        {
+            var maxDate = new DateTimeOffset(DateTime.Now);
+            var minDate = new DateTimeOffset(DateTime.Now);
+            foreach (var item in DbService.Dbs)
+            {
+                var db = item.Value;
+                var maxDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Max(e => e.ReleaseDate);
+                var minDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Min(e => e.ReleaseDate);
+                maxDate = (DateTimeOffset)(maxDateStorage > maxDate ? maxDateStorage : maxDate);
+                minDate = (DateTimeOffset)(minDateStorage < minDate ? minDateStorage : minDate);
+            }
+            var maxMinDateModel = new MaxMinDateModel();
+            maxMinDateModel.MinDate = minDate.DateTime;
+            maxMinDateModel.MaxDate = maxDate.DateTime;
+            return maxMinDateModel;
+        }
         /// <summary>
         /// 按指定排序方式获取词条
         /// 获取完自行处理分页

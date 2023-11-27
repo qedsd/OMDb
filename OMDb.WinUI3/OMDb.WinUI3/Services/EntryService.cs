@@ -16,6 +16,7 @@ using OMDb.Core.Services;
 using OMDb.Core.Enums;
 using System.Transactions;
 using OMDb.Core.Utils.Extensions;
+using OMDb.Core.Models.EntryModels;
 
 namespace OMDb.WinUI3.Services
 {
@@ -218,6 +219,21 @@ namespace OMDb.WinUI3.Services
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.MoreFolder));
         }
+
+
+        public static DateTime GetDateTimeBySilderValue(DateTime startDate, DateTime endDate,int intValue)
+        {
+            // 将整数值映射到时间范围
+            double totalDays = (endDate - startDate).TotalDays;
+            double mappedDays = (double)intValue / 275 * totalDays;
+            DateTimeOffset mappedDate = startDate.AddDays(mappedDays);
+            return mappedDate.DateTime;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static MaxMinDateModel MaxMinDateModel { get; set; }
     }
 }
 

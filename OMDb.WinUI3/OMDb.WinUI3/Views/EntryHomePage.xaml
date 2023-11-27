@@ -4,19 +4,30 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DbModels="using:OMDb.Core.DbModels"
     xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:OMDb.WinUI3.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
-    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls" xmlns:Core="using:Microsoft.Xaml.Interactions.Core" xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
     Background="{ThemeResource LayerFillColorDefaultBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
+    <Page.Resources>
+        <converters:IntToDateTimeConverter x:Key="IntToDateTimeConverter" />
+        <converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
+    </Page.Resources>
     <Grid Margin="{StaticResource MediumLeftRightMargin}">
         <Grid.ContextFlyout>
             <MenuFlyout>
-                <MenuFlyoutItem Command="{x:Bind VM.AddEntryCommand}" Icon="Add" Text="新增" />
-                <MenuFlyoutItem Command="{x:Bind VM.RefreshCommand}" Icon="Refresh" Text="刷新" />
+                <MenuFlyoutItem
+                    Command="{x:Bind VM.AddEntryCommand}"
+                    Icon="Add"
+                    Text="新增" />
+                <MenuFlyoutItem
+                    Command="{x:Bind VM.RefreshCommand}"
+                    Icon="Refresh"
+                    Text="刷新" />
             </MenuFlyout>
         </Grid.ContextFlyout>
         <Grid.RowDefinitions>
@@ -123,62 +134,109 @@
                                             <PivotItem.Header>
                                                 <TextBlock FontSize="16" Text="基本信息" />
                                             </PivotItem.Header>
-                                            <Grid>
-                                                <mycontrols:EntryStoragesControl CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}" EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
-                                            </Grid>
+                                            <StackPanel Margin="10,10">
+                                                <TextBlock>仓库</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <Grid>
+                                                    <mycontrols:EntryStoragesControl
+                                                        Margin="0,0,0,0"
+                                                        CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}"
+                                                        EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
+                                                </Grid>
+                                                <TextBlock Margin="0,30,0,0">日期</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <Grid>
+                                                    <StackPanel>
+                                                        <!--<mycontrols:DoubleThumbSlider
+                                                        Margin="0,10,0,5"></mycontrols:DoubleThumbSlider>-->
+                                                        <mycontrols:DoubleThumbSlider
+                                                            Margin="0,10,0,5"
+                                                            MaxValue="{x:Bind VM.MaxTime, Mode=TwoWay}"
+                                                            MinValue="{x:Bind VM.MinTime, Mode=TwoWay}" 
+                                                            CheckChangedCommand="{x:Bind VM.EmptyChangedCommand}"/>
+                                                        <StackPanel Margin="8,5,0,0" Orientation="Horizontal">
+                                                            <CalendarDatePicker Width="120" Date="{x:Bind VM.MinTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}" />
+                                                            <TextBlock
+                                                                Margin="5,0,5,0"
+                                                                FontSize="20"
+                                                                Text="~" />
+                                                            <CalendarDatePicker Width="120" Date="{x:Bind VM.MaxTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <TextBlock Margin="0,30,0,0">星级</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <StackPanel>
+                                                    <Slider
+                                                        Width="200"
+                                                        Margin="8,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        Maximum="5"
+                                                        Minimum="1"
+                                                        StepFrequency="0.1"
+                                                        PointerPressed="Slider_PointerPressed"
+                                                        PointerReleased="Slider_PointerReleased"
+                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}" >
+                                                        <!--<Interactivity:Interaction.Behaviors>
+                                                            <Core:EventTriggerBehavior EventName="PointerReleased">
+                                                                <Core:InvokeCommandAction Command="{x:Bind VM.EmptyChangedCommand}" />
+                                                            </Core:EventTriggerBehavior>
+                                                        </Interactivity:Interaction.Behaviors>-->
+                                                    </Slider>
+                                                    <RatingControl
+                                                        Margin="12,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        IsClearEnabled="True"
+                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}" />
+
+                                                </StackPanel>
+                                                <Grid />
+                                            </StackPanel>
+
                                         </PivotItem>
                                         <!--  分类标签过滤  -->
                                         <PivotItem>
                                             <PivotItem.Header>
-                                                <TextBlock FontSize="16" Text="分类标签" />
+                                                <TextBlock FontSize="16" Text="标签(分类)" />
                                             </PivotItem.Header>
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
+                                            <StackPanel>
                                                 <CheckBox
-                                                    Grid.Row="0"
                                                     Margin="12,0,0,0"
                                                     HorizontalAlignment="Left"
-                                                    Content="分类标签筛选"
+                                                    Content="过滤"
                                                     IsChecked="{x:Bind VM.IsFilterLabelClass, Mode=TwoWay}" />
-
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
                                                 <mycontrols:LabelClassFilterSelectControl
-                                                    Grid.Row="1"
+                                                    Margin="0,10,0,0"
                                                     CheckChangedCommand="{x:Bind VM.LabelClassTreeChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabelClass, Mode=OneWay}"
                                                     LabelClassTrees="{x:Bind VM.LabelClassTrees, Mode=TwoWay}" />
-                                            </Grid>
-
+                                            </StackPanel>
                                         </PivotItem>
                                         <!--  属性标签过滤  -->
                                         <PivotItem>
                                             <PivotItem.Header>
-                                                <TextBlock FontSize="16" Text="属性标签" />
+                                                <TextBlock FontSize="16" Text="标签(属性)" />
                                             </PivotItem.Header>
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
+                                            <StackPanel>
+
                                                 <CheckBox
-                                                    Grid.Row="0"
                                                     Margin="12,0,0,0"
                                                     HorizontalAlignment="Left"
-                                                    Content="属性标签筛选"
+                                                    Content="过滤"
                                                     IsChecked="{x:Bind VM.IsFilterLabelProperty, Mode=TwoWay}" />
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
                                                 <mycontrols:LabelPropertyFilterSelectControl
-                                                    Grid.Row="1"
+                                                    Margin="0,10,0,0"
                                                     CheckChangedCommand="{x:Bind VM.LabelPropertyTreeChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabelProperty, Mode=OneWay}"
                                                     LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" />
-                                            </Grid>
+                                            </StackPanel>
 
                                         </PivotItem>
                                     </Pivot>
 
-                                    <Rectangle
+                                    <!--<Rectangle
                                         Height="1"
                                         Margin="10,10"
                                         Fill="{ThemeResource SystemAccentColor}" />
@@ -194,7 +252,7 @@
                                             CommandParameter="{x:Bind FlyoutFilter}"
                                             Content="取消" />
 
-                                    </StackPanel>
+                                    </StackPanel>-->
                                 </StackPanel>
                             </Grid>
                         </Flyout>
