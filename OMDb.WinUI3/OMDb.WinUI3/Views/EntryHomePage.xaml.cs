@@ -62,5 +62,10 @@ namespace OMDb.WinUI3.Views
         {
 
         }
+
+        private void Slider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+
+        }
     }
 }

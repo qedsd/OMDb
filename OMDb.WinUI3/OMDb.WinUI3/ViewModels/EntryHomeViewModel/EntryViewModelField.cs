@@ -29,6 +29,17 @@ namespace OMDb.WinUI3.ViewModels
     {
         #region 字段
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
+
+        private ObservableCollection<Core.Models.Entry> _entriesAll;
+        public ObservableCollection<Core.Models.Entry> EntriesAll
+        {
+            get => _entriesAll;
+            set
+            {
+                SetProperty(ref _entriesAll, value);
+            }
+        }
+
         private ObservableCollection<Core.Models.Entry> _entries;
         public ObservableCollection<Core.Models.Entry> Entries
         {
@@ -223,7 +234,11 @@ namespace OMDb.WinUI3.ViewModels
         public double MinRank
         {
             get => _minRank;
-            set { SetProperty(ref _minRank, value); }
+            set 
+            {
+                SetProperty(ref _minRank, value);
+                UpdateEntrySingle();
+            }
         }
 
         private MaxMinDateModel _maxMinDate;

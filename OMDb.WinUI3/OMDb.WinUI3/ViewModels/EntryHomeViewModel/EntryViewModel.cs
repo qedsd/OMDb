@@ -138,7 +138,6 @@ namespace OMDb.WinUI3.ViewModels
             var filterModel = new FilterModel();
             filterModel.BusinessDateBegin = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate,MaxMinDate.MaxDate,MinTime);
             filterModel.BusinessDateEnd = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MaxTime);
-            filterModel.RateMin = MinRank;
             filterModel.IsFilterStorage = true;
             filterModel.IsFilterLabelClass = IsFilterLabelClass;
             filterModel.IsFilterLabelProperty = IsFilterLabelProperty;
@@ -154,7 +153,8 @@ namespace OMDb.WinUI3.ViewModels
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
-                    Entries = newList.ToObservableCollection();
+                    EntriesAll = newList.ToObservableCollection();
+                    Entries = EntriesAll.Where(a => a.MyRating >= MinRank).ToObservableCollection();
                 });
             }
             else
@@ -166,6 +166,12 @@ namespace OMDb.WinUI3.ViewModels
             }
             Helpers.InfoHelper.HideWaiting();
         }
+
+        public void UpdateEntrySingle()
+        {
+            Entries = EntriesAll.Where(a => a.MyRating >= MinRank).ToObservableCollection();  
+        }
+
         private async void UpdateSuggest(string input)
         {
             if (!string.IsNullOrEmpty(input))
