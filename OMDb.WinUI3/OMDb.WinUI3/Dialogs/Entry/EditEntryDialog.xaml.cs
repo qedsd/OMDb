@@ -46,11 +46,11 @@ namespace OMDb.WinUI3.Dialogs
 
 
             #region 动态加载获取媒体信息服务
-            if (PluginsBaseService.EntryInfos.Count() > 0)
+            if (PluginsBaseService.EntryInfoExports.Count() > 0)
             {
-                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
+                this.ddb.Content = PluginsBaseService.EntryInfoExports.FirstOrDefault().GetType().Assembly.GetName().Name;
                 var mf = new MenuFlyout();
-                foreach (var item in PluginsBaseService.EntryInfos)
+                foreach (var item in PluginsBaseService.EntryInfoExports)
                 {
                     MenuFlyoutItem mfl = new MenuFlyoutItem();
                     mfl.Text = item.GetType().Assembly.GetName().Name;
@@ -335,13 +335,13 @@ namespace OMDb.WinUI3.Dialogs
             this.pr.IsActive = true;
             var entryInfo = new Dictionary<string, object>();
             this.btn_GetInfo.IsEnabled = false;
-            entryInfo = await EntryInfoService.GetEntryInfo(this.VM.EntryName, Convert.ToString(this.ddb.Content));
+            entryInfo = await EntryInfoService.GetEntryInfoNet(this.VM.EntryName, Convert.ToString(this.ddb.Content));
             this.pr.IsActive = false;
             this.btn_GetInfo.IsEnabled = true;
 
             #region 基本信息
             entryInfo.TryGetValue("封面", out object stream_cover);
-            if (stream_cover!=null)
+            if (stream_cover != null)
             {
                 TempImageUtils.CreateTempImage((MemoryStream)stream_cover);
                 VM.Entry.CoverImg = TempImageUtils.GetDefaultTempImage();
@@ -352,10 +352,8 @@ namespace OMDb.WinUI3.Dialogs
             this.VM.MyRating = Convert.ToDouble(rate);
 
             entryInfo.TryGetValue("上映日期", out object date);
-            if (date!=null)
-            {
-                this.VM.ReleaseDate = Convert.ToDateTime(date);
-            }
+            this.VM.ReleaseDate = Convert.ToDateTime(date ?? DateTime.Now);
+
             #endregion
 
             #region 属性标签数据

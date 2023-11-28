@@ -51,11 +51,11 @@ namespace OMDb.WinUI3.Dialogs
         {
             this.InitializeComponent();
             this.LoadLabelControl();
-            if (PluginsBaseService.EntryInfos.Count() > 0)
+            if (PluginsBaseService.EntryInfoExports.Count() > 0)
             {
-                this.ddb.Content = PluginsBaseService.EntryInfos.FirstOrDefault().GetType().Assembly.GetName().Name;
+                this.ddb.Content = PluginsBaseService.EntryInfoExports.FirstOrDefault().GetType().Assembly.GetName().Name;
                 var mf = new MenuFlyout();
-                foreach (var item in PluginsBaseService.EntryInfos)
+                foreach (var item in PluginsBaseService.EntryInfoExports)
                 {
                     MenuFlyoutItem mfl = new MenuFlyoutItem();
                     mfl.Text = item.GetType().Assembly.GetName().Name;
@@ -134,13 +134,13 @@ namespace OMDb.WinUI3.Dialogs
             //(ObservableCollection<Models.EntryDetail>)
             Stopwatch swTotal = new Stopwatch();
             swTotal.Start();
-            foreach (EntryDetail item in this.ldv_edc.SelectedItems)
+            foreach (EntryDetail item in this.LV_EntryDetailCollection.SelectedItems)
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
                 var entryInfo = new Dictionary<string, object>();
 
-                entryInfo = await EntryInfoService.GetEntryInfo(item.Name, Convert.ToString(this.ddb.Content));
+                entryInfo = await EntryInfoService.GetEntryInfoNet(item.Name, Convert.ToString(this.ddb.Content));
 
                 try
                 {
@@ -154,25 +154,14 @@ namespace OMDb.WinUI3.Dialogs
                     Core.Utils.Logger.Error("封面" + ex.Message);
                 }
 
-                try
-                {
-                    item.Entry.MyRating = Convert.ToDouble(entryInfo["评分"]);
-                    //item.Rate = Convert.ToDouble(entryInfo["评分"]);
-                }
-                catch (Exception ex)
-                {
-                    Core.Utils.Logger.Error("评分" + ex.Message);
-                }
+                entryInfo.TryGetValue("评分", out object rate);
+                item.Entry.MyRating = Convert.ToDouble(rate);
+                entryInfo.TryGetValue("上映日期", out object date);
+                item.Entry.ReleaseDate= Convert.ToDateTime(date ?? DateTime.Now);
+                
+                if (VM_Detail.EntryDetail == item)
+                    SetEntryDetailInfo();
 
-                try
-                {
-                    item.Entry.ReleaseDate= Convert.ToDateTime(entryInfo["上映日期"]);
-                    //item.Date = Convert.ToDateTime(entryInfo["上映日期"]).ToShortDateString();
-                }
-                catch (Exception ex)
-                {
-                    Core.Utils.Logger.Error("上映日期" + ex.Message);
-                }
                 sw.Stop();
                 Core.Utils.Logger.Info($"获取“{item.Name}”信息耗时：{sw.Elapsed}");
             }
@@ -182,7 +171,7 @@ namespace OMDb.WinUI3.Dialogs
             //this.btn_GetInfo.IsEnabled = true;
         }
 
-        private void ldv_edc_click(object sender, ItemClickEventArgs e)
+        private void LV_EntryDetailCollection_Click(object sender, ItemClickEventArgs e)
         {
 
         }
@@ -270,29 +259,33 @@ namespace OMDb.WinUI3.Dialogs
             }
 
         }
-
-        private void ldv_edc_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LV_EntryDetailCollection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (this.ldv_edc.SelectedItems.Count > 1) return;
-            if (this.ldv_edc.SelectedItems.Count < 1)
+            if (this.LV_EntryDetailCollection.SelectedItems.Count > 1) return;
+            if (this.LV_EntryDetailCollection.SelectedItems.Count < 1)
             {
                 this.grid_entryDetail.Visibility = Visibility.Collapsed;
                 return;
             }
             this.grid_entryDetail.Visibility = Visibility.Visible;
-            var ed = this.ldv_edc.SelectedItems.FirstOrDefault() as EntryDetail;
+            var ed = this.LV_EntryDetailCollection.SelectedItems.FirstOrDefault() as EntryDetail;
             //this.grid_entryDetail.Visibility = Visibility.Visible;
+            this.VM_Detail = new EditEntryHomeViewModel(ed.Entry);
             this.VM_Detail.Entry = ed.Entry;
             this.VM_Detail.EntryDetail = ed;
 
-            this.tb_ctmc.Text = this.VM_Detail.EntryDetail.Name;//词条名称
-            this.tb_ctlj.Text = this.VM_Detail.EntryDetail.FullEntryPath; ;//词条路径
-            this.tb_ccms.Text = "指定文件夹";//存储模式
-            this.tb_zylj.Text = this.VM_Detail.EntryDetail.PathFolder;//资源路径
-            this.Image_CoverImg.Source = this.VM_Detail.EntryDetail.FullCoverImgPath;
-            //this.ccms.Text = "folder"+ DateTime.Now;
+            SetEntryDetailInfo();
         }
-
+        private void SetEntryDetailInfo()
+        {
+            this.Image_CoverImg.Source = this.VM_Detail.EntryDetail.FullCoverImgPath;
+            this.TB_EntryName.Text = this.VM_Detail.EntryDetail.Name;//词条名称
+            this.TB_EntryPath.Text = this.VM_Detail.EntryDetail.FullEntryPath; ;//词条路径
+            this.TB_SaveMode.Text = "指定文件夹";//存储模式
+            this.TB_ResourcePath.Text = this.VM_Detail.EntryDetail.PathFolder;//资源路径
+            this.TB_ReleaseDate.Date = this.VM_Detail.Entry.ReleaseDate ?? DateTime.Now;//资源路径    
+            this.RC_Rate.Value = this.VM_Detail.Entry.MyRating;
+        }
 
     }
 }

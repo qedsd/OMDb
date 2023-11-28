@@ -129,56 +129,59 @@ namespace OMDb.Core.Services
 
 
         /// <summary>
-        /// 查询词条
+        /// 查询词条异步
         /// </summary>
         /// <param name="queryItems"></param>
         /// <param name="withName">结果是否带默认名字</param>
         /// <returns></returns>
         public static async Task<List<Entry>> QueryEntryAsync(List<QueryItem> queryItems, bool withName = true)
         {
-            if (DbService.IsEmpty)
-            {
-                return null;
-            }
-            if (queryItems != null)
-            {
-                return await Task.Run(() =>
-                {
-                    Dictionary<string, Entry> dic = new Dictionary<string, Entry>();
-                    var group = queryItems.GroupBy(p => p.DbId);
-                    foreach (var item in group)
-                    {
-                        var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.EntryId)).ToList();
-                        if (entryDbs.Any())
-                        {
-                            var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
-                            if (withName)
-                            {
-                                EntryNameSerivce.SetName(entriesTemp, item.Key);
-                            }
-                            //entries.AddRange(entriesTemp);
-                            entriesTemp.ForEach(p =>
-                            {
-                                dic.Add(p.EntryId, p);
-                            });
-                        }
-                    }
-                    List<Entry> entries = new List<Entry>();
-                    foreach (var item in queryItems)
-                    {
-                        if (dic.TryGetValue(item.Id, out Entry entry))
-                        {
-                            entries.Add(entry);
-                        }
-                    }
-                    return entries;
-                });
-            }
-            else
-            {
-                return null;
-            }
+            return await Task.Run(() => QueryEntry(queryItems, withName));
         }
+
+        /// <summary>
+        /// 查询词条
+        /// </summary>
+        /// <param name="queryItems"></param>
+        /// <param name="withName">结果是否带默认名字</param>
+        /// <returns></returns>
+        public static List<Entry> QueryEntry(List<QueryItem> queryItems, bool withName = true)
+        {
+            if (DbService.IsEmpty)
+                return null;
+            if (queryItems.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                return null;
+
+            Dictionary<string, Entry> dic = new Dictionary<string, Entry>();
+            var group = queryItems.GroupBy(p => p.DbId);
+            foreach (var item in group)
+            {
+                var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.EntryId)).ToList();
+                if (entryDbs.Any())
+                {
+                    var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
+                    if (withName)
+                    {
+                        EntryNameSerivce.SetName(entriesTemp, item.Key);
+                    }
+                    //entries.AddRange(entriesTemp);
+                    entriesTemp.ForEach(p =>
+                    {
+                        dic.Add(p.EntryId, p);
+                    });
+                }
+            }
+            List<Entry> entries = new List<Entry>();
+            foreach (var item in queryItems)
+            {
+                if (dic.TryGetValue(item.Id, out Entry entry))
+                {
+                    entries.Add(entry);
+                }
+            }
+            return entries;
+        }
+
         /// <summary>
         /// 查询词条
         /// </summary>

@@ -23,7 +23,7 @@ namespace OMDb.WinUI3.Services
     public static class EntryService
     {
         /// <summary>
-        /// 新增
+        /// 新增词条
         /// </summary>
         /// <returns>词条唯一id</returns>
         public static async Task AddEntryAsync()
@@ -31,9 +31,8 @@ namespace OMDb.WinUI3.Services
             var entryDetail = await Dialogs.EditEntryDialog.ShowDialog();
             if (entryDetail.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
             await NewEntryAsync(entryDetail);
-            Helpers.InfoHelper.ShowSuccess("创建成功");
+            Helpers.InfoHelper.ShowSuccess("新增词条成功");
         }
-
         /// <summary>
         /// 批量新增
         /// </summary>
@@ -44,10 +43,10 @@ namespace OMDb.WinUI3.Services
             if (eds.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
             foreach (var ed in eds)
                 await NewEntryAsync(ed);
+            Helpers.InfoHelper.ShowSuccess("批量新增词条成功");
         }
-
         /// <summary>
-        /// 编辑
+        /// 编辑词条
         /// </summary>
         /// <returns>词条唯一id</returns>
         public static async Task EditEntryAsync(Core.Models.Entry entry)
@@ -60,11 +59,8 @@ namespace OMDb.WinUI3.Services
             GlobalEvent.NotifyUpdateEntry(null, new EntryEventArgs(entryDetail.Entry));
 
         }
-
-
-
         /// <summary>
-        /// 删除
+        /// 移除词条
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
@@ -75,10 +71,29 @@ namespace OMDb.WinUI3.Services
             Helpers.InfoHelper.ShowSuccess("已删除");
             GlobalEvent.NotifyRemoveEntry(null, new EntryEventArgs(entry));
         }
-
-
         /// <summary>
-        /// 保存至数据库
+        /// 新增词条
+        /// </summary>
+        /// <param name="ed"></param>
+        /// <param name="isNew"></param>
+        /// <returns></returns>
+        public static async Task NewEntryAsync(EntryDetail ed)
+        {
+            //创建词条根目录
+            if (Directory.Exists(ed.FullEntryPath))
+            {
+                var my_format = "yyyyMMddHHmmss";
+                string newPath = $"{ed.FullEntryPath}_{DateTime.Now.ToString(my_format)}";
+                ed.FullEntryPath = newPath;
+                ed.Entry.Path = newPath;
+            }
+            InitFolder(ed);//创建词条文件夹
+            InitFile(ed);//创建元数据(MataData)
+            await InsertOrUpdateDbAsync(ed);//保存至数据库
+            GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(ed.Entry));
+        }
+        /// <summary>
+        /// 词条数据保存至数据库
         /// </summary>
         /// <param name="entry"></param>
         /// <param name="entryNames"></param>
@@ -95,32 +110,10 @@ namespace OMDb.WinUI3.Services
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
             });
         }
-
-
-        public static async Task NewEntryAsync(EntryDetail ed, bool isNew = true)
-        {
-            if (isNew)
-            {
-                //创建词条根目录
-                if (Directory.Exists(ed.FullEntryPath))
-                {
-                    var my_format = "yyyyMMddHHmmss";
-                    string newPath = $"{ed.FullEntryPath}_{DateTime.Now.ToString(my_format)}";
-                    ed.FullEntryPath = newPath;
-                    ed.Entry.Path = newPath;
-                }
-                InitFolder(ed);//创建词条文件夹
-                InitFile(ed);//创建元数据(MataData)
-                await InsertOrUpdateDbAsync(ed);//保存至数据库
-            }
-            else
-            {
-
-            }
-            GlobalEvent.NotifyAddEntry(null, new EntryEventArgs(ed.Entry));
-        }
-
-
+        /// <summary>
+        /// 标签词条关联表处理
+        /// </summary>
+        /// <param name="ed"></param>
         private static void TreatLabelLink(EntryDetail ed)
         {
             if (ed.Labels?.Count != 0)
@@ -138,6 +131,10 @@ namespace OMDb.WinUI3.Services
                 Core.Services.LabelPropertyService.AddEntryLabel(entryLabelPropertyDbs);//添加词条属性标签
             }
         }
+        /// <summary>
+        /// 表EntrySource数据处理
+        /// </summary>
+        /// <param name="ed"></param>
         private static void TreatEntrySource(EntryDetail ed)
         {
             switch (ed.Entry.SaveType)
@@ -160,6 +157,9 @@ namespace OMDb.WinUI3.Services
                     break;
             }
         }
+        /// <summary>
+        /// 表Entry数据处理
+        /// </summary>
         private static void TreatEntry(EntryDetail ed)
         {
             #region 词条表：  詞條路徑 and 封面路徑 取相對地址保存
@@ -170,18 +170,9 @@ namespace OMDb.WinUI3.Services
             if (newFullImgCoverPath != ed.FullCoverImgPath)
                 System.IO.File.Copy(ed.FullCoverImgPath, newFullImgCoverPath, true);//覆盖保存封面
             ed.FullCoverImgPath = newFullImgCoverPath;
+            ed.Entry.MyRating = ed.Entry.MyRating <= 1 ? 1 : ed.Entry.MyRating;
             #endregion
         }
-
-
-
-
-
-
-
-
-
-
         /// <summary>
         /// 创建元数据(MataData)
         /// </summary>
@@ -205,9 +196,10 @@ namespace OMDb.WinUI3.Services
             }
             metadata.Save(metaDateFile);
         }
-
-
-        //创建词条(Entry)路径 (仓库 -> .omdb -> Db源 -> 词条)
+        /// <summary>
+        /// 创建词条(Entry)路径 (仓库 -> .omdb -> Db源 -> 词条)
+        /// </summary>
+        /// <param name="entry"></param>
         private static void InitFolder(Models.EntryDetail entry)
         {
             Directory.CreateDirectory(entry.FullEntryPath);
@@ -219,9 +211,14 @@ namespace OMDb.WinUI3.Services
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.InfoFolder));
             Directory.CreateDirectory(Path.Combine(entry.FullEntryPath, Services.ConfigService.MoreFolder));
         }
-
-
-        public static DateTime GetDateTimeBySilderValue(DateTime startDate, DateTime endDate,int intValue)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <param name="intValue"></param>
+        /// <returns></returns>
+        public static DateTime GetDateTimeBySilderValue(DateTime startDate, DateTime endDate, int intValue)
         {
             // 将整数值映射到时间范围
             double totalDays = (endDate - startDate).TotalDays;
@@ -229,7 +226,6 @@ namespace OMDb.WinUI3.Services
             DateTimeOffset mappedDate = startDate.AddDays(mappedDays);
             return mappedDate.DateTime;
         }
-
         /// <summary>
         /// 
         /// </summary>

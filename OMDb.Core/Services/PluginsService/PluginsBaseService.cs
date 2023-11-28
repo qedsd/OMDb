@@ -14,7 +14,7 @@ namespace OMDb.Core.Services.PluginsService
     public class PluginsBaseService
     {
         public static IEnumerable<IRate> Rates;
-        public static IEnumerable<IEntryInfo> EntryInfos;
+        public static IEnumerable<IEntryInfo> EntryInfoExports;
         public static void Init()
         {
             if (!System.IO.Directory.Exists(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins")))
@@ -34,7 +34,7 @@ namespace OMDb.Core.Services.PluginsService
             using (var container = configuration.CreateContainer())
             {
                 Rates = container.GetExports<IRate>();
-                EntryInfos = container.GetExports<IEntryInfo>();
+                EntryInfoExports = container.GetExports<IEntryInfo>();
             }
         }
     }

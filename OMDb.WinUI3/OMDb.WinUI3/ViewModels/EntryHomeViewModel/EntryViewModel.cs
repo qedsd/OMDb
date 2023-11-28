@@ -27,7 +27,7 @@ namespace OMDb.WinUI3.ViewModels
             InitEnumItemsource();
             sortType = Core.Enums.SortType.LastUpdateTime;
             sortWay = Core.Enums.SortWay.Positive;
-            
+
             Current = this;
 
             Events.GlobalEvent.UpdateEntryEvent += GlobalEvent_UpdateEntryEvent;
@@ -128,15 +128,12 @@ namespace OMDb.WinUI3.ViewModels
         public async Task UpdateEntryListAsync()
         {
             Helpers.InfoHelper.ShowWaiting();
-
             var storageFilterList = EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList();
             var labelClassFilterList = GetLabelClassId();
             var labelPrpertyFilterList = GetLabelPropertyId();
-
-
             var sortModel = new SortModel(this.SortType, this.SortWay);
             var filterModel = new FilterModel();
-            filterModel.BusinessDateBegin = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate,MaxMinDate.MaxDate,MinTime);
+            filterModel.BusinessDateBegin = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MinTime);
             filterModel.BusinessDateEnd = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MaxTime);
             filterModel.IsFilterStorage = true;
             filterModel.IsFilterLabelClass = IsFilterLabelClass;
@@ -144,17 +141,14 @@ namespace OMDb.WinUI3.ViewModels
             filterModel.StorageIds = storageFilterList;
             filterModel.LabelClassIds = labelClassFilterList;
             filterModel.LabelPropertyIds = labelPrpertyFilterList;
-
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
-
-
             if (queryResults?.Count > 0)
             {
                 var newList = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
                     EntriesAll = newList.ToObservableCollection();
-                    Entries = EntriesAll.Where(a => a.MyRating >= MinRank).ToObservableCollection();
+                    UpdateEntrySingle();
                 });
             }
             else
@@ -166,12 +160,35 @@ namespace OMDb.WinUI3.ViewModels
             }
             Helpers.InfoHelper.HideWaiting();
         }
-
+        public void UpdateEntryList()
+        {
+            var storageFilterList = EntryStorages.Where(p => p.IsChecked).Select(p => p.StorageName).ToList();
+            var labelClassFilterList = GetLabelClassId();
+            var labelPrpertyFilterList = GetLabelPropertyId();
+            var sortModel = new SortModel(this.SortType, this.SortWay);
+            var filterModel = new FilterModel();
+            filterModel.BusinessDateBegin = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MinTime);
+            filterModel.BusinessDateEnd = EntryService.GetDateTimeBySilderValue(MaxMinDate.MinDate, MaxMinDate.MaxDate, MaxTime);
+            filterModel.IsFilterStorage = true;
+            filterModel.IsFilterLabelClass = IsFilterLabelClass;
+            filterModel.IsFilterLabelProperty = IsFilterLabelProperty;
+            filterModel.StorageIds = storageFilterList;
+            filterModel.LabelClassIds = labelClassFilterList;
+            filterModel.LabelPropertyIds = labelPrpertyFilterList;
+            var queryResults = Core.Services.EntryService.QueryEntry(sortModel, filterModel);
+            if (queryResults.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            {
+                Entries = null;
+                return;
+            }
+            var newList = Core.Services.EntryService.QueryEntry(queryResults.Select(p => p.ToQueryItem()).ToList());
+            EntriesAll = newList.ToObservableCollection();
+            UpdateEntrySingle();
+        }
         public void UpdateEntrySingle()
         {
-            Entries = EntriesAll.Where(a => a.MyRating >= MinRank).ToObservableCollection();  
+            Entries = EntriesAll.Where(a => a.MyRating >= MinRank).ToObservableCollection();
         }
-
         private async void UpdateSuggest(string input)
         {
             if (!string.IsNullOrEmpty(input))
@@ -266,7 +283,6 @@ namespace OMDb.WinUI3.ViewModels
             }
             return false;
         }
-
         private List<string> GetLabelClassId()
         {
             var labelFilterList = new List<string>();
@@ -284,8 +300,6 @@ namespace OMDb.WinUI3.ViewModels
             }
             return labelFilterList;
         }
-
-
         private List<string> GetLabelPropertyId()
         {
             var labelFilterList = new List<string>();
@@ -304,6 +318,6 @@ namespace OMDb.WinUI3.ViewModels
             return labelFilterList;
         }
 
-        #endregion 
+        #endregion
     }
 }

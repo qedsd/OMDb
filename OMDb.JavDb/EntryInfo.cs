@@ -17,7 +17,7 @@ namespace OMDb.JavDb
     [Export(typeof(IEntryInfo))]
     public class EntryInfo : IEntryInfo
     {
-        Dictionary<string, object> IEntryInfo.EntryInfo(string keyword)
+        Dictionary<string, object> IEntryInfo.GetEntryInfoNet(string keyword)
         {
             Dictionary<string, object> dic = new Dictionary<string, object>();
             try

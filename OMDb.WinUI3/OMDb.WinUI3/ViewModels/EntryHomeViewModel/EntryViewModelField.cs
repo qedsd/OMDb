@@ -29,25 +29,18 @@ namespace OMDb.WinUI3.ViewModels
     {
         #region 字段
         public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
-
         private ObservableCollection<Core.Models.Entry> _entriesAll;
         public ObservableCollection<Core.Models.Entry> EntriesAll
         {
             get => _entriesAll;
-            set
-            {
-                SetProperty(ref _entriesAll, value);
-            }
-        }
+            set => SetProperty(ref _entriesAll, value);
 
+        }
         private ObservableCollection<Core.Models.Entry> _entries;
         public ObservableCollection<Core.Models.Entry> Entries
         {
             get => _entries;
-            set
-            {
-                SetProperty(ref _entries, value);
-            }
+            set => SetProperty(ref _entries, value);
         }
         private ObservableCollection<LabelClass> _labels;
         public ObservableCollection<LabelClass> Labels
@@ -55,7 +48,6 @@ namespace OMDb.WinUI3.ViewModels
             get => _labels;
             set => SetProperty(ref _labels, value);
         }
-
         private Core.Enums.SortType sortType = Core.Enums.SortType.LastUpdateTime;
         public Core.Enums.SortType SortType
         {
@@ -63,7 +55,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref sortType, value);
-                UpdateEntryListAsync();
+                UpdateEntryList();
             }
         }
         private Core.Enums.SortWay sortWay = Core.Enums.SortWay.Positive;
@@ -73,7 +65,7 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref sortWay, value);
-                UpdateEntryListAsync();
+                UpdateEntryList();
             }
         }
         public List<string> SortTypeStrs { get; set; }
@@ -98,14 +90,12 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
         public List<string> SortWayStrs { get; set; }
-
         private ObservableCollection<EnrtyStorage> entryStorages;
         public ObservableCollection<EnrtyStorage> EntryStorages
         {
             get => entryStorages;
             set => SetProperty(ref entryStorages, value);
         }
-
         private string autoSuggestText;
         public string AutoSuggestText
         {
@@ -148,10 +138,9 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref isFilterLabelClass, value);
-                UpdateEntryListAsync();
+                UpdateEntryList();
             }
         }
-
         private bool isFilterLabelProperty = false;
         /// <summary>
         /// 是否按选择的标签进行筛选
@@ -162,53 +151,45 @@ namespace OMDb.WinUI3.ViewModels
             set
             {
                 SetProperty(ref isFilterLabelProperty, value);
-                UpdateEntryListAsync();
+                UpdateEntryList();
             }
         }
-
         private ObservableCollection<EntrySortInfoTree> _entrySortInfoTrees = new ObservableCollection<EntrySortInfoTree>();
         public ObservableCollection<EntrySortInfoTree> EntrySortInfoTrees
         {
             get => _entrySortInfoTrees;
             set => SetProperty(ref _entrySortInfoTrees, value);
         }
-
         private EntrySortInfoTree _entrySortInfoCurrent;
         public EntrySortInfoTree EntrySortInfoCurrent
         {
             get => _entrySortInfoCurrent;
             set => SetProperty(ref _entrySortInfoCurrent, value);
         }
-
-
         private ObservableCollection<EntrySortInfoResult> _entrySortInfoResults = new ObservableCollection<EntrySortInfoResult>();
         public ObservableCollection<EntrySortInfoResult> EntrySortInfoResults
         {
             get => _entrySortInfoResults;
             set => SetProperty(ref _entrySortInfoResults, value);
         }
-
         private EntrySortInfoResult _entrySortInfoResultCurrent;
         public EntrySortInfoResult EntrySortInfoResultCurrent
         {
             get => _entrySortInfoResultCurrent;
             set => SetProperty(ref _entrySortInfoResultCurrent, value);
         }
-
         private ObservableCollection<LabelClassTree> _labelClassTrees = new ObservableCollection<LabelClassTree>();
         public ObservableCollection<LabelClassTree> LabelClassTrees
         {
             get => _labelClassTrees;
             set => SetProperty(ref _labelClassTrees, value);
         }
-
         private ObservableCollection<LabelPropertyTree> _labelPropertyTrees = new ObservableCollection<LabelPropertyTree>();
         public ObservableCollection<LabelPropertyTree> LabelPropertyTrees
         {
             get => _labelPropertyTrees;
             set => SetProperty(ref _labelPropertyTrees, value);
         }
-
         private int _minTime;
         public int MinTime
         {
@@ -229,18 +210,16 @@ namespace OMDb.WinUI3.ViewModels
                 SetProperty(ref _maxTime, value);
             }
         }
-
         private double _minRank;
         public double MinRank
         {
             get => _minRank;
-            set 
+            set
             {
                 SetProperty(ref _minRank, value);
                 UpdateEntrySingle();
             }
         }
-
         private MaxMinDateModel _maxMinDate;
         public MaxMinDateModel MaxMinDate
         {

@@ -85,7 +85,7 @@
         </Grid>
         <Grid Grid.Row="1" Visibility="Collapsed">
             <ListView
-                x:Name="lv_edc"
+                x:Name="LV_EntryDetailCollection_Obsolete"
                 Margin="0,20,0,0"
                 ItemsSource="{x:Bind VM.EntryDetailCollection}"
                 SelectionMode="Extended">
@@ -159,12 +159,12 @@
                 </Grid.ColumnDefinitions>
                 <!--单据头-->
                 <ListView
-                    x:Name="ldv_edc"
+                    x:Name="LV_EntryDetailCollection"
                     Grid.Column="0"
                     Margin="0,20,0,0"
-                    ItemClick="ldv_edc_click"
+                    ItemClick="LV_EntryDetailCollection_Click"
                     ItemsSource="{x:Bind VM.EntryDetailCollection, Mode=TwoWay}"
-                    SelectionChanged="ldv_edc_SelectionChanged"
+                    SelectionChanged="LV_EntryDetailCollection_SelectionChanged"
                     SelectionMode="Extended">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:EntryDetail">
@@ -224,7 +224,7 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox
-                                            x:Name="tb_ctmc"
+                                            x:Name="TB_EntryName"
                                             Grid.Column="1"
                                             Width="435"
                                             Height="20"
@@ -240,7 +240,7 @@
                                         <StackPanel Margin="14,10,0,0" Orientation="Horizontal">
                                             <TextBlock Margin="0,0,0,0" Text="詞條路徑：" />
                                             <TextBlock
-                                                x:Name="tb_ctlj"
+                                                x:Name="TB_EntryPath"
                                                 Width="960"
                                                 Margin="0,0,0,0"
                                                 Text="{Binding VM_Detail.EntryDetail.FullEntryPath, Mode=TwoWay}" />
@@ -250,7 +250,7 @@
                                                 Margin="0,0,0,0"
                                                 Text="存储模式：" />
                                             <TextBlock
-                                                x:Name="tb_ccms"
+                                                x:Name="TB_SaveMode"
                                                 Width="960"
                                                 Margin="0,0,0,0" />
                                         </StackPanel>
@@ -261,7 +261,7 @@
                                                 Margin="0,0,0,0"
                                                 Text="资源路径：" />
                                             <TextBlock
-                                                x:Name="tb_zylj"
+                                                x:Name="TB_ResourcePath"
                                                 Width="960"
                                                 Margin="0,0,0,0" />
                                         </StackPanel>
@@ -273,7 +273,7 @@
                                     <!--  上映日期  -->
                                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                                         <TextBlock Margin="8,5,17,0" Text="上映日期：" />
-                                        <CalendarDatePicker x:Name="tb_syrq" Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
+                                        <CalendarDatePicker x:Name="TB_ReleaseDate" Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
                                             <CalendarDatePicker.RenderTransform>
                                                 <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
                                             </CalendarDatePicker.RenderTransform>
@@ -287,7 +287,7 @@
                                             Margin="29,5,5,0"
                                             Text="評分：" />
                                         <RatingControl
-                                            x:Name="tb_pf"
+                                            x:Name="RC_Rate"
                                             Margin="0,3,0,0"
                                             HorizontalAlignment="Left"
                                             Value="{x:Bind VM_Detail.MyRating, Mode=TwoWay}" />

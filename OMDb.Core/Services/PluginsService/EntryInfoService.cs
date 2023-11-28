@@ -12,29 +12,16 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Services.PluginsService
 {
-    public class EntryInfoService: PluginsBaseService
+    public class EntryInfoService : PluginsBaseService
     {
-        public static Task<Dictionary<string,object>> GetEntryInfo(string keyword, string dllName)
+        public static async Task<Dictionary<string, object>> GetEntryInfoNet(string keyword, string dllName)
         {
             if (keyword.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                return Task.FromResult(new Dictionary<string, object>());
-            }
-            if (Rates != null)
-            {
-                foreach (var entryInfo in EntryInfos)
-                {
-                    if (entryInfo.GetType().Assembly.GetName().Name.Equals(dllName))
-                    {
-                        return (Task.Run<Dictionary<string, object>>(()=> entryInfo.EntryInfo(keyword)));
-                    }
-                }
                 return null;
-            }
-            else
-            {
+            if (EntryInfoExports == null)
                 return null;
-            }
+            var export = EntryInfoExports.FirstOrDefault(a => a.GetType().Assembly.GetName().Name.Equals(dllName));
+            return await Task.Run<Dictionary<string, object>>(() => export.GetEntryInfoNet(keyword));
         }
 
     }

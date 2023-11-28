@@ -30,7 +30,7 @@ namespace OMDb.Core.Utils.PathUtils
                 lstFullTempFilePath.Add(newTempFile);
             }
 
-            if (ms!=null)
+            if (ms != null)
             {
                 using (var fs = File.Create(newTempFile))
                     ms.WriteTo(fs);
@@ -48,10 +48,9 @@ namespace OMDb.Core.Utils.PathUtils
         public static string GetTempFile(string fileName)
         {
             var fullTempFilePath = Path.Combine(Path.GetTempPath(), fileName ?? _defaultFileName);
-            if (lstFullTempFilePath.Contains(fullTempFilePath))
-                return fullTempFilePath;
-            else
-                return string.Empty;
+            if (!(lstFullTempFilePath.Contains(fullTempFilePath)))
+                lstFullTempFilePath.Add(fullTempFilePath);
+            return fullTempFilePath;
         }
 
 

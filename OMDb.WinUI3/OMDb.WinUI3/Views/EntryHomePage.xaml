@@ -216,7 +216,6 @@
                                                 <TextBlock FontSize="16" Text="标签(属性)" />
                                             </PivotItem.Header>
                                             <StackPanel>
-
                                                 <CheckBox
                                                     Margin="12,0,0,0"
                                                     HorizontalAlignment="Left"

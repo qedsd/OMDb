@@ -16,25 +16,26 @@ using OMDb.Core.Utils;
 namespace OMDb.Douban
 {
     [Export(typeof(IEntryInfo))]
-    public class EntryInfo : IEntryInfo
+    public class DouBanEntryInfo : IEntryInfo
     {
-        Dictionary<string, object> IEntryInfo.EntryInfo(string keyword)
+        Dictionary<string, object> dic = new Dictionary<string, object>();
+        Dictionary<string, object> IEntryInfo.GetEntryInfoNet(string keyword)
         {
-            Dictionary<string, object> dic = new Dictionary<string, object>();
             try
             {
+                dic.Clear();
                 HtmlWeb htmlWeb = new HtmlWeb();
                 var name = keyword;
                 var url_Sereach = ($"https://www.douban.com/search?cat=1002&q={name}");
                 HtmlDocument htmlDoc_Sereach = htmlWeb.Load(url_Sereach);
-                var url = htmlDoc_Sereach.DocumentNode.SelectSingleNode(@"//*[@id=""content""]/div/div[1]/div[3]/div[2]/div[1]/div[2]/div/h3/a").Attributes["href"].Value;
+                var url = htmlDoc_Sereach.DocumentNode.SelectSingleNode(@"//*[@id=""content""]/div/div[1]/div[3]/div/div[1]/div[2]/div/h3/a").Attributes["href"].Value;
                 HtmlDocument htmlDoc = htmlWeb.Load(url);
-                GetActor(htmlDoc, ref dic);//主演
-                GetRate(htmlDoc, ref dic);//评分
-                GetCover(htmlDoc, ref dic);//封面
-                GetDirector(htmlDoc, ref dic);//导演
-                GetDate(htmlDoc, ref dic);//上映日期
-                GetClass(htmlDoc, ref dic);//分类
+                GetActor(htmlDoc);//主演
+                GetRate(htmlDoc);//评分
+                GetCover(htmlDoc);//封面
+                GetDirector(htmlDoc);//导演
+                GetDate(htmlDoc);//上映日期
+                GetClass(htmlDoc);//分类
             }
             catch (Exception ex)
             {
@@ -50,7 +51,7 @@ namespace OMDb.Douban
         /// </summary>
         /// <param name="htmlDoc"></param>
         /// <param name="dic"></param>
-        private void GetCover(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetCover(HtmlDocument htmlDoc)
         {
             try
             {
@@ -70,7 +71,7 @@ namespace OMDb.Douban
         /// </summary>
         /// <param name="htmlDoc"></param>
         /// <param name="dic"></param>
-        private void GetRate(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetRate(HtmlDocument htmlDoc)
         {
             try
             {
@@ -88,7 +89,7 @@ namespace OMDb.Douban
         /// </summary>
         /// <param name="htmlDoc"></param>
         /// <param name="dic"></param>
-        private void GetActor(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetActor(HtmlDocument htmlDoc)
         {
             try
             {
@@ -104,7 +105,7 @@ namespace OMDb.Douban
         }
 
 
-        private void GetDirector(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetDirector(HtmlDocument htmlDoc)
         {
             try
             {
@@ -119,7 +120,7 @@ namespace OMDb.Douban
             }
         }
 
-        private void GetDate(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetDate(HtmlDocument htmlDoc)
         {
             try
             {
@@ -147,7 +148,7 @@ namespace OMDb.Douban
             }
         }
 
-        private void GetClass(HtmlDocument htmlDoc, ref Dictionary<string, object> dic)
+        private void GetClass(HtmlDocument htmlDoc)
         {
             try
             {
