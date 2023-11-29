@@ -103,10 +103,13 @@ namespace OMDb.WinUI3.Services
             await Task.Run(() =>
             {
                 TreatEntry(ed);//处理词条主表Entry
+                Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
+
                 TreatEntrySource(ed);//资源路径表EntrySource更新
+
                 TreatLabelLink(ed);//词条标签关联表
 
-                Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
+                TreatEntryName(ed);//资源路径表EntrySource更新
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
             });
         }
@@ -116,14 +119,14 @@ namespace OMDb.WinUI3.Services
         /// <param name="ed"></param>
         private static void TreatLabelLink(EntryDetail ed)
         {
-            if (ed.Labels?.Count != 0)
+            if (!ed.Labels.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.Labels.Count);
                 ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCID = p.LCID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
                 Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }
-            if (ed.Lpdbs?.Count != 0)
+            if (ed.Lpdbs.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
                 List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(ed.Lpdbs.Count);
                 ed.Lpdbs.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPID = p.LPID, DbId = ed.Entry.DbId }));
@@ -171,8 +174,19 @@ namespace OMDb.WinUI3.Services
                 System.IO.File.Copy(ed.FullCoverImgPath, newFullImgCoverPath, true);//覆盖保存封面
             ed.FullCoverImgPath = newFullImgCoverPath;
             ed.Entry.MyRating = ed.Entry.MyRating <= 1 ? 1 : ed.Entry.MyRating;
+            ed.Entry.CreateTime = ed.Entry.CreateTime <= new DateTime(1900, 1, 1) ? DateTime.Now : ed.Entry.CreateTime;
+            ed.Entry.LastWatchTime= ed.Entry.LastWatchTime <= new DateTime(1900, 1, 1) ? DateTime.Now : ed.Entry.LastWatchTime;
+            ed.Entry.LastUpdateTime = DateTime.Now;
             #endregion
         }
+        private static void TreatEntryName(EntryDetail ed)
+        {
+            #region 词条表：  詞條路徑 and 封面路徑 取相對地址保存
+            if (ed.Entry.Name == null)
+                ed.Entry.Name = ed.Name;
+            #endregion
+        }
+        
         /// <summary>
         /// 创建元数据(MataData)
         /// </summary>

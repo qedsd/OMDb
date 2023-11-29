@@ -20,12 +20,14 @@
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
 
-                <Button Margin="10,0,0,0" Content="新增行" />
-                <Button Margin="10,0,0,0" Content="删除行" />
-                <Border
-                    Width="1"
-                    Margin="30,0,30,0"
-                    BorderThickness="1" />
+                <!--<Button Margin="10,0,0,0"  Click="New_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="Add" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="新增"/>
+                    </StackPanel>
+                </Button>-->
+
+
                 <ComboBox
                     Width="200"
                     Margin="10,0,0,0"
@@ -36,7 +38,11 @@
                     x:Name="btn_FolderPicker"
                     Margin="10,0,0,0"
                     Click="SelectFolders_Click"
-                    Content="选择文件夹">
+                    >
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xED25;" FontSize="20"  Margin="0,0,5,0"/>
+                        <TextBlock Text="选择文件夹" Margin="0,0,5,0"/>
+                    </StackPanel>
                     <Button.Flyout>
                         <Flyout x:Name="fly" Placement="Bottom">
                             <Grid x:Name="flyGrid" Height="500">
@@ -67,10 +73,17 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
+                <Button Margin="10,0,0,0" Click="Remove_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="Delete" Width="25" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="移除" Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button>
                 <Border
                     Width="1"
                     Margin="30,0,30,0"
                     BorderThickness="1" />
+
                 <DropDownButton
                     x:Name="ddb"
                     Width="200"
@@ -79,8 +92,13 @@
                 <Button
                     x:Name="btn_GetInfoBatch"
                     Margin="10,0,0,0"
-                    Click="GetInfoBatch_Click"
-                    Content="获取信息" />
+                    Click="GetInfoBatch_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xe896;" FontSize="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="获取信息" Margin="0,0,5,0"/>
+                        
+                    </StackPanel>
+                </Button> 
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="Collapsed">
@@ -210,7 +228,7 @@
                                     Click="Button_CoverImg_Click">
                                     <Grid>
                                         <StackPanel HorizontalAlignment="Center">
-                                            <SymbolIcon Symbol="Add" />
+                                            <SymbolIcon Symbol="Add"/>
                                             <TextBlock Margin="0,10,0,0" Text="添加封面图" />
                                         </StackPanel>
                                         <controls:ImageEx

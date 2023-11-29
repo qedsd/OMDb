@@ -78,13 +78,9 @@ namespace OMDb.WinUI3.Dialogs
             AddEntryBatchDialog content = new AddEntryBatchDialog();
             dialog.ContentFrame.Content = content;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-                return null;
-            }
+                return content.VM.EntryDetailCollection.ToList().DepthClone<List<EntryDetail>>();
             else
-            {
                 return null;
-            }
         }
 
         private void SelectFolders_Click(object sender, RoutedEventArgs e)
@@ -106,10 +102,13 @@ namespace OMDb.WinUI3.Dialogs
                 foreach (var item in result)
                 {
                     ExplorerItem exp = item as ExplorerItem;
+                    var path = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
+                    if (this.VM.EntryDetailCollection.Select(a => a.FullEntryPath).Contains(path))
+                        continue;
                     EntryDetail ed = new EntryDetail();
                     ed.FullCoverImgPath = Services.CommonService.GetCover(exp.Name);
                     ed.Name = System.IO.Path.GetFileName(exp.Name);
-                    ed.FullEntryPath = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
+                    ed.FullEntryPath = path;
                     ed.Entry = new Core.Models.Entry();
                     ed.Entry.DbId = VM.SelectedEnrtyStorage.StorageName;
                     ed.PathFolder = ((OMDb.WinUI3.Models.ExplorerItem)item).FullName;
@@ -138,13 +137,13 @@ namespace OMDb.WinUI3.Dialogs
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                var entryInfo = new Dictionary<string, object>();
+                var entryInfoNet = new Dictionary<string, object>();
 
-                entryInfo = await EntryInfoService.GetEntryInfoNet(item.Name, Convert.ToString(this.ddb.Content));
-
+                entryInfoNet = await EntryInfoService.GetEntryInfoNet(item.Name, Convert.ToString(this.ddb.Content));
+                #region TrySetEntryDeatil
                 try
                 {
-                    var coverStream = (MemoryStream)(entryInfo["封面"]);
+                    var coverStream = (MemoryStream)(entryInfoNet["封面"]);
                     var newFileName = item.Name + ".jpg";
                     TempImageUtils.CreateTempImage(newFileName, coverStream);
                     item.FullCoverImgPath = TempPathUtils.GetTempFile(newFileName);
@@ -154,11 +153,11 @@ namespace OMDb.WinUI3.Dialogs
                     Core.Utils.Logger.Error("封面" + ex.Message);
                 }
 
-                entryInfo.TryGetValue("评分", out object rate);
+                entryInfoNet.TryGetValue("评分", out object rate);
                 item.Entry.MyRating = Convert.ToDouble(rate);
-                entryInfo.TryGetValue("上映日期", out object date);
-                item.Entry.ReleaseDate= Convert.ToDateTime(date ?? DateTime.Now);
-                
+                entryInfoNet.TryGetValue("上映日期", out object date);
+                item.Entry.ReleaseDate = Convert.ToDateTime(date ?? DateTime.Now);
+                #endregion
                 if (VM_Detail.EntryDetail == item)
                     SetEntryDetailInfo();
 
@@ -287,5 +286,28 @@ namespace OMDb.WinUI3.Dialogs
             this.RC_Rate.Value = this.VM_Detail.Entry.MyRating;
         }
 
+        private void New_Click(object sender, RoutedEventArgs e)
+        {
+            VM.EntryDetailCollection.Add(new EntryDetail());
+        }
+
+        private void Remove_Click(object sender, RoutedEventArgs e)
+        {
+            var needRemoveitemList = new List<EntryDetail>();
+            foreach (var item in this.LV_EntryDetailCollection.SelectedItems)
+            {
+                var needRemoveitem = item as EntryDetail;
+                needRemoveitemList.Add(needRemoveitem);
+            }
+            needRemoveitemList.ForEach(a => { this.VM.EntryDetailCollection.Remove(a); });
+
+
+        }
+
+
+        private void TrySetEntryDeatil(ref EntryDetail item, Dictionary<string, object> entryInfoNet)
+        {
+
+        }
     }
 }
