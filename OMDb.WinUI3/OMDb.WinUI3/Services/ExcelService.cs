@@ -6,6 +6,7 @@ using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
@@ -26,7 +27,7 @@ namespace OMDb.WinUI3.Services
     {
         public static async void ExportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
         {
-            await Task.Run(()=> ExportExcel(filePath, enrtyStorage));
+            await Task.Run(() => ExportExcel(filePath, enrtyStorage));
         }
         /// <summary>
         /// 导出Excel
@@ -135,10 +136,10 @@ namespace OMDb.WinUI3.Services
                     case SaveType.Files:
                         var lstPath = Convert.ToString(path_source).Split(">.<", StringSplitOptions.RemoveEmptyEntries).ToList();
                         var lstPath_Full = new List<string>();
+                        if (lstPath.IsNullOrEmptyOrWhiteSpazeOrCountZero()) 
+                            break;
                         foreach (var path in lstPath)
-                        {
                             lstPath_Full.Add(enrtyStorage.StoragePath + path);
-                        }
                         row["path_source"] = string.Format("<{0}>", string.Join(">,<", lstPath_Full));
                         break;
                     case SaveType.Local:
@@ -160,7 +161,7 @@ namespace OMDb.WinUI3.Services
             dir.Add("MyRating", "評分");
 
             label_lp.ForEach(s => dir.Add(s.Name, s.Name));
-            dir.Add("Classification", "标签(分類)");
+            dir.Add("Classification", "分類");
 
             dir.Add("SaveType", "存儲模式");
             dir.Add("path_source", "存儲地址");
