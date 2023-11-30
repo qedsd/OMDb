@@ -264,6 +264,7 @@ namespace OMDb.WinUI3.Helpers
                 if (rowIndex == 0)
                 {
                     #region 表头及样式
+                    if (!strHeaderText.IsNullOrEmptyOrWhiteSpazeOrCountZero())
                     {
                         string sheetName = strHeaderText + (sheetnum == 0 ? "" : sheetnum.ToString());
                         if (workbook.GetSheetIndex(sheetName) >= 0)
@@ -283,12 +284,34 @@ namespace OMDb.WinUI3.Helpers
                         font.Boldweight = 700;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
+                        #region 列头及样式
+                        {
+                            IRow headerRowColumn = sheet.CreateRow(1);
+                            ICellStyle headStyleColumn = workbook.CreateCellStyle();
+                            headStyleColumn.Alignment = HorizontalAlignment.Center;
+                            IFont fontColumn = workbook.CreateFont();
+                            fontColumn.FontHeightInPoints = 10;
+                            fontColumn.Boldweight = 700;
+                            headStyleColumn.SetFont(fontColumn);
+
+
+                            foreach (DataColumn column in dtSource.Columns)
+                            {
+                                headerRowColumn.CreateCell(column.Ordinal).SetCellValue(dir[column.ColumnName]);
+                                headerRowColumn.GetCell(column.Ordinal).CellStyle = headStyleColumn;
+                                //设置列宽
+                                sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256 * 2);
+                            }
+                        }
+                        #endregion
+                        rowIndex = 2;
                     }
                     #endregion
-
+                    
                     #region 列头及样式
+                    else
                     {
-                        IRow headerRow = sheet.CreateRow(1);
+                        IRow headerRow = sheet.CreateRow(0);
                         ICellStyle headStyle = workbook.CreateCellStyle();
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
@@ -304,11 +327,12 @@ namespace OMDb.WinUI3.Helpers
                             //设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256 * 2);
                         }
+                        rowIndex = 1;
                     }
 
                     #endregion
 
-                    rowIndex = 2;
+
                 }
                 #endregion
 
@@ -444,7 +468,6 @@ namespace OMDb.WinUI3.Helpers
                     readfs.Close();
                     using (FileStream writefs = new FileStream(strFileName, FileMode.Create, FileAccess.Write))
                     {
-
                         ExportDTI(pageDataTable, strHeaderText, writefs, readfsm, dir, i);
                     }
                     readfsm.Close();
