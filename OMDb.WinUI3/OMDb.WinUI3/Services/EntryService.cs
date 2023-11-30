@@ -105,11 +105,11 @@ namespace OMDb.WinUI3.Services
                 TreatEntry(ed);//处理词条主表Entry
                 Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
 
-                TreatEntrySource(ed);//资源路径表EntrySource更新
+                TreatEntrySource(ed);//资源路径表EntrySource处理及更新
 
                 TreatLabelLink(ed);//词条标签关联表
 
-                TreatEntryName(ed);//资源路径表EntrySource更新
+                TreatEntryName(ed);//词条名称表EntryName
                 Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
             });
         }

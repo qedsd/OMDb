@@ -33,6 +33,7 @@ using static System.Net.WebRequestMethods;
 using OMDb.Core.Services;
 using OMDb.Core.Utils.Extensions;
 using OMDb.Core.Utils.PathUtils;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -102,16 +103,22 @@ namespace OMDb.WinUI3.Dialogs
                 foreach (var item in result)
                 {
                     ExplorerItem exp = item as ExplorerItem;
+                    var entryName= System.IO.Path.GetFileName(exp.Name);
                     var path = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
+
                     if (this.VM.EntryDetailCollection.Select(a => a.FullEntryPath).Contains(path))
                         continue;
                     EntryDetail ed = new EntryDetail();
                     ed.FullCoverImgPath = Services.CommonService.GetCover(exp.Name);
-                    ed.Name = System.IO.Path.GetFileName(exp.Name);
+                    ed.Name = entryName;
                     ed.FullEntryPath = path;
+                    ed.PathFolder = ((OMDb.WinUI3.Models.ExplorerItem)item).FullName;
+
                     ed.Entry = new Core.Models.Entry();
                     ed.Entry.DbId = VM.SelectedEnrtyStorage.StorageName;
-                    ed.PathFolder = ((OMDb.WinUI3.Models.ExplorerItem)item).FullName;
+                    ed.Entry.Name = entryName;
+                    ed.Entry.SaveType = Core.Enums.SaveType.Folder;
+                    
                     VM.EntryDetailCollection.Add(ed);
                 }
             }
@@ -124,7 +131,11 @@ namespace OMDb.WinUI3.Dialogs
         }
 
 
-
+        /// <summary>
+        /// 获取互联网媒体信息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void GetInfoBatch_Click(object sender, RoutedEventArgs e)
         {
             if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
@@ -170,19 +181,28 @@ namespace OMDb.WinUI3.Dialogs
             //this.btn_GetInfo.IsEnabled = true;
         }
 
-        private void LV_EntryDetailCollection_Click(object sender, ItemClickEventArgs e)
-        {
-
-        }
-
+        /// <summary>
+        /// 名称变更->词条存储地址变更
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EntryName_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
-
-        private void Button_CoverImg_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 点击封面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Button_CoverImg_Click(object sender, RoutedEventArgs e)
         {
-
+            var file = await Helpers.PickHelper.PickImgAsync();
+            if (file != null)
+            {
+                VM_Detail.Entry.CoverImg = file.Path;
+                Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));
+            }
         }
 
 

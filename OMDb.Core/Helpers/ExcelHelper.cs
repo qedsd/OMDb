@@ -3,6 +3,7 @@ using NPOI.SS.Formula.Eval;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
+using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -79,13 +80,12 @@ namespace OMDb.WinUI3.Helpers
                 #region 新建表，填充表头，填充列头，样式
                 if (rowIndex == 0)
                 {
-                    string sheetName = strHeaderText + (sheetnum == 0 ? "" : sheetnum.ToString());
-                    if (workbook.GetSheetIndex(sheetName) >= 0)
-                    {
-                        workbook.RemoveSheetAt(workbook.GetSheetIndex(sheetName));
-                    }
+                    string sheetName = "Sheet" + (sheetnum+1);
+                    /*if (workbook.GetSheetIndex(sheetName) >= 0)
+                        workbook.RemoveSheetAt(workbook.GetSheetIndex(sheetName));*/
                     sheet = workbook.CreateSheet(sheetName);
                     #region 表头及样式
+                    if (!sheetName.IsNullOrEmptyOrWhiteSpazeOrCountZero())
                     {
                         sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
                         IRow headerRow = sheet.CreateRow(0);
@@ -98,16 +98,30 @@ namespace OMDb.WinUI3.Helpers
                         font.Boldweight = 700;
                         headStyle.SetFont(font);
                         headerRow.GetCell(0).CellStyle = headStyle;
-
                         rowIndex = 1;
+                        IRow headerRowColunm = sheet.CreateRow(1);//第二行设置列名
+                        ICellStyle headStyleColumn = workbook.CreateCellStyle();
+                        headStyleColumn.Alignment = HorizontalAlignment.Center;
+                        IFont fontColumn = workbook.CreateFont();
+                        fontColumn.FontHeightInPoints = 10;
+                        fontColumn.Boldweight = 700;
+                        headStyleColumn.SetFont(fontColumn);
+                        //写入列标题
+                        foreach (DataColumn column in dtSource.Columns)
+                        {
+                            headerRowColunm.CreateCell(column.Ordinal).SetCellValue(dir[column.ColumnName]);
+                            headerRowColunm.GetCell(column.Ordinal).CellStyle = headStyleColumn;
+                            //设置列宽
+                            sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256 * 2);
+                        }
+                        rowIndex = 2;
                     }
                     #endregion
 
                     #region 列头及样式
-
-                    if (rowIndex == 1)
+                    else
                     {
-                        IRow headerRow = sheet.CreateRow(1);//第二行设置列名
+                        IRow headerRow = sheet.CreateRow(0);//第二行设置列名
                         ICellStyle headStyle = workbook.CreateCellStyle();
                         headStyle.Alignment = HorizontalAlignment.Center;
                         IFont font = workbook.CreateFont();
@@ -122,7 +136,7 @@ namespace OMDb.WinUI3.Helpers
                             //设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256 * 2);
                         }
-                        rowIndex = 2;
+                        rowIndex = 1;
                     }
                     #endregion
                 }

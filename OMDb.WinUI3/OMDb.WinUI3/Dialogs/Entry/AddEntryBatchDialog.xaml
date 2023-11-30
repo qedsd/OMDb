@@ -180,7 +180,6 @@
                     x:Name="LV_EntryDetailCollection"
                     Grid.Column="0"
                     Margin="0,20,0,0"
-                    ItemClick="LV_EntryDetailCollection_Click"
                     ItemsSource="{x:Bind VM.EntryDetailCollection, Mode=TwoWay}"
                     SelectionChanged="LV_EntryDetailCollection_SelectionChanged"
                     SelectionMode="Extended">

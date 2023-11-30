@@ -24,7 +24,10 @@ namespace OMDb.WinUI3.Services
 {
     public static class ExcelService
     {
-
+        public static async void ExportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        {
+            await Task.Run(()=> ExportExcel(filePath, enrtyStorage));
+        }
         /// <summary>
         /// 导出Excel
         /// </summary>
@@ -47,7 +50,7 @@ namespace OMDb.WinUI3.Services
             var result_EntryLabelClass = Core.Services.EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
             var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
-                       
+
             DataTable dataTable = new DataTable();//創建數據表 
 
             dataTable.Columns.Add("Name", typeof(string));//词条名称
@@ -55,7 +58,7 @@ namespace OMDb.WinUI3.Services
             dataTable.Columns.Add("ReleaseDate", typeof(string));
             dataTable.Columns.Add("MyRating", typeof(double));
             label_lp.Where(a => a.Level == 1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));//属性标签列
-            
+
             dataTable.Columns.Add("Classification", typeof(string));//分類列
             dataTable.Columns.Add("SaveType", typeof(string));//存储模式
             dataTable.Columns.Add("path_source", typeof(string));//存储路径
@@ -119,8 +122,9 @@ namespace OMDb.WinUI3.Services
 
                 row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry));
                 row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry), Convert.ToString(path_cover));
+                var saveMode = (Core.Enums.SaveType)(Convert.ToInt16(saveType));
 
-                var saveMode = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
+                var saveMode2 = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
                 row["SaveType"] = saveMode;
                 switch (saveMode)
                 {
@@ -151,29 +155,33 @@ namespace OMDb.WinUI3.Services
             //DataTable的列名和excel的列名对应字典，因为excel的列名一般是中文的，DataTable的列名是英文的，字典主要是存储excel和DataTable列明的对应关系，当然我们也可以把这个对应关系存在配置文件或者其他地方
             Dictionary<string, string> dir = new Dictionary<string, string>();
             dir.Add("Name", "詞條名稱");
-            dir.Add("Alias", "别稱");
+            dir.Add("Alias", "詞條别稱");
             dir.Add("ReleaseDate", "發行日期");
             dir.Add("MyRating", "評分");
 
             label_lp.ForEach(s => dir.Add(s.Name, s.Name));
-            dir.Add("Classification", "分類");
+            dir.Add("Classification", "标签(分類)");
 
             dir.Add("SaveType", "存儲模式");
             dir.Add("path_source", "存儲地址");
             dir.Add("path_entry", "詞條路徑");
             dir.Add("path_cover", "封面路徑");
             //使用helper类导出DataTable数据到excel表格中,参数依次是 （DataTable数据源;  excel表名;  excel存放位置的绝对路径; 列名对应字典; 是否清空以前的数据，设置为false，表示内容追加; 每个sheet放的数据条数,如果超过该条数就会新建一个sheet存储）
-            ExcelHelper.ExportDTtoExcel(dataTable, "Info表", filePath, dir, true);
+            ExcelHelper.ExportDTtoExcel(dataTable, null, filePath, dir, true);
 
         }
 
+        public static async void ImportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        {
+            await Task.Run(() => ImportExcel(filePath, enrtyStorage));
+        }
 
         /// <summary>
         /// 从Excel中导入词条数据
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="enrtyStorage"></param>
-        public static async void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
+        public static void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
         {
             var msg = new StringBuilder();
             if (string.IsNullOrEmpty(filePath)) return;
@@ -182,7 +190,7 @@ namespace OMDb.WinUI3.Services
             //DataTable的列名和excel的列名对应字典
 
             //读取数据到DataTable，参数依此是（excel文件路径，列名所在行，sheet索引）
-            DataTable dt = ExcelHelper.ImportExceltoDt(filePath, 1, 0);
+            DataTable dt = ExcelHelper.ImportExceltoDt(filePath, 0, 0);
             //遍历DataTable---------------------------
 
             //基本信息
@@ -254,16 +262,24 @@ namespace OMDb.WinUI3.Services
                             switch (baseInfo.FirstOrDefault())
                             {
                                 case "詞條名稱":
+                                    var entryName = Convert.ToString(row[n]);
+                                    endbs.Add(new EntryNameDb()
+                                    {
+                                        Name = entryName,
+                                        EntryId = eid,
+                                        IsDefault = true,
+                                    });
+                                    break;
+                                case "詞條別稱":
                                     var strName = Convert.ToString(row[n]);
                                     var lstName = strName.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();//根据分隔符构建list
-                                    int c = 0;
                                     foreach (var name in lstName)
                                     {
                                         endbs.Add(new EntryNameDb()
                                         {
                                             Name = name,
                                             EntryId = eid,
-                                            IsDefault = c == 0 ? true : false,
+                                            IsDefault = false,
                                         });
                                     }
                                     break;

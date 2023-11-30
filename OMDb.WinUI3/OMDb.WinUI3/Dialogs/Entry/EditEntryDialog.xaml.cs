@@ -323,7 +323,6 @@ namespace OMDb.WinUI3.Dialogs
             {
                 VM.Entry.CoverImg = file.Path;
                 Image_CoverImg.Source = new BitmapImage(new Uri(file.Path));
-                SvgImageSourceLoadStatus adf;
             }
         }
 
