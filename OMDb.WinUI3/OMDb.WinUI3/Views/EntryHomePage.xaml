@@ -101,14 +101,17 @@
                         <SplitButton.Flyout>
                             <Flyout Placement="Bottom">
                                 <StackPanel>
-                                    <Button Width="80" Command="{x:Bind VM.AddEntryCommand}">
+                                    <Button
+                                        Width="120"
+                                        Margin="-20,-15,-20,0"
+                                        Command="{x:Bind VM.AddEntryCommand}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="新增词条" />
                                         </StackPanel>
                                     </Button>
                                     <Button
-                                        Width="80"
-                                        Margin="0,5,0,0"
+                                        Width="120"
+                                        Margin="-20,0,-20,-18"
                                         Command="{x:Bind VM.AddEntryBatchCommand}">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="批量新增" />
@@ -157,14 +160,18 @@
                                                             MaxValue="{x:Bind VM.MaxTime, Mode=TwoWay}"
                                                             MinValue="{x:Bind VM.MinTime, Mode=TwoWay}" />
                                                         <StackPanel Margin="8,5,0,0" Orientation="Horizontal">
-                                                            <CalendarDatePicker Width="120" Date="{x:Bind VM.MinTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}" IsEnabled="False">
-                                                            </CalendarDatePicker>
+                                                            <CalendarDatePicker
+                                                                Width="120"
+                                                                Date="{x:Bind VM.MinTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}"
+                                                                IsEnabled="False" />
                                                             <TextBlock
                                                                 Margin="5,0,5,0"
                                                                 FontSize="20"
                                                                 Text="~" />
-                                                            <CalendarDatePicker Width="120" Date="{x:Bind VM.MaxTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}" IsEnabled="False">
-                                                            </CalendarDatePicker>
+                                                            <CalendarDatePicker
+                                                                Width="120"
+                                                                Date="{x:Bind VM.MaxTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}"
+                                                                IsEnabled="False" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Grid>
@@ -178,8 +185,7 @@
                                                         Maximum="5"
                                                         Minimum="1"
                                                         StepFrequency="0.1"
-                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}">
-                                                    </Slider>
+                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}" />
                                                     <RatingControl
                                                         Margin="12,0,0,0"
                                                         HorizontalAlignment="Left"
