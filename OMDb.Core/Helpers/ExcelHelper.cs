@@ -85,7 +85,7 @@ namespace OMDb.WinUI3.Helpers
                         workbook.RemoveSheetAt(workbook.GetSheetIndex(sheetName));*/
                     sheet = workbook.CreateSheet(sheetName);
                     #region 表头及样式
-                    if (!sheetName.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                    if (!strHeaderText.IsNullOrEmptyOrWhiteSpazeOrCountZero())
                     {
                         sheet.AddMergedRegion(new CellRangeAddress(0, 0, 0, dtSource.Columns.Count - 1));
                         IRow headerRow = sheet.CreateRow(0);
