@@ -15,6 +15,7 @@ namespace OMDb.Core.Services.PluginsService
     {
         public static IEnumerable<IRate> Rates;
         public static IEnumerable<IEntryInfo> EntryInfoExports;
+        public static IEnumerable<IEntryInfoDescription> EntryInfoDescriptionExports;
         public static void Init()
         {
             if (!System.IO.Directory.Exists(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins")))
@@ -28,6 +29,7 @@ namespace OMDb.Core.Services.PluginsService
             var conventions = new ConventionBuilder();
             conventions.ForTypesDerivedFrom<IRate>().Export<IRate>().Shared();
             conventions.ForTypesDerivedFrom<IEntryInfo>().Export<IEntryInfo>().Shared();
+            conventions.ForTypesDerivedFrom<IEntryInfoDescription>().Export<IEntryInfoDescription>().Shared();
 
             var configuration = new ContainerConfiguration().WithAssemblies(assembiles, conventions);
 
@@ -35,6 +37,7 @@ namespace OMDb.Core.Services.PluginsService
             {
                 Rates = container.GetExports<IRate>();
                 EntryInfoExports = container.GetExports<IEntryInfo>();
+                EntryInfoDescriptionExports= container.GetExports<IEntryInfoDescription>();
             }
         }
     }

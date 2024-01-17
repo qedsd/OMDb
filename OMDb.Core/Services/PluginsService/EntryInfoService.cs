@@ -1,4 +1,5 @@
-﻿using OMDb.Core.Interfaces;
+﻿using Newtonsoft.Json;
+using OMDb.Core.Interfaces;
 using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,27 @@ namespace OMDb.Core.Services.PluginsService
             if (EntryInfoExports == null)
                 return null;
             var export = EntryInfoExports.FirstOrDefault(a => a.GetType().Assembly.GetName().Name.Equals(dllName));
-            return await Task.Run<Dictionary<string, object>>(() => export.GetEntryInfoNet(keyword));
+
+            return await Task.Run<Dictionary<string, object>>(() =>
+            {
+                var result = export.GetEntryInfoNet(keyword);
+                return result;
+            });
         }
 
+        public static async Task<string> GetEntryInfoDescriptionNet(string keyword, string dllName)
+        {
+            if (keyword.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                return null;
+            if (EntryInfoDescriptionExports == null)
+                return null;
+            var export = EntryInfoDescriptionExports.FirstOrDefault(a => a.GetType().Assembly.GetName().Name.Equals(dllName));
+
+            return await Task.Run<string>(() =>
+            {
+                var result = export.GetEntryInfoDescriptionNet(keyword);
+                return result;
+            });
+        }
     }
 }

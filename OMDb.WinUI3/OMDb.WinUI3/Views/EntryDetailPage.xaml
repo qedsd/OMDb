@@ -227,7 +227,7 @@
             <mycontrols:LabelsControl
                 Margin="0,32,0,0"
                 HorizontalAlignment="Center"
-                LabelDbs="{x:Bind VM.Entry.Labels, Mode=TwoWay}"
+                LabelDbs="{x:Bind VM.Entry.LabelClassDbList, Mode=TwoWay}"
                 Mode="Add" />
             <Button
                 Margin="0,24,0,0"
@@ -236,23 +236,15 @@
                 Content="添加到片单" />
         </StackPanel>
         <!--  右侧滚动数据  -->
-        <ScrollViewer Grid.Column="1">
-            <StackPanel Margin="0,0,8,0">
+        <Grid Grid.Column="1">
+            <ScrollViewer>
+                <StackPanel Margin="0,0,8,0">
 
 
-                <!--  描述  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="描述" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="40" />
-                            </Grid.RowDefinitions>
-                            <TextBlock Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}" TextWrapping="WrapWholeWords" />
+                    <!--  描述  -->
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="描述" />
                             <Button
                                 Grid.Row="1"
                                 HorizontalAlignment="Center"
@@ -265,82 +257,109 @@
                                     Text="&#xE104;"
                                     ToolTipService.ToolTip="编辑" />
                             </Button>
-                        </Grid>
-                        <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Text="{x:Bind VM.Desc, Mode=TwoWay}" TextWrapping="Wrap" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Button
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{x:Bind VM.SaveDescCommand}">
-                                    <TextBlock
-                                        FontFamily="Segoe UI Symbol"
-                                        Text="&#xE105;"
-                                        ToolTipService.ToolTip="保存" />
-                                </Button>
-                                <Button
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{x:Bind VM.CancelEditDescCommand}">
-                                    <TextBlock
-                                        FontFamily="Segoe UI Symbol"
-                                        Text="&#xE10A;"
-                                        ToolTipService.ToolTip="取消" />
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </Grid>
-                </StackPanel>
 
-                <!--  图片  -->
-                <mycontrols:DropArea Caption="复制到图片文件夹" DropCommand="{x:Bind VM.DropImgCommand}">
-                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                        <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
-                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
-                            <Button
-                                Command="{x:Bind VM.OpenImgFolderCommand}"
-                                Style="{StaticResource ItemHeaderButton}"
-                                ToolTipService.ToolTip="打开文件夹">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe UI Symbol"
-                                    Text="&#xE169;" />
-                            </Button>
                         </StackPanel>
                         <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                        <Grid>
-                            <ScrollViewer
-                                x:Name="ImgScrollViewer"
-                                HorizontalScrollBarVisibility="Visible"
-                                HorizontalScrollMode="Enabled"
-                                VerticalScrollMode="Disabled">
-                                <ListBox
-                                    Background="Transparent"
-                                    ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
-                                    ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}"
-                                    ScrollViewer.HorizontalScrollMode="Disabled"
-                                    ScrollViewer.VerticalScrollMode="Disabled">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
-                                                <Image Height="300" Source="{Binding}" />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                    <ListBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <StackPanel Orientation="Horizontal" />
-                                        </ItemsPanelTemplate>
-                                    </ListBox.ItemsPanel>
-                                </ListBox>
-                            </ScrollViewer>
-                            <!--<Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
+                        <Grid Margin="10,0,0,0">
+                            <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource FalseToVisibleConverter}, Mode=OneWay}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="{x:Bind VM.Entry.Metadata.Desc, Mode=OneWay}" TextWrapping="WrapWholeWords" />
+
+                            </Grid>
+                            <Grid Visibility="{x:Bind VM.IsEditDesc, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Text="{x:Bind VM.Desc, Mode=TwoWay}" TextWrapping="Wrap" />
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <Button
+                                                VerticalAlignment="Bottom"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Command="{x:Bind VM.SaveDescCommand}">
+                                                <TextBlock
+                                                    FontFamily="Segoe UI Symbol"
+                                                    Text="&#xE105;"
+                                                    ToolTipService.ToolTip="保存" />
+                                            </Button>
+                                            <Button
+                                                VerticalAlignment="Bottom"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Command="{x:Bind VM.CancelEditDescCommand}">
+                                                <TextBlock
+                                                    FontFamily="Segoe UI Symbol"
+                                                    Text="&#xE10A;"
+                                                    ToolTipService.ToolTip="取消" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <DropDownButton
+                                            x:Name="ddb"
+                                            Width="116"
+                                            Margin="0,10,0,0"
+                                            Content="Email" />
+                                        <Button
+                                            x:Name="btn_GetInfo"
+                                            Width="80"
+                                            Margin="10,10,0,0"
+                                            Click="GetInfo_Click"
+                                            Content="获取描述" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                    <!--  图片  -->
+                    <mycontrols:DropArea Caption="复制到图片文件夹" DropCommand="{x:Bind VM.DropImgCommand}">
+                        <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                            <StackPanel AllowDrop="True" Style="{StaticResource ItemHeaderGrid}">
+                                <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="图片" />
+                                <Button
+                                    Command="{x:Bind VM.OpenImgFolderCommand}"
+                                    Style="{StaticResource ItemHeaderButton}"
+                                    ToolTipService.ToolTip="打开文件夹">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe UI Symbol"
+                                        Text="&#xE169;" />
+                                </Button>
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                            <Grid>
+                                <ScrollViewer
+                                    x:Name="ImgScrollViewer"
+                                    HorizontalScrollBarVisibility="Visible"
+                                    HorizontalScrollMode="Enabled"
+                                    VerticalScrollMode="Disabled">
+                                    <ListBox
+                                        Background="Transparent"
+                                        ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
+                                        ItemsSource="{x:Bind VM.Entry.Imgs, Mode=OneWay}"
+                                        ScrollViewer.HorizontalScrollMode="Disabled"
+                                        ScrollViewer.VerticalScrollMode="Disabled">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid CornerRadius="16" DoubleTapped="Image_DoubleTapped">
+                                                    <Image Height="300" Source="{Binding}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" />
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+                                    </ListBox>
+                                </ScrollViewer>
+                                <!--<Button VerticalAlignment="Center" Height="48" Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}" Padding="2"
                                 Click="PrevImg_Click">
                             <TextBlock Text="&#xEDD9;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
                         </Button>
@@ -349,279 +368,292 @@
                                 Click="NextImg_Click">
                             <TextBlock Text="&#xEDDA;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AccentTextFillColorSecondaryBrush}" FontSize="10"/>
                         </Button>-->
+                            </Grid>
+                        </StackPanel>
+                    </mycontrols:DropArea>
+
+                    <!--  视频文件  -->
+                    <mycontrols:DropArea Caption="复制到视频文件夹" DropCommand="{x:Bind VM.DropVideoCommand}">
+                        <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                            <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                                <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频" />
+                                <Button
+                                    Command="{x:Bind VM.OpenVideoFolderCommand}"
+                                    Style="{StaticResource ItemHeaderButton}"
+                                    ToolTipService.ToolTip="打开文件夹">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe UI Symbol"
+                                        Text="&#xE169;" />
+                                </Button>
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                            <Grid Margin="10,0,0,0">
+                                <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </mycontrols:DropArea>
+
+
+                    <!--  观看记录  -->
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="观看记录" />
+                            <Button
+                                Command="{x:Bind VM.AddHistoryCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
+                                ToolTipService.ToolTip="新增">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe UI Symbol"
+                                    Text="&#xE109;" />
+                            </Button>
+                            <!--<Button
+                                Width="160"
+                                Margin="0,0,0,0"
+                                HorizontalAlignment="Center"
+                                Command="{x:Bind VM.AddHistoryCommand}"
+                                Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
+                                <TextBlock
+                                    FontFamily="Segoe UI Symbol"
+                                    Text="&#xE109;"
+                                    ToolTipService.ToolTip="新增" />
+                            </Button>-->
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid Margin="10,0,0,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <ListBox
+                                Background="Transparent"
+                                ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
+                                ItemsSource="{x:Bind VM.Entry.WatchHistory, Mode=OneWay}"
+                                SelectionMode="Extended">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="DbModels:EntryWatchHistoryDb">
+                                        <Grid>
+                                            <Grid.ContextFlyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem
+                                                        Command="{Binding ElementName=page, Path=VM.EditHistoryCommand}"
+                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                        Text="编辑" />
+                                                    <MenuFlyoutItem
+                                                        Command="{Binding ElementName=page, Path=VM.DeleteHistoryCommand}"
+                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                        Text="删除" />
+                                                </MenuFlyout>
+                                            </Grid.ContextFlyout>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock VerticalAlignment="Center" Text="{x:Bind Time}" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="4,0,0,0"
+                                                VerticalAlignment="Center"
+                                                FontFamily="Segoe UI Symbol"
+                                                FontSize="10"
+                                                Foreground="MediumSeaGreen"
+                                                Text="&#xE082;"
+                                                ToolTipService.ToolTip="看完"
+                                                Visibility="{x:Bind Done, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
+                                            <TextBlock
+                                                Grid.Column="2"
+                                                HorizontalAlignment="Right"
+                                                MaxLines="3"
+                                                Text="{x:Bind Mark}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="WrapWholeWords"
+                                                ToolTipService.ToolTip="备注" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Grid
+                                Grid.Row="1"
+                                Margin="0,10,0,0"
+                                Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                        <DatePicker Date="{x:Bind VM.NewHistorDate, Mode=TwoWay}" />
+                                        <TimePicker Margin="10,0,0,0" Time="{x:Bind VM.NewHistorTime, Mode=TwoWay}" />
+                                        <CheckBox
+                                            Margin="10,0,0,0"
+                                            Content="观看完结"
+                                            IsChecked="{x:Bind VM.NewHistorDone, Mode=TwoWay}"
+                                            ToolTipService.ToolTip="完全看完，添加一次观看次数" />
+                                    </StackPanel>
+                                    <TextBox
+                                        Margin="0,10,0,0"
+                                        PlaceholderText="备注"
+                                        Text="{x:Bind VM.NewHistorMark, Mode=TwoWay}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Margin="10,40,0,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{x:Bind VM.SaveHistoryCommand}">
+                                        <TextBlock
+                                            FontFamily="Segoe UI Symbol"
+                                            Text="&#xE105;"
+                                            ToolTipService.ToolTip="保存" />
+                                    </Button>
+                                    <Button
+                                        VerticalAlignment="Bottom"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{x:Bind VM.CancelEditHistoryCommand}">
+                                        <TextBlock
+                                            FontFamily="Segoe UI Symbol"
+                                            Text="&#xE10A;"
+                                            ToolTipService.ToolTip="取消编辑" />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
                         </Grid>
                     </StackPanel>
-                </mycontrols:DropArea>
 
-
-
-                <!--  观看记录  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="观看记录" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <ListBox
-                            Background="Transparent"
-                            ItemContainerStyle="{StaticResource UnfocusedListBoxItem}"
-                            ItemsSource="{x:Bind VM.Entry.WatchHistory, Mode=OneWay}"
-                            SelectionMode="Extended">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate x:DataType="DbModels:EntryWatchHistoryDb">
-                                    <Grid>
-                                        <Grid.ContextFlyout>
-                                            <MenuFlyout>
-                                                <MenuFlyoutItem
-                                                    Command="{Binding ElementName=page, Path=VM.EditHistoryCommand}"
-                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
-                                                    Text="编辑" />
-                                                <MenuFlyoutItem
-                                                    Command="{Binding ElementName=page, Path=VM.DeleteHistoryCommand}"
-                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
-                                                    Text="删除" />
-                                            </MenuFlyout>
-                                        </Grid.ContextFlyout>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="120" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Time}" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Margin="4,0,0,0"
-                                            VerticalAlignment="Center"
-                                            FontFamily="Segoe UI Symbol"
-                                            FontSize="10"
-                                            Foreground="MediumSeaGreen"
-                                            Text="&#xE082;"
-                                            ToolTipService.ToolTip="看完"
-                                            Visibility="{x:Bind Done, Converter={StaticResource TrueToVisibleConverter}, Mode=OneWay}" />
-                                        <TextBlock
-                                            Grid.Column="2"
-                                            HorizontalAlignment="Right"
-                                            MaxLines="3"
-                                            Text="{x:Bind Mark}"
-                                            TextTrimming="CharacterEllipsis"
-                                            TextWrapping="WrapWholeWords"
-                                            ToolTipService.ToolTip="备注" />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                        <Grid
-                            Grid.Row="1"
-                            Margin="0,10,0,0"
-                            Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}">
+                    <!--  台词摘录  -->
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="台词摘录" />
+                            <Button
+                                Command="{x:Bind VM.AddLineCommand}"
+                                Style="{StaticResource ItemHeaderButton}"
+                                ToolTipService.ToolTip="新增">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontFamily="Segoe UI Symbol"
+                                    Text="&#xE109;" />
+                            </Button>
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <Grid Margin="10,0,0,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0">
-                                <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                    <DatePicker Date="{x:Bind VM.NewHistorDate, Mode=TwoWay}" />
-                                    <TimePicker Margin="10,0,0,0" Time="{x:Bind VM.NewHistorTime, Mode=TwoWay}" />
-                                    <CheckBox
-                                        Margin="10,0,0,0"
-                                        Content="观看完结"
-                                        IsChecked="{x:Bind VM.NewHistorDone, Mode=TwoWay}"
-                                        ToolTipService.ToolTip="完全看完，添加一次观看次数" />
-                                </StackPanel>
-                                <TextBox
-                                    Margin="0,10,0,0"
-                                    PlaceholderText="备注"
-                                    Text="{x:Bind VM.NewHistorMark, Mode=TwoWay}" />
+                            <ListView
+                                DoubleTapped="LineListView_DoubleTapped"
+                                ItemClick="LineListView_ItemClick"
+                                ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models1:ExtractsLineBase">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{x:Bind Line}" TextTrimming="CharacterEllipsis" />
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="10,0"
+                                                Text="{x:Bind From}" />
+                                            <TextBlock Grid.Column="2" Text="{x:Bind UpdateTime}" />
+                                            <Grid.ContextFlyout>
+                                                <MenuFlyout>
+                                                    <MenuFlyoutItem
+                                                        Command="{Binding ElementName=page, Path=VM.EditLineCommand}"
+                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                        Text="编辑" />
+                                                    <MenuFlyoutItem
+                                                        Command="{Binding ElementName=page, Path=VM.DeleteLineCommand}"
+                                                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
+                                                        Text="删除" />
+                                                </MenuFlyout>
+                                            </Grid.ContextFlyout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                    </StackPanel>
+                    
+                    <!--  字幕文件  -->
+                    <mycontrols:DropArea Caption="复制到字幕文件夹" DropCommand="{x:Bind VM.DropSubCommand}">
+                        <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                            <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                                <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕" />
+                                <Button
+                                    Command="{x:Bind VM.OpenSubFolderCommand}"
+                                    Style="{StaticResource ItemHeaderButton}"
+                                    ToolTipService.ToolTip="打开文件夹">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe UI Symbol"
+                                        Text="&#xE169;" />
+                                </Button>
                             </StackPanel>
+                            <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                            <Grid Margin="10,0,0,0">
+                                <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.SubExplorerItems, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </mycontrols:DropArea>
+
+                    <!--  资源文件  -->
+                    <mycontrols:DropArea Caption="复制到资源文件夹" DropCommand="{x:Bind VM.DropResCommand}">
+                        <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                            <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                                <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源" />
+                                <Button
+                                    Command="{x:Bind VM.OpenResFolderCommand}"
+                                    Style="{StaticResource ItemHeaderButton}"
+                                    ToolTipService.ToolTip="打开文件夹">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe UI Symbol"
+                                        Text="&#xE169;" />
+                                </Button>
+                            </StackPanel>
+                            <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                            <Grid Margin="10,0,0,0">
+                                <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.MoreExplorerItems, Mode=OneWay}" />
+                            </Grid>
+                        </StackPanel>
+                    </mycontrols:DropArea>
+
+                    
+
+                    <!--  其他信息  -->
+                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
+                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
+                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="其他信息" />
+                        </StackPanel>
+                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
+                        <StackPanel Margin="10,0,0,0">
                             <StackPanel
-                                Grid.Column="1"
-                                Margin="10,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
-                                <Button
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{x:Bind VM.SaveHistoryCommand}">
-                                    <TextBlock
-                                        FontFamily="Segoe UI Symbol"
-                                        Text="&#xE105;"
-                                        ToolTipService.ToolTip="保存" />
-                                </Button>
-                                <Button
-                                    VerticalAlignment="Bottom"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Command="{x:Bind VM.CancelEditHistoryCommand}">
-                                    <TextBlock
-                                        FontFamily="Segoe UI Symbol"
-                                        Text="&#xE10A;"
-                                        ToolTipService.ToolTip="取消编辑" />
-                                </Button>
+                                Margin="10,0,0,0"
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}">
+                                <TextBlock Text="别称" />
+                                <TextBlock Text=":" />
+                                <TextBlock Margin="10,0,0,0" Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" />
                             </StackPanel>
-                        </Grid>
-                        <Button
-                            Grid.Row="2"
-                            Width="160"
-                            Margin="0,10,0,0"
-                            HorizontalAlignment="Center"
-                            Command="{x:Bind VM.AddHistoryCommand}"
-                            Visibility="{x:Bind VM.IsEditWatchHistory, Mode=OneWay, Converter={StaticResource FalseToVisibleConverter}}">
-                            <TextBlock
-                                FontFamily="Segoe UI Symbol"
-                                Text="&#xE109;"
-                                ToolTipService.ToolTip="新增" />
-                        </Button>
-                    </Grid>
-                </StackPanel>
-
-                <!--  视频文件  -->
-                <mycontrols:DropArea Caption="复制到视频文件夹" DropCommand="{x:Bind VM.DropVideoCommand}">
-                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="视频文件" />
-                            <Button
-                                Command="{x:Bind VM.OpenVideoFolderCommand}"
-                                Style="{StaticResource ItemHeaderButton}"
-                                ToolTipService.ToolTip="打开文件夹">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe UI Symbol"
-                                    Text="&#xE169;" />
-                            </Button>
-                        </StackPanel>
-                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                        <Grid Margin="10,0,0,0">
-                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.VideoExplorerItems, Mode=OneWay}" />
-                        </Grid>
-                    </StackPanel>
-                </mycontrols:DropArea>
-
-                <!--  字幕文件  -->
-                <mycontrols:DropArea Caption="复制到字幕文件夹" DropCommand="{x:Bind VM.DropSubCommand}">
-                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="字幕文件" />
-                            <Button
-                                Command="{x:Bind VM.OpenSubFolderCommand}"
-                                Style="{StaticResource ItemHeaderButton}"
-                                ToolTipService.ToolTip="打开文件夹">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe UI Symbol"
-                                    Text="&#xE169;" />
-                            </Button>
-                        </StackPanel>
-                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                        <Grid Margin="10,0,0,0">
-                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.SubExplorerItems, Mode=OneWay}" />
-                        </Grid>
-                    </StackPanel>
-                </mycontrols:DropArea>
-
-                <!--  资源文件  -->
-                <mycontrols:DropArea Caption="复制到资源文件夹" DropCommand="{x:Bind VM.DropResCommand}">
-                    <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                        <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                            <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="资源文件" />
-                            <Button
-                                Command="{x:Bind VM.OpenResFolderCommand}"
-                                Style="{StaticResource ItemHeaderButton}"
-                                ToolTipService.ToolTip="打开文件夹">
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontFamily="Segoe UI Symbol"
-                                    Text="&#xE169;" />
-                            </Button>
-                        </StackPanel>
-                        <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                        <Grid Margin="10,0,0,0">
-                            <mycontrols:ExplorerItemControl ItemsSource="{x:Bind VM.Entry.MoreExplorerItems, Mode=OneWay}" />
-                        </Grid>
-                    </StackPanel>
-                </mycontrols:DropArea>
-
-                <!--  台词摘录  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="台词摘录" />
-                        <Button
-                            Command="{x:Bind VM.AddLineCommand}"
-                            Style="{StaticResource ItemHeaderButton}"
-                            ToolTipService.ToolTip="新增">
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe UI Symbol"
-                                Text="&#xE109;" />
-                        </Button>
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <Grid Margin="10,0,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ListView
-                            DoubleTapped="LineListView_DoubleTapped"
-                            ItemClick="LineListView_ItemClick"
-                            ItemsSource="{x:Bind VM.Entry.ExtractsLines, Mode=OneWay}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models1:ExtractsLineBase">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{x:Bind Line}" TextTrimming="CharacterEllipsis" />
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Margin="10,0"
-                                            Text="{x:Bind From}" />
-                                        <TextBlock Grid.Column="2" Text="{x:Bind UpdateTime}" />
-                                        <Grid.ContextFlyout>
-                                            <MenuFlyout>
-                                                <MenuFlyoutItem
-                                                    Command="{Binding ElementName=page, Path=VM.EditLineCommand}"
-                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
-                                                    Text="编辑" />
-                                                <MenuFlyoutItem
-                                                    Command="{Binding ElementName=page, Path=VM.DeleteLineCommand}"
-                                                    CommandParameter="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}"
-                                                    Text="删除" />
-                                            </MenuFlyout>
-                                        </Grid.ContextFlyout>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Grid>
-                </StackPanel>
-
-                <!--  其他信息  -->
-                <StackPanel Style="{StaticResource ItemOutStackPanel}">
-                    <StackPanel Style="{StaticResource ItemHeaderGrid}">
-                        <TextBlock Style="{StaticResource ItemHeaderTextBlock}" Text="其他信息" />
-                    </StackPanel>
-                    <Rectangle Style="{StaticResource ItemHeaderSplit}" />
-                    <StackPanel Margin="10,0,0,0">
-                        <StackPanel
-                            Margin="10,0,0,0"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind VM.Entry.Alias, Mode=OneWay, Converter={StaticResource NullStringToCollapsedConverter}}">
-                            <TextBlock Text="别称" />
-                            <TextBlock Text=":" />
-                            <TextBlock Margin="10,0,0,0" Text="{x:Bind VM.Entry.Alias, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
+            </ScrollViewer>
+            <ProgressRing x:Name="pr" IsActive="False" />
+        </Grid>
+
     </Grid>
 </Page>

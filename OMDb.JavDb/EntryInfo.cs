@@ -11,6 +11,8 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using OMDb.Core.Utils;
+using Newtonsoft.Json;
+using NPOI.XWPF.UserModel;
 
 namespace OMDb.JavDb
 {
@@ -23,14 +25,14 @@ namespace OMDb.JavDb
             try
             {
                 HtmlWeb htmlWeb = new HtmlWeb();
-                var lstIgno= new List<string>() { "TokyoHot-", "Carib-", "Heyzo-" };
+                var lstIgno = new List<string>() { "TokyoHot-", "Carib-", "Heyzo-" };
 
                 foreach (var item in lstIgno)
                 {
                     if (keyword.StartsWith(item))
-                        keyword=keyword.Replace(item,string.Empty);
+                        keyword = keyword.Replace(item, string.Empty);
                 }
-                    
+
                 var name = keyword;
                 var url_Sereach = ($"https://javdb.com/search?q={name}&sb=0");
                 HtmlDocument htmlDoc_Sereach = htmlWeb.Load(url_Sereach);
@@ -40,13 +42,13 @@ namespace OMDb.JavDb
 
 
                 var infoStr = htmlDoc.DocumentNode.SelectSingleNode(@"/html/body/section/div/div[4]/div[1]/div/div[2]/nav").InnerText;
-                infoStr = infoStr.Replace(" ", string.Empty).Replace("\n", string.Empty).Replace("&nbsp;", string.Empty).Replace(":",string.Empty);
+                infoStr = infoStr.Replace(" ", string.Empty).Replace("\n", string.Empty).Replace("&nbsp;", string.Empty).Replace(":", string.Empty);
                 GetDic(infoStr, ref dic);
 
             }
             catch (Exception ex)
             {
-                Logger.Error("JavDb获取信息失败！"+ex);
+                Logger.Error("JavDb获取信息失败！" + ex);
             }
             return dic;
 
@@ -68,13 +70,13 @@ namespace OMDb.JavDb
             }
             catch (Exception ex)
             {
-                Logger.Error("封面获取失败！"+ex);
+                Logger.Error("封面获取失败！" + ex);
             }
         }
 
         private void GetDic(string infoStr, ref Dictionary<string, object> dic)
         {
-            List<string> lst = new List<string> { "日期", "片商", "發行", "系列","導演", "評分", "類別", "演員" };
+            List<string> lst = new List<string> { "日期", "片商", "發行", "系列", "導演", "評分", "類別", "演員" };
             List<Tuple<string, int>> lstTup = new List<Tuple<string, int>>();
             foreach (string str in lst)
             {
@@ -104,7 +106,7 @@ namespace OMDb.JavDb
                 {
                     var startIndex = arrTup[i].Item2 + arrTup[i].Item1.Length;
                     var lenth = 4;
-                    var result = Convert.ToDouble(infoStr.Substring(startIndex, lenth).Replace("分",string.Empty).Replace(",",string.Empty));
+                    var result = Convert.ToDouble(infoStr.Substring(startIndex, lenth).Replace("分", string.Empty).Replace(",", string.Empty));
                     //dic.Add(arrTup[i].Item1, result);
                     dic.Add("评分", result);
                 }

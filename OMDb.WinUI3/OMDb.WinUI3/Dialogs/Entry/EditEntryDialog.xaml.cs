@@ -222,7 +222,7 @@ namespace OMDb.WinUI3.Dialogs
                 var entryDetail = new Models.EntryDetail()
                 {
                     Entry = entry,
-                    Labels = content.VM.Labels.Select(p => p.LabelClassDb).ToList(),
+                    LabelClassDbList = content.VM.Labels.Select(p => p.LabelClassDb).ToList(),
                     FullEntryPath = content.VM.Entry.Path,
                 };
 
@@ -278,9 +278,9 @@ namespace OMDb.WinUI3.Dialogs
                 foreach (var item in lpdb_new)
                     Core.Services.LabelPropertyService.AddLabelProperty(item);
                 if (lpdb_original.Count > 0)
-                    entryDetail.Lpdbs.AddRange(lpdb_original);
+                    entryDetail.LablePropertyDbList.AddRange(lpdb_original);
                 if (lpdb_new.Count > 0)
-                    entryDetail.Lpdbs.AddRange(lpdb_new);
+                    entryDetail.LablePropertyDbList.AddRange(lpdb_new);
                 #endregion
 
                 return entryDetail;
@@ -355,7 +355,10 @@ namespace OMDb.WinUI3.Dialogs
 
             #endregion
 
-            #region 属性标签数据
+            //entryInfo.TryGetValue("描述", out object description);
+            //this.VM.EntryDetail.Metadata.Desc = Convert.ToString(description);
+
+            #region 标签(属性)数据
             var lstBaba = this.VM.Label_Property.Where(a => a.LPDb.Level == 1).ToList();
             foreach (var ei in entryInfo)
             {

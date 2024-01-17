@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace OMDb.Core.Interfaces
 {
-    public interface IEntryInfo
+    public interface IEntryInfoDescription
     {
         /// <summary>
-        /// 获取评分
+        /// 获取描述
         /// </summary>
         /// <param name="id">影片唯一标识，规范由各自确定</param>
         /// <returns></returns>
-        Dictionary<string, object> GetEntryInfoNet(string keyword);
+        string GetEntryInfoDescriptionNet(string keyword);
     }
 }

@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OMDb.Core.Services;
 using OMDb.Core.Utils;
+using Newtonsoft.Json;
+using NPOI.XWPF.UserModel;
 
 namespace OMDb.Douban
 {
@@ -19,6 +21,7 @@ namespace OMDb.Douban
     public class DouBanEntryInfo : IEntryInfo
     {
         Dictionary<string, object> dic = new Dictionary<string, object>();
+        string h5Line = "<br>";
         Dictionary<string, object> IEntryInfo.GetEntryInfoNet(string keyword)
         {
             try
@@ -28,14 +31,17 @@ namespace OMDb.Douban
                 var name = keyword;
                 var url_Sereach = ($"https://www.douban.com/search?cat=1002&q={name}");
                 HtmlDocument htmlDoc_Sereach = htmlWeb.Load(url_Sereach);
+
+                //搜索到的第一个
                 var url = htmlDoc_Sereach.DocumentNode.SelectSingleNode(@"//*[@id=""content""]/div/div[1]/div[3]/div/div[1]/div[2]/div/h3/a").Attributes["href"].Value;
                 HtmlDocument htmlDoc = htmlWeb.Load(url);
-                GetActor(htmlDoc);//主演
-                GetRate(htmlDoc);//评分
-                GetCover(htmlDoc);//封面
-                GetDirector(htmlDoc);//导演
-                GetDate(htmlDoc);//上映日期
-                GetClass(htmlDoc);//分类
+                GetActor(htmlDoc);//获取主演
+                GetRate(htmlDoc);//获取评分
+                GetCover(htmlDoc);//获取封面
+                GetDirector(htmlDoc);//获取导演
+                GetDate(htmlDoc);//获取日期
+                GetClass(htmlDoc);//获取分类
+                GetDescription(htmlDoc);//获取描述
             }
             catch (Exception ex)
             {
@@ -56,8 +62,8 @@ namespace OMDb.Douban
             try
             {
                 var cover = htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""mainpic""]/a/img").Attributes["src"].Value;
-                var bytes=GetUrlMemoryStream(cover);
-                MemoryStream ms= new MemoryStream(bytes);
+                var bytes = GetUrlMemoryStream(cover);
+                MemoryStream ms = new MemoryStream(bytes);
                 dic.Add("封面", ms);
             }
             catch (Exception ex)
@@ -76,7 +82,7 @@ namespace OMDb.Douban
             try
             {
                 var rate = Convert.ToDouble(htmlDoc.DocumentNode.SelectSingleNode(@"//*[@id=""interest_sectl""]/div/div[2]/strong").InnerText);
-                dic.Add("评分", rate/2.0);
+                dic.Add("评分", rate / 2.0);
             }
             catch (Exception ex)
             {
@@ -167,6 +173,21 @@ namespace OMDb.Douban
             catch (Exception ex)
             {
                 Logger.Error("分类获取失败" + ex);
+            }
+        }
+
+        private void GetDescription(HtmlDocument htmlDoc)
+        {
+            try
+            {
+                var xPath = @"//*[@id=""link-report-intra""]/span[2]";
+                var InfoStr = htmlDoc.DocumentNode.SelectSingleNode(xPath).InnerText;
+                var result=InfoStr.Replace(h5Line, Environment.NewLine);
+                dic.Add("描述", result);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("描述获取失败" + ex);
             }
         }
 

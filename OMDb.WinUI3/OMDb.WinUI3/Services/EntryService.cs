@@ -119,17 +119,17 @@ namespace OMDb.WinUI3.Services
         /// <param name="ed"></param>
         private static void TreatLabelLink(EntryDetail ed)
         {
-            if (!ed.Labels.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            if (!ed.LabelClassDbList.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
-                List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.Labels.Count);
-                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCID = p.LCID, DbId = ed.Entry.DbId }));
+                List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.LabelClassDbList.Count);
+                ed.LabelClassDbList.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCID = p.LCID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
                 Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }
-            if (ed.Lpdbs.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            if (ed.LablePropertyDbList.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
-                List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(ed.Lpdbs.Count);
-                ed.Lpdbs.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPID = p.LPID, DbId = ed.Entry.DbId }));
+                List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(ed.LablePropertyDbList.Count);
+                ed.LablePropertyDbList.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPID = p.LPID, DbId = ed.Entry.DbId }));
                 Core.Services.LabelPropertyService.ClearEntryLabel(ed.Entry.EntryId);//清空词条属性标签
                 Core.Services.LabelPropertyService.AddEntryLabel(entryLabelPropertyDbs);//添加词条属性标签
             }
@@ -190,22 +190,22 @@ namespace OMDb.WinUI3.Services
         /// <summary>
         /// 创建元数据(MataData)
         /// </summary>
-        /// <param name="entry"></param>
-        private static void InitFile(Models.EntryDetail entry)
+        /// <param name="entryDetail"></param>
+        private static void InitFile(Models.EntryDetail entryDetail)
         {
-            string metaDateFile = Path.Combine(entry.FullEntryPath, Services.ConfigService.MetadataFileNmae);
+            string metaDateFile = Path.Combine(entryDetail.FullEntryPath, Services.ConfigService.MetadataFileNmae);
             Core.Models.EntryMetadata metadata;
             if (System.IO.File.Exists(metaDateFile))
             {
                 metadata = Core.Models.EntryMetadata.Read(metaDateFile);
-                metadata.Name = entry.Entry.Name;
+                metadata.Name = entryDetail.Entry.Name;
             }
             else
             {
                 metadata = new Core.Models.EntryMetadata()
                 {
-                    Id = entry.Entry.EntryId,
-                    Name = entry.Entry.Name,
+                    Id = entryDetail.Entry.EntryId,
+                    Name = entryDetail.Entry.Name,
                 };
             }
             metadata.Save(metaDateFile);
