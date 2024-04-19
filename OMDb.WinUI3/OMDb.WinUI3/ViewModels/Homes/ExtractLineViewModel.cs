@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Media;
 using OMDb.Core.Models;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
@@ -52,7 +53,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
                     var lines = entry.GetExtractsLines();
                     if (lines.NotNullAndEmpty())
                     {
-                        entry.Name = Core.Services.EntryNameSerivce.QueryName(entry.EntryId, entry.DbId);
+                        entry.Name = EntryNameSerivce.QueryName(entry.EntryId, entry.DbId);
                         int lineIndex = Core.Helpers.RandomHelper.RandomInt(0, lines.Count - 1, 1).First();
                         ExtractsLine = Core.Models.ExtractsLine.Create(lines[lineIndex], entry);
                         var imgs = entry.GetBestImg(true);

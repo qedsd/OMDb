@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Newtonsoft.Json;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
@@ -51,12 +52,12 @@ namespace OMDb.WinUI3.ViewModels
             Helpers.InfoHelper.ShowWaiting();
 
             #region 筛选信息加载
-            var labelDbs = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
-            List<LabelClass> LabelClasses = null;
+            var labelDbs = await LabelService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+            List<Label> LabelClasses = null;
             if (labelDbs != null)
             {
                 LabelClasses = labelDbs.Select(p => new LabelClass(p)).ToList();
-                Labels = new ObservableCollection<LabelClass>(LabelClasses);
+                Labels = new ObservableCollection<Label>(LabelClasses);
             }
             EntryStorages = ConfigService.EnrtyStorages;
             foreach (var item in EntryStorages)
@@ -99,7 +100,7 @@ namespace OMDb.WinUI3.ViewModels
 
             EntrySortInfoTree eitLabelClass = new EntrySortInfoTree("分类标签", null);
             eitLabelClass.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
-            var lcdbs = Core.Services.LabelClassService.Get1stLabel();
+            var lcdbs = LabelService.Get1stLabel();
             foreach (var item in lcdbs)
                 eitLabelClass.Children.Add(new EntrySortInfoTree(item.Name, "LabelClass"));
 
@@ -193,7 +194,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (!string.IsNullOrEmpty(input))
             {
-                AutoSuggestItems = await Core.Services.EntryNameSerivce.QueryLikeNamesAsync(input);
+                AutoSuggestItems = await EntryNameSerivce.QueryLikeNamesAsync(input);
             }
             else
             {
@@ -204,7 +205,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (!string.IsNullOrEmpty(name))
             {
-                var ls = await Core.Services.EntryNameSerivce.QueryFullNamesAsync(name);
+                var ls = await EntryNameSerivce.QueryFullNamesAsync(name);
                 List<Core.Models.Entry> items = new List<Core.Models.Entry>();
                 foreach (var p in ls.GroupBy(p => p.DbId))
                 {
@@ -269,7 +270,7 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     else
                     {
-                        var labelIds = Core.Services.LabelClassService.GetLabelIdsOfEntry(entry.EntryId);
+                        var labelIds = LabelService.GetLabelIdsOfEntry(entry.EntryId);
                         if (labelIds != null && labelIds.Count != 0)
                         {
                             var l = Labels.Where(p => p.IsChecked).ToList();

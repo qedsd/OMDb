@@ -532,7 +532,6 @@
 	<ItemGroup>
 	  <Folder Include="Dialogs\Entry\" />
 	  <Folder Include="MyControls\EntryPageControls\EditEntryDialogControls\" />
-	  <Folder Include="MyControls\EntryPageControls\AddEntryBatchDialogControls\" />
 	  <Folder Include="MyControls\ManagementControls\" />
 	</ItemGroup>
 </Project>

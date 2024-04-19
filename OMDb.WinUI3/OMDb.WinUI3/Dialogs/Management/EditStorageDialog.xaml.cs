@@ -20,22 +20,23 @@ namespace OMDb.WinUI3.Dialogs
 {
     public sealed partial class EditStorageDialog : Page
     {
-        public Models.EnrtyStorage EnrtyStorage { get; set; }
-        public EditStorageDialog(Models.EnrtyStorage enrtyStorage)
+        public Models.EnrtyRepository EnrtyStorage { get; set; }
+        public EditStorageDialog(Models.EnrtyRepository enrtyStorage)
         {
             if (enrtyStorage == null)
             {
-                EnrtyStorage = new Models.EnrtyStorage();
+                EnrtyStorage = new Models.EnrtyRepository();
+                EnrtyStorage.Id = Guid.NewGuid().ToString();
             }
             else
             {
-                EnrtyStorage = enrtyStorage.DepthClone<Models.EnrtyStorage>();
+                EnrtyStorage = enrtyStorage.DepthClone<Models.EnrtyRepository>();
             }
             this.InitializeComponent();
             if (EnrtyStorage.CoverImg != null)
                 Image_CoverImg.Source = new BitmapImage(new Uri(EnrtyStorage.CoverImg));
         }
-        public static async Task<Models.EnrtyStorage> ShowDialog(Models.EnrtyStorage enrtyStorage = null)
+        public static async Task<Models.EnrtyRepository> ShowDialog(Models.EnrtyRepository enrtyStorage = null)
         {
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = enrtyStorage == null ? "新建仓库" : "编辑仓库";
@@ -94,8 +95,8 @@ namespace OMDb.WinUI3.Dialogs
             var file = await Helpers.PickHelper.PickFolderAsync();
             if (file != null)
             {
-                EnrtyStorage.StoragePath = file.Path;
-                EnrtyStorage.StorageName = file.Name;
+                EnrtyStorage.Path = file.Path;
+                EnrtyStorage.Name = file.Name;
             }
         }
     }

@@ -7,7 +7,6 @@ using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Helpers;
 using OMDb.Core.Models;
-using OMDb.Core.Services;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Extensions;
 using OMDb.WinUI3.Services;
@@ -34,9 +33,7 @@ namespace OMDb.WinUI3.Models
             this.FullCoverImgPath = PathService.EntryCoverImgFullPath(entry);
             this.FullMetaDataPath = System.IO.Path.Combine(FullEntryPath, Services.ConfigService.MetadataFileNmae);
 
-            var entrySourceDbList = EntrySourceSerivce.SelectEntrySource(entry.EntryId, entry.DbId);
-            var storagePath = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == entry.DbId).StoragePath;
-            this.SetPath(entry.SaveType, entry, storagePath, entrySourceDbList);
+            var storagePath = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.Name == entry.DbId).Path;
 
         }
 
@@ -94,14 +91,10 @@ namespace OMDb.WinUI3.Models
                 Names = namesT.Select(p => new EntryName(p)).ToObservableCollection();
             }
             await UpdateWatchHistoryAsync();
-            _labelClassDbList = await Core.Services.LabelClassService.GetLabelOfEntryAsync(Entry.EntryId);
-            LabelClassDbList ??= new List<Core.DbModels.LabelClassDb>();
+            _labels = await Core.Services.LabelService.GetLabelOfEntryAsync(Entry.EntryId);
+            Labels ??= new List<Core.DbModels.LabelDb>();
             WatchHistory ??= new ObservableCollection<Core.Models.WatchHistory>();
-
-            this.LoadResource(this.Entry.SaveType);
-
-
-
+            this.LoadResource();
         }
         public async Task UpdateWatchHistoryAsync()
         {
@@ -247,61 +240,10 @@ namespace OMDb.WinUI3.Models
             }
         }
 
-
-
-
-        /// <summary>
-        /// 设置资源地址
-        /// </summary>
-        /// <param name="saveType"></param>
-        /// <param name="entry"></param>
-        /// <param name="storagePath"></param>
-        /// <param name="entrySourceDbList"></param>
-        private void SetPath(SaveType saveType, Core.Models.Entry entry, string storagePath, List<EntrySourceDb> entrySourceDbList)
+        private void LoadResource()
         {
-            switch (saveType)
-            {
-                case SaveType.Folder:
-                    {
-                        if (storagePath != null && !string.IsNullOrEmpty(entry.Path))
-                            PathFolder = storagePath + entrySourceDbList.Where(a => a.PathType == PathType.Folder).FirstOrDefault().Path;
-                        break;
-                    }
-
-                case SaveType.Files:
-                    {
-                        if (storagePath != null && !string.IsNullOrEmpty(entry.Path))
-                        {
-                            PathImg = entrySourceDbList.Where(a => a.PathType == PathType.Image).Select(a => storagePath + a.Path).ToObservableCollection();
-                            PathVideo = entrySourceDbList.Where(a => a.PathType == PathType.Video).Select(a => storagePath + a.Path).ToObservableCollection();
-                            PathAudio = entrySourceDbList.Where(a => a.PathType == PathType.VideoSub).Select(a => storagePath + a.Path).ToObservableCollection();
-                            PathMore = entrySourceDbList.Where(a => a.PathType == PathType.More).Select(a => storagePath + a.Path).ToObservableCollection();
-                        }
-                        break;
-                    }
-                case SaveType.Local:
-                    break;
-                default:
-                    break;
-            }
-        }
-
-
-        private void LoadResource(SaveType saveType)
-        {
-            if (saveType == SaveType.Folder)
-            {
-                LoadPathFolderResource();
-            }
-            else if ((this.Entry.SaveType == SaveType.Files))
-            {
-
-            }
-            else
-            {
-                LoadLocalResource();
-                LoadLines();
-            }
+            LoadLocalResource();
+            LoadLines();
             LoadMetaData();
         }
     }

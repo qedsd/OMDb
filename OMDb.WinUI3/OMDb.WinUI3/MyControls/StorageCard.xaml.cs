@@ -31,7 +31,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty EnrtyStorageProperty = DependencyProperty.Register
             (
             "EnrtyStorage",
-            typeof(EnrtyStorage),
+            typeof(EnrtyRepository),
             typeof(UserControl),
             new PropertyMetadata(null, new PropertyChangedCallback(SetEnrtyStorage))
             );
@@ -40,7 +40,7 @@ namespace OMDb.WinUI3.MyControls
             var card = d as StorageCard;
             if (card != null)
             {
-                card.EnrtyStorage = e.NewValue as EnrtyStorage;
+                card.EnrtyStorage = e.NewValue as EnrtyRepository;
                 var es = card.EnrtyStorage;
                 //if (es == null || string.IsNullOrEmpty(es.StoragePath))
                 //{
@@ -54,9 +54,9 @@ namespace OMDb.WinUI3.MyControls
                 //}
             }
         }
-        public EnrtyStorage EnrtyStorage
+        public EnrtyRepository EnrtyStorage
         {
-            get { return (EnrtyStorage)GetValue(EnrtyStorageProperty); }
+            get { return (EnrtyRepository)GetValue(EnrtyStorageProperty); }
 
             set { SetValue(EnrtyStorageProperty, value); }
         }
@@ -69,7 +69,7 @@ namespace OMDb.WinUI3.MyControls
                 AddStorageEvent?.Invoke(file);
             }
         }
-        public delegate void AddStorage(Models.EnrtyStorage enrtyStorage);
+        public delegate void AddStorage(Models.EnrtyRepository enrtyStorage);
         public static event AddStorage AddStorageEvent;
 
         private async void Edit_Click(object sender, RoutedEventArgs e)
@@ -86,7 +86,7 @@ namespace OMDb.WinUI3.MyControls
         }
 
 
-        public delegate void RemoveStorage(Models.EnrtyStorage enrtyStorage);
+        public delegate void RemoveStorage(Models.EnrtyRepository enrtyStorage);
         public static event RemoveStorage RemoveStorageEvent;
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace OMDb.WinUI3.MyControls
             //導出地址
             //string name = "Info.xlsx";            
             //var outputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
-            var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
-            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            var dbId = ((OMDb.WinUI3.Models.EnrtyRepository)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyRepository)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             var outputPath = await Helpers.PickHelper.PickSaveFileAsync($"{dbId}.xls");
             if (outputPath == null) return;
             string directoryPath = Path.GetDirectoryName(outputPath.Path);
@@ -121,8 +121,8 @@ namespace OMDb.WinUI3.MyControls
             //導出地址
             //string name = "Info.xlsx";
             //var inputPath = System.IO.Path.Combine(((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StoragePath, name);
-            var dbId = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
-            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            var dbId = ((OMDb.WinUI3.Models.EnrtyRepository)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext).StorageName;
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyRepository)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             var inputPath = await Helpers.PickHelper.PickFileAsync();
             if (inputPath.Path != null && await Dialogs.QueryDialog.ShowDialog("確認", "確認導入？"))
                 Services.ExcelService.ImportExcel(inputPath.Path, enrtyStorage);
@@ -136,7 +136,7 @@ namespace OMDb.WinUI3.MyControls
         /// <param name="e"></param>
         private async void Enter_Click(object sender, RoutedEventArgs e)
         {
-            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyStorage)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
+            var enrtyStorage = ((OMDb.WinUI3.Models.EnrtyRepository)((Microsoft.UI.Xaml.FrameworkElement)e.OriginalSource).DataContext);
             if (enrtyStorage != null && !string.IsNullOrEmpty(enrtyStorage.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryHomePage), enrtyStorage.StorageName);

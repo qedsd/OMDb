@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
@@ -176,7 +177,7 @@ namespace OMDb.WinUI3.ViewModels
             EntryCollection.Title = EditTitle;
             EntryCollection.Description = EditDesc;
             EntryCollection.LastUpdateTime = DateTime.Now;
-            Core.Services.EntryCollectionService.UpdateCollection(EntryCollection.ToEntryCollectionDb());
+            EntryCollectionService.UpdateCollection(EntryCollection.ToEntryCollectionDb());
             Helpers.InfoHelper.ShowSuccess("已更新");
         });
         public ICommand CancelEditCommand => new RelayCommand(() =>
@@ -191,7 +192,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if(await Dialogs.QueryDialog.ShowDialog("是否确认移除词条",$"将从此片单中移除{list.Count}个词条"))
                 {
-                    Core.Services.EntryCollectionService.RemoveCollectionItem(list.Select(p => p.Id).ToList());
+                    EntryCollectionService.RemoveCollectionItem(list.Select(p => p.Id).ToList());
                     foreach(var item in list)
                     {
                         ItemsSource.Remove(item);
@@ -212,7 +213,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认移除词条?", $"将从此片单中移除 {item.Entry.Name}"))
                 {
-                    if(Core.Services.EntryCollectionService.RemoveCollectionItem(item.Id))
+                    if(EntryCollectionService.RemoveCollectionItem(item.Id))
                     {
                         ItemsSource.Remove(item);
                         EntryCollection.Items.Remove(item);

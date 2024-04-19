@@ -295,7 +295,7 @@ namespace OMDb.WinUI3.ViewModels
                 }
                 else
                 {
-                    Core.Services.LabelClassService.AddLabel(result);
+                    Core.Services.LabelService.AddLabel(result);
                     LabelTrees.Add(new LabelClassTree(result));
                     Helpers.InfoHelper.ShowSuccess("已保存标签");
                 }
@@ -303,21 +303,7 @@ namespace OMDb.WinUI3.ViewModels
         });
         public ICommand AddSubCommand => new RelayCommand<LabelClassTree>(async (parent) =>
         {
-            var result = await Dialogs.EditLabelDialog.ShowDialog(false);
-            if (result != null)
-            {
-                if (string.IsNullOrEmpty(result.Name))
-                {
-                    Helpers.InfoHelper.ShowError("标签名不可为空");
-                }
-                else
-                {
-                    result.ParentId = parent.LabelClass.LabelClassDb.LCID;
-                    Core.Services.LabelClassService.AddLabel(result);
-                    parent.Children.Add(new LabelClassTree(result));
-                    Helpers.InfoHelper.ShowSuccess("已保存标签");
-                }
-            }
+            
         });
 
         /// <summary>
@@ -325,30 +311,7 @@ namespace OMDb.WinUI3.ViewModels
         /// </summary>
         public ICommand EditSubCommand => new RelayCommand<LabelClassTree>(async (item) =>
         {
-            if (item != null)
-            {
-                var result = await Dialogs.EditLabelDialog.ShowDialog(false, item.LabelClass.LabelClassDb);
-                if (result != null)
-                {
-                    if (string.IsNullOrEmpty(result.Name))
-                    {
-                        Helpers.InfoHelper.ShowError("标签名不可为空");
-                    }
-                    else
-                    {
-                        Core.Services.LabelClassService.UpdateLabel(result);
-                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCID == result.ParentId);
-                        if (parent != null)
-                        {
-                            var removeWhere = parent.Children.FirstOrDefault(t => t.LabelClass.LabelClassDb == result);
-                            var index = parent.Children.IndexOf(removeWhere);
-                            parent.Children.Remove(removeWhere);
-                            parent.Children.Insert(index, new LabelClassTree(result));
-                        }
-                        Helpers.InfoHelper.ShowSuccess("已保存标签");
-                    }
-                }
-            }
+            
         });
 
         /// <summary>
@@ -367,12 +330,12 @@ namespace OMDb.WinUI3.ViewModels
                     }
                     else
                     {
-                        Core.Services.LabelClassService.UpdateLabel(result);
+                        Core.Services.LabelService.UpdateLabel(result);
                         var index = LabelTrees.IndexOf(item);
                         LabelTrees.Remove(item);
                         LabelTrees.Insert(index, new LabelClassTree()
                         {
-                            LabelClass = new LabelClass(result),
+                            LabelClass = new Label(result),
                             Children = item.Children
                         });
                         Helpers.InfoHelper.ShowSuccess("已保存标签");
@@ -387,21 +350,8 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认", $"将删除{item.LabelClass.LabelClassDb.Name}标签"))
                 {
-                    Core.Services.LabelClassService.RemoveLabel(item.LabelClass.LabelClassDb.LCID);
-                    if (item.LabelClass.LabelClassDb.ParentId != null)//子类
-                    {
-                        var parent = LabelTrees.FirstOrDefault(p => p.LabelClass.LabelClassDb.LCID == item.LabelClass.LabelClassDb.ParentId);
-                        if (parent != null)
-                        {
-                            var removeWhere = parent.Children.FirstOrDefault(t => t == item);
-                            var index = parent.Children.IndexOf(removeWhere);
-                            parent.Children.Remove(removeWhere);
-                        }
-                    }
-                    else//父类
-                    {
-                        Init();
-                    }
+                    Core.Services.LabelService.RemoveLabel(item.LabelClass.LabelClassDb.ID);
+                    Init();
                     Helpers.InfoHelper.ShowSuccess("已删除标签");
 
                 }
@@ -410,28 +360,11 @@ namespace OMDb.WinUI3.ViewModels
 
         public ICommand StyleConfirmCommand => new RelayCommand(() =>
         {
-            IEnumerable<XElement> t1Color = from element in xe.Elements("Color1st") select element;
-            IEnumerable<XElement> t2Color = from element in xe.Elements("Color2nd") select element;
-            xe.Element("FontSize1st").Value = FontSize1st.ToString();
-            xe.Element("FontSize2nd").Value = FontSize2nd.ToString();
-            xe.Element("Width2nd").Value = Width2nd.ToString();
-            xe.Element("Height2nd").Value = Height2nd.ToString();
-            xe.Element("Width1st").Value = Width1st.ToString();
-            xe.Element("Height1st").Value = Height1st.ToString();
-            xe.Element("FontFamily").Value = FontFamilyCurrent;
-            t1Color.First().Element("ColorR").Value = Color1st.R.ToString();
-            t1Color.First().Element("ColorG").Value = Color1st.G.ToString();
-            t1Color.First().Element("ColorB").Value = Color1st.B.ToString();
-            t2Color.First().Element("ColorR").Value = Color2nd.R.ToString();
-            t2Color.First().Element("ColorG").Value = Color2nd.G.ToString();
-            t2Color.First().Element("ColorB").Value = Color2nd.B.ToString();
-            xe.Save(ConfigPath);
-            xe = XElement.Load(ConfigPath);
-            Init();
+            
         });
         public ICommand StyleCancelCommand => new RelayCommand(() =>
         {
-            Init();
+            
         });
 
 

@@ -30,19 +30,12 @@ using System.Xml;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using static System.Net.WebRequestMethods;
-using OMDb.Core.Services;
 using OMDb.Core.Utils.Extensions;
 using OMDb.Core.Utils.PathUtils;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
 namespace OMDb.WinUI3.Dialogs
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class AddEntryBatchDialog : Page
     {
         public AddEntryBatchViewModel VM = new AddEntryBatchViewModel();
@@ -86,7 +79,7 @@ namespace OMDb.WinUI3.Dialogs
 
         private void SelectFolders_Click(object sender, RoutedEventArgs e)
         {
-            var path = VM.SelectedEnrtyStorage.StoragePath;
+            var path = VM.SelectedEnrtyStorage.Path;
             //this.ei.BasicGridView.ItemsSource= FileHelper.FindFolderItems(path).FirstOrDefault().Children.ToObservableCollection();
             this.ei.VM.Root = FileHelper.FindFolderItems(path).FirstOrDefault();
             this.ei.VM.CurrentFileInfos = new ObservableCollectionEx<ExplorerItem>(this.ei.VM.Root.Children);
@@ -104,7 +97,7 @@ namespace OMDb.WinUI3.Dialogs
                 {
                     ExplorerItem exp = item as ExplorerItem;
                     var entryName= System.IO.Path.GetFileName(exp.Name);
-                    var path = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.StoragePath);
+                    var path = PathService.GetFullEntryPathByEntryName(exp.Name, VM.SelectedEnrtyStorage.Path);
 
                     if (this.VM.EntryDetailCollection.Select(a => a.FullEntryPath).Contains(path))
                         continue;
@@ -115,7 +108,7 @@ namespace OMDb.WinUI3.Dialogs
                     ed.PathFolder = ((OMDb.WinUI3.Models.ExplorerItem)item).FullName;
 
                     ed.Entry = new Core.Models.Entry();
-                    ed.Entry.DbId = VM.SelectedEnrtyStorage.StorageName;
+                    ed.Entry.DbId = VM.SelectedEnrtyStorage.Name;
                     ed.Entry.Name = entryName;
                     ed.Entry.SaveType = Core.Enums.SaveType.Folder;
                     
@@ -209,7 +202,7 @@ namespace OMDb.WinUI3.Dialogs
         private void LoadLabelControl()
         {
             var lst_label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
-            var lst_label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var lst_label_lc = LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
             var lpids = new List<string>();//属性标签
             var lcids = new List<string>();//分类标签
 

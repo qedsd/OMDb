@@ -31,11 +31,11 @@ namespace OMDb.Core.Services
         {
             var maxDate = new DateTimeOffset(DateTime.Now);
             var minDate = new DateTimeOffset(DateTime.Now);
-            foreach (var item in DbService.Dbs)
+            foreach (var item in DbService.RepositoryDbs)
             {
                 var db = item.Value;
-                var maxDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Max(e => e.ReleaseDate);
-                var minDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Min(e => e.ReleaseDate);
+                var maxDateStorage = db.Queryable<DbModels.EntryDb>().Max(e => e.ReleaseDate);
+                var minDateStorage = db.Queryable<DbModels.EntryDb>().Min(e => e.ReleaseDate);
                 maxDate = (DateTimeOffset)(maxDateStorage > maxDate ? maxDateStorage : maxDate);
                 minDate = (DateTimeOffset)(minDateStorage < minDate ? minDateStorage : minDate);
             }
@@ -60,17 +60,13 @@ namespace OMDb.Core.Services
 
             var inLabelClassEntryIds = new List<string>();
             if (filterModel.LabelClassIds != null && filterModel.LabelClassIds.Count != 0)
-                inLabelClassEntryIds = LabelClassService.GetEntrys(filterModel.LabelClassIds);
+                inLabelClassEntryIds = LabelService.GetEntrys(filterModel.LabelClassIds);
 
-            var inLabelPropertyEntryIds = new List<string>();
-            if (filterModel.LabelPropertyIds != null && filterModel.LabelPropertyIds.Count != 0)
-                inLabelPropertyEntryIds = LabelPropertyService.GetEntrys(filterModel.LabelPropertyIds);
 
             var inLabelEntryIds = new List<string>();
             inLabelEntryIds.AddRange(inLabelClassEntryIds);
-            inLabelEntryIds.AddRange(inLabelPropertyEntryIds);
 
-            foreach (var item in DbService.Dbs)
+            foreach (var item in DbService.RepositoryDbs)
             {
                 if (filterModel.IsFilterStorage && !filterModel.StorageIds.Contains(item.Key))
                     continue;
@@ -90,8 +86,6 @@ namespace OMDb.Core.Services
 
                 var ls = db.Queryable<DbModels.EntryDb>().Where(exp);
 
-                if (filterModel.IsFilterLabelProperty)
-                    ls = ls.In(inLabelPropertyEntryIds);
                 if (filterModel.IsFilterLabelClass)
                     ls = ls.In(inLabelClassEntryIds);
 
@@ -245,9 +239,9 @@ namespace OMDb.Core.Services
             connet.Deleteable<EntryDb>().In(entry.EntryId).ExecuteCommand();
             connet.Deleteable<EntryNameDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             connet.Deleteable<EntryWatchHistoryDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
-            DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
-            DbService.DCDb.Deleteable<EntryLabelPropertyLinkDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
             connet.CommitTran();
+            DbService.ConfigDb.Deleteable<EntryLabelLinkDb>().Where(p => p.EntryId == entry.EntryId).ExecuteCommand();
+            DbService.ConfigDb.Deleteable<EntryCollectionItemDb>().Where(p=>p.EntryId == entry.EntryId).ExecuteCommand();
         }
 
         /// <summary>
@@ -265,7 +259,8 @@ namespace OMDb.Core.Services
                   connet.Deleteable<EntryDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<EntryNameDb>().In(ids).ExecuteCommand();
                   connet.Deleteable<EntryWatchHistoryDb>().In(ids).ExecuteCommand();
-                  DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
+                  DbService.ConfigDb.Deleteable<EntryLabelLinkDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
+                  DbService.ConfigDb.Deleteable<EntryCollectionItemDb>().Where(p => ids.Contains(p.EntryId)).ExecuteCommand();
                   connet.CommitTran();
               });
         }
@@ -304,7 +299,7 @@ namespace OMDb.Core.Services
                 return null;
             }
             List<Tuple<DbModels.EntryDb, string>> firstRandoms = new List<Tuple<DbModels.EntryDb, string>>();
-            foreach (var dbId in DbService.Dbs.Keys)
+            foreach (var dbId in DbService.RepositoryDbs.Keys)
             {
                 int max = await QueryEntryCountAsync(dbId);
                 var indexes = Helpers.RandomHelper.RandomInt(0, max - 1, count);

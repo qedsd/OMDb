@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Models
 {
-    public class LabelClass : ObservableObject
+    public class Label : ObservableObject
     {
-        public Core.DbModels.LabelClassDb LabelClassDb { get; set; }
+        public Core.DbModels.LabelDb LabelClassDb { get; set; }
 
         private bool _isChecked;
         public bool IsChecked
@@ -18,7 +18,7 @@ namespace OMDb.WinUI3.Models
             set => SetProperty(ref _isChecked, value);
         }
 
-        public LabelClass(Core.DbModels.LabelClassDb labelDb)
+        public Label(Core.DbModels.LabelDb labelDb)
         {
             LabelClassDb = labelDb;
             _isChecked = false;
@@ -29,6 +29,6 @@ namespace OMDb.WinUI3.Models
         public string Description;
         public string Name { get; set; }
         public bool IsTemp { get; set; } = false;
-        public LabelClass() { }
+        public Label() { }
     }
 }

@@ -10,8 +10,8 @@ namespace OMDb.Core.DbModels
     /// <summary>
     /// 存储仓库
     /// </summary>
-    [SugarTable("Storage")]
-    public class StorageDb
+    [SugarTable("Repository")]
+    public class RepositoryDb
     {
         /// <summary>
         /// 仓库内码
@@ -21,12 +21,12 @@ namespace OMDb.Core.DbModels
         /// <summary>
         /// 仓库名称
         /// </summary>
-        public string StorageName { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// 文件夹存储路径
         /// 当前数据库相对路径
         /// </summary>
-        public string StoragePath { get; set; }
+        public string Path { get; set; }
         /// <summary>
         /// 封面图片
         /// 相对词条Img路径、
@@ -42,7 +42,5 @@ namespace OMDb.Core.DbModels
         /// 词条数
         /// </summary>
         public int? EntryCount { get; set; }
-
-        public string DbCenterId { get; set; }
     }
 }

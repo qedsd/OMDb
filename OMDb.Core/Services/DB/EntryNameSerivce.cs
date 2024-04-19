@@ -31,7 +31,7 @@ namespace OMDb.Core.Services
         {
             if (!string.IsNullOrEmpty(entryId))
             {
-                var names = DbService.GetConnection(dbId).Queryable<DbModels.EntryNameDb>().Where(p => p.EntryId == entryId).ToList();
+                var names = DbService.GetConnection(dbId).Queryable<EntryNameDb>().Where(p => p.EntryId == entryId).ToList();
                 if (names != null && names.Any())
                 {
                     return names.FirstOrDefault(p => p.IsDefault)?.Name;
@@ -121,12 +121,12 @@ namespace OMDb.Core.Services
 
         public static async Task AddNamesAsync(List<EntryNameDb> entryNames, string dbId)
         {
-            await Task.Run(()=>DbService.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
+            await Task.Run(() => DbService.GetConnection(dbId).Insertable(entryNames).ExecuteCommand());
         }
 
         public static async Task RemoveNamesAsync(string id, string dbId)
         {
-            await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p=>p.EntryId == id).RemoveDataCache().ExecuteCommand());
+            await Task.Run(() => DbService.GetConnection(dbId).Deleteable<EntryNameDb>(p => p.EntryId == id).RemoveDataCache().ExecuteCommand());
         }
         //public static async Task RemoveNamesAsync(string id, string dbId)
         //{
@@ -139,9 +139,9 @@ namespace OMDb.Core.Services
         /// <param name="dbId"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static async Task UpdateOrAddDefaultNamesAsync(string id, string dbId,string name)
+        public static async Task UpdateOrAddDefaultNamesAsync(string id, string dbId, string name)
         {
-            await Task.Run( () =>
+            await Task.Run(() =>
             {
                 UpdateOrAddDefaultNames(id, dbId, name);
             });
@@ -182,14 +182,14 @@ namespace OMDb.Core.Services
         public static async Task<List<QueryResult>> QueryLikeNamesAsync(string partstr)
         {
             List<QueryResult> queryItems = new List<QueryResult>();
-            foreach(var db in DbService.Dbs)
+            foreach (var db in DbService.RepositoryDbs)
             {
-                var ls = await db.Value.Queryable<EntryNameDb>().Where(p=>p.Name.Contains(partstr)).ToListAsync();
-                if(ls != null)
+                var ls = await db.Value.Queryable<EntryNameDb>().Where(p => p.Name.Contains(partstr)).ToListAsync();
+                if (ls != null)
                 {
-                    foreach(var item in ls)
+                    foreach (var item in ls)
                     {
-                        queryItems.Add(new QueryResult(item.EntryId, item.Name,db.Key));
+                        queryItems.Add(new QueryResult(item.EntryId, item.Name, db.Key));
                     }
                 }
             }
@@ -203,7 +203,7 @@ namespace OMDb.Core.Services
         public static async Task<List<QueryResult>> QueryFullNamesAsync(string name)
         {
             List<QueryResult> queryItems = new List<QueryResult>();
-            foreach (var db in DbService.Dbs)
+            foreach (var db in DbService.RepositoryDbs)
             {
                 var ls = await db.Value.Queryable<EntryNameDb>().Where(p => p.Name == name).ToListAsync();
                 if (ls != null)
@@ -222,7 +222,7 @@ namespace OMDb.Core.Services
 
         public static void AddEntryName(List<EntryNameDb> endbs, string dbId)
         {
-             DbService.GetConnection(dbId).Insertable(endbs).ExecuteCommand();
+            DbService.GetConnection(dbId).Insertable(endbs).ExecuteCommand();
         }
 
 

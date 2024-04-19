@@ -105,12 +105,10 @@ namespace OMDb.WinUI3.Services
                 TreatEntry(ed);//处理词条主表Entry
                 Core.Services.EntryService.UpdateOrAddEntry(ed.Entry);//更新词条主表
 
-                TreatEntrySource(ed);//资源路径表EntrySource处理及更新
-
                 TreatLabelLink(ed);//词条标签关联表
 
                 TreatEntryName(ed);//词条名称表EntryName
-                Core.Services.EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
+                EntryNameSerivce.UpdateOrAddDefaultNames(ed.Entry.EntryId, ed.Entry.DbId, ed.Entry.Name);//更新或插入词条默认名称
             });
         }
         /// <summary>
@@ -119,47 +117,15 @@ namespace OMDb.WinUI3.Services
         /// <param name="ed"></param>
         private static void TreatLabelLink(EntryDetail ed)
         {
-            if (!ed.LabelClassDbList.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            if (!ed.Labels.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
-                List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(ed.LabelClassDbList.Count);
-                ed.LabelClassDbList.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = ed.Entry.EntryId, LCID = p.LCID, DbId = ed.Entry.DbId }));
-                Core.Services.LabelClassService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
-                Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
-            }
-            if (ed.LablePropertyDbList.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelPropertyDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(ed.LablePropertyDbList.Count);
-                ed.LablePropertyDbList.ForEach(p => entryLabelPropertyDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = ed.Entry.EntryId, LPID = p.LPID, DbId = ed.Entry.DbId }));
-                Core.Services.LabelPropertyService.ClearEntryLabel(ed.Entry.EntryId);//清空词条属性标签
-                Core.Services.LabelPropertyService.AddEntryLabel(entryLabelPropertyDbs);//添加词条属性标签
+                List<Core.DbModels.EntryLabelLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLinkDb>(ed.Labels.Count);
+                ed.Labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLinkDb() { EntryId = ed.Entry.EntryId, LabelID = p.ID, DbId = ed.Entry.DbId }));
+                LabelService.ClearEntryLabel(ed.Entry.EntryId);//清空词条分类标签
+                LabelService.AddEntryLabel(entryLabelDbs);//添加词条分类标签
             }
         }
-        /// <summary>
-        /// 表EntrySource数据处理
-        /// </summary>
-        /// <param name="ed"></param>
-        private static void TreatEntrySource(EntryDetail ed)
-        {
-            switch (ed.Entry.SaveType)
-            {
-                case SaveType.Folder:
-                    {
-                        //文件夾地址轉爲相對地址
-                        var s = Services.ConfigService.EnrtyStorages.FirstOrDefault(p => p.StorageName == ed.Entry.DbId).StoragePath;
-                        ed.PathFolder = ed.PathFolder.Remove(s);
-                        Core.Services.EntrySourceSerivce.AddEntrySource_PathFolder(ed.Entry.EntryId, ed.PathFolder, ed.Entry.DbId);
-                        break;
-                    }
-                case SaveType.Files:
-                    {
-                        List<EntrySourceDb> entrySourceDbs = new List<EntrySourceDb>();
-                        Core.Services.EntrySourceSerivce.AddEntrySource(entrySourceDbs, ed.Entry.DbId);
-                        break;
-                    }
-                default:
-                    break;
-            }
-        }
+
         /// <summary>
         /// 表Entry数据处理
         /// </summary>

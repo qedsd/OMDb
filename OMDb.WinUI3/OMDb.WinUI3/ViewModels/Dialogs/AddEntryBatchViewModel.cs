@@ -23,9 +23,9 @@ namespace OMDb.WinUI3.ViewModels
 
         public ObservableCollection<Models.EntryDetail> EntryDetailCollection { get; set; }=new ObservableCollection<Models.EntryDetail>();
 
-        public List<Models.EnrtyStorage> EnrtyStorages { get; set; }
-        private Models.EnrtyStorage selectedEnrtyStorage;
-        public Models.EnrtyStorage SelectedEnrtyStorage
+        public List<Models.EnrtyRepository> EnrtyStorages { get; set; }
+        private Models.EnrtyRepository selectedEnrtyStorage;
+        public Models.EnrtyRepository SelectedEnrtyStorage
         {
             get => selectedEnrtyStorage;
             set{ SetProperty(ref selectedEnrtyStorage, value);}

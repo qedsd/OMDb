@@ -161,43 +161,21 @@ namespace OMDb.WinUI3.Models
         #endregion
 
         #region 标签列表(分类)
-        private List<Core.DbModels.LabelClassDb> _labelClassDbList;
-        public List<Core.DbModels.LabelClassDb> LabelClassDbList
+        private List<Core.DbModels.LabelDb> _labels;
+        public List<Core.DbModels.LabelDb> Labels
         {
-            get => _labelClassDbList;
+            get => _labels;
             set
             {
-                SetProperty(ref _labelClassDbList, value);
+                SetProperty(ref _labels, value);
                 Task.Run(() =>
                 {
-                    Core.Services.LabelClassService.ClearEntryLabel(Entry.EntryId);//清空词条标签
+                    LabelService.ClearEntryLabel(Entry.EntryId);//清空词条标签
                     if (value != null)
                     {
-                        List<Core.DbModels.EntryLabelClassLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelClassLinkDb>(_labelClassDbList.Count);
-                        _labelClassDbList.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelClassLinkDb() { EntryId = Entry.EntryId, LCID = p.LCID, DbId = Entry.DbId }));
-                        Core.Services.LabelClassService.AddEntryLabel(entryLabelDbs);//添加词条标签
-                    }
-                });
-            }
-        }
-        #endregion
-
-        #region 标签列表(属性)
-        private List<Core.DbModels.LabelPropertyDb> _lablePropertyDbList = new List<Core.DbModels.LabelPropertyDb>();
-        public List<Core.DbModels.LabelPropertyDb> LablePropertyDbList
-        {
-            get => _lablePropertyDbList;
-            set
-            {
-                SetProperty(ref _lablePropertyDbList, value);
-                Task.Run(() =>
-                {
-                    Core.Services.LabelClassService.ClearEntryLabel(Entry.EntryId);//清空词条标签
-                    if (value != null)
-                    {
-                        List<Core.DbModels.EntryLabelPropertyLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelPropertyLinkDb>(_lablePropertyDbList.Count);
-                        _lablePropertyDbList.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelPropertyLinkDb() { EntryId = Entry.EntryId, LPID = p.LPID, DbId = Entry.DbId }));
-                        Core.Services.LabelPropertyService.AddEntryLabel(entryLabelDbs);//添加词条标签
+                        List<Core.DbModels.EntryLabelLinkDb> entryLabelDbs = new List<Core.DbModels.EntryLabelLinkDb>(_labels.Count);
+                        _labels.ForEach(p => entryLabelDbs.Add(new Core.DbModels.EntryLabelLinkDb() { EntryId = Entry.EntryId, LabelID = p.ID, DbId = Entry.DbId }));
+                        LabelService.AddEntryLabel(entryLabelDbs);//添加词条标签
                     }
                 });
             }

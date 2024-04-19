@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OMDb.Core.Enums;
-using OMDb.Core.Services;
 using OMDb.WinUI3.Models;
 using System;
 using System.Collections.Generic;
@@ -98,7 +97,7 @@ namespace OMDb.WinUI3.ViewModels
                     CreateTime = DateTime.Now,
                     LastUpdateTime = DateTime.Now
                 };
-                EntryCollectionService.AddCollection(entryCollectionDb);
+                Core.Services.EntryCollectionService.AddCollection(entryCollectionDb);
                 EntryCollections.Add(new EntryCollection(Core.Models.EntryCollection.Create(entryCollectionDb)));
                 NewCollectionTitle = string.Empty;
                 NewCollectionDesc = string.Empty;

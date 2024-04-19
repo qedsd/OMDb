@@ -27,7 +27,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty EntryStoragesProperty = DependencyProperty.Register
             (
             "EntryStorages",
-            typeof(IEnumerable<Models.EnrtyStorage>),
+            typeof(IEnumerable<Models.EnrtyRepository>),
             typeof(UserControl),
             new PropertyMetadata(null, new PropertyChangedCallback(SetEntryStorages))
             );
@@ -36,11 +36,11 @@ namespace OMDb.WinUI3.MyControls
             var card = d as EntryStoragesControl;
             if (card != null)
             {
-                var items = e.NewValue as IEnumerable<Models.EnrtyStorage>;
+                var items = e.NewValue as IEnumerable<Models.EnrtyRepository>;
                 if (items != null)
                 {
-                    List<Models.EnrtyStorage> list = new List<Models.EnrtyStorage>();
-                    list.Add(new Models.EnrtyStorage()
+                    List<Models.EnrtyRepository> list = new List<Models.EnrtyRepository>();
+                    list.Add(new Models.EnrtyRepository()
                     {
                         StorageName = "全部",
                         IsChecked = true
@@ -61,17 +61,17 @@ namespace OMDb.WinUI3.MyControls
                 }
             }
         }
-        private IEnumerable<Models.EnrtyStorage> GridViewItemsSource;
-        public IEnumerable<Models.EnrtyStorage> EntryStorages
+        private IEnumerable<Models.EnrtyRepository> GridViewItemsSource;
+        public IEnumerable<Models.EnrtyRepository> EntryStorages
         {
-            get { return (IEnumerable<Models.EnrtyStorage>)GetValue(EntryStoragesProperty); }
+            get { return (IEnumerable<Models.EnrtyRepository>)GetValue(EntryStoragesProperty); }
 
             set { SetValue(EntryStoragesProperty, value); }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var item = (sender as Button).DataContext as Models.EnrtyStorage;
+            var item = (sender as Button).DataContext as Models.EnrtyRepository;
             if (item != null)
             {
                 if (item == GridViewItemsSource.FirstOrDefault())//全选、全不选
@@ -110,7 +110,7 @@ namespace OMDb.WinUI3.MyControls
         /// 选择委托
         /// </summary>
         /// <param name="label">当前触发标签</param>
-        public delegate void CheckChangedEventHandel(IEnumerable<Models.EnrtyStorage> allItems);
+        public delegate void CheckChangedEventHandel(IEnumerable<Models.EnrtyRepository> allItems);
         private CheckChangedEventHandel CheckChanged;
 
         public static readonly DependencyProperty CheckChangedCommandProperty

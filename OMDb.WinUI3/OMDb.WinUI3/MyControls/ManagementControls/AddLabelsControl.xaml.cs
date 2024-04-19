@@ -27,7 +27,7 @@ namespace OMDb.WinUI3.MyControls
         public static readonly DependencyProperty LabelsProperty = DependencyProperty.Register
             (
             "Labels",
-            typeof(IEnumerable<Models.LabelClass>),
+            typeof(IEnumerable<Models.Label>),
             typeof(UserControl),
             new PropertyMetadata(null, new PropertyChangedCallback(SetLabels))
             );
@@ -36,12 +36,12 @@ namespace OMDb.WinUI3.MyControls
             var card = d as AddLabelsControl;
             if (card != null)
             {
-                card.ListBox_Labels.ItemsSource = e.NewValue as IEnumerable<Models.LabelClass>;
+                card.ListBox_Labels.ItemsSource = e.NewValue as IEnumerable<Models.Label>;
             }
         }
-        public IEnumerable<Models.LabelClass> Labels
+        public IEnumerable<Models.Label> Labels
         {
-            get { return (IEnumerable<Models.LabelClass>)GetValue(LabelsProperty); }
+            get { return (IEnumerable<Models.Label>)GetValue(LabelsProperty); }
 
             set { SetValue(LabelsProperty, value); }
         }
@@ -56,7 +56,7 @@ namespace OMDb.WinUI3.MyControls
         {
             DoneEvent?.Invoke(false, Labels);
         }
-        public delegate void DoneDelegate(bool confirm,IEnumerable<Models.LabelClass> labels);
+        public delegate void DoneDelegate(bool confirm,IEnumerable<Models.Label> labels);
         public event DoneDelegate DoneEvent;
     }
 }

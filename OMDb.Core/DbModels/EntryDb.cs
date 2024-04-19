@@ -56,12 +56,6 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public double MyRating { get; set; }
 
-
-        /// <summary>
-        /// 类型 1:指向文件夹 2:指向文件 3:本地存储
-        /// </summary>
-        public SaveType SaveType { get; set; }
-
         //资源文件统计
         public int CountVideo { get; set; } = 0;
         public int CountImage { get; set; } = 0;

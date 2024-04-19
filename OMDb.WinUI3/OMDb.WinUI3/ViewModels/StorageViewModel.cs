@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
+using OMDb.Core.Services;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
@@ -20,19 +21,19 @@ namespace OMDb.WinUI3.ViewModels
 {
     public class StorageViewModel : ObservableObject
     {
-        public ObservableCollection<EnrtyStorage> enrtyStorages;
-        public ObservableCollection<EnrtyStorage> EnrtyStorages
+        public ObservableCollection<EnrtyRepository> enrtyRepositories;
+        public ObservableCollection<EnrtyRepository> EnrtyRepositories
         {
-            get => enrtyStorages;
-            set => SetProperty(ref enrtyStorages, value);
+            get => enrtyRepositories;
+            set => SetProperty(ref enrtyRepositories, value);
         }
-        private EnrtyStorage enrtyStorage;
-        public EnrtyStorage EnrtyStorage
+        private EnrtyRepository enrtyRepository;
+        public EnrtyRepository EnrtyRepository
         {
-            get => enrtyStorage;
+            get => enrtyRepository;
             set
             {
-                enrtyStorage = value;
+                enrtyRepository = value;
             }
         }
         public StorageViewModel()
@@ -54,38 +55,38 @@ namespace OMDb.WinUI3.ViewModels
             Init();
         });
 
-        private void StorageCard_RemoveStorageEvent(EnrtyStorage enrtyStorage)
+        private void StorageCard_RemoveStorageEvent(EnrtyRepository enrtyRepository)
         {
-            EnrtyStorages.Remove(enrtyStorage);
-            Core.Config.RemoveDb(enrtyStorage.StorageName);           
-            Core.Services.StorageService.RemoveStorage(Services.Settings.DbSelectorService.dbCurrentId, enrtyStorage.StorageName);
+            EnrtyRepositories.Remove(enrtyRepository);
+            Core.Config.RemoveDb(enrtyRepository.Name);           
+            Core.Services.RepositoryService.RemoveRepository(enrtyRepository.Id);
             Services.ConfigService.LoadStorages();
             Init();
         }
 
         public async void Init()
         {
-            var lstStorage = await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
-            if (EnrtyStorages != null) { EnrtyStorages.Clear(); } else { enrtyStorages = new ObservableCollection<EnrtyStorage>(); }
+            var lstStorage = await RepositoryService.GetAllRepositoryAsync();
+            if (EnrtyRepositories != null) { EnrtyRepositories.Clear(); } else { EnrtyRepositories = new ObservableCollection<EnrtyRepository>(); }
             if (lstStorage != null)
             {
                 foreach (var item in lstStorage)
                 {
-                    EnrtyStorage enrtyStorage = new EnrtyStorage();
-                    enrtyStorage.StorageName = item.StorageName;
-                    enrtyStorage.StoragePath = item.StoragePath;
+                    EnrtyRepository enrtyStorage = new EnrtyRepository();
+                    enrtyStorage.Name = item.Name;
+                    enrtyStorage.Path = item.Path;
                     enrtyStorage.CoverImg = item.CoverImg;
                     enrtyStorage.EntryCount = (int)item.EntryCount;
-                    EnrtyStorages.Add(enrtyStorage);
+                    EnrtyRepositories.Add(enrtyStorage);
                 }
             }
         }
 
-        private async void StorageCard_AddStorageEvent(EnrtyStorage enrtyStorage)
+        private async void StorageCard_AddStorageEvent(EnrtyRepository enrtyStorage)
         {
             if (enrtyStorage != null)
             {
-                bool isPathCorrect_Storage = Directory.Exists(enrtyStorage.StoragePath);
+                bool isPathCorrect_Storage = Directory.Exists(enrtyStorage.Path);
                 if (!isPathCorrect_Storage)
                 {
                     await Dialogs.MsgDialog.ShowDialog("添加失败，仓库路径有误");
@@ -95,10 +96,10 @@ namespace OMDb.WinUI3.ViewModels
                 bool isPathCorrect_Cover = File.Exists(enrtyStorage.CoverImg);
                 if (!isPathCorrect_Cover)
                 {
-                    enrtyStorage.CoverImg= CommonService.GetCover();
+                    enrtyStorage.CoverImg= Services.CommonService.GetCover();
                 }
 
-                var path_omdb = System.IO.Path.Combine(enrtyStorage.StoragePath, ConfigService.DefaultEntryFolder);
+                var path_omdb = System.IO.Path.Combine(enrtyStorage.Path, ConfigService.DefaultEntryFolder);
                 Directory.CreateDirectory(path_omdb);
                 var path_omdb_Cover = @$"{path_omdb}\Cover{Path.GetExtension(enrtyStorage.CoverImg)}";
                 if(!File.Exists(path_omdb_Cover))File.Copy(enrtyStorage.CoverImg, path_omdb_Cover);
@@ -108,45 +109,25 @@ namespace OMDb.WinUI3.ViewModels
                 try
                 {
                     //添加已有数据库
-                    if (EnrtyStorages.FirstOrDefault(p => p.StorageName == enrtyStorage.StorageName) != null) { await Dialogs.MsgDialog.ShowDialog("存在重名仓库"); }
+                    if (EnrtyRepositories.FirstOrDefault(p => p.Name == enrtyStorage.Name) != null) { await Dialogs.MsgDialog.ShowDialog("存在重名仓库"); }
                     else
                     {
                         bool needCodeFirst = !System.IO.File.Exists(path_omdb_db);
-                        if (Core.Config.AddDbFile(path_omdb_db, enrtyStorage.StorageName, needCodeFirst))
+                        if (Core.Config.AddDbFile(path_omdb_db, enrtyStorage.Name, needCodeFirst))
                         {
                             Helpers.InfoHelper.ShowSuccess("创建成功");
-                            //添加旧仓库
+                            RepositoryDb repositoryDb = new RepositoryDb()
+                            {
+                                Name = enrtyStorage.Name,
+                                Path = enrtyStorage.Path,
+                                EntryCount = enrtyStorage.EntryCount,
+                                CoverImg = path_omdb_Cover
+                            };
                             if (!needCodeFirst)
                             {
-                                enrtyStorage.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.StorageName);
-                                if (!(EnrtyStorages.Count > 0)) EnrtyStorages.Insert(EnrtyStorages.Count, enrtyStorage);
-                                else EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
-                                StorageDb storageDb = new StorageDb()
-                                {
-                                    StorageName = enrtyStorage.StorageName,
-                                    StoragePath =enrtyStorage.StoragePath,
-                                    EntryCount = enrtyStorage.EntryCount,
-                                    CoverImg = path_omdb_Cover,
-                                    DbCenterId = Services.Settings.DbSelectorService.dbCurrentId
-                                };
-                                Core.Services.StorageService.AddStorage(storageDb);
+                                repositoryDb.EntryCount = await Core.Services.EntryService.QueryEntryCountAsync(enrtyStorage.Name);
                             }
-
-                            //添加新仓库
-                            else
-                            {
-                                if (!(EnrtyStorages.Count > 0)) EnrtyStorages.Insert(EnrtyStorages.Count, enrtyStorage);
-                                else EnrtyStorages.Insert(EnrtyStorages.Count - 1, enrtyStorage);
-                                StorageDb storageDb = new StorageDb()
-                                {
-                                    StorageName = enrtyStorage.StorageName,
-                                    StoragePath = enrtyStorage.StoragePath,
-                                    EntryCount = 0,
-                                    CoverImg = path_omdb_Cover,
-                                    DbCenterId = Services.Settings.DbSelectorService.dbCurrentId
-                                };
-                                Core.Services.StorageService.AddStorage(storageDb);
-                            }
+                            RepositoryService.AddRepository(repositoryDb);
                         }
                         else
                         {
@@ -161,14 +142,5 @@ namespace OMDb.WinUI3.ViewModels
                 Init();
             }
         }
-
-        /*public ICommand ItemClickCommand => new RelayCommand<EnrtyStorage>(async (item) =>
-        {
-            if (item != null && !string.IsNullOrEmpty(item.StoragePath))
-            {
-                Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
-                await EntryHomeViewModel.Current.UpdateEntryListAsync();
-            }
-        });*/
     }
 }

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml.Controls;
 using OMDb.Core.DbModels;
 using OMDb.Core.Models;
-using OMDb.Core.Services;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Services;
 using SqlSugar;

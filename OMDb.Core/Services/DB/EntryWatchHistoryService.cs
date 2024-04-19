@@ -53,9 +53,9 @@ namespace OMDb.Core.Services
         /// 会同步更新词条的观看次数
         /// </summary>
         /// <param name="watchHistory"></param>
-        public static bool AddWatchHistory(Models.WatchHistory watchHistory)
+        public static bool AddWatchHistory(WatchHistory watchHistory)
         {
-            if(DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0)
+            if (DbService.GetConnection(watchHistory.DbId).Insertable(watchHistory as EntryWatchHistoryDb).ExecuteCommand() > 0)
             {
                 if (watchHistory.Done)
                 {
@@ -74,14 +74,14 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="watchHistory"></param>
         /// <returns></returns>
-        public static bool UpdateWatchHistory(Models.WatchHistory watchHistory)
+        public static bool UpdateWatchHistory(WatchHistory watchHistory)
         {
             //需要判断是否修改了观看完成
             var source = DbService.GetConnection(watchHistory.DbId).Queryable<EntryWatchHistoryDb>().In(watchHistory.Id).First();
-            if(source != null)
+            if (source != null)
             {
-                var update = DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0;
-                if(!update)
+                var update = DbService.GetConnection(watchHistory.DbId).Updateable(watchHistory as EntryWatchHistoryDb).ExecuteCommand() > 0;
+                if (!update)
                 {
                     return false;
                 }
@@ -108,9 +108,9 @@ namespace OMDb.Core.Services
         /// </summary>
         /// <param name="watchHistory"></param>
         /// <returns></returns>
-        public static bool DeleteWatchHistory(Models.WatchHistory watchHistory)
+        public static bool DeleteWatchHistory(WatchHistory watchHistory)
         {
-            if(DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as DbModels.EntryWatchHistoryDb).ExecuteCommand() > 0)
+            if (DbService.GetConnection(watchHistory.DbId).Deleteable(watchHistory as EntryWatchHistoryDb).ExecuteCommand() > 0)
             {
                 if (watchHistory.Done)
                 {

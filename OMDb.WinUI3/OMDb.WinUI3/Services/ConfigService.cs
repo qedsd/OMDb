@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Shapes;
 using Newtonsoft.Json;
+using OMDb.Core.Services.DbServices;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services.Settings;
 using System;
@@ -53,7 +54,7 @@ namespace OMDb.WinUI3.Services
         /// </summary>
         public static string MetadataFileNmae { get; } = "MetaData.json";
 
-        public static ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; }
+        public static ObservableCollection<EnrtyRepository> EnrtyStorages { get; set; }
 
         public static void Load()
         {
@@ -65,21 +66,21 @@ namespace OMDb.WinUI3.Services
         }
         public static async void LoadStorages()
         {
-            EnrtyStorages = new ObservableCollection<EnrtyStorage>();
+            EnrtyStorages = new ObservableCollection<EnrtyRepository>();
             Core.Config.ClearDb();
-            var lstStorage = await Core.Services.StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
+            var lstStorage = await StorageService.GetAllStorageAsync(Services.Settings.DbSelectorService.dbCurrentId);
 
             //初始化 EnrtyStorages
             if (EnrtyStorages != null)
                 EnrtyStorages.Clear();
             else
-                EnrtyStorages = new ObservableCollection<EnrtyStorage>();
+                EnrtyStorages = new ObservableCollection<EnrtyRepository>();
 
             if (lstStorage != null)
             {
                 foreach (var item in lstStorage)
                 {
-                    EnrtyStorage enrtyStorage = new EnrtyStorage();
+                    EnrtyRepository enrtyStorage = new EnrtyRepository();
                     enrtyStorage.StorageId = item.Id;
                     enrtyStorage.StorageName = item.StorageName;
                     enrtyStorage.StoragePath = item.StoragePath;

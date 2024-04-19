@@ -28,7 +28,7 @@ namespace OMDb.WinUI3.ViewModels
     public partial class EntryHomeViewModel : ObservableObject
     {
         #region 字段
-        public ObservableCollection<EnrtyStorage> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
+        public ObservableCollection<EnrtyRepository> EnrtyStorages { get; set; } = Services.ConfigService.EnrtyStorages;
         private ObservableCollection<Core.Models.Entry> _entriesAll;
         public ObservableCollection<Core.Models.Entry> EntriesAll
         {
@@ -42,8 +42,8 @@ namespace OMDb.WinUI3.ViewModels
             get => _entries;
             set => SetProperty(ref _entries, value);
         }
-        private ObservableCollection<LabelClass> _labels;
-        public ObservableCollection<LabelClass> Labels
+        private ObservableCollection<Label> _labels;
+        public ObservableCollection<Label> Labels
         {
             get => _labels;
             set => SetProperty(ref _labels, value);
@@ -90,8 +90,8 @@ namespace OMDb.WinUI3.ViewModels
             }
         }
         public List<string> SortWayStrs { get; set; }
-        private ObservableCollection<EnrtyStorage> entryStorages;
-        public ObservableCollection<EnrtyStorage> EntryStorages
+        private ObservableCollection<EnrtyRepository> entryStorages;
+        public ObservableCollection<EnrtyRepository> EntryStorages
         {
             get => entryStorages;
             set => SetProperty(ref entryStorages, value);

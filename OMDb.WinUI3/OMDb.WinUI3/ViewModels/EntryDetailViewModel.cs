@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Shapes;
 using OMDb.Core.DbModels;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Dialogs;
 using OMDb.WinUI3.Models;
@@ -141,7 +142,7 @@ namespace OMDb.WinUI3.ViewModels
                     Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0),
                     Mark = NewHistorMark
                 };
-                Core.Services.EntryWatchHistoryService.AddWatchHistory(watchHistory);
+                EntryWatchHistoryService.AddWatchHistory(watchHistory);
                 Entry.WatchHistory.Add(watchHistory);
             }
             else//编辑
@@ -149,7 +150,7 @@ namespace OMDb.WinUI3.ViewModels
                 EditingWatchHistory.Time = new DateTime(NewHistorDate.Year, NewHistorDate.Month, NewHistorDate.Day, NewHistorTime.Hours, NewHistorTime.Minutes, 0);
                 EditingWatchHistory.Mark = NewHistorMark;
                 EditingWatchHistory.Done = NewHistorDone;
-                Core.Services.EntryWatchHistoryService.UpdateWatchHistory(EditingWatchHistory);
+                EntryWatchHistoryService.UpdateWatchHistory(EditingWatchHistory);
             }
             CancelEditHistoryCommand.Execute(null);
             await Entry.UpdateWatchHistoryAsync();//确保按时间倒序
@@ -172,7 +173,7 @@ namespace OMDb.WinUI3.ViewModels
             {
                 if (await Dialogs.QueryDialog.ShowDialog("是否确认删除记录？", $"{item.Time} - {item.Mark}"))
                 {
-                    Core.Services.EntryWatchHistoryService.DeleteWatchHistory(item);
+                    EntryWatchHistoryService.DeleteWatchHistory(item);
                     Entry.WatchHistory.Remove(item);
                     if(item.Done)
                     {
@@ -220,8 +221,8 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand SaveNamesCommand => new RelayCommand(async() =>
         {
             Names = Names.Where(p=>!string.IsNullOrEmpty(p.Name)).ToObservableCollection();
-            await Core.Services.EntryNameSerivce.RemoveNamesAsync(Entry.Entry.EntryId, Entry.Entry.DbId);
-            await Core.Services.EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.EntryId)).ToList(), Entry.Entry.DbId);
+            await EntryNameSerivce.RemoveNamesAsync(Entry.Entry.EntryId, Entry.Entry.DbId);
+            await EntryNameSerivce.AddNamesAsync(Names.Select(p => p.ToCoreEntryNameDb(Entry.Entry.EntryId)).ToList(), Entry.Entry.DbId);
             string oldEntryName = Entry.Name;
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
@@ -488,7 +489,7 @@ namespace OMDb.WinUI3.ViewModels
                 int addCount = 0;
                 foreach (var collection in collections)
                 {
-                    if(Core.Services.EntryCollectionService.QueryFirst(collection.Id, Entry.Entry.EntryId) == null)
+                    if(EntryCollectionService.QueryFirst(collection.Id, Entry.Entry.EntryId) == null)
                     {
                         addCount++;
                         EntryCollectionItemDb entryCollectionItemDb = new EntryCollectionItemDb()
@@ -499,7 +500,7 @@ namespace OMDb.WinUI3.ViewModels
                             CollectionId = collection.Id,
                             AddTime = DateTime.Now
                         };
-                        Core.Services.EntryCollectionService.AddCollectionItem(entryCollectionItemDb);
+                        EntryCollectionService.AddCollectionItem(entryCollectionItemDb);
                     }
                 }
                 if(addCount == 0)

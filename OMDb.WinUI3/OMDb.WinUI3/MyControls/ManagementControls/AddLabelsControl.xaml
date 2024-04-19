@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <ListBox x:Name="ListBox_Labels" Background="Transparent">
             <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="Models:LabelClass">
+                <DataTemplate x:DataType="Models:Label">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="32" />

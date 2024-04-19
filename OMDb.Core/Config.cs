@@ -10,34 +10,26 @@ namespace OMDb.Core
 {
     public static class Config
     {
-        internal static readonly List<string> SqliteConnectionStrings = new();
         public static bool AddConnectionString(string str, string configId, bool needCodeFirst)
         {
-            SqliteConnectionStrings.Add(str);
-            return Services.DbService.AddDb(str, configId, needCodeFirst);
+            return DbService.AddDb(str, configId, needCodeFirst);
         }
         public static bool AddDbFile(string filePath, string configId,bool needCodeFirst)
         {
-            SqliteConnectionStrings.Add(@"DataSource=" + filePath);
-            return Services.DbService.AddDb(@"DataSource=" + filePath, configId, needCodeFirst);
+            return DbService.AddDb(@"DataSource=" + filePath, configId, needCodeFirst);
         }
         public static bool RemoveDb(string key)
         {
-            return Services.DbService.Dbs.Remove(key);
+            return DbService.RepositoryDbs.Remove(key);
         }
         public static void ClearDb()
         {
-            Services.DbService.Dbs.Clear();
+            DbService.RepositoryDbs.Clear();
         }
 
-        public static bool InitMCDb(string filePath)
+        public static bool InitConfigDb(string filePath)
         {
-            return DbService.SetMCDb($"DataSource={filePath}");
-        }
-
-        public static bool InitDCDb(string filePath)
-        {
-            return DbService.SetDCDb($"DataSource={filePath}");
+            return DbService.SetConfigDb($"DataSource={filePath}");
         }
 
         /// <summary>

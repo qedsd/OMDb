@@ -66,7 +66,7 @@ namespace OMDb.WinUI3.MyControls
 
         private void Grid_1st_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var labelClass = (sender as FrameworkElement)?.Tag as LabelClass;
+            var labelClass = (sender as FrameworkElement)?.Tag as Label;
             labelClass.IsChecked = !labelClass.IsChecked;
             if (labelClass.IsChecked)
             {
@@ -80,7 +80,7 @@ namespace OMDb.WinUI3.MyControls
 
         private void Grid_2nd_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var labelClass = (sender as FrameworkElement)?.Tag as LabelClass;
+            var labelClass = (sender as FrameworkElement)?.Tag as Label;
             labelClass.IsChecked = !labelClass.IsChecked;
             CallChanged();
         }

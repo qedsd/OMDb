@@ -6,6 +6,7 @@ using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Helpers;
@@ -25,7 +26,7 @@ namespace OMDb.WinUI3.Services
 {
     public static class ExcelService
     {
-        public static async void ExportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        public static async void ExportExcelAsync(string filePath, EnrtyRepository enrtyStorage)
         {
             await Task.Run(() => ExportExcel(filePath, enrtyStorage));
         }
@@ -34,7 +35,7 @@ namespace OMDb.WinUI3.Services
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="enrtyStorage"></param>
-        public static void ExportExcel(string filePath, EnrtyStorage enrtyStorage)
+        public static void ExportExcel(string filePath, EnrtyRepository enrtyStorage)
         {
             if (string.IsNullOrEmpty(filePath)) return;
 
@@ -44,11 +45,11 @@ namespace OMDb.WinUI3.Services
 
 
             //数据库查询 属性标签&分类标签
-            var label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var label_lc = LabelService.GetAllLabel(DbSelectorService.dbCurrentId);
             var label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
 
             //标签&词条 关联关系
-            var result_EntryLabelClass = Core.Services.EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
+            var result_EntryLabelClass = EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
             var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
 
@@ -172,7 +173,7 @@ namespace OMDb.WinUI3.Services
 
         }
 
-        public static async void ImportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        public static async void ImportExcelAsync(string filePath, EnrtyRepository enrtyStorage)
         {
             await Task.Run(() => ImportExcel(filePath, enrtyStorage));
         }
@@ -182,7 +183,7 @@ namespace OMDb.WinUI3.Services
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="enrtyStorage"></param>
-        public static void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
+        public static void ImportExcel(string filePath, EnrtyRepository enrtyStorage)
         {
             var msg = new StringBuilder();
             if (string.IsNullOrEmpty(filePath)) return;
@@ -485,7 +486,7 @@ namespace OMDb.WinUI3.Services
                     if (isAdd)
                     {
                         Core.Services.EntryService.AddEntry(edb, enrtyStorage.StorageName);
-                        Core.Services.EntryNameSerivce.AddEntryName(endbs, enrtyStorage.StorageName);
+                        EntryNameSerivce.AddEntryName(endbs, enrtyStorage.StorageName);
                         Core.Services.EntrySourceSerivce.AddEntrySource(esdbs, enrtyStorage.StorageName);
                         msg.AppendLine($"第{rowCount}行導入：新增成功！");
                     }

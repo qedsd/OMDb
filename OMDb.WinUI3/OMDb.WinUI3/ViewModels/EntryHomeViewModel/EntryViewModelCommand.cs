@@ -39,7 +39,7 @@ namespace OMDb.WinUI3.ViewModels
         {
             TabViewService.AddItem(new Views.EntryDetailPage(entry));
         });
-        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyStorage>>(async (items) =>
+        public ICommand EntryStorageChangedCommand => new RelayCommand<IEnumerable<Models.EnrtyRepository>>(async (items) =>
         {
             await UpdateEntryListAsync();
         });

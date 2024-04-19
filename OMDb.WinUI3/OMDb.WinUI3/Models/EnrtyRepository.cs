@@ -8,25 +8,25 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.Models
 {
-    public class EnrtyStorage : ObservableObject
+    public class EnrtyRepository : ObservableObject
     {
-        public string StorageId{ get;  set;}
+        public string Id{ get;  set;}
 
-        private string storageName;
-        public string StorageName
+        private string name;
+        public string Name
         {
-            get => storageName;
-            set { SetProperty(ref storageName, value); }
+            get => name;
+            set { SetProperty(ref name, value); }
         }
-        private string storagePath;
-        public string StoragePath
+        private string path;
+        public string Path
         {
-            get => storagePath;
-            set { SetProperty(ref storagePath, value); }
+            get => path;
+            set { SetProperty(ref path, value); }
         }
         public string StorageDirectory
         {
-            get => StoragePath;
+            get => Path;
         }
         private int entryCount;
         public int EntryCount
@@ -46,12 +46,12 @@ namespace OMDb.WinUI3.Models
             get => isChecked;
             set => SetProperty(ref isChecked, value);
         }
-        public void Update(EnrtyStorage copy)
+        public void Update(EnrtyRepository copy)
         {
             if (copy != null)
             {
-                StorageName = copy.StorageName;
-                StoragePath = copy.StoragePath;
+                Name = copy.Name;
+                Path = copy.Path;
                 CoverImg = copy.CoverImg;
                 EntryCount = copy.EntryCount;
             }

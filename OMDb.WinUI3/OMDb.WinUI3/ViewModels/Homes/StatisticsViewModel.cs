@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OMDb.Core.Services.DbServices;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Models;
 using System;
@@ -56,7 +57,7 @@ namespace OMDb.WinUI3.ViewModels.Homes
         public async Task InitAsync()
         {
             StorageCount = Services.ConfigService.EnrtyStorages.Count;
-            LabelCount = await Core.Services.LabelClassService.GetLabelCountAsync();
+            LabelCount = await LabelService.GetLabelCountAsync();
             EntryCount = 0;
             foreach (var s in Services.ConfigService.EnrtyStorages)
             {

@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using OMDb.Core.Enums;
 using OMDb.Core.Helpers;
 using OMDb.Core.Models;
-using OMDb.Core.Services;
 using OMDb.WinUI3.Models;
 using OMDb.WinUI3.Services;
 using System;
@@ -42,11 +41,11 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _labelCollectionTrees, value);
         }
 
-        private ObservableCollection<LabelClass> _labelClasses;
+        private ObservableCollection<Label> _labelClasses;
         /// <summary>
         /// 只包括没有子类的
         /// </summary>
-        public ObservableCollection<LabelClass> LabelClasses
+        public ObservableCollection<Label> LabelClasses
         {
             get => _labelClasses;
             set => SetProperty(ref _labelClasses, value);
@@ -54,7 +53,7 @@ namespace OMDb.WinUI3.ViewModels
         /// <summary>
         /// 所有标签
         /// </summary>
-        private Dictionary<string, LabelClass> LabelsDic;
+        private Dictionary<string, Label> LabelsDic;
         private bool isList;
         /// <summary>
         /// 列表显示
@@ -84,52 +83,23 @@ namespace OMDb.WinUI3.ViewModels
         {
             if (LabelsDic == null)
             {
-                LabelsDic = new Dictionary<string, LabelClass>();
+                LabelsDic = new Dictionary<string, Label>();
             }
             else
             {
                 LabelsDic.Clear();
             }
-            var labels = await Core.Services.LabelClassService.GetAllLabelAsync(Services.Settings.DbSelectorService.dbCurrentId);
+            var labels = await Core.Services.LabelService.GetAllLabelAsync();
             if (labels != null)
             {
                 foreach (var label in labels)
                 {
-                    LabelsDic.Add(label.LCID, new LabelClass(label));
+                    LabelsDic.Add(label.ID, new Label(label));
                 }
-
-                Dictionary<string, LabelClassTree> labelsDb = new Dictionary<string, LabelClassTree>();//string为父节点id
-                LabelClasses = new ObservableCollection<LabelClass>();
-                var root = labels.Where(p => p.ParentId == null).ToList();
-                if (root != null)//建立所有父节点
-                {
-                    foreach (var label in root)
-                    {
-                        labelsDb.Add(label.LCID, new LabelClassTree(label));
-                    }
-                }
+                LabelClasses = new ObservableCollection<Label>();
                 foreach (var label in labels)
                 {
-                    if (label.ParentId != null)//归类每个子节点
-                    {
-                        if (labelsDb.TryGetValue(label.ParentId, out var parent))
-                        {
-                            parent.Children.Add(new LabelClassTree(label));
-                        }
-                        LabelClasses.Add(new LabelClass(label));//保存所有子节点
-                    }
-                }
-                foreach (var item in labelsDb)
-                {
-                    if (item.Value.Children.Count == 0)//没有实际子节点的父节点也保存到Labels
-                    {
-                        LabelClasses.Add(new LabelClass(item.Value.LabelClass.LabelClassDb));
-                    }
-                }
-                LabelTrees = new ObservableCollection<LabelClassTree>();
-                foreach (var item in labelsDb)
-                {
-                    LabelTrees.Add(item.Value);
+                    LabelClasses.Add(new Label(label));
                 }
             }
         }
@@ -143,13 +113,13 @@ namespace OMDb.WinUI3.ViewModels
             }
             var items = new List<BannerItem>();
             items.Add(await GetAllBannerItem());
-            List<LabelClass> target = Core.Helpers.RandomHelper.RandomList(LabelClasses, 10);
+            List<Label> target = Core.Helpers.RandomHelper.RandomList(LabelClasses, 10);
             foreach (var item in target)
             {
                 var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);
                 var filterModel = new FilterModel();
                 filterModel.IsFilterLabelClass = true;
-                filterModel.LabelClassIds.Add(item.LabelClassDb.LCID);
+                filterModel.LabelClassIds.Add(item.LabelClassDb.ID);
 
                 var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                 var result = Core.Helpers.RandomHelper.RandomList(queryResults, 3);
@@ -164,7 +134,7 @@ namespace OMDb.WinUI3.ViewModels
                             var samllStream = await Core.Helpers.ImageHelper.ResetSizeAsync(bg, 400, 0);
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelClassDb.LCID,
+                                Id = item.LabelClassDb.ID,
                                 Title = item.LabelClassDb.Name,
                                 Description = item.LabelClassDb.Description,
                                 Img = new BitmapImage(new Uri(bg)),
@@ -176,7 +146,7 @@ namespace OMDb.WinUI3.ViewModels
                         {
                             items.Add(new BannerItem()
                             {
-                                Id = item.LabelClassDb.LCID,
+                                Id = item.LabelClassDb.ID,
                                 Title = item.LabelClassDb.Name,
                                 Description = item.LabelClassDb.Description,
                                 Img = new BitmapImage(new Uri(System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets/Img/defaultbanner.jpg"))),
@@ -193,7 +163,7 @@ namespace OMDb.WinUI3.ViewModels
             var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
             var filterModel = new FilterModel();//过滤规则
             filterModel.IsFilterLabelClass = true;
-            filterModel.LabelClassIds = LabelClasses.Select(p => p.LabelClassDb.LCID).ToList();//过滤分类
+            filterModel.LabelClassIds = LabelClasses.Select(p => p.LabelClassDb.ID).ToList();//过滤分类
             var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
             if (queryResults?.Count > 2)
             {
@@ -335,7 +305,7 @@ namespace OMDb.WinUI3.ViewModels
                         var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
                         var filterModel = new FilterModel();//过滤规则
                         filterModel.IsFilterLabelClass = true;
-                        filterModel.LabelClassIds.Add(label.LabelClass.LabelClassDb.LCID);//过滤分类
+                        filterModel.LabelClassIds.Add(label.LabelClass.LabelClassDb.ID);//过滤分类
                         var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                         int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                         var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
@@ -352,7 +322,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Entries = entrys,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                     Template = entryCount == 6 ? 1 : 2,
-                                    Id = label.LabelClass.LabelClassDb.LCID
+                                    Id = label.LabelClass.LabelClassDb.ID
                                 });
                             }
                         }
@@ -364,7 +334,7 @@ namespace OMDb.WinUI3.ViewModels
                     var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
                     var filterModel = new FilterModel();//过滤规则
                     filterModel.IsFilterLabelClass = true;
-                    filterModel.LabelClassIds.Add(labelTree.LabelClass.LabelClassDb.LCID);//过滤分类
+                    filterModel.LabelClassIds.Add(labelTree.LabelClass.LabelClassDb.ID);//过滤分类
                     var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                     int entryCount = Core.Helpers.RandomHelper.RandomOne(new int[] { 6, 8 });
                     var result = Core.Helpers.RandomHelper.RandomList(queryResults, entryCount);
@@ -381,7 +351,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Entries = entrys,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
                                 Template = entryCount == 6 ? 1 : 2,
-                                Id = labelTree.LabelClass.LabelClassDb.LCID
+                                Id = labelTree.LabelClass.LabelClassDb.ID
                             });
                         }
                     }
@@ -427,7 +397,7 @@ namespace OMDb.WinUI3.ViewModels
                         var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
                         var filterModel = new FilterModel();//过滤规则
                         filterModel.IsFilterLabelClass = true;
-                        filterModel.LabelClassIds.Add(label.LabelClass.LabelClassDb.LCID);//过滤分类
+                        filterModel.LabelClassIds.Add(label.LabelClass.LabelClassDb.ID);//过滤分类
                         var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                         var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                         if (showItem != null)
@@ -441,7 +411,7 @@ namespace OMDb.WinUI3.ViewModels
                                     Title = label.LabelClass.LabelClassDb.Name,
                                     Description = label.LabelClass.LabelClassDb.Description,
                                     ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                    Id = label.LabelClass.LabelClassDb.LCID,
+                                    Id = label.LabelClass.LabelClassDb.ID,
                                 });
                             }
                         }
@@ -453,7 +423,7 @@ namespace OMDb.WinUI3.ViewModels
                     var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
                     var filterModel = new FilterModel();//过滤规则
                     filterModel.IsFilterLabelClass = true;
-                    filterModel.LabelClassIds.Add(labelTree.LabelClass.LabelClassDb.LCID);//过滤分类
+                    filterModel.LabelClassIds.Add(labelTree.LabelClass.LabelClassDb.ID);//过滤分类
                     var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                     var showItem = Core.Helpers.RandomHelper.RandomOne(queryResults);
                     if (showItem != null)
@@ -467,7 +437,7 @@ namespace OMDb.WinUI3.ViewModels
                                 Title = labelTree.LabelClass.LabelClassDb.Name,
                                 Description = labelTree.LabelClass.LabelClassDb.Description,
                                 ImageSource = await Helpers.ImgHelper.CreateBitmapImageAsync(bgStream),
-                                Id = labelTree.LabelClass.LabelClassDb.LCID
+                                Id = labelTree.LabelClass.LabelClassDb.ID
                             });
                         }
                     }
@@ -522,7 +492,7 @@ namespace OMDb.WinUI3.ViewModels
                 var sortModel = new SortModel(SortType.LastUpdateTime, SortWay.Positive);//排序规则
                 var filterModel = new FilterModel();//过滤规则
                 filterModel.IsFilterLabelClass = true;
-                filterModel.LabelClassIds.Add(label.LabelClassDb.LCID);
+                filterModel.LabelClassIds.Add(label.LabelClassDb.ID);
                 var queryResults = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
                 var entrys = await Core.Services.EntryService.QueryEntryAsync(queryResults.Select(p => p.ToQueryItem()).ToList());
                 if (entrys?.Any() == true)
@@ -532,7 +502,7 @@ namespace OMDb.WinUI3.ViewModels
                         Title = label.LabelClassDb.Name,
                         Description = label.LabelClassDb.Description,
                         Entries = entrys,
-                        Id = label.LabelClassDb.LCID
+                        Id = label.LabelClassDb.ID
                     };
                     Services.TabViewService.AddItem(new Views.LabelCollectionPage(labelCollection));
                 }
