@@ -91,7 +91,8 @@
                             Margin="4,0"
                             VerticalAlignment="Center"
                             FontSize="12"
-                            Text="OMDb" />
+                            Text="OMDb"
+                            Visibility="Collapsed" />
                     </StackPanel>
                     <Button
                         Width="70"
