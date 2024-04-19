@@ -6,6 +6,12 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Common\**" />
+    <EmbeddedResource Remove="Common\**" />
+    <None Remove="Common\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="DotNetCore.NPOI" Version="1.2.3" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.60" />
@@ -20,9 +26,5 @@
 		<PackageReference Include="System.Composition.TypedParts" Version="8.0.0" />
 		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
 		<PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Common\" />
 	</ItemGroup>
 </Project>
