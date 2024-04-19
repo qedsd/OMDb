@@ -2,6 +2,8 @@
 using OMDb.Core.Models;
 using OMDb.Core.Services;
 using OMDb.Core.Utils.Extensions;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 using System.Net;
 using ImageInfo = OMDb.Core.Models.ImageInfo;
 

@@ -8,9 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
-		<PackageReference Include="NLog" Version="5.2.2" />
-		<PackageReference Include="System.Composition.AttributedModel" Version="7.0.0" />
+		<PackageReference Include="HtmlAgilityPack" Version="1.11.60" />
+		<PackageReference Include="NLog" Version="5.2.8" />
+		<PackageReference Include="System.Composition.AttributedModel" Version="8.0.0" />
 	</ItemGroup>
 
   <ItemGroup>
