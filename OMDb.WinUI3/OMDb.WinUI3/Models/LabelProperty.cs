@@ -13,25 +13,34 @@ namespace OMDb.WinUI3.Models
         /// <summary>
         /// 是否选中
         /// </summary>
-        private bool isChecked;
+        private bool _isChecked;
         public bool IsChecked
         {
-            get => isChecked;
-            set=>SetProperty(ref isChecked, value);
+            get => _isChecked;
+            set=>SetProperty(ref _isChecked, value);
         }
 
-        private bool isHiden;
+        private bool _isHiden;
         public bool IsHiden
         {
-            get => isHiden;
-            set => SetProperty(ref isHiden, value);
+            get => _isHiden;
+            set => SetProperty(ref _isHiden, value);
         }
-        public LabelProperty(Core.DbModels.LabelPropertyDb lpdb)
+        public LabelProperty(Core.DbModels.LabelPropertyDb labelPropertyDb)
         {
-            LPDb = lpdb;
-            isChecked = false;
-            isHiden = false;
+            LPDb = labelPropertyDb;
+            _isChecked = false;
+            _isHiden = false;
+            _name=labelPropertyDb.Name;
         }
+
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
+
         public bool IsTemp { get; set; } = false;
         public LabelProperty() { }
     }

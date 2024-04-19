@@ -15,7 +15,7 @@ namespace OMDb.Core.DbModels
     public class LabelPropertyDb
     {
         [SugarColumn(IsPrimaryKey = true)]
-        public string LPId { get; set; }
+        public string LPID { get; set; }
         public string Name { get; set; }
         [SugarColumn(IsNullable = true)]
         public string Description { get; set; }

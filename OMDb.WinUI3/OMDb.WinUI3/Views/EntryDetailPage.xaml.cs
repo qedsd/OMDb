@@ -5,6 +5,10 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using OMDb.Core.Services.PluginsService;
+using OMDb.Core.Utils.Extensions;
+using OMDb.Core.Utils.PathUtils;
+using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -26,6 +30,8 @@ namespace OMDb.WinUI3.Views
         {
             this.InitializeComponent();
             Init(entry);
+            InitGetEntryInfoDescriptionService();
+
         }
         private async void Init(Core.Models.Entry entry)
         {
@@ -53,7 +59,7 @@ namespace OMDb.WinUI3.Views
 
         private void NextImg_Click(object sender, RoutedEventArgs e)
         {
-            ImgScrollViewer.ScrollToHorizontalOffset(ImgScrollViewer.HorizontalOffset+300);
+            ImgScrollViewer.ScrollToHorizontalOffset(ImgScrollViewer.HorizontalOffset + 300);
         }
 
 
@@ -69,7 +75,49 @@ namespace OMDb.WinUI3.Views
 
         public void Close()
         {
-            
+
+        }
+
+        private async void GetInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (Convert.ToString(this.ddb.Content).Equals("无服务")) return;
+            this.pr.IsActive = true;
+            this.btn_GetInfo.IsEnabled = false;
+            var desc = await EntryInfoService.GetEntryInfoDescriptionNet(this.VM.Entry.Name, Convert.ToString(this.ddb.Content));
+            this.pr.IsActive = false;
+            this.btn_GetInfo.IsEnabled = true;
+
+            #region 基本信息
+
+            #endregion 
+            if (!desc.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            {
+                this.VM.Desc= desc;
+            }
+
+        }
+
+        /// <summary>
+        /// 动态加载获取媒体信息服务
+        /// </summary>
+        private void InitGetEntryInfoDescriptionService()
+        {
+            #region 动态加载获取媒体信息服务
+            if (PluginsBaseService.EntryInfoDescriptionExports.Count() > 0)
+            {
+                this.ddb.Content = PluginsBaseService.EntryInfoDescriptionExports.FirstOrDefault().GetType().Assembly.GetName().Name;
+                var mf = new MenuFlyout();
+                foreach (var item in PluginsBaseService.EntryInfoDescriptionExports)
+                {
+                    MenuFlyoutItem mfl = new MenuFlyoutItem();
+                    mfl.Text = item.GetType().Assembly.GetName().Name;
+                    mfl.Click += (s, e) => { this.ddb.Content = mfl.Text; };
+                    mf.Items.Add(mfl);
+                }
+                this.ddb.Flyout = mf;
+            }
+            else this.ddb.Content = "无服务";
+            #endregion
         }
     }
 }

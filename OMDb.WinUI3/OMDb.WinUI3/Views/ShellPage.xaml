@@ -144,7 +144,7 @@
                                                 <TextBlock VerticalAlignment="Center" Text="片单" />
                                             </StackPanel>
                                         </ListViewItem>
-                                        <ListViewItem helpers:NavHelper.NavigateTo="views:EntryPage">
+                                        <ListViewItem helpers:NavHelper.NavigateTo="views:EntryHomePage">
                                             <StackPanel>
                                                 <TextBlock Style="{StaticResource SymbolText}" Text="&#xE74C;" />
                                                 <TextBlock VerticalAlignment="Center" Text="词条" />

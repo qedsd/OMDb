@@ -95,7 +95,7 @@ namespace OMDb.WinUI3.Services
 
 
 
-        public static async Task<List<LabelClassTree>> GetLabelTrees()
+        public static async Task<List<LabelClassTree>> GetLabelClassTrees()
         {
             var labels = await Core.Services.LabelClassService.GetAllLabelAsync(DbSelectorService.dbCurrentId);
             var labelTrees = new List<LabelClassTree>();
@@ -107,7 +107,7 @@ namespace OMDb.WinUI3.Services
                 {
                     foreach (var label in root)
                     {
-                        labelsDb.Add(label.LCId, new LabelClassTree(label));
+                        labelsDb.Add(label.LCID, new LabelClassTree(label));
                     }
                 }
                 foreach (var label in labels)
@@ -128,7 +128,38 @@ namespace OMDb.WinUI3.Services
             return labelTrees;
         }
 
-
+        public static async Task<List<LabelPropertyTree>> GetLabelPropertyTrees()
+        {
+            var labels = await Core.Services.LabelPropertyService.GetAllLabelPropertyAsync(DbSelectorService.dbCurrentId);
+            var labelTrees = new List<LabelPropertyTree>();
+            if (labels != null)
+            {
+                Dictionary<string, LabelPropertyTree> labelsDb = new Dictionary<string, LabelPropertyTree>();
+                var root = labels.Where(p => p.ParentId == null).ToList();
+                if (root != null)
+                {
+                    foreach (var label in root)
+                    {
+                        labelsDb.Add(label.LPID, new LabelPropertyTree(label));
+                    }
+                }
+                foreach (var label in labels)
+                {
+                    if (label.ParentId != null)
+                    {
+                        if (labelsDb.TryGetValue(label.ParentId, out var parent))
+                        {
+                            parent.Children.Add(new LabelPropertyTree(label));
+                        }
+                    }
+                }
+                foreach (var item in labelsDb)
+                {
+                    labelTrees.Add(item.Value);
+                }
+            }
+            return labelTrees;
+        }
 
 
 

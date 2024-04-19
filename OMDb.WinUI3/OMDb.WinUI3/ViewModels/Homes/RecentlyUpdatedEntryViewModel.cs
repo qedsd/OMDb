@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OMDb.Core.Models;
 using OMDb.Core.Utils.Extensions;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OMDb.WinUI3.ViewModels.Homes
 {
-    public class RecentlyUpdatedEntryViewModel : ObservableObject
+    public class RecentlyUpdatedEntryHomeViewModel : ObservableObject
     {
         private ObservableCollection<Core.Models.Entry> recentlyUpdatedEntries;
         public ObservableCollection<Core.Models.Entry> RecentlyUpdatedEntries
@@ -23,7 +24,9 @@ namespace OMDb.WinUI3.ViewModels.Homes
         }
         private async Task InitRecentlyUpdatedEntries()
         {
-            var items = await Core.Services.EntryService.QueryEntryAsync(Core.Enums.SortType.LastUpdateTime, Core.Enums.SortWay.Reverse);
+            var sortModel = new SortModel(Core.Enums.SortType.LastUpdateTime, Core.Enums.SortWay.Reverse);
+            var filterModel = new FilterModel();
+            var items = await Core.Services.EntryService.QueryEntryAsync(sortModel, filterModel);
             if (items.NotNullAndEmpty())
             {
                 var targetItems = items.Take(7).Select(p => p.ToQueryItem()).ToList();

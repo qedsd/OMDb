@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OMDb.Core.Utils;
+using Logger = OMDb.Core.Utils.Logger;
 
 namespace OMDb.Core.Models
 {
@@ -33,14 +36,13 @@ namespace OMDb.Core.Models
         {
             try
             {
-                JsonSerializerSettings settings = new JsonSerializerSettings { Formatting = Formatting.Indented };
-                var json = JsonConvert.SerializeObject(this);
+                var json = JsonConvert.SerializeObject(this, Formatting.Indented);
                 System.IO.File.WriteAllText(file, json);
                 return true;
             }
             catch(Exception ex)
             {
-                //TODO:写入日志
+                Logger.Error("MetaData保存失败！" + ex.Message);
                 return false;
             }
         }

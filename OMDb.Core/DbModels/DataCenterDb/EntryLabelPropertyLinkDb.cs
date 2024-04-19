@@ -18,6 +18,6 @@ namespace OMDb.Core.DbModels
         /// </summary>
         public string DbId { get; set; }
         public string EntryId { get; set; }
-        public string LPId { get; set; }
+        public string LPID { get; set; }
     }
 }

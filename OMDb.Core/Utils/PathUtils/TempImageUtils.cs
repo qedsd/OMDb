@@ -13,7 +13,7 @@ namespace OMDb.Core.Utils.PathUtils
 
         public static void CreateTempImage(string fileName, MemoryStream ms)
         {
-            TempPathUtils.CreateTempFile(Path.Combine(Path.GetTempPath(), fileName.IsNullOrEmptyOrWhiteSpazeOrCountZero() ? fileName : _defaultImageName), ms);
+            TempPathUtils.CreateTempFile(Path.Combine(Path.GetTempPath(), fileName.IsNullOrEmptyOrWhiteSpazeOrCountZero() ? _defaultImageName  : fileName), ms);
         }
         public static void CreateTempImage(MemoryStream ms)
         {

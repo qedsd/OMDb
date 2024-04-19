@@ -30,33 +30,32 @@ namespace OMDb.WinUI3.Dialogs
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AddLabelPropertyLKDialog : Page
+    public sealed partial class EditLabelPropertyLinkDialog : Page
     {
-        public ViewModels.LabelPropertyViewModel VM { get; set; } = new ViewModels.LabelPropertyViewModel();
-        public AddLabelPropertyLKDialog()
+        public ViewModels.LabelPropertyViewModel VM { get; set; } = new ViewModels.LabelPropertyViewModel(_labelProperty);
+
+        static LabelProperty _labelProperty=null;
+        public EditLabelPropertyLinkDialog(LabelProperty labelProperty)
         {
             this.InitializeComponent();
-
         }
 
-        public static async Task<List<string>> ShowDialog()
+        public static async Task<List<string>> ShowDialog(LabelProperty labelProperty)
         {
+            _labelProperty=labelProperty;
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = "关联标签选择";
             dialog.PrimaryButton.Content = "确认";
             dialog.CancelButton.Content = "取消";
-            AddLabelPropertyLKDialog content = new AddLabelPropertyLKDialog();
+            EditLabelPropertyLinkDialog content = new EditLabelPropertyLinkDialog(labelProperty);
             dialog.ContentFrame.Content = content;
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-                var result = new List<string>(); ;
-                result.Add(((OMDb.WinUI3.Models.LabelPropertyTree)content.ListView_LabelPropertyTrees.SelectedItem).LPDb.LPId);
-                return result;
-            }
-            else
-            {
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
                 return null;
-            }
+
+            var result = new List<string>();
+            var labelPropertySelected= content.VM.LabelPropertyList.Where(a=>a.IsChecked)?.Select(a=>a.LPDb.LPID).ToList();
+            return labelPropertySelected;
+
         }
     }
 }

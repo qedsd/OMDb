@@ -61,10 +61,20 @@ namespace OMDb.WinUI3.MyControls
         public delegate void DoneDelegate(bool confirm, List<Models.LabelClassTree> LabelClassTrees);
         public event DoneDelegate DoneEvent;
 
-        private void Grid_Tapped(object sender, TappedRoutedEventArgs e)
+        private void Grid_1st_Tapped(object sender, TappedRoutedEventArgs e)
         {
             var labelClass = (sender as FrameworkElement)?.Tag as LabelClass;
             labelClass.IsChecked = !labelClass.IsChecked;
+        }
+
+        private void Grid_2nd_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var labelClass = (sender as FrameworkElement)?.Tag as LabelClass;
+            labelClass.IsChecked = !labelClass.IsChecked;
+            if (labelClass.IsChecked)
+            {
+                LabelClassTrees.First(a => a.Children.Where(b=>b.LabelClass== labelClass).Count()>0).LabelClass.IsChecked=true;
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using NPOI.POIFS.Properties;
 using OMDb.Core.DbModels;
+using OMDb.Core.Services;
 using OMDb.Core.Utils;
 using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Helpers;
@@ -32,63 +33,63 @@ namespace OMDb.WinUI3.Dialogs
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class AddLabelPropertyDataLKDialog : Page
+    public sealed partial class EditLabelPropertyDataLinkDialog : Page
     {
         static string parentId = string.Empty;
         public ViewModels.LabelPropertyViewModel VM { get; set; } = new ViewModels.LabelPropertyViewModel(parentId);
-        public AddLabelPropertyDataLKDialog()
+        public EditLabelPropertyDataLinkDialog(LabelPropertyDb labelPropertyDb)
         {
             this.InitializeComponent();
+            var linkIdList=Core.Services.LabelPropertyService.GetLinkId(labelPropertyDb.LPID);
+            var linkDbList=Core.Services.LabelPropertyService.GetLabels(linkIdList);
+            linkDbList.ForEach(a => VM.DtData.Add(a));
         }
 
-        public static async Task<List<string>> ShowDialog(string pId)
+        public static async Task<List<string>> ShowDialog(LabelPropertyDb labelPropertyDb)
         {
-            parentId = pId;
+            parentId = labelPropertyDb.ParentId;
             MyContentDialog dialog = new MyContentDialog();
             dialog.TitleTextBlock.Text = "关联标签数据选择";
             dialog.PrimaryButton.Content = "确认";
             dialog.CancelButton.Content = "取消";
-            AddLabelPropertyDataLKDialog content = new AddLabelPropertyDataLKDialog();
+            EditLabelPropertyDataLinkDialog content = new EditLabelPropertyDataLinkDialog(labelPropertyDb);
             dialog.ContentFrame.Content = content;
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-            {
-                List<string> result = new List<string>();
-                //数据库新增属性&属性数据 合并返回
-                foreach (var item in content.VM.DtData)
-                {
-                    //手动输入的属性数据
-                    if (item.LPId.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-                    {
-                        var childs = content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children;
-                        var lp_repeat = childs.Where(a => a.LPDb.Name.Equals(item.Name));
-                        //手输的属性数据是原有的：
-                        if (lp_repeat.Count() > 0)
-                        {
-                            result.Add(lp_repeat.FirstOrDefault().LPDb.LPId);
-                        }
-                        //手输新增
-                        else
-                        {
-                            item.LPId = Guid.NewGuid().ToString();
-                            item.DbCenterId = DbSelectorService.dbCurrentId;
-                            Core.Services.LabelPropertyService.AddLabel(item);
-                            var lpt = new LabelPropertyTree(item);
-                            content.VM.LabelPropertyTrees.Where(a => a.LPDb.LPId.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
-                            result.Add(item.LPId);
-                        }
-                    }
-                    else
-                    {
-                        result.Add(item.LPId);
-                    }
+            if (await dialog.ShowAsync() != ContentDialogResult.Primary)
+                return null;   
 
-                }
-                return result;
-            }
-            else
+            List<string> result = new List<string>();
+            //数据库新增属性标签数据 合并返回
+            foreach (var item in content.VM.DtData)
             {
-                return null;
+                if (!item.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                {
+                    result.Add(item.LPID);
+                    continue;
+                }
+
+                if (item.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())//属性标签数据名称为空
+                    continue;
+
+                //手工输入的数据
+
+                var childs = content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children;
+                var lp_repeat = childs.Where(a => a.LabelProperty.LPDb.Name.Equals(item.Name));
+                //手工输入的数据名称已存在
+                if (lp_repeat.Count() > 0)
+                {
+                    result.Add(lp_repeat.FirstOrDefault().LabelProperty.LPDb.LPID);
+                    continue;
+                }
+
+                //手输新增，插入属性标签数据
+                item.LPID = Guid.NewGuid().ToString();
+                item.DbCenterId = DbSelectorService.dbCurrentId;
+                Core.Services.LabelPropertyService.AddLabelProperty(item);
+                var lpt = new LabelPropertyTree(item);
+                content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
+                result.Add(item.LPID);
             }
+            return result;
         }
 
         private void ImportLink_Click(object sender, RoutedEventArgs e)
@@ -98,7 +99,7 @@ namespace OMDb.WinUI3.Dialogs
             foreach (var item in items)
             {
                 var lpt = item as LabelPropertyTree;
-                VM.DtData.Add(lpt.LPDb);
+                VM.DtData.Add(lpt.LabelProperty.LPDb);
             }
         }
 
@@ -112,7 +113,7 @@ namespace OMDb.WinUI3.Dialogs
             var lp = new LabelPropertyDb();
             var itemsRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
             if (itemsRoot.IsNullOrEmptyOrWhiteSpazeOrCountZero()) return;
-            lp.ParentId = itemsRoot.LPDb.LPId;
+            lp.ParentId = itemsRoot.LabelProperty.LPDb.LPID;
             VM.DtData.Add(lp);
         }
 

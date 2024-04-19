@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="OMDb.WinUI3.Dialogs.AddLabelPropertyLKDialog"
+    x:Class="OMDb.WinUI3.Dialogs.EditLabelPropertyLinkDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
@@ -17,8 +17,8 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <coverters:LPIdToLPNameConverter x:Key="LPIdToLPNameConverter" />
-        <coverters:LPIdToReadOnlyConverter x:Key="LPIdToReadOnlyConverter" />
+        <coverters:LPIDToLPNameConverter x:Key="LPIDToLPNameConverter" />
+        <coverters:LPIDToReadOnlyConverter x:Key="LPIDToReadOnlyConverter" />
     </Page.Resources>
     <Grid Width="500" Height="200">
         <Grid.ColumnDefinitions>
@@ -31,12 +31,20 @@
             BorderThickness="0">
             <GridView
                 x:Name="ListView_LabelPropertyTrees"
-                ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}"
-                SelectionMode="Single">
+                ItemsSource="{x:Bind VM.LabelPropertyList, Mode=OneWay}"
+                SelectionMode="None">
                 <GridView.ItemTemplate>
-                    <DataTemplate x:DataType="models:LabelPropertyTree">
-                        <GridViewItem Width="120" IsSelected="True">
-                            <TextBlock Text="{x:Bind LPDb.Name, Mode=OneWay}" />
+                    <DataTemplate x:DataType="models:LabelProperty">
+                        <GridViewItem Width="140">
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <CheckBox
+                                    Margin="0,0,0,0"
+                                    Padding="5"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Content="{x:Bind Name, Mode=OneWay}"
+                                    IsChecked="{x:Bind IsChecked, Mode=TwoWay}" />
+                            </StackPanel>
                         </GridViewItem>
                     </DataTemplate>
                 </GridView.ItemTemplate>

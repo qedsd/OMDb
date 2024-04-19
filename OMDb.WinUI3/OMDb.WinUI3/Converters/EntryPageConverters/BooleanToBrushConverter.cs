@@ -16,11 +16,11 @@ namespace OMDb.WinUI3.Converters
             bool isCheck = (bool)value;
             if (isCheck)
             {
-                return new SolidColorBrush(Colors.Green); // Set your desired background color when IsCheck is true
+                return new SolidColorBrush(Colors.SkyBlue); // Set your desired background color when IsCheck is true
             }
             else
             {
-                return new SolidColorBrush(Colors.Red); // Set your desired background color when IsCheck is false
+                return new SolidColorBrush(Colors.SkyBlue); // Set your desired background color when IsCheck is false
             }
         }
 

@@ -8,7 +8,7 @@ using System;
 
 namespace OMDb.WinUI3.Converters
 {
-    public sealed class LPIdToReadOnlyConverter : IValueConverter
+    public sealed class LPIDToReadOnlyConverter : IValueConverter
     {
 
         public object Convert(object value, Type targetType, object parameter, string language)

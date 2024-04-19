@@ -18,7 +18,7 @@ namespace OMDb.Core.DbModels
         /// 内码
         /// </summary>
         [SugarColumn(IsPrimaryKey = true)]
-        public string LCId { get; set; }
+        public string LCID { get; set; }
 
         /// <summary>
         /// 类型名称

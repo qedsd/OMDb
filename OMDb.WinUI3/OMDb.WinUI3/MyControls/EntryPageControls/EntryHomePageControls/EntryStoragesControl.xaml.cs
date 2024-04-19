@@ -40,7 +40,12 @@ namespace OMDb.WinUI3.MyControls
                 if (items != null)
                 {
                     List<Models.EnrtyStorage> list = new List<Models.EnrtyStorage>();
-                    list.Add(new Models.EnrtyStorage(){StorageName = "全部",IsChecked = true});
+                    list.Add(new Models.EnrtyStorage()
+                    {
+                        StorageName = "全部",
+                        IsChecked = true
+                    });
+
                     foreach (var item in items)
                     {
                         item.IsChecked = true;
@@ -136,5 +141,5 @@ namespace OMDb.WinUI3.MyControls
             }
         }
     }
-    
+
 }

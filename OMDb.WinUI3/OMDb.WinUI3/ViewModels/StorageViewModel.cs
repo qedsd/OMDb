@@ -167,7 +167,7 @@ namespace OMDb.WinUI3.ViewModels
             if (item != null && !string.IsNullOrEmpty(item.StoragePath))
             {
                 Services.NavigationService.Navigate(typeof(Views.EntryPage), item.StorageName);
-                await EntryViewModel.Current.UpdateEntryListAsync();
+                await EntryHomeViewModel.Current.UpdateEntryListAsync();
             }
         });*/
     }

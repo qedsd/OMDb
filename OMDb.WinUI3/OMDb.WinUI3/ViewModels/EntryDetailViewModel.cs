@@ -86,7 +86,7 @@ namespace OMDb.WinUI3.ViewModels
             CancelEditDescCommand.Execute(null);
             Entry.Metadata.Desc = Desc;
             Entry.Metadata.Save(System.IO.Path.Combine(Entry.FullEntryPath, Services.ConfigService.MetadataFileNmae));
-            Entry.LoadLocalMetaData();
+            Entry.LoadMetaData();
         });
         public ICommand CancelEditDescCommand => new RelayCommand(() =>
         {
@@ -286,10 +286,10 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
                     var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
-                    sourceFiles.ForEach(p =>
+                    sourceFiles.ForEach((Action<ExplorerItem>)(p =>
                     {
                         p.SourcePath = p.FullName;//保留原文件路径
-                        p.FullName = p.FullName.Replace(rootPath,Entry.GetVideoFolder());//创建目标文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetFolder(Services.ConfigService.VideoFolder));//创建目标文件路径
                         p.CanceledCopyEvent += (s) =>
                         {
                             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -298,7 +298,7 @@ namespace OMDb.WinUI3.ViewModels
                             });
                         };
                         Entry.VideoExplorerItems.Add(p);
-                    });
+                    }));
                     if (VerifyFaiedVideoItems == null)
                     {
                         VerifyFaiedVideoItems = new List<ExplorerItem>();
@@ -345,10 +345,10 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
                     var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
-                    sourceFiles.ForEach(p =>
+                    sourceFiles.ForEach((Action<ExplorerItem>)(p =>
                     {
                         p.SourcePath = p.FullName;//保留原文件路径
-                        p.FullName = p.FullName.Replace(rootPath, Entry.GetSubFolder());//创建目标文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetFolder(Services.ConfigService.ImgFolder));//创建目标文件路径
                         p.CanceledCopyEvent += (s) =>
                         {
                             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -357,7 +357,7 @@ namespace OMDb.WinUI3.ViewModels
                             });
                         };
                         Entry.SubExplorerItems.Add(p);
-                    });
+                    }));
                     if (VerifyFaiedSubItems == null)
                     {
                         VerifyFaiedSubItems = new List<ExplorerItem>();
@@ -404,10 +404,10 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
                     var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
-                    sourceFiles.ForEach(p =>
+                    sourceFiles.ForEach((Action<ExplorerItem>)(p =>
                     {
                         p.SourcePath = p.FullName;//保留原文件路径
-                        p.FullName = p.FullName.Replace(rootPath, Entry.GetResFolder());//创建目标文件路径
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetFolder(Services.ConfigService.ImgFolder));//创建目标文件路径
                         p.CanceledCopyEvent += (s) =>
                         {
                             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
@@ -416,7 +416,7 @@ namespace OMDb.WinUI3.ViewModels
                             });
                         };
                         Entry.MoreExplorerItems.Add(p);
-                    });
+                    }));
                     if (VerifyFaiedResItems == null)
                     {
                         VerifyFaiedResItems = new List<ExplorerItem>();
@@ -463,11 +463,11 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     string rootPath = System.IO.Path.GetDirectoryName(source.First().FullName);//要复制的文件的公共根路径
                     var sourceFiles = Helpers.FileHelper.GetAllFiles(source);//每一个都是文件
-                    sourceFiles.ForEach(p =>
+                    sourceFiles.ForEach((Action<ExplorerItem>)(p =>
                     {
                         p.SourcePath = p.FullName;//保留原文件路径
-                        p.FullName = p.FullName.Replace(rootPath, Entry.GetImgFolder());//创建目标文件路径
-                    });
+                        p.FullName = p.FullName.Replace(rootPath, Entry.GetFolder(Services.ConfigService.ImgFolder));//创建目标文件路径
+                    }));
                     foreach (var p in sourceFiles)
                     {
                         await p.CopyAsync();

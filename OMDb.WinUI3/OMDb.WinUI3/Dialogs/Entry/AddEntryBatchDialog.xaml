@@ -20,12 +20,14 @@
         <Grid Grid.Row="0">
             <StackPanel Orientation="Horizontal">
 
-                <Button Margin="10,0,0,0" Content="新增行" />
-                <Button Margin="10,0,0,0" Content="删除行" />
-                <Border
-                    Width="1"
-                    Margin="30,0,30,0"
-                    BorderThickness="1" />
+                <!--<Button Margin="10,0,0,0"  Click="New_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="Add" Width="20" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="新增"/>
+                    </StackPanel>
+                </Button>-->
+
+
                 <ComboBox
                     Width="200"
                     Margin="10,0,0,0"
@@ -36,7 +38,11 @@
                     x:Name="btn_FolderPicker"
                     Margin="10,0,0,0"
                     Click="SelectFolders_Click"
-                    Content="选择文件夹">
+                    >
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xED25;" FontSize="20"  Margin="0,0,5,0"/>
+                        <TextBlock Text="选择文件夹" Margin="0,0,5,0"/>
+                    </StackPanel>
                     <Button.Flyout>
                         <Flyout x:Name="fly" Placement="Bottom">
                             <Grid x:Name="flyGrid" Height="500">
@@ -67,10 +73,17 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
+                <Button Margin="10,0,0,0" Click="Remove_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="Delete" Width="25" Height="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="移除" Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button>
                 <Border
                     Width="1"
                     Margin="30,0,30,0"
                     BorderThickness="1" />
+
                 <DropDownButton
                     x:Name="ddb"
                     Width="200"
@@ -79,13 +92,18 @@
                 <Button
                     x:Name="btn_GetInfoBatch"
                     Margin="10,0,0,0"
-                    Click="GetInfoBatch_Click"
-                    Content="获取信息" />
+                    Click="GetInfoBatch_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xe896;" FontSize="20" Margin="0,0,5,0"/>
+                        <TextBlock Text="获取信息" Margin="0,0,5,0"/>
+                        
+                    </StackPanel>
+                </Button> 
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Visibility="Collapsed">
             <ListView
-                x:Name="lv_edc"
+                x:Name="LV_EntryDetailCollection_Obsolete"
                 Margin="0,20,0,0"
                 ItemsSource="{x:Bind VM.EntryDetailCollection}"
                 SelectionMode="Extended">
@@ -159,12 +177,11 @@
                 </Grid.ColumnDefinitions>
                 <!--单据头-->
                 <ListView
-                    x:Name="ldv_edc"
+                    x:Name="LV_EntryDetailCollection"
                     Grid.Column="0"
                     Margin="0,20,0,0"
-                    ItemClick="ldv_edc_click"
                     ItemsSource="{x:Bind VM.EntryDetailCollection, Mode=TwoWay}"
-                    SelectionChanged="ldv_edc_SelectionChanged"
+                    SelectionChanged="LV_EntryDetailCollection_SelectionChanged"
                     SelectionMode="Extended">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:EntryDetail">
@@ -210,7 +227,7 @@
                                     Click="Button_CoverImg_Click">
                                     <Grid>
                                         <StackPanel HorizontalAlignment="Center">
-                                            <SymbolIcon Symbol="Add" />
+                                            <SymbolIcon Symbol="Add"/>
                                             <TextBlock Margin="0,10,0,0" Text="添加封面图" />
                                         </StackPanel>
                                         <controls:ImageEx
@@ -224,7 +241,7 @@
                                 <StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBox
-                                            x:Name="tb_ctmc"
+                                            x:Name="TB_EntryName"
                                             Grid.Column="1"
                                             Width="435"
                                             Height="20"
@@ -240,7 +257,7 @@
                                         <StackPanel Margin="14,10,0,0" Orientation="Horizontal">
                                             <TextBlock Margin="0,0,0,0" Text="詞條路徑：" />
                                             <TextBlock
-                                                x:Name="tb_ctlj"
+                                                x:Name="TB_EntryPath"
                                                 Width="960"
                                                 Margin="0,0,0,0"
                                                 Text="{Binding VM_Detail.EntryDetail.FullEntryPath, Mode=TwoWay}" />
@@ -250,7 +267,7 @@
                                                 Margin="0,0,0,0"
                                                 Text="存储模式：" />
                                             <TextBlock
-                                                x:Name="tb_ccms"
+                                                x:Name="TB_SaveMode"
                                                 Width="960"
                                                 Margin="0,0,0,0" />
                                         </StackPanel>
@@ -261,7 +278,7 @@
                                                 Margin="0,0,0,0"
                                                 Text="资源路径：" />
                                             <TextBlock
-                                                x:Name="tb_zylj"
+                                                x:Name="TB_ResourcePath"
                                                 Width="960"
                                                 Margin="0,0,0,0" />
                                         </StackPanel>
@@ -273,7 +290,7 @@
                                     <!--  上映日期  -->
                                     <StackPanel Margin="0,10,0,5" Orientation="Horizontal">
                                         <TextBlock Margin="8,5,17,0" Text="上映日期：" />
-                                        <CalendarDatePicker x:Name="tb_syrq" Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
+                                        <CalendarDatePicker x:Name="TB_ReleaseDate" Width="180" Date="{x:Bind VM_Detail.ReleaseDate, Mode=TwoWay}">
                                             <CalendarDatePicker.RenderTransform>
                                                 <CompositeTransform ScaleX="0.92" ScaleY="0.92" />
                                             </CalendarDatePicker.RenderTransform>
@@ -287,7 +304,7 @@
                                             Margin="29,5,5,0"
                                             Text="評分：" />
                                         <RatingControl
-                                            x:Name="tb_pf"
+                                            x:Name="RC_Rate"
                                             Margin="0,3,0,0"
                                             HorizontalAlignment="Left"
                                             Value="{x:Bind VM_Detail.MyRating, Mode=TwoWay}" />
@@ -304,7 +321,7 @@
                                 <myControls:LabelsControl
                                     Margin="0,4,0,0"
                                     HorizontalAlignment="Left"
-                                    Labels="{x:Bind VM_Detail.Labels, Mode=TwoWay}"
+                                    LabelClasses="{x:Bind VM_Detail.Labels, Mode=TwoWay}"
                                     Mode="Add" />
                             </StackPanel>
                         </StackPanel>

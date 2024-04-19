@@ -10,11 +10,11 @@ namespace OMDb.WinUI3.Models
 {
     public class LabelPropertyTree : ObservableObject
     {
-        private Core.DbModels.LabelPropertyDb _lpdb;
-        public Core.DbModels.LabelPropertyDb LPDb
+        private LabelProperty _labelProperty;
+        public LabelProperty LabelProperty
         {
-            get => _lpdb;
-            set => SetProperty(ref _lpdb, value);
+            get => _labelProperty;
+            set => SetProperty(ref _labelProperty, value);
         }
 
         private ObservableCollection<LabelPropertyTree> children;
@@ -27,7 +27,7 @@ namespace OMDb.WinUI3.Models
         public LabelPropertyTree() { }
         public LabelPropertyTree(Core.DbModels.LabelPropertyDb lpdb) 
         {
-            LPDb = lpdb;
+            _labelProperty = new LabelProperty(lpdb);
             children = new ObservableCollection<LabelPropertyTree>();
         }
     }

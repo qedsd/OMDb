@@ -1,6 +1,8 @@
-﻿using OMDb.Core.DbModels;
+﻿using NPOI.SS.Formula.Functions;
+using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.Core.Models.EntryModels;
 using OMDb.Core.Utils.Extensions;
 using SqlSugar;
 using System;
@@ -14,272 +16,127 @@ namespace OMDb.Core.Services
     public static class EntryService
     {
         /// <summary>
+        /// 查询词条(异步)
+        /// </summary>
+        /// <param name="sortModel"></param>
+        /// <param name="filterModel"></param>
+        /// <returns></returns>
+        public static async Task<List<QueryResult>> QueryEntryAsync(SortModel sortModel, FilterModel filterModel)
+        {
+            return await Task.Run(() => QueryEntry(sortModel, filterModel));
+        }
+
+
+        public static MaxMinDateModel GetMaxMinDate()
+        {
+            var maxDate = new DateTimeOffset(DateTime.Now);
+            var minDate = new DateTimeOffset(DateTime.Now);
+            foreach (var item in DbService.Dbs)
+            {
+                var db = item.Value;
+                var maxDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Max(e => e.ReleaseDate);
+                var minDateStorage = db.Queryable<DbModels.EntryDb>().ToList().Min(e => e.ReleaseDate);
+                maxDate = (DateTimeOffset)(maxDateStorage > maxDate ? maxDateStorage : maxDate);
+                minDate = (DateTimeOffset)(minDateStorage < minDate ? minDateStorage : minDate);
+            }
+            var maxMinDateModel = new MaxMinDateModel();
+            maxMinDateModel.MinDate = minDate.DateTime;
+            maxMinDateModel.MaxDate = maxDate.DateTime;
+            return maxMinDateModel;
+        }
+        /// <summary>
         /// 按指定排序方式获取词条
         /// 获取完自行处理分页
         /// </summary>
         /// <param name="sortType"></param>
         /// <param name="sortWay"></param>
         /// <returns></returns>
-        public static List<QueryResult> QueryEntry(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
+        public static List<QueryResult> QueryEntry(SortModel sortModel, FilterModel filterModel)
         {
             if (DbService.IsEmpty)
-            {
                 return null;
-            }
-            else
+
+            List<QueryResult> queryResults = new List<QueryResult>();
+
+            var inLabelClassEntryIds = new List<string>();
+            if (filterModel.LabelClassIds != null && filterModel.LabelClassIds.Count != 0)
+                inLabelClassEntryIds = LabelClassService.GetEntrys(filterModel.LabelClassIds);
+
+            var inLabelPropertyEntryIds = new List<string>();
+            if (filterModel.LabelPropertyIds != null && filterModel.LabelPropertyIds.Count != 0)
+                inLabelPropertyEntryIds = LabelPropertyService.GetEntrys(filterModel.LabelPropertyIds);
+
+            var inLabelEntryIds = new List<string>();
+            inLabelEntryIds.AddRange(inLabelClassEntryIds);
+            inLabelEntryIds.AddRange(inLabelPropertyEntryIds);
+
+            foreach (var item in DbService.Dbs)
             {
-                return sortType switch
+                if (filterModel.IsFilterStorage && !filterModel.StorageIds.Contains(item.Key))
+                    continue;
+
+                var db = item.Value;
+
+                //动态拼表达式查询
+                var exp = Expressionable.Create<DbModels.EntryDb>()
+                .And(a => a.ReleaseDate >= filterModel.BusinessDateBegin)
+                .And(a => a.ReleaseDate <= filterModel.BusinessDateEnd)
+                .And(a => a.CreateTime >= filterModel.CreateDateBegin)
+                .And(a => a.CreateTime <= filterModel.CreateDateEnd)
+                .And(a => a.MyRating >= filterModel.RateMin)
+                .And(a => a.MyRating <= filterModel.RateMax)
+                .ToExpression();
+
+
+                var ls = db.Queryable<DbModels.EntryDb>().Where(exp);
+
+                if (filterModel.IsFilterLabelProperty)
+                    ls = ls.In(inLabelPropertyEntryIds);
+                if (filterModel.IsFilterLabelClass)
+                    ls = ls.In(inLabelClassEntryIds);
+
+                var result = ls.ToList();
+                result.ForEach(p => { queryResults.Add(new QueryResult(p.EntryId, p, item.Key)); });
+
+            }
+            if (sortModel.SortWay == Enums.SortWay.Positive)//正序
+            {
+                return sortModel.SortType switch
                 {
-                    Enums.SortType.CreateTime => SortByCreateTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.LastWatchTime => SortByLastWatchTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.LastUpdateTime => SortByLastUpdateTime(sortWay, dbIds, labelIds),
-                    Enums.SortType.WatchTimes => SortByWatchTimes(sortWay, dbIds, labelIds),
-                    Enums.SortType.MyRating => SortByMyRating(sortWay, dbIds, labelIds),
-                    _ => null,
+                    Enums.SortType.MyRating => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).MyRating).ToList(),
+                    Enums.SortType.BusinessDate => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).ReleaseDate).ToList(),
+                    Enums.SortType.CreateTime => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).CreateTime).ToList(),
+                    Enums.SortType.WatchTimes => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).WatchTimes).ToList(),
+                    Enums.SortType.LastWatchTime => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).LastWatchTime).ToList(),
+                    Enums.SortType.LastUpdateTime => queryResults = queryResults.OrderBy(p => (p.Value as EntryDb).LastUpdateTime).ToList(),
+                };
+            }
+            else//倒叙
+            {
+                return sortModel.SortType switch
+                {
+                    Enums.SortType.MyRating => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).MyRating).ToList(),
+                    Enums.SortType.BusinessDate => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).ReleaseDate).ToList(),
+                    Enums.SortType.CreateTime => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).CreateTime).ToList(),
+                    Enums.SortType.WatchTimes => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).WatchTimes).ToList(),
+                    Enums.SortType.LastWatchTime => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).LastWatchTime).ToList(),
+                    Enums.SortType.LastUpdateTime => queryResults = queryResults.OrderByDescending(p => (p.Value as EntryDb).LastUpdateTime).ToList(),
                 };
             }
         }
-        public static async Task<List<QueryResult>> QueryEntryAsync(Enums.SortType sortType, Enums.SortWay sortWay, List<string> dbIds = null, List<string> labelIds = null)
-        {
-            return await Task.Run(() => QueryEntry(sortType, sortWay, dbIds, labelIds));
-        }
-        private static List<QueryResult> SortByCreateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
-        {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
-            foreach (var item in DbService.Dbs)
-            {
-                if (dbIds != null && !dbIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                var db = item.Value;
-                if (inLabelEntryIds != null)
-                {
-                    var ls = db.Queryable<DbModels.EntryDb>()
-                        .In(inLabelEntryIds)
-                        .Select(p => new { p.EntryId, p.CreateTime })
-                        .ToList();
-                    ls.ForEach(p =>
-                    {
-                        queryResults.Add(new QueryResult(p.EntryId, p.CreateTime, item.Key));
-                    });
-                }
-                else
-                {
-                    var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.EntryId, p.CreateTime })
-                        .ToList();
-                    ls.ForEach(p =>
-                    {
-                        queryResults.Add(new QueryResult(p.EntryId, p.CreateTime, item.Key));
-                    });
-                }
 
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
-        }
-        private static List<QueryResult> SortByLastWatchTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
+
+
+
+        /// <summary>
+        /// 查询词条异步
+        /// </summary>
+        /// <param name="queryItems"></param>
+        /// <param name="withName">结果是否带默认名字</param>
+        /// <returns></returns>
+        public static async Task<List<Entry>> QueryEntryAsync(List<QueryItem> queryItems, bool withName = true)
         {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
-            foreach (var item in DbService.Dbs)
-            {
-                if (dbIds != null && !dbIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                var db = item.Value;
-                if (inLabelEntryIds != null)
-                {
-                    var ls = db.Queryable<DbModels.EntryDb>()
-                        .In(inLabelEntryIds)
-                        .Select(p => new { p.EntryId, p.LastWatchTime })
-                        .ToList();
-                    ls.ForEach(p =>
-                    {
-                        queryResults.Add(new QueryResult(p.EntryId, p.LastWatchTime, item.Key));
-                    });
-                }
-                else
-                {
-                    var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.EntryId, p.LastWatchTime })
-                        .ToList();
-                    ls.ForEach(p =>
-                    {
-                        queryResults.Add(new QueryResult(p.EntryId, p.LastWatchTime, item.Key));
-                    });
-                }
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
-        }
-        private static List<QueryResult> SortByLastUpdateTime(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
-        {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
-            foreach (var item in DbService.Dbs)
-            {
-                if (dbIds != null && !dbIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                var db = item.Value;
-                if (db != null)
-                {
-                    if (inLabelEntryIds != null)
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .In(inLabelEntryIds)
-                            .Select(p => new { p.EntryId, p.LastUpdateTime }).ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.LastUpdateTime, item.Key));
-                        });
-                    }
-                    else
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                           .Select(p => new { p.EntryId, p.LastUpdateTime }).ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.LastUpdateTime, item.Key));
-                        });
-                    }
-                }
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
-        }
-        private static List<QueryResult> SortByWatchTimes(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
-        {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
-            foreach (var item in DbService.Dbs)
-            {
-                if (dbIds != null && !dbIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                var db = item.Value;
-                if (db != null)
-                {
-                    if (inLabelEntryIds != null)
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                        .In(inLabelEntryIds)
-                        .Select(p => new { p.EntryId, p.WatchTimes })
-                        .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.WatchTimes, item.Key));
-                        });
-                    }
-                    else
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                        .Select(p => new { p.EntryId, p.WatchTimes })
-                        .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.WatchTimes, item.Key));
-                        });
-                    }
-                }
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
-        }
-        private static List<QueryResult> SortByMyRating(Enums.SortWay sortWay, List<string> dbIds, List<string> labelIds = null)
-        {
-            List<QueryResult> queryResults = new List<QueryResult>();
-            List<string> inLabelEntryIds = null;
-            if (labelIds != null && labelIds.Count != 0)
-            {
-                inLabelEntryIds = LabelClassService.GetEntrys(labelIds);
-            }
-            foreach (var item in DbService.Dbs)
-            {
-                if (dbIds != null && !dbIds.Contains(item.Key))
-                {
-                    continue;
-                }
-                var db = item.Value;
-                if (db != null)
-                {
-                    if (inLabelEntryIds != null)
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .In(inLabelEntryIds)
-                            .Select(p => new { p.EntryId, p.MyRating })
-                            .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.MyRating, item.Key));
-                        });
-                    }
-                    else
-                    {
-                        var ls = db.Queryable<DbModels.EntryDb>()
-                            .Select(p => new { p.EntryId, p.MyRating })
-                            .ToList();
-                        ls.ForEach(p =>
-                        {
-                            queryResults.Add(new QueryResult(p.EntryId, p.MyRating, item.Key));
-                        });
-                    }
-                }
-            }
-            if (sortWay == Enums.SortWay.Positive)
-            {
-                return queryResults.OrderBy(p => p.Value).ToList();
-            }
-            else
-            {
-                return queryResults.OrderByDescending(p => p.Value).ToList();
-            }
+            return await Task.Run(() => QueryEntry(queryItems, withName));
         }
 
         /// <summary>
@@ -288,51 +145,43 @@ namespace OMDb.Core.Services
         /// <param name="queryItems"></param>
         /// <param name="withName">结果是否带默认名字</param>
         /// <returns></returns>
-        public static async Task<List<Entry>> QueryEntryAsync(List<QueryItem> queryItems, bool withName = true)
+        public static List<Entry> QueryEntry(List<QueryItem> queryItems, bool withName = true)
         {
             if (DbService.IsEmpty)
-            {
                 return null;
-            }
-            if (queryItems != null)
+            if (queryItems.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                return null;
+
+            Dictionary<string, Entry> dic = new Dictionary<string, Entry>();
+            var group = queryItems.GroupBy(p => p.DbId);
+            foreach (var item in group)
             {
-                return await Task.Run(() =>
+                var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.EntryId)).ToList();
+                if (entryDbs.Any())
                 {
-                    Dictionary<string, Entry> dic = new Dictionary<string, Entry>();
-                    var group = queryItems.GroupBy(p => p.DbId);
-                    foreach (var item in group)
+                    var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
+                    if (withName)
                     {
-                        var entryDbs = DbService.GetConnection(item.Key).Queryable<DbModels.EntryDb>().Where(p2 => item.Select(p => p.Id).Contains(p2.EntryId)).ToList();
-                        if (entryDbs.Any())
-                        {
-                            var entriesTemp = entryDbs.Select(p => Entry.Create(p, item.Key)).ToList();
-                            if (withName)
-                            {
-                                EntryNameSerivce.SetName(entriesTemp, item.Key);
-                            }
-                            //entries.AddRange(entriesTemp);
-                            entriesTemp.ForEach(p =>
-                            {
-                                dic.Add(p.EntryId, p);
-                            });
-                        }
+                        EntryNameSerivce.SetName(entriesTemp, item.Key);
                     }
-                    List<Entry> entries = new List<Entry>();
-                    foreach (var item in queryItems)
+                    //entries.AddRange(entriesTemp);
+                    entriesTemp.ForEach(p =>
                     {
-                        if (dic.TryGetValue(item.Id, out Entry entry))
-                        {
-                            entries.Add(entry);
-                        }
-                    }
-                    return entries;
-                });
+                        dic.Add(p.EntryId, p);
+                    });
+                }
             }
-            else
+            List<Entry> entries = new List<Entry>();
+            foreach (var item in queryItems)
             {
-                return null;
+                if (dic.TryGetValue(item.Id, out Entry entry))
+                {
+                    entries.Add(entry);
+                }
             }
+            return entries;
         }
+
         /// <summary>
         /// 查询词条
         /// </summary>

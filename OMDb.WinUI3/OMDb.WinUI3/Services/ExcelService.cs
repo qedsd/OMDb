@@ -6,6 +6,7 @@ using NPOI.SS.Formula.Functions;
 using OMDb.Core.DbModels;
 using OMDb.Core.Enums;
 using OMDb.Core.Models;
+using OMDb.Core.Utils.Extensions;
 using OMDb.WinUI3.Events;
 using OMDb.WinUI3.Helpers;
 using OMDb.WinUI3.Models;
@@ -24,7 +25,10 @@ namespace OMDb.WinUI3.Services
 {
     public static class ExcelService
     {
-
+        public static async void ExportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        {
+            await Task.Run(() => ExportExcel(filePath, enrtyStorage));
+        }
         /// <summary>
         /// 导出Excel
         /// </summary>
@@ -41,13 +45,13 @@ namespace OMDb.WinUI3.Services
 
             //数据库查询 属性标签&分类标签
             var label_lc = Core.Services.LabelClassService.GetAllLabel(DbSelectorService.dbCurrentId);
-            var label_lp = Core.Services.LabelPropertyService.GetAllLabel(DbSelectorService.dbCurrentId);
+            var label_lp = Core.Services.LabelPropertyService.GetAllLabelProperty(DbSelectorService.dbCurrentId);
 
             //标签&词条 关联关系
             var result_EntryLabelClass = Core.Services.EntryLabelClassService.SelectAllEntryLabel(enrtyStorage.StorageName);
             var result_EntryLabelProperty = Core.Services.EntryLabelPropertyService.SelectAllEntryLabel(enrtyStorage.StorageName);
 
-                       
+
             DataTable dataTable = new DataTable();//創建數據表 
 
             dataTable.Columns.Add("Name", typeof(string));//词条名称
@@ -55,7 +59,7 @@ namespace OMDb.WinUI3.Services
             dataTable.Columns.Add("ReleaseDate", typeof(string));
             dataTable.Columns.Add("MyRating", typeof(double));
             label_lp.Where(a => a.Level == 1).ToList().ForEach(s => dataTable.Columns.Add(s.Name, typeof(string)));//属性标签列
-            
+
             dataTable.Columns.Add("Classification", typeof(string));//分類列
             dataTable.Columns.Add("SaveType", typeof(string));//存储模式
             dataTable.Columns.Add("path_source", typeof(string));//存储路径
@@ -94,10 +98,10 @@ namespace OMDb.WinUI3.Services
                 var elp = result_EntryLabelProperty.Where(a => a.EntryId == Convert.ToString(eid));
                 foreach (var lp in label_lp)
                 {
-                    var label_Property_Child = label_lp.Where(a => a.ParentId == lp.LPId);
+                    var label_Property_Child = label_lp.Where(a => a.ParentId == lp.LPID);
                     foreach (var lpc in label_Property_Child)
                     {
-                        if (elp.Select(a => a.LPId).Contains(lpc.LPId))
+                        if (elp.Select(a => a.LPID).Contains(lpc.LPID))
                         {
                             if (row[lp.Name].ToString().Length > 0)
                                 row[lp.Name] += "/";
@@ -108,7 +112,7 @@ namespace OMDb.WinUI3.Services
                 //分類
                 foreach (var lc in label_lc)
                 {
-                    if (elc.Select(a => a.LCId).Contains(lc.LCId))
+                    if (elc.Select(a => a.LCID).Contains(lc.LCID))
                     {
                         if (row["Classification"].ToString().Length > 0) row["Classification"] += "/";
                         row["Classification"] += lc.Name;
@@ -119,8 +123,9 @@ namespace OMDb.WinUI3.Services
 
                 row["path_entry"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry));
                 row["path_cover"] = System.IO.Path.Combine(enrtyStorage.StoragePath + Convert.ToString(path_entry), Convert.ToString(path_cover));
+                var saveMode = (Core.Enums.SaveType)(Convert.ToInt16(saveType));
 
-                var saveMode = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
+                var saveMode2 = Convert.ToInt16(saveType) == 1 ? SaveType.Folder : Convert.ToInt16(saveType) == 2 ? SaveType.Files : SaveType.Local;
                 row["SaveType"] = saveMode;
                 switch (saveMode)
                 {
@@ -131,10 +136,10 @@ namespace OMDb.WinUI3.Services
                     case SaveType.Files:
                         var lstPath = Convert.ToString(path_source).Split(">.<", StringSplitOptions.RemoveEmptyEntries).ToList();
                         var lstPath_Full = new List<string>();
+                        if (lstPath.IsNullOrEmptyOrWhiteSpazeOrCountZero()) 
+                            break;
                         foreach (var path in lstPath)
-                        {
                             lstPath_Full.Add(enrtyStorage.StoragePath + path);
-                        }
                         row["path_source"] = string.Format("<{0}>", string.Join(">,<", lstPath_Full));
                         break;
                     case SaveType.Local:
@@ -151,7 +156,7 @@ namespace OMDb.WinUI3.Services
             //DataTable的列名和excel的列名对应字典，因为excel的列名一般是中文的，DataTable的列名是英文的，字典主要是存储excel和DataTable列明的对应关系，当然我们也可以把这个对应关系存在配置文件或者其他地方
             Dictionary<string, string> dir = new Dictionary<string, string>();
             dir.Add("Name", "詞條名稱");
-            dir.Add("Alias", "别稱");
+            dir.Add("Alias", "詞條别稱");
             dir.Add("ReleaseDate", "發行日期");
             dir.Add("MyRating", "評分");
 
@@ -163,17 +168,21 @@ namespace OMDb.WinUI3.Services
             dir.Add("path_entry", "詞條路徑");
             dir.Add("path_cover", "封面路徑");
             //使用helper类导出DataTable数据到excel表格中,参数依次是 （DataTable数据源;  excel表名;  excel存放位置的绝对路径; 列名对应字典; 是否清空以前的数据，设置为false，表示内容追加; 每个sheet放的数据条数,如果超过该条数就会新建一个sheet存储）
-            ExcelHelper.ExportDTtoExcel(dataTable, "Info表", filePath, dir, true);
+            ExcelHelper.ExportDTtoExcel(dataTable, null, filePath, dir, true);
 
         }
 
+        public static async void ImportExcelAsync(string filePath, EnrtyStorage enrtyStorage)
+        {
+            await Task.Run(() => ImportExcel(filePath, enrtyStorage));
+        }
 
         /// <summary>
         /// 从Excel中导入词条数据
         /// </summary>
         /// <param name="filePath"></param>
         /// <param name="enrtyStorage"></param>
-        public static async void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
+        public static void ImportExcel(string filePath, EnrtyStorage enrtyStorage)
         {
             var msg = new StringBuilder();
             if (string.IsNullOrEmpty(filePath)) return;
@@ -182,13 +191,13 @@ namespace OMDb.WinUI3.Services
             //DataTable的列名和excel的列名对应字典
 
             //读取数据到DataTable，参数依此是（excel文件路径，列名所在行，sheet索引）
-            DataTable dt = ExcelHelper.ImportExceltoDt(filePath, 1, 0);
+            DataTable dt = ExcelHelper.ImportExceltoDt(filePath, 0, 0);
             //遍历DataTable---------------------------
 
             //基本信息
             List<string> list = new List<string>() { "詞條名稱", "發行日期", "評分", "分類", "存儲模式", "存儲地址", "詞條路徑", "封面路徑" };
             //已有屬性
-            var lpdbs = Core.Services.LabelPropertyService.GetAllLabel(Settings.DbSelectorService.dbCurrentId);
+            var lpdbs = Core.Services.LabelPropertyService.GetAllLabelProperty(Settings.DbSelectorService.dbCurrentId);
             var lpdbs_Yeye = lpdbs.Where(a => a.Level == 1);
 
             foreach (DataColumn item in dt.Columns)
@@ -201,7 +210,7 @@ namespace OMDb.WinUI3.Services
                         DbCenterId = Settings.DbSelectorService.dbCurrentId,
                         Level = 1,
                     };
-                    Core.Services.LabelPropertyService.AddLabel(lpdb);
+                    Core.Services.LabelPropertyService.AddLabelProperty(lpdb);
                     lpdbs.Add(lpdb);
                 }
             }
@@ -254,16 +263,24 @@ namespace OMDb.WinUI3.Services
                             switch (baseInfo.FirstOrDefault())
                             {
                                 case "詞條名稱":
+                                    var entryName = Convert.ToString(row[n]);
+                                    endbs.Add(new EntryNameDb()
+                                    {
+                                        Name = entryName,
+                                        EntryId = eid,
+                                        IsDefault = true,
+                                    });
+                                    break;
+                                case "詞條別稱":
                                     var strName = Convert.ToString(row[n]);
                                     var lstName = strName.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();//根据分隔符构建list
-                                    int c = 0;
                                     foreach (var name in lstName)
                                     {
                                         endbs.Add(new EntryNameDb()
                                         {
                                             Name = name,
                                             EntryId = eid,
-                                            IsDefault = c == 0 ? true : false,
+                                            IsDefault = false,
                                         });
                                     }
                                     break;
@@ -294,7 +311,7 @@ namespace OMDb.WinUI3.Services
                         var lpdb_Yeye = lpdbs_Yeye.Where(a => a.Name.Equals(item.ColumnName));
                         if (lpdb_Yeye.Count() > 0)
                         {
-                            var lpdbs_Baba = lpdbs.Where(a => a.ParentId == lpdb_Yeye.FirstOrDefault().LPId);
+                            var lpdbs_Baba = lpdbs.Where(a => a.ParentId == lpdb_Yeye.FirstOrDefault().LPID);
                             var lpdbName = Convert.ToString(row[n]);
                             if (string.IsNullOrWhiteSpace(lpdbName))
                                 continue;
@@ -303,17 +320,17 @@ namespace OMDb.WinUI3.Services
                             {
                                 var lpdb = new LabelPropertyDb()
                                 {
-                                    LPId = Guid.NewGuid().ToString(),
+                                    LPID = Guid.NewGuid().ToString(),
                                     Name = lpdbName,
                                     DbCenterId = Settings.DbSelectorService.dbCurrentId,
-                                    ParentId = lpdb_Yeye.FirstOrDefault().LPId,
+                                    ParentId = lpdb_Yeye.FirstOrDefault().LPID,
                                 };
                                 lpdbs.Add(lpdb);
-                                Core.Services.LabelPropertyService.AddLabel(lpdb);
+                                Core.Services.LabelPropertyService.AddLabelProperty(lpdb);
                                 var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LPId = lpdb.LPId,
+                                    LPID = lpdb.LPID,
                                     EntryId = eid,
                                 };
                                 Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);
@@ -322,11 +339,11 @@ namespace OMDb.WinUI3.Services
                             //已存在 属性_儿子
                             else
                             {
-                                var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPId;
+                                var lpid = lpdbs_Baba.Where(a => a.Name.Equals(lpdbName)).FirstOrDefault().LPID;
                                 var eldb = new EntryLabelPropertyLinkDb()
                                 {
                                     DbId = enrtyStorage.StorageName,
-                                    LPId = lpid,
+                                    LPID = lpid,
                                     EntryId = eid,
                                 };
                                 Core.Services.EntryLabelPropertyService.AddEntryLabel(eldb);
