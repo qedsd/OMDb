@@ -243,7 +243,20 @@ namespace OMDb.Core.Services
             DbService.DCDb.Insertable(labelPropertyDb).ExecuteCommand();
         }
 
-
+        public static void AddLabelProperty(List<LabelPropertyDb> labelPropertyDbList)
+        {
+            var labelPropertyDbListWithName=new List<LabelPropertyDb>();
+            foreach (var labelPropertyDb in labelPropertyDbList)
+            {
+                if (!labelPropertyDb.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                {
+                    if (string.IsNullOrEmpty(labelPropertyDb.LPID))
+                        labelPropertyDb.LPID = Guid.NewGuid().ToString();
+                    labelPropertyDbListWithName.Add(labelPropertyDb);
+                }
+            }
+            DbService.DCDb.Insertable<LabelPropertyDb>(labelPropertyDbListWithName).ExecuteCommand();
+        }
 
 
         public static void RemoveLabel(string labelPropertyId)

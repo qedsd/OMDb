@@ -135,7 +135,19 @@
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
             </AppBarElementContainer>
-
+            <AppBarButton>
+                <FontIcon Glyph="&#xE7FD;" />
+                <AppBarButton.Flyout>
+                    <MenuFlyout Placement="LeftEdgeAlignedTop">
+                        <MenuFlyoutItem Command="{x:Bind VM.ImportCommand}" Text="导入" Icon="Import"/>
+                        <MenuFlyoutItem Command="{x:Bind VM.ExportCommand}" Text="导出">
+                            <MenuFlyoutItem.Icon>
+                                <FontIcon Glyph="&#xEDE1;" />
+                            </MenuFlyoutItem.Icon>
+                        </MenuFlyoutItem>
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarSeparator />
 
             <AppBarToggleButton

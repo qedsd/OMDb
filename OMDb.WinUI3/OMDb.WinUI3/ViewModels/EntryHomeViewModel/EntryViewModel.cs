@@ -99,7 +99,7 @@ namespace OMDb.WinUI3.ViewModels
 
             EntrySortInfoTree eitLabelClass = new EntrySortInfoTree("分类标签", null);
             eitLabelClass.Children = new ObservableCollection<EntrySortInfoTree>();//初始化
-            var lcdbs = Core.Services.LabelClassService.Get1stLabel();
+            var lcdbs = Core.Services.LabelClassService.GetLabelClassL1();
             foreach (var item in lcdbs)
                 eitLabelClass.Children.Add(new EntrySortInfoTree(item.Name, "LabelClass"));
 

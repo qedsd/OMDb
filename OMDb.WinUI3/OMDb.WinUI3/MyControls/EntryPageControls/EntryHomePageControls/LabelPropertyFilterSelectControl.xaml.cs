@@ -89,14 +89,16 @@ namespace OMDb.WinUI3.MyControls
 
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-
-            ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
-            foreach (var lpt1st in LabelPropertyTrees)
+            if (((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext != null)
             {
-                foreach (var lpt2ndt in lpt1st.Children)
+                ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+                foreach (var lpt1st in LabelPropertyTrees)
                 {
-                    if (lpt2ndt.LabelProperty.LPDb.LPID == ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.LPDb.LPID)
-                        lpt2ndt.LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+                    foreach (var lpt2ndt in lpt1st.Children)
+                    {
+                        if (lpt2ndt.LabelProperty.LPDb.LPID == ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty.LPDb.LPID)
+                            lpt2ndt.LabelProperty.IsChecked = Convert.ToBoolean(((Microsoft.UI.Xaml.Controls.Primitives.ToggleButton)sender).IsChecked);
+                    }
                 }
             }
             CallChanged();

@@ -13,7 +13,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:OMDb.WinUI3.Models"
     xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
-    NavigationCacheMode="Enabled"
+    NavigationCacheMode="Disabled"
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="CategoryTemplate" x:DataType="models:LabelPropertyTree">
@@ -59,46 +59,32 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <CommandBar OverflowButtonVisibility="Collapsed">
-                <AppBarButton Icon="Add">
+                
+                <AppBarButton
+                    Click="ADD_Property_Click"
+                    Content="新增"
+                    Icon="Add" />
+                
+                <AppBarButton>
+                    <FontIcon Glyph="&#xE7FD;" />
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Click="ADD_Property_Click" Text="Add Property" />
-                            <MenuFlyoutItem Click="ADD_PropertyData_Click" Text="Add PropertyData" />
-                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="Add PropertyDataLink" />
+                            <MenuFlyoutItem Command="{x:Bind VM.ImportCommand}" Text="导入" Icon="Import"/>
+                            <MenuFlyoutItem Command="{x:Bind VM.ExportCommand}" Text="导出">
+                                <MenuFlyoutItem.Icon>
+                                    <FontIcon Glyph="&#xEDE1;" />
+                                </MenuFlyoutItem.Icon>
+                            </MenuFlyoutItem>
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Edit" Visibility="Collapsed">
-                    <AppBarButton.Flyout>
-                        <MenuFlyout Placement="Left">
-                            <MenuFlyoutItem Click="Edit_Property_Click" Text="Edit Property" />
-                            <MenuFlyoutItem Click="Edit_PropertyData_Click" Text="Edit PropertyData" />
-                        </MenuFlyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-                <AppBarButton Icon="Delete" Visibility="Collapsed">
-                    <AppBarButton.Flyout>
-                        <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Click="Delete_Property_Click" Text="Delete Property" />
-                            <MenuFlyoutItem Click="Delete_PropertyData_Click" Text="Delete PropertyData" />
-                        </MenuFlyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
-                <AppBarButton Icon="Link" Visibility="Collapsed">
-                    <AppBarButton.Flyout>
-                        <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <!--<MenuFlyoutItem Click="ADD_PropertyLink_Click" Text="Add Property Link" />-->
-                            <MenuFlyoutItem Click="ADD_PropertyDataLink_Click" Text="Add PropertyDataLink" />
-                            <MenuFlyoutItem Click="Delete_PropertyLink_Click" Text="Delete PropertyLink" />
-                            <MenuFlyoutItem Click="Delete_PropertyDataLink_Click" Text="Delete PropertyDataLink" />
-                        </MenuFlyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
+
                 <AppBarButton Command="{x:Bind VM.RefreshCommand}" Icon="Refresh">
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Key="F5" />
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
+                
             </CommandBar>
         </Grid>
         <Grid Grid.Row="1">
@@ -114,7 +100,7 @@
                     <ListView
                         x:Name="ListView_LabelPropertyTrees"
                         ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}"
-                        SelectedItem="{x:Bind VM.CurrentLabelPropertyTree,Mode=TwoWay}">
+                        SelectedItem="{x:Bind VM.CurrentLabelPropertyTree, Mode=TwoWay}">
                         <!--  SelectionChanged="ListView_SelectionChanged">  -->
                         <i:Interaction.Behaviors>
                             <Core:EventTriggerBehavior EventName="SelectionChanged">
@@ -162,6 +148,18 @@
 
                 </Grid>
                 <Grid>
+                    <Grid.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem
+                                Click="ADD_PropertyDataLink_Click"
+                                Icon="Add"
+                                Text="新增" />
+                            <MenuFlyoutItem
+                                Command="{x:Bind VM.RefreshCommand}"
+                                Icon="Refresh"
+                                Text="刷新" />
+                        </MenuFlyout>
+                    </Grid.ContextFlyout>
                     <GridView
                         x:Name="GridView_Current_LPEZCollection"
                         BorderBrush="Blue"

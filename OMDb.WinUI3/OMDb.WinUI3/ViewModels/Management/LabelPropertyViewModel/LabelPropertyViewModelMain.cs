@@ -80,19 +80,7 @@ namespace OMDb.WinUI3.ViewModels
 
 
 
-        public ICommand RefreshCommand => new RelayCommand(async () =>
-        {
-            await InitAsync();
-            this.LabelPropertySelectionChangedCommand.Execute(null);
-            Helpers.InfoHelper.ShowSuccess("刷新完成");
-        });
 
-
-        public ICommand RefreshCommandWithParam => new RelayCommand<string>(async (labelPropertyId) =>
-        {
-            await InitAsync();
-            LoadLabel(labelPropertyId);
-        });
 
     }
 }

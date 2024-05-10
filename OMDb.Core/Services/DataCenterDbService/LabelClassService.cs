@@ -1,4 +1,5 @@
 ﻿using OMDb.Core.DbModels;
+using OMDb.Core.Utils.Extensions;
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -238,20 +239,36 @@ namespace OMDb.Core.Services
                 DbService.DCDb.Insertable(entryLabel).ExecuteCommand();
             });
         }
-        public static void AddLabel(LabelClassDb labelDb)
+        public static void AddLabelClass(LabelClassDb labelClassDb)
         {
-            if (string.IsNullOrEmpty(labelDb.LCID))
-            {
-                labelDb.LCID = Guid.NewGuid().ToString();
-            }
-            DbService.DCDb.Insertable(labelDb).ExecuteCommand();
+            if (labelClassDb.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                return;
+            if (string.IsNullOrEmpty(labelClassDb.LCID))
+                labelClassDb.LCID = Guid.NewGuid().ToString();
+            
+            DbService.DCDb.Insertable(labelClassDb).ExecuteCommand();
         }
 
-        public static void RemoveLabel(string labelId)
+        public static void AddLabelClass(List<LabelClassDb> labelClassDbList)
         {
-            RemoveLabel(new List<string>() { labelId });
+            var labelClassDbListWithName = new List<LabelClassDb>();
+            foreach (var labelClassDb in labelClassDbList)
+            {
+                if (!labelClassDb.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+                {
+                    if (string.IsNullOrEmpty(labelClassDb.LCID))
+                        labelClassDb.LCID = Guid.NewGuid().ToString();
+                    labelClassDbListWithName.Add(labelClassDb);
+                }
+            }
+            DbService.DCDb.Insertable<LabelClassDb>(labelClassDbListWithName).ExecuteCommand();
         }
-        public static void RemoveLabel(List<string> labelIds)
+
+        public static void RemoveLabelClass(string labelId)
+        {
+            RemoveLabelClass(new List<string>() { labelId });
+        }
+        public static void RemoveLabelClass(List<string> labelIds)
         {
             DbService.DCDb.Deleteable<LabelClassDb>().In(labelIds).ExecuteCommand();
             //清空关联的子分类
@@ -260,13 +277,13 @@ namespace OMDb.Core.Services
             DbService.DCDb.Deleteable<EntryLabelClassLinkDb>().Where(p => labelIds.Contains(p.LCID));//EntryLabelLKDb表是没有主键的，不能用in
         }
 
-        public static void UpdateLabel(LabelClassDb labelDb)
+        public static void UpdateLabelClass(LabelClassDb labelDb)
         {
             DbService.DCDb.Updateable(labelDb).ExecuteCommand();
         }
 
         //获取一级分类标签
-        public static List<LabelClassDb> Get1stLabel()
+        public static List<LabelClassDb> GetLabelClassL1()
         {
             if (IsLocalDbValid())
                 return DbService.DCDb.Queryable<LabelClassDb>().Where(a => a.Level == 1).ToList();

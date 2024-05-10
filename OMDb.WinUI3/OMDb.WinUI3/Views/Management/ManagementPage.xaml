@@ -24,14 +24,14 @@
         </PivotItem>
         <PivotItem>
             <PivotItem.Header>
-                <TextBlock FontSize="16" Text="分类" />
+                <TextBlock FontSize="16" Text="标签(分类)" />
             </PivotItem.Header>
             <local:LabelPage />
         </PivotItem>
 
         <PivotItem>
             <PivotItem.Header>
-                <TextBlock FontSize="16" Text="属性" />
+                <TextBlock FontSize="16" Text="标签(属性)" />
             </PivotItem.Header>
             <local:LabelPropertyPage />
         </PivotItem>

@@ -51,10 +51,18 @@ namespace OMDb.WinUI3.ViewModels
         
         public ICommand LabelPropertySelectionChangedCommand => new RelayCommand<LabelPropertyTree>((labelPropertyTree) =>
         {
-            if (labelPropertyTree != null)
-                CurrentLabelPropertyDataCollection = labelPropertyTree.Children;
-            else if(LabelPropertyTrees.Count>0)
-                CurrentLabelPropertyDataCollection = LabelPropertyTrees.FirstOrDefault().Children;
+            if (labelPropertyTree != null)//传入属性标签，读取属性标签的数据
+            {
+                this.CurrentLabelPropertyDataCollection = labelPropertyTree.Children; 
+            }
+            else if (this.LabelPropertyTrees.Count > 0)//无参数传入，读取第一个属性标签的数据
+            {
+                this.CurrentLabelPropertyDataCollection = this.LabelPropertyTrees.FirstOrDefault().Children;
+            }
+            else//无属性标签，空
+            {
+                this.CurrentLabelPropertyDataCollection = null;
+            }
         });
     }
 }
