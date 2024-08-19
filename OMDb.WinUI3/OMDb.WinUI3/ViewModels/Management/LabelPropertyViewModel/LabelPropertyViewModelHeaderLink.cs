@@ -43,7 +43,7 @@ namespace OMDb.WinUI3.ViewModels
         public void InitRemoveSelf(LabelProperty labelPropertyReomove)
         {
             var labelPropertyList = Core.Services.LabelPropertyService.GetLabelPropertyHeader();
-            var labelPropertyCheckList = Core.Services.LabelPropertyService.GetLinkId(labelPropertyReomove.LPDb.LPID);
+            var labelPropertyCheckList = Core.Services.LabelPropertyService.GetLinkIdList(labelPropertyReomove.LPDb.LPID);
             if (labelPropertyList == null) return;
             labelPropertyList.Remove(labelPropertyList.FirstOrDefault(a => a.LPID == labelPropertyReomove.LPDb.LPID));
             labelPropertyList.ForEach(a => {

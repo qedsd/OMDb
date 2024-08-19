@@ -35,11 +35,11 @@ namespace OMDb.WinUI3.ViewModels
 
 
 
-        private ObservableCollection<LabelPropertyTree> _current_LPEZ_Link = new ObservableCollection<LabelPropertyTree>();
-        public ObservableCollection<LabelPropertyTree> Current_LPEZ_Link
+        private ObservableCollection<LabelPropertyTree> _labelPropertyTreeCollectionLink = new ObservableCollection<LabelPropertyTree>();
+        public ObservableCollection<LabelPropertyTree> LabelPropertyTreeCollectionLink
         {
-            get => _current_LPEZ_Link;
-            set => SetProperty(ref _current_LPEZ_Link, value);
+            get => _labelPropertyTreeCollectionLink;
+            set => SetProperty(ref _labelPropertyTreeCollectionLink, value);
         }
 
 
@@ -53,7 +53,7 @@ namespace OMDb.WinUI3.ViewModels
         public async void Init(string parentId)
         {
             var labelPropertyList = await Core.Services.LabelPropertyService.GetAllLabelPropertyAsync(DbSelectorService.dbCurrentId);
-            var linkIdList = Core.Services.LabelPropertyService.GetLinkId(parentId);
+            var linkIdList = Core.Services.LabelPropertyService.GetLinkIdList(parentId);
             if (labelPropertyList == null) return;
 
             Dictionary<string, LabelPropertyTree> labelPropertyTreeDic = new Dictionary<string, LabelPropertyTree>();
@@ -74,9 +74,9 @@ namespace OMDb.WinUI3.ViewModels
             }
             Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>
             {
-                LabelPropertyTrees = new ObservableCollection<LabelPropertyTree>();
+                LabelPropertyTreeCollection = new ObservableCollection<LabelPropertyTree>();
                 foreach (var item in labelPropertyTreeDic)
-                    LabelPropertyTrees.Add(item.Value);
+                    LabelPropertyTreeCollection.Add(item.Value);
             });
 
         }

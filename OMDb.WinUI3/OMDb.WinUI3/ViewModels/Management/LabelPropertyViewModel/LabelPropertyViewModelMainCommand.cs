@@ -87,11 +87,11 @@ namespace OMDb.WinUI3.ViewModels
                 {
                     var property = item["Property"] as string;
                     var data = JsonConvert.DeserializeObject<List<string>>(item["Data"].ToString());
-                    if (this.LabelPropertyTrees.Select(a => a.LabelProperty.Name).Contains(property))
+                    if (this.LabelPropertyTreeCollection.Select(a => a.LabelProperty.Name).Contains(property))
                     {
-                        var labelProperty = this.LabelPropertyTrees.Where(a => a.LabelProperty.Name == property).FirstOrDefault();
-                        var labelPropertyData = labelProperty.Children.Select(a => a.LabelProperty.Name).ToArray();
-                        var parentId = labelProperty.LabelProperty.LPDb.LPID;
+                        var labelPropertyTree = this.LabelPropertyTreeCollection.Where(a => a.LabelProperty.Name == property).FirstOrDefault();
+                        var labelPropertyData = labelPropertyTree.Children.Select(a => a.LabelProperty.Name).ToArray();
+                        var parentId = labelPropertyTree.LabelProperty.LPDb.LPID;
                         foreach (var propertyData in data)
                         {
                             if (!labelPropertyData.Contains(propertyData))
@@ -139,7 +139,7 @@ namespace OMDb.WinUI3.ViewModels
         private string GetJson()
         {
             var result = new List<Object>();
-            foreach (var item in this.LabelPropertyTrees)
+            foreach (var item in this.LabelPropertyTreeCollection)
             {
                 var labelPropertyData = new List<string>();
                 foreach (var data in item.Children)

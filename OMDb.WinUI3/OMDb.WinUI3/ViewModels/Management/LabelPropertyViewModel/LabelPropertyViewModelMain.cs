@@ -31,9 +31,9 @@ namespace OMDb.WinUI3.ViewModels
         public LabelPropertyViewModel()
         {
             InitAsync();
-            if (!this.LabelPropertyTrees.IsNullOrEmptyOrWhiteSpazeOrCountZero())
+            if (!this.LabelPropertyTreeCollection.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
-                this.CurrentLabelPropertyTree = this.LabelPropertyTrees.FirstOrDefault();
+                this.CurrentLabelPropertyTree = this.LabelPropertyTreeCollection.FirstOrDefault();
                 this.LabelPropertySelectionChangedCommand.Execute(CurrentLabelPropertyTree);
 
             }
@@ -68,14 +68,14 @@ namespace OMDb.WinUI3.ViewModels
 
             //Helpers.WindowHelper.MainWindow.DispatcherQueue.TryEnqueue(() =>{ });
 
-            LabelPropertyTrees = new ObservableCollection<LabelPropertyTree>();
+            LabelPropertyTreeCollection = new ObservableCollection<LabelPropertyTree>();
             foreach (var item in dicLpdbs)
-                LabelPropertyTrees.Add(item.Value);
+                LabelPropertyTreeCollection.Add(item.Value);
         }
 
         public void LoadLabel(string labelPropertyId)
         {
-            CurrentLabelPropertyDataCollection = LabelPropertyTrees.FirstOrDefault(a => a.LabelProperty.LPDb.LPID == labelPropertyId)?.Children;
+            CurrentLabelPropertyDataCollection = LabelPropertyTreeCollection.FirstOrDefault(a => a.LabelProperty.LPDb.LPID == labelPropertyId)?.Children;
         }
 
 

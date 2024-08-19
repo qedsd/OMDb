@@ -40,7 +40,7 @@ namespace OMDb.WinUI3.Dialogs
         public EditLabelPropertyDataLinkDialog(LabelPropertyDb labelPropertyDb)
         {
             this.InitializeComponent();
-            var linkIdList=Core.Services.LabelPropertyService.GetLinkId(labelPropertyDb.LPID);
+            var linkIdList=Core.Services.LabelPropertyService.GetLinkIdList(labelPropertyDb.LPID);
             var linkDbList=Core.Services.LabelPropertyService.GetLabels(linkIdList);
             linkDbList.ForEach(a => VM.DtData.Add(a));
         }
@@ -72,7 +72,7 @@ namespace OMDb.WinUI3.Dialogs
 
                 //手工输入的数据
 
-                var childs = content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children;
+                var childs = content.VM.LabelPropertyTreeCollection.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children;
                 var lp_repeat = childs.Where(a => a.LabelProperty.LPDb.Name.Equals(item.Name));
                 //手工输入的数据名称已存在
                 if (lp_repeat.Count() > 0)
@@ -86,7 +86,7 @@ namespace OMDb.WinUI3.Dialogs
                 item.DbCenterId = DbSelectorService.dbCurrentId;
                 Core.Services.LabelPropertyService.AddLabelProperty(item);
                 var lpt = new LabelPropertyTree(item);
-                content.VM.LabelPropertyTrees.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
+                content.VM.LabelPropertyTreeCollection.Where(a => a.LabelProperty.LPDb.LPID.Equals(item.ParentId)).FirstOrDefault().Children.Add(lpt);
                 result.Add(item.LPID);
             }
             return result;

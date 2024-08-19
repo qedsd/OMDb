@@ -173,7 +173,7 @@ namespace OMDb.WinUI3.ViewModels
         public ICommand ConfirmFilterCommand => new RelayCommand<Flyout>((flyoutParameter) =>
         {
             var lct = this.LabelClassTrees;
-            var lpt = this.LabelPropertyTrees;
+            var lpt = this.LabelPropertyTreeCollection;
 
             Flyout flyout = (Flyout)flyoutParameter;
             flyout.Hide();

@@ -232,15 +232,16 @@ namespace OMDb.Core.Services
             });
         }
 
-        public static void AddLabelProperty(LabelPropertyDb labelPropertyDb)
+        public static LabelPropertyDb AddLabelProperty(LabelPropertyDb labelPropertyDb)
         {
             if (labelPropertyDb.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-                return;
+                throw new Exception("[标签名]必录");
 
             if (string.IsNullOrEmpty(labelPropertyDb.LPID))
                 labelPropertyDb.LPID = Guid.NewGuid().ToString();
 
             DbService.DCDb.Insertable(labelPropertyDb).ExecuteCommand();
+            return labelPropertyDb;
         }
 
         public static void AddLabelProperty(List<LabelPropertyDb> labelPropertyDbList)
@@ -294,7 +295,7 @@ namespace OMDb.Core.Services
             DbService.DCDb.Insertable(labelPropertyLinkDbList).ExecuteCommand();
         }
 
-        public static List<string> GetLinkId(string lablePropertyId)
+        public static List<string> GetLinkIdList(string lablePropertyId)
         {
             var sql = $@"
                             SELECT LPIDA

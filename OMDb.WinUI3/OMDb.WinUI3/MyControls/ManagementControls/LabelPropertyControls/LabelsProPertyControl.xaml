@@ -55,8 +55,8 @@
                         <StackPanel Orientation="Horizontal">
                             <Button
                                 Margin="15,5,0,0"
-                                Click="Button_Click"
-                                Content="確認" />
+                                Click="ButtonConfirm_Click"
+                                Content="确认" />
                         </StackPanel>
                     </StackPanel>
                 </Flyout>

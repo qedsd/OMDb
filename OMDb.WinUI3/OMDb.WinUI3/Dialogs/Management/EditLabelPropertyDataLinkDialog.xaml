@@ -34,7 +34,7 @@
                 controls:DockPanel.Dock="Left"
                 BorderBrush="BlueViolet"
                 BorderThickness="0">
-                <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}">
+                <ListView x:Name="ListView_LabelPropertyTrees" ItemsSource="{x:Bind VM.LabelPropertyTreeCollection, Mode=OneWay}">
                     <i:Interaction.Behaviors>
                         <Core:EventTriggerBehavior EventName="SelectionChanged">
                             <Core:InvokeCommandAction Command="{x:Bind VM.LabelPropertySelectionChangedCommand}" CommandParameter="{Binding ElementName=ListView_LabelPropertyTrees, Path=SelectedItem}" />

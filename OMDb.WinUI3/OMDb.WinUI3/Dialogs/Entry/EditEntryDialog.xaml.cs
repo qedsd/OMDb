@@ -36,7 +36,7 @@ using Windows.Foundation.Collections;
 
 namespace OMDb.WinUI3.Dialogs
 {
-    public sealed partial class EditEntryDialog : Page
+    public  partial class EditEntryDialog : Page
     {
         public ViewModels.EditEntryHomeViewModel VM { get; set; }
         public EditEntryDialog(Core.Models.Entry entry)
@@ -273,14 +273,14 @@ namespace OMDb.WinUI3.Dialogs
                 #endregion
 
                 #region 词条关联属性标签数据 （1.关联原有的属性标签数据 2.新增属性标签数据并关联)
-                var lpdb_original = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
-                var lpdb_new = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
-                foreach (var item in lpdb_new)
+                var labelpropertyDbOriginal = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => !a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
+                var labelpropertyDbNew = content.VM.Label_Property.Where(a => a.IsChecked == true).Where(a => a.LPDb.LPID.IsNullOrEmptyOrWhiteSpazeOrCountZero()).Select(a => a.LPDb).ToList();
+                foreach (var item in labelpropertyDbNew)
                     Core.Services.LabelPropertyService.AddLabelProperty(item);
-                if (lpdb_original.Count > 0)
-                    entryDetail.LablePropertyDbList.AddRange(lpdb_original);
-                if (lpdb_new.Count > 0)
-                    entryDetail.LablePropertyDbList.AddRange(lpdb_new);
+                if (labelpropertyDbOriginal.Count > 0)
+                    entryDetail.LablePropertyDbList.AddRange(labelpropertyDbOriginal);
+                if (labelpropertyDbNew.Count > 0)
+                    entryDetail.LablePropertyDbList.AddRange(labelpropertyDbNew);
                 #endregion
 
                 return entryDetail;

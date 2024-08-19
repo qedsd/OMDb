@@ -27,11 +27,11 @@ namespace OMDb.WinUI3.ViewModels
 {
     public partial class LabelPropertyViewModel : ObservableObject
     {
-        private ObservableCollection<LabelPropertyTree> _labelPropertyTrees;
-        public ObservableCollection<LabelPropertyTree> LabelPropertyTrees
+        private ObservableCollection<LabelPropertyTree> _labelPropertyTreeCollection;
+        public ObservableCollection<LabelPropertyTree> LabelPropertyTreeCollection
         {
-            get => _labelPropertyTrees;
-            set => SetProperty(ref _labelPropertyTrees, value);
+            get => _labelPropertyTreeCollection;
+            set => SetProperty(ref _labelPropertyTreeCollection, value);
         }
 
         private ObservableCollection<LabelPropertyTree> _currentLabelPropertyDataCollection = new ObservableCollection<LabelPropertyTree>();
@@ -55,9 +55,9 @@ namespace OMDb.WinUI3.ViewModels
             {
                 this.CurrentLabelPropertyDataCollection = labelPropertyTree.Children; 
             }
-            else if (this.LabelPropertyTrees.Count > 0)//无参数传入，读取第一个属性标签的数据
+            else if (this.LabelPropertyTreeCollection.Count > 0)//无参数传入，读取第一个属性标签的数据
             {
-                this.CurrentLabelPropertyDataCollection = this.LabelPropertyTrees.FirstOrDefault().Children;
+                this.CurrentLabelPropertyDataCollection = this.LabelPropertyTreeCollection.FirstOrDefault().Children;
             }
             else//无属性标签，空
             {

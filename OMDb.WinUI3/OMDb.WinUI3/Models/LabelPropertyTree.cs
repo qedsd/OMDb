@@ -25,9 +25,9 @@ namespace OMDb.WinUI3.Models
         }
 
         public LabelPropertyTree() { }
-        public LabelPropertyTree(Core.DbModels.LabelPropertyDb lpdb) 
+        public LabelPropertyTree(Core.DbModels.LabelPropertyDb labelPropertyDb) 
         {
-            _labelProperty = new LabelProperty(lpdb);
+            _labelProperty = new LabelProperty(labelPropertyDb);
             children = new ObservableCollection<LabelPropertyTree>();
         }
     }

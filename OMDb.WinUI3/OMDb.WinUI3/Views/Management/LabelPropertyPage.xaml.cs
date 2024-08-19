@@ -44,7 +44,7 @@ namespace OMDb.WinUI3.Views
                 this.Grid_LPEZ_Link.Visibility = Visibility.Collapsed;
                 return;
             }
-            var lst_LK = Core.Services.LabelPropertyService.GetLinkId(current_LPEZ.LabelProperty.LPDb.LPID);
+            var lst_LK = Core.Services.LabelPropertyService.GetLinkIdList(current_LPEZ.LabelProperty.LPDb.LPID);
             if (!(lst_LK.Count > 0))
             {
                 this.Grid_LPEZ_Link.Visibility = Visibility.Collapsed;
@@ -57,9 +57,9 @@ namespace OMDb.WinUI3.Views
 
         private void SetLinkTab(List<string> linkIdList)
         {
-            this.TabView_LPEZ_Link.TabItems.Clear();
-            VM.Current_LPEZ_Link.Clear();
-            foreach (var lpbaba in VM.LabelPropertyTrees)
+            this.TabViewLabelPropertyChildLink.TabItems.Clear();
+            VM.LabelPropertyTreeCollectionLink.Clear();
+            foreach (var lpbaba in VM.LabelPropertyTreeCollection)
             {
                 var lpRoot = new LabelPropertyTree(lpbaba.LabelProperty.LPDb);
                 foreach (var lpez in lpbaba.Children)
@@ -72,10 +72,10 @@ namespace OMDb.WinUI3.Views
                 }
                 if (lpRoot.Children.Count > 0)
                 {
-                    VM.Current_LPEZ_Link.Add(lpRoot);
+                    VM.LabelPropertyTreeCollectionLink.Add(lpRoot);
                 }
             }
-            foreach (var lpbaba in VM.Current_LPEZ_Link)
+            foreach (var lpbaba in VM.LabelPropertyTreeCollectionLink)
             {
                 var tbi = new TabViewItem();
                 tbi.Header = lpbaba.LabelProperty.LPDb.Name;
@@ -87,12 +87,12 @@ namespace OMDb.WinUI3.Views
                     lv.Items.Add(lvi);
                 }
                 tbi.Content = lv;
-                this.TabView_LPEZ_Link.TabItems.Add(tbi);
+                this.TabViewLabelPropertyChildLink.TabItems.Add(tbi);
             }
-            if (VM.Current_LPEZ_Link.Count() > 0)
+            if (VM.LabelPropertyTreeCollectionLink.Count() > 0)
             {
                 this.Grid_LPEZ_Link.Visibility = Visibility.Visible;
-                this.TabView_LPEZ_Link.SelectedIndex = 0;
+                this.TabViewLabelPropertyChildLink.SelectedIndex = 0;
             }
             else
             {
@@ -113,7 +113,7 @@ namespace OMDb.WinUI3.Views
             //确认 -> 标签名为空
             if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
             {
-                Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
+                Helpers.InfoHelper.ShowMsg("[标签名]不能为空！");
                 return;
             }
             //确认 -> 数据库创建标签
@@ -131,7 +131,7 @@ namespace OMDb.WinUI3.Views
         {
             var item = ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty;
             var result = await Dialogs.EditLabelPropertyDialog.ShowDialog(item.LPDb);
-            
+
             if (result == null)//取消
                 return;
             //确认 -> 标签名为空
@@ -152,11 +152,11 @@ namespace OMDb.WinUI3.Views
         private async void Delete_Property_Click_Right(object sender, RoutedEventArgs e)
         {
             var item = ((OMDb.WinUI3.Models.LabelPropertyTree)((Microsoft.UI.Xaml.FrameworkElement)sender).DataContext).LabelProperty;
-            var itemTree = this.VM.LabelPropertyTrees.FirstOrDefault(a => a.LabelProperty.LPDb.LPID == item.LPDb.LPID);
+            var itemTree = this.VM.LabelPropertyTreeCollection.FirstOrDefault(a => a.LabelProperty.LPDb.LPID == item.LPDb.LPID);
             var data = itemTree.Children.Select(a => a.LabelProperty.LPDb.LPID).ToList();
             data.Add(item.LPDb.LPID);
             LabelPropertyService.RemoveLabel(data);
-            this.VM.LabelPropertyTrees.Remove(itemTree);
+            this.VM.LabelPropertyTreeCollection.Remove(itemTree);
             await this.VM.InitAsync();
             Helpers.InfoHelper.ShowSuccess($"<{item.LPDb.Name}>删除成功！");
         }
@@ -167,13 +167,13 @@ namespace OMDb.WinUI3.Views
             var result = await EditLabelPropertyLinkDialog.ShowDialog(item);
             if (result == null)
                 return;
-            var linkIdListOld = Core.Services.LabelPropertyService.GetLinkId(item.LPDb.LPID);
+            var linkIdListOld = Core.Services.LabelPropertyService.GetLinkIdList(item.LPDb.LPID);
             var linkIdListDelete = linkIdListOld.Where(a => !(result.Contains(a))).ToList();
             var linkIdListNew = result.Where(a => !(linkIdListOld.Contains(a))).ToList();
             Core.Services.LabelPropertyService.RemoveLabelPropertyLink(item.LPDb.LPID, linkIdListDelete);
             Core.Services.LabelPropertyService.AddLabelPropertyLink(item.LPDb.LPID, linkIdListNew);
             await this.VM.InitAsync();
-            var linkIdList = Core.Services.LabelPropertyService.GetLinkId(item.LPDb.LPID);
+            var linkIdList = Core.Services.LabelPropertyService.GetLinkIdList(item.LPDb.LPID);
             this.SetLinkTab(linkIdList);
             Helpers.InfoHelper.ShowSuccess($"<{item.LPDb.Name}>关联成功");
 
@@ -190,7 +190,7 @@ namespace OMDb.WinUI3.Views
             Core.Services.LabelPropertyService.ClearLabelPropertyLink(item.LPDb.LPID);
             Core.Services.LabelPropertyService.AddLabelPropertyLink(item.LPDb.LPID, result);
             await VM.InitAsync();
-            var linkIdList = Core.Services.LabelPropertyService.GetLinkId(item.LPDb.LPID);
+            var linkIdList = Core.Services.LabelPropertyService.GetLinkIdList(item.LPDb.LPID);
             SetLinkTab(linkIdList);
             Helpers.InfoHelper.ShowSuccess($"<{item.LPDb.Name}>关联成功");
         }
@@ -222,174 +222,14 @@ namespace OMDb.WinUI3.Views
         }
         #endregion
 
-
-        #region 弃用
-        private async void ADD_Property_Click(object sender, RoutedEventArgs e)
-        {
-            var result = await Dialogs.EditLabelPropertyDialog.ShowDialog();
-            //取消
-            if (result == null)
-                return;
-            //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
-                return;
-            }
-            //确认 -> 数据库创建标签
-            else
-            {
-                result.Level = 1;
-                LabelPropertyService.AddLabelProperty(result);
-                VM.InitAsync();
-                Helpers.InfoHelper.ShowSuccess($"添加属性“{result.Name}”成功！");
-            }
-        }
-        private async void ADD_PropertyData_Click(object sender, RoutedEventArgs e)
-        {
-            var result = await Dialogs.EditLabelPropertyDialog.ShowDialog();
-            //取消
-            if (result == null)
-                return;
-            //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
-                return;
-            }
-            //确认 -> 数据库创建标签
-            else
-            {
-                result.Level = 2;
-                var currentRoot = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-                result.ParentId = currentRoot.LabelProperty.LPDb.LPID;
-                LabelPropertyService.AddLabelProperty(result);
-                VM.InitAsync();
-                Helpers.InfoHelper.ShowSuccess($"添加属性数据“{result.Name}”成功！");
-            }
-        }
-
-        private async void ADD_PropertyDataLink_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
-                return;
-            }
-            var result = await EditLabelPropertyDataLinkDialog.ShowDialog(item.LabelProperty.LPDb);
-            if (result == null || !(result.Count > 0))
-            {
-                return;
-            }
-            else
-            {
-                Core.Services.LabelPropertyService.AddLabelPropertyLink(item.LabelProperty.LPDb.LPID, result);
-                VM.InitAsync();
-                var lst_LK = Core.Services.LabelPropertyService.GetLinkId(item.LabelProperty.LPDb.LPID);
-                SetLinkTab(lst_LK);
-                Helpers.InfoHelper.ShowSuccess($"“{item.LabelProperty.LPDb.Name}”添加关联成功");
-            }
-        }
-        private void Delete_Property_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性！");
-                return;
-            }
-            var lstStr = item.Children.Select(x => x.LabelProperty.LPDb.LPID).ToList();
-            lstStr.Add(item.LabelProperty.LPDb.LPID);
-            LabelPropertyService.RemoveLabel(lstStr);
-            VM.InitAsync();
-            Helpers.InfoHelper.ShowSuccess($"删除属性“{item.LabelProperty.LPDb.Name}”成功！");
-        }
-        private void Delete_PropertyData_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
-                return;
-            }
-            LabelPropertyService.RemoveLabel(item.LabelProperty.LPDb.LPID);
-            VM.InitAsync();
-            Helpers.InfoHelper.ShowSuccess($"删除属性数据“{item.LabelProperty.LPDb.Name}”成功！");
-        }
-        private void Delete_PropertyLink_Click(object sender, RoutedEventArgs e)
+        private void ADD_PropertyDataLink_Click(object sender, RoutedEventArgs e)
         {
 
         }
-        private void Delete_PropertyDataLink_Click(object sender, RoutedEventArgs e)
+
+        private void ADD_Property_Click(object sender, RoutedEventArgs e)
         {
 
-            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
-                return;
-            }
-            LabelPropertyService.ClearLabelPropertyLink(item.LabelProperty.LPDb.LPID);
-            this.Grid_LPEZ_Link.Visibility = Visibility.Collapsed;
         }
-        private async void Edit_Property_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.ListView_LabelPropertyTrees.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性！");
-                return;
-            }
-            var result = await Dialogs.EditLabelPropertyDialog.ShowDialog(item.LabelProperty.LPDb);
-            //取消
-            if (result == null)
-                return;
-            //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
-                return;
-            }
-            //确认 -> 更新数据库
-            else
-            {
-                LabelPropertyService.UpdateLabel(result);
-                VM.InitAsync();
-                Helpers.InfoHelper.ShowSuccess($"“{item.LabelProperty.LPDb.Name}”编辑成功");
-            }
-        }
-        private async void Edit_PropertyData_Click(object sender, RoutedEventArgs e)
-        {
-            var item = (LabelPropertyTree)this.GridView_Current_LPEZCollection.SelectedItem;
-            if (item == null)
-            {
-                Helpers.InfoHelper.ShowMsg("请选择属性数据！");
-                return;
-            }
-            var result = await Dialogs.EditLabelPropertyDialog.ShowDialog(item.LabelProperty.LPDb);
-            //取消
-            if (result == null)
-                return;
-            //确认 -> 标签名为空
-            if (result.Name.IsNullOrEmptyOrWhiteSpazeOrCountZero())
-            {
-                Helpers.InfoHelper.ShowMsg("标签名称不能为空！");
-                return;
-            }
-            //确认 -> 更新数据库
-            else
-            {
-                LabelPropertyService.UpdateLabel(result);
-                VM.InitAsync();
-                Helpers.InfoHelper.ShowSuccess($"“{item.LabelProperty.LPDb.Name}”编辑成功");
-            }
-        }
-
-
-
-        #endregion
-
-
     }
 }

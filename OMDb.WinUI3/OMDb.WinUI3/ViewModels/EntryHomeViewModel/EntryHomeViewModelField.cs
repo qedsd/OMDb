@@ -185,7 +185,7 @@ namespace OMDb.WinUI3.ViewModels
             set => SetProperty(ref _labelClassTrees, value);
         }
         private ObservableCollection<LabelPropertyTree> _labelPropertyTrees = new ObservableCollection<LabelPropertyTree>();
-        public ObservableCollection<LabelPropertyTree> LabelPropertyTrees
+        public ObservableCollection<LabelPropertyTree> LabelPropertyTreeCollection
         {
             get => _labelPropertyTrees;
             set => SetProperty(ref _labelPropertyTrees, value);

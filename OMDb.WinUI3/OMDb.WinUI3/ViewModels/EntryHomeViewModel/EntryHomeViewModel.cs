@@ -65,7 +65,7 @@ namespace OMDb.WinUI3.ViewModels
             }
 
             this.LabelClassTrees = Services.CommonService.GetLabelClassTrees().Result.ToObservableCollection();
-            this.LabelPropertyTrees = Services.CommonService.GetLabelPropertyTrees().Result.ToObservableCollection();
+            this.LabelPropertyTreeCollection = Services.CommonService.GetLabelPropertyTrees().Result.ToObservableCollection();
 
             /*foreach (var LabelClass in LabelClasses)
             {
@@ -303,13 +303,13 @@ namespace OMDb.WinUI3.ViewModels
         private List<string> GetLabelPropertyId()
         {
             var labelFilterList = new List<string>();
-            foreach (var labelProperty1st in this.LabelPropertyTrees)
+            foreach (var labelPropertyTree in this.LabelPropertyTreeCollection)
             {
-                if (labelProperty1st.LabelProperty.IsChecked)
-                    labelFilterList.Add(labelProperty1st.LabelProperty.LPDb.LPID);
+                if (labelPropertyTree.LabelProperty.IsChecked)
+                    labelFilterList.Add(labelPropertyTree.LabelProperty.LPDb.LPID);
 
 
-                foreach (var lableClass2nd in labelProperty1st.Children)
+                foreach (var lableClass2nd in labelPropertyTree.Children)
                 {
                     if (lableClass2nd.LabelProperty.IsChecked)
                         labelFilterList.Add(lableClass2nd.LabelProperty.LPDb.LPID);

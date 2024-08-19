@@ -171,7 +171,7 @@ namespace OMDb.WinUI3.ViewModels
                 var lpAllParentLinks = new List<string>();//所有需要隐藏的标签 属性标题 初始化
                 foreach (var lpChecked in lpsChecked)
                 {
-                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkId(lpChecked.LPDb.ParentId);//获取该标签属性数据（父）的关联信息
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkIdList(lpChecked.LPDb.ParentId);//获取该标签属性数据（父）的关联信息
                     lpAllParentLinks = lpAllParentLinks.Union(lpParentLinks).Distinct().ToList();
                 }
                 foreach (var lp in lpAll)
@@ -186,8 +186,8 @@ namespace OMDb.WinUI3.ViewModels
                 #region 显示关联数据
                 foreach (var lpChecked in lpsChecked)
                 {
-                    var lpDataLinks = Core.Services.LabelPropertyService.GetLinkId(lpChecked.LPDb.LPID);//获取该标签属性数据（子）的关联信息
-                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkId(lpChecked.LPDb.ParentId);//获取该标签属性标题（父）的关联信息
+                    var lpDataLinks = Core.Services.LabelPropertyService.GetLinkIdList(lpChecked.LPDb.LPID);//获取该标签属性数据（子）的关联信息
+                    var lpParentLinks = Core.Services.LabelPropertyService.GetLinkIdList(lpChecked.LPDb.ParentId);//获取该标签属性标题（父）的关联信息
 
                     //该数据没有数据关联，显示所有父级关联的数据
                     if (lpDataLinks.Count == 0)

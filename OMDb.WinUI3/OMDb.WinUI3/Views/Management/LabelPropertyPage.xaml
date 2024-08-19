@@ -44,14 +44,7 @@
                     TextWrapping="Wrap" />
             </Grid>
         </DataTemplate>
-
     </Page.Resources>
-
-    <!--
-        The nested ItemsRepeater experience is achieved by creating one ItemsRepeater (outerRepeater below)
-        and creating another ItemsRepeater (innerRepeater below) inside the outer one's DataTemplate. Below is
-        the outer ItemsRepeater definition and the DataTemplate it uses.
-    -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -59,17 +52,20 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <CommandBar OverflowButtonVisibility="Collapsed">
-                
+
                 <AppBarButton
                     Click="ADD_Property_Click"
                     Content="新增"
                     Icon="Add" />
-                
+
                 <AppBarButton>
                     <FontIcon Glyph="&#xE7FD;" />
                     <AppBarButton.Flyout>
                         <MenuFlyout Placement="LeftEdgeAlignedTop">
-                            <MenuFlyoutItem Command="{x:Bind VM.ImportCommand}" Text="导入" Icon="Import"/>
+                            <MenuFlyoutItem
+                                Command="{x:Bind VM.ImportCommand}"
+                                Icon="Import"
+                                Text="导入" />
                             <MenuFlyoutItem Command="{x:Bind VM.ExportCommand}" Text="导出">
                                 <MenuFlyoutItem.Icon>
                                     <FontIcon Glyph="&#xEDE1;" />
@@ -84,7 +80,7 @@
                         <KeyboardAccelerator Key="F5" />
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
-                
+
             </CommandBar>
         </Grid>
         <Grid Grid.Row="1">
@@ -98,8 +94,8 @@
                     BorderBrush="BlueViolet"
                     BorderThickness="0">
                     <ListView
-                        x:Name="ListView_LabelPropertyTrees"
-                        ItemsSource="{x:Bind VM.LabelPropertyTrees, Mode=OneWay}"
+                        x:Name="ListViewLabelPropertyTreeCollection"
+                        ItemsSource="{x:Bind VM.LabelPropertyTreeCollection, Mode=OneWay}"
                         SelectedItem="{x:Bind VM.CurrentLabelPropertyTree, Mode=TwoWay}">
                         <!--  SelectionChanged="ListView_SelectionChanged">  -->
                         <i:Interaction.Behaviors>
@@ -144,7 +140,7 @@
                     BorderBrush="BlueViolet"
                     BorderThickness="0"
                     Visibility="Collapsed">
-                    <TabView x:Name="TabView_LPEZ_Link" CloseButtonOverlayMode="OnPointerOver" />
+                    <TabView x:Name="TabViewLabelPropertyChildLink" CloseButtonOverlayMode="OnPointerOver" />
 
                 </Grid>
                 <Grid>
@@ -161,17 +157,12 @@
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <GridView
-                        x:Name="GridView_Current_LPEZCollection"
+                        x:Name="GridViewLabelPropertyChildren"
                         BorderBrush="Blue"
                         BorderThickness="0"
                         ItemsSource="{x:Bind VM.CurrentLabelPropertyDataCollection, Mode=OneWay}"
                         SelectionChanged="GridView_SelectionChanged"
                         SelectionMode="Single">
-                        <!--<i:Interaction.Behaviors>
-                            <Core:EventTriggerBehavior EventName="SelectionChanged">
-                                <Core:InvokeCommandAction Command="{x:Bind VM.PropertyData_SelectionChangedCommand}" CommandParameter="{Binding ElementName=GridView_Current_LPEZCollection, Path=SelectedItem}" />
-                            </Core:EventTriggerBehavior>
-                        </i:Interaction.Behaviors>-->
                         <GridView.ItemTemplate>
                             <DataTemplate x:DataType="models:LabelPropertyTree">
                                 <Grid>
@@ -211,17 +202,4 @@
             </controls:DockPanel>
         </Grid>
     </Grid>
-
-
-    <!--
-        The DataTemplate shown above is bound to a custom-class type called NestedCategory,
-        which is defined in the code-behind. NestedCategory objects have the following two attributes:
-        a CategoryName (string), and a collection of strings called CategoryItems.
-    -->
-
-    <!--  The inner ItemsRepeater is bound to its own, separate DataTemplate called StringDataTemplateColor:  -->
-
-
-
-
 </Page>

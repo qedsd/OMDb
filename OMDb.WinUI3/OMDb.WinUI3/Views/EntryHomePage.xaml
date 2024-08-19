@@ -232,7 +232,7 @@
                                                     Margin="0,10,0,0"
                                                     CheckChangedCommand="{x:Bind VM.LabelPropertyTreeChangedCommand}"
                                                     IsEnabled="{x:Bind VM.IsFilterLabelProperty, Mode=OneWay}"
-                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTrees, Mode=TwoWay}" />
+                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTreeCollection, Mode=TwoWay}" />
                                             </StackPanel>
 
                                         </PivotItem>

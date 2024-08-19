@@ -534,5 +534,6 @@
 	  <Folder Include="MyControls\EntryPageControls\EditEntryDialogControls\" />
 	  <Folder Include="MyControls\EntryPageControls\AddEntryBatchDialogControls\" />
 	  <Folder Include="MyControls\ManagementControls\StorageControls\" />
+	  <Folder Include="MyControls\ManagementControls\LabelPropertyControls\" />
 	</ItemGroup>
 </Project>

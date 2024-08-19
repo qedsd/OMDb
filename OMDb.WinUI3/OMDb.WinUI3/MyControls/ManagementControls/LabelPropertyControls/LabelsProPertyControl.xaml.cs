@@ -100,7 +100,7 @@ namespace OMDb.WinUI3.MyControls
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonConfirm_Click(object sender, RoutedEventArgs e)
         {
             GlobalEvent.NotifyLPSChanged(null, new LPSEventArgs(LabelPropertyCollection.ToList()));
             if (LabelPropertyCollectionNoHide != null)
