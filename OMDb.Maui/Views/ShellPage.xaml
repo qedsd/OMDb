@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.ShellPage"
+             xmlns:views="clr-namespace:OMDb.Maui.Views"
+             Title="OMDb"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
+
+    <!-- 主窗口导航页 -->
+    <Grid x:Name="MainContentGrid">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- 顶部导航栏 -->
+            <Grid Grid.Row="0"
+                  BackgroundColor="{AppThemeBinding Light=#EEEEEE, Dark=#2D2D2D}"
+                  HeightRequest="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- 左侧 Logo 和菜单按钮 -->
+                <HorizontalStackLayout HeightRequest="32"
+                                       Spacing="0">
+                    <!-- Logo -->
+                    <HorizontalStackLayout Margin="4,0,0,0"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"
+                                           Spacing="4">
+                        <Image Source="logo_32.png"
+                               WidthRequest="16"
+                               HeightRequest="16"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                        <Label Text="OMDb"
+                               FontSize="12"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <!-- 菜单按钮 -->
+                    <Button WidthRequest="70"
+                            HeightRequest="32"
+                            Clicked="MenuButton_Clicked">
+                        <Label Text="&#xE700;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="16"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Button>
+                </HorizontalStackLayout>
+
+                <!-- 右侧自定义拖拽区域 -->
+                <Grid x:Name="CustomDragRegion2"
+                      Grid.Column="1" />
+            </Grid>
+
+            <!-- 主内容区域 -->
+            <ContentView Grid.Row="1"
+                         x:Name="MainContentView"
+                         BackgroundColor="Transparent" />
+        </Grid>
+
+        <!-- 信息提示条 -->
+        <Grid x:Name="InfoBarGrid"
+              HeightRequest="50"
+              Margin="0,50,0,0"
+              HorizontalOptions="Center"
+              VerticalOptions="Start"
+              IsVisible="False">
+            <Border StrokeShape="RoundRectangle 4"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#333333}"
+                    Stroke="{AppThemeBinding Light=#CCCCCC, Dark=#555555}"
+                    Padding="16,8">
+                <Label x:Name="InfoBarLabel"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" />
+            </Border>
+        </Grid>
+
+        <!-- 等待遮罩层 -->
+        <Grid x:Name="WaitingGrid"
+              Margin="0,0,0,0"
+              IsVisible="False">
+            <Grid.Background>
+                <SolidColorBrush Color="{AppThemeBinding Light=Black, Dark=Black}"
+                                 Opacity="0.4" />
+            </Grid.Background>
+            <ActivityIndicator x:Name="WaitingProgressRing"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               IsRunning="True"
+                               Color="{AppThemeBinding Light=Blue, Dark=LightBlue}" />
+        </Grid>
+
+        <!-- 对话框框架 -->
+        <Grid x:Name="DialogFrameGrid"
+              HorizontalOptions="Center"
+              VerticalOptions="Center"
+              IsVisible="False">
+            <Border StrokeShape="RoundRectangle 8"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark=#333333}"
+                    Padding="20"
+                    MinimumWidthRequest="300">
+                <ContentView x:Name="DialogContentView" />
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

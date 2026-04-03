@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.LabelCollectionPage"
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
+             Title="标签集合"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
+
+    <!-- 标签集合页 -->
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- 顶部标题和排序 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 标题和描述 -->
+            <HorizontalStackLayout VerticalOptions="Center"
+                                   Spacing="10">
+                <Label Text="{Binding Title}"
+                       FontSize="24" />
+                <Label Text="{Binding Description}"
+                       VerticalOptions="Center"
+                       FontAttributes="Thin" />
+            </HorizontalStackLayout>
+
+            <!-- 排序 -->
+            <Grid Grid.Column="1"
+                  HorizontalOptions="End"
+                  VerticalOptions="Center">
+                <HorizontalStackLayout>
+                    <Label Text="排序:"
+                           Margin="0,0,10,0"
+                           VerticalOptions="Center" />
+                    <Picker WidthRequest="140"
+                            ItemsSource="{Binding SortTypeStrs}"
+                            SelectedIndex="{Binding SortTypeIndex, Mode=TwoWay}"
+                            VerticalOptions="Center" />
+                    <Picker WidthRequest="100"
+                            Margin="10,0,0,0"
+                            ItemsSource="{Binding SortWayStrs}"
+                            SelectedIndex="{Binding SortWayIndex, Mode=TwoWay}"
+                            VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Grid>
+        </Grid>
+
+        <!-- 词条网格列表 -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding ItemsSource}"
+                        SelectionMode="None"
+                        Margin="20,10,0,0">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="4"
+                                 HorizontalItemSpacing="8"
+                                 VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <mycontrols:EntryCard Margin="8"
+                                          Entry="{Binding .}"
+                                          HeightRequest="260"
+                                          WidthRequest="160">
+                        <mycontrols:EntryCard.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:LabelCollectionViewModel}}, Path=ItemClickCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </mycontrols:EntryCard.GestureRecognizers>
+                    </mycontrols:EntryCard>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.EntryCollectionDetailPage"
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             xmlns:models="clr-namespace:OMDb.Maui.Models"
+             xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
+             xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             Title="片单详情"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
+
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
+        <converters:BoolToVisibilityConverter x:Key="FalseToVisibleConverter" IsReverse="True" />
+    </ContentPage.Resources>
+
+    <!-- 片单详情页 -->
+    <Grid Margin="24,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- 顶部标题和工具栏 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 标题和描述 -->
+            <VerticalStackLayout VerticalOptions="Center">
+                <Label Text="{Binding EntryCollection.Title}"
+                       FontSize="24" />
+                <Label Text="{Binding EntryCollection.Description}"
+                       Margin="4,4,0,0"
+                       FontAttributes="Thin" />
+            </VerticalStackLayout>
+
+            <!-- 编辑按钮 -->
+            <Button x:Name="EditButton"
+                    Grid.Column="1"
+                    WidthRequest="50"
+                    HeightRequest="32"
+                    Padding="8,0"
+                    VerticalOptions="End"
+                    BackgroundColor="Transparent"
+                    BorderWidth="0"
+                    IsVisible="False">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding IsEditMode}" Value="True">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Button.Triggers>
+                <Label Text="&#xE104;"
+                       FontFamily="Segoe MDL2 Assets"
+                       FontSize="16"
+                       VerticalOptions="Center" />
+                <Button.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuItem Text="编辑">
+                            <MenuItem.View>
+                                <Grid WidthRequest="300">
+                                    <VerticalStackLayout>
+                                        <Entry Placeholder="标题"
+                                               Text="{Binding EditTitle, Mode=TwoWay}"
+                                               Margin="0,8" />
+                                        <Entry Placeholder="描述"
+                                               Text="{Binding EditDesc, Mode=TwoWay}"
+                                               Margin="0,8" />
+                                        <HorizontalStackLayout HorizontalOptions="Center"
+                                                               Margin="0,8">
+                                            <Button Text="确定"
+                                                    Command="{Binding ConfirmEditCommand}"
+                                                    HorizontalOptions="Center"
+                                                    Margin="0,0,8,0" />
+                                            <Button Text="取消"
+                                                    Command="{Binding CancelEditCommand}"
+                                                    HorizontalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </MenuItem.View>
+                        </MenuItem>
+                    </MenuFlyout>
+                </Button.ContextFlyout>
+            </Button>
+
+            <!-- 右侧排序和统计 -->
+            <Grid Grid.Column="1"
+                  HorizontalOptions="End">
+                <VerticalStackLayout>
+                    <!-- 排序 -->
+                    <HorizontalStackLayout>
+                        <Label Text="排序:"
+                               Margin="0,0,10,0"
+                               VerticalOptions="Center" />
+                        <Picker WidthRequest="140"
+                                ItemsSource="{Binding SortTypeStrs}"
+                                SelectedIndex="{Binding SortTypeIndex, Mode=TwoWay}"
+                                VerticalOptions="Center" />
+                        <Picker WidthRequest="100"
+                                Margin="10,0,0,0"
+                                ItemsSource="{Binding SortWayStrs}"
+                                SelectedIndex="{Binding SortWayIndex, Mode=TwoWay}"
+                                VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                    <!-- 统计 -->
+                    <HorizontalStackLayout Margin="0,10,0,0"
+                                           HorizontalOptions="End">
+                        <Label Text="看过"
+                               FontAttributes="Thin" />
+                        <Label Text="{Binding EntryCollection.WatchedCount}"
+                               Margin="2,0,0,0"
+                               FontAttributes="Thin" />
+
+                        <Label Text="在看"
+                               Margin="10,0,0,0"
+                               FontAttributes="Thin" />
+                        <Label Text="{Binding EntryCollection.WatchingCount}"
+                               Margin="2,0,0,0"
+                               FontAttributes="Thin" />
+
+                        <Label Text="总"
+                               Margin="10,0,0,0"
+                               FontAttributes="Thin" />
+                        <Label Text="{Binding EntryCollection.TotalCount}"
+                               Margin="2,0,0,0"
+                               FontAttributes="Thin" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Grid>
+        </Grid>
+
+        <!-- 词条网格列表 -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding ItemsSource}"
+                        SelectionMode="None"
+                        Margin="20,10,0,0">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="4"
+                                 HorizontalItemSpacing="8"
+                                 VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <mycontrols:EntryCard Margin="8"
+                                          Entry="{Binding Entry}"
+                                          HeightRequest="260"
+                                          WidthRequest="170">
+                        <mycontrols:EntryCard.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryCollectionDetailViewModel}}, Path=ItemClickCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </mycontrols:EntryCard.GestureRecognizers>
+                        <mycontrols:EntryCard.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="从片单中移除"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryCollectionDetailViewModel}}, Path=RemoveFromCollectionCommand}"
+                                                CommandParameter="{Binding .}" />
+                            </MenuFlyout>
+                        </mycontrols:EntryCard.ContextFlyout>
+                    </mycontrols:EntryCard>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

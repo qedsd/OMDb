@@ -8,6 +8,8 @@ public partial class HomePage : ContentPage
     public static HomePage Current { get; private set; }
     public HomeViewModel VM { get; set; }
 
+    public HomePage() : this(new HomeViewModel()) { }
+
     public HomePage(HomeViewModel viewModel)
     {
         InitializeComponent();

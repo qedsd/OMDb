@@ -5,6 +5,8 @@ namespace OMDb.Maui.Views;
 
 public partial class CollectionsPage : ContentPage
 {
+    public CollectionsPage() : this(new CollectionsViewModel()) { }
+
     public CollectionsPage(CollectionsViewModel viewModel)
     {
         InitializeComponent();
