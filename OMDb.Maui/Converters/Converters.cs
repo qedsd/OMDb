@@ -296,4 +296,64 @@ namespace OMDb.Maui.Converters
     }
 
     #endregion
+
+    #region 时间戳和数值转换器
+
+    /// <summary>
+    /// 时间戳转 DateTime 转换器
+    /// 将 Unix 时间戳（秒）转换为 DateTime
+    /// 例如：1609459200 转换为 2021-01-01
+    /// </summary>
+    public class IntToDateTimeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int timestamp && timestamp > 0)
+            {
+                // Unix 时间戳转 DateTime（从 1970-01-01 开始）
+                return DateTimeOffset.FromUnixTimeSeconds(timestamp).LocalDateTime;
+            }
+            return DateTime.MinValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is DateTime dateTime)
+            {
+                return (int)new DateTimeOffset(dateTime).ToUnixTimeSeconds();
+            }
+            return 0;
+        }
+    }
+
+    /// <summary>
+    /// 整数转双精度浮点数转换器
+    /// 将 int 转换为 double，用于需要 double 类型的属性绑定
+    /// </summary>
+    public class IntToDoubleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is int i)
+            {
+                return (double)i;
+            }
+            if (value is double d)
+            {
+                return d;
+            }
+            return 0.0;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is double d)
+            {
+                return (int)d;
+            }
+            return 0;
+        }
+    }
+
+    #endregion
 }

@@ -2,11 +2,153 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OMDb.Maui.Views.EntryHomePage"
-             Title="词条">
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             xmlns:models="clr-namespace:OMDb.Maui.Models"
+             xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
+             xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             Title="词条"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="词条" Style="{StaticResource Headline}" />
-        <Label Text="词条管理功能" />
-    </VerticalStackLayout>
+    <ContentPage.Resources>
+        <converters:IntToDateTimeConverter x:Key="IntToDateTimeConverter" />
+        <converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="刷新"
+                     IconImageSource="icon_refresh.png"
+                     Command="{Binding RefreshCommand}" />
+        <ToolbarItem Text="新增"
+                     IconImageSource="icon_add.png"
+                     Command="{Binding AddEntryCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <!-- 词条主页 -->
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- 顶部工具栏 -->
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 排序下拉框 -->
+            <HorizontalStackLayout Spacing="10">
+                <Picker WidthRequest="140"
+                        ItemsSource="{Binding SortTypeStrs}"
+                        SelectedIndex="{Binding SortTypeIndex, Mode=TwoWay}"
+                        VerticalOptions="Center" />
+                <Picker WidthRequest="100"
+                        ItemsSource="{Binding SortWayStrs}"
+                        SelectedIndex="{Binding SortWayIndex, Mode=TwoWay}"
+                        VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!-- 右侧工具按钮 -->
+            <HorizontalStackLayout Grid.Column="1"
+                                   HorizontalOptions="End"
+                                   Spacing="10">
+                <!-- 刷新按钮 -->
+                <Button Text="刷新"
+                        ImageSource="icon_refresh.png"
+                        Command="{Binding RefreshCommand}"
+                        ToolTipProperties.Text="刷新 (F5)" />
+
+                <!-- 新增按钮 -->
+                <Button Text="新增"
+                        ImageSource="icon_add.png"
+                        Command="{Binding AddEntryCommand}" />
+
+                <!-- 筛选按钮 - 使用 ContextFlyout -->
+                <Button Text="筛选"
+                        ImageSource="icon_filter.png"
+                        Command="{Binding OpenFilterCommand}">
+                    <Button.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="基本信息过滤"
+                                            Command="{Binding OpenFilterCommand}"
+                                            CommandParameter="Basic" />
+                            <MenuFlyoutItem Text="分类标签过滤"
+                                            Command="{Binding OpenFilterCommand}"
+                                            CommandParameter="Class" />
+                            <MenuFlyoutItem Text="属性标签过滤"
+                                            Command="{Binding OpenFilterCommand}"
+                                            CommandParameter="Property" />
+                        </MenuFlyout>
+                    </Button.ContextFlyout>
+                </Button>
+
+                <!-- 搜索按钮 -->
+                <Button Text="搜索"
+                        ImageSource="icon_search.png"
+                        Command="{Binding OpenSearchCommand}">
+                    <Button.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem Text="搜索词条"
+                                            Command="{Binding SearchCommand}" />
+                        </MenuFlyout>
+                    </Button.ContextFlyout>
+                </Button>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- 词条网格展示区 -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Entries}"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="4"
+                                 HorizontalItemSpacing="8"
+                                 VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <mycontrols:EntryCard Margin="8"
+                                          Entry="{Binding .}"
+                                          HeightRequest="260"
+                                          WidthRequest="160" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- 分页导航区 -->
+        <Grid Grid.Row="2"
+              Margin="0,10,0,0">
+            <HorizontalStackLayout HorizontalOptions="Center"
+                                   Spacing="10">
+                <Button Text="上一页"
+                        Command="{Binding PreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}" />
+                <Label Text="{Binding CurrentPageInfo}"
+                       VerticalOptions="Center"
+                       FontSize="14" />
+                <Button Text="下一页"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- 全局右键菜单 -->
+        <Grid.GestureRecognizers>
+            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                  Command="{Binding RefreshCommand}" />
+        </Grid.GestureRecognizers>
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="新增"
+                                Command="{Binding AddEntryCommand}" />
+                <MenuFlyoutItem Text="刷新"
+                                Command="{Binding RefreshCommand}" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
+    </Grid>
 </ContentPage>

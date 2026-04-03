@@ -2,11 +2,259 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OMDb.Maui.Views.ManagementPage"
-             Title="管理">
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             Title="管理"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="管理" Style="{StaticResource Headline}" />
-        <Label Text="管理功能页面" />
-    </VerticalStackLayout>
+    <!-- 管理页 - 包含仓库、标签 (分类)、标签 (属性) 三个子页面 -->
+    <TabView>
+        <TabViewItem Text="仓库"
+                     ImageSource="icon_storage.png">
+            <ContentView>
+                <!-- 仓库管理页面 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
 
+                    <!-- 工具栏 -->
+                    <HorizontalStackLayout Grid.Row="0"
+                                           Spacing="10"
+                                           Margin="10">
+                        <Button Text="新增"
+                                ImageSource="icon_add.png"
+                                Command="{Binding StorageAddCommand}"
+                                ToolTipProperties.Text="添加仓库" />
+                        <Button Text="刷新"
+                                ImageSource="icon_refresh.png"
+                                Command="{Binding StorageRefreshCommand}"
+                                ToolTipProperties.Text="刷新 (F5)" />
+                    </HorizontalStackLayout>
+
+                    <!-- 仓库网格列表 -->
+                    <CollectionView Grid.Row="1"
+                                    ItemsSource="{Binding EnrtyStorages}"
+                                    SelectionMode="None"
+                                    Margin="20">
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical"
+                                             Span="4"
+                                             HorizontalItemSpacing="8"
+                                             VerticalItemSpacing="8" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Border StrokeShape="RoundRectangle 8"
+                                        BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                                        Margin="4"
+                                        HeightRequest="240"
+                                        WidthRequest="160">
+                                    <VerticalStackLayout Padding="10">
+                                        <Image Source="{Binding CoverImg}"
+                                               Aspect="AspectFill"
+                                               HeightRequest="150" />
+                                        <Label Text="{Binding StorageName}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               Margin="0,10,0,0" />
+                                        <Label Text="{Binding EntryCount, StringFormat='词条数：{0}'}"
+                                               FontSize="12"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#999999}" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </Grid>
+            </ContentView>
+        </TabViewItem>
+
+        <TabViewItem Text="标签 (分类)"
+                     ImageSource="icon_label.png">
+            <ContentView>
+                <!-- 标签分类管理页面 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- 工具栏 -->
+                    <HorizontalStackLayout Grid.Row="0"
+                                           Spacing="10"
+                                           Margin="10">
+                        <Button Text="新增"
+                                ImageSource="icon_add.png"
+                                Command="{Binding LabelAddRootCommand}"
+                                ToolTipProperties.Text="添加一级标签" />
+                        <Button Text="刷新"
+                                ImageSource="icon_refresh.png"
+                                Command="{Binding LabelRefreshCommand}"
+                                ToolTipProperties.Text="刷新 (F5)" />
+
+                        <!-- 视图切换按钮 -->
+                        <Picker WidthRequest="120"
+                                SelectedItem="{Binding CurrentViewMode, Mode=TwoWay}"
+                                Margin="10,0,0,0">
+                            <Picker.Items>
+                                <x:String>网格视图</x:String>
+                                <x:String>树形视图</x:String>
+                                <x:String>展开视图</x:String>
+                            </Picker.Items>
+                        </Picker>
+
+                        <!-- 编辑样式按钮 -->
+                        <Button Text="样式"
+                                ImageSource="icon_style.png"
+                                Command="{Binding LabelStyleCommand}"
+                                Margin="10,0,0,0"
+                                ToolTipProperties.Text="编辑标签样式" />
+                    </HorizontalStackLayout>
+
+                    <!-- 标签内容区域 -->
+                    <ScrollView Grid.Row="1"
+                                HorizontalScrollBarVisibility="Always">
+                        <!-- 网格视图 -->
+                        <VerticalStackLayout IsVisible="{Binding IsRepeaterShow}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <VerticalStackLayout Margin="10,0,0,0">
+                                        <!-- 一级标签 -->
+                                        <Grid WidthRequest="200"
+                                              HorizontalOptions="Start">
+                                            <Border Stroke="{AppThemeBinding Light=#CCCCCC, Dark=#555555}"
+                                                    StrokeThickness="3"
+                                                    StrokeShape="RoundRectangle 3"
+                                                    BackgroundColor="{Binding Color1st}"
+                                                    WidthRequest="{Binding Width1st}"
+                                                    HeightRequest="{Binding Height1st}">
+                                                <Label Text="{Binding LabelClass.Name}"
+                                                       FontSize="{Binding FontSize1st}"
+                                                       FontFamily="{Binding FontFamilyCurrent}"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center"
+                                                       Padding="10" />
+                                            </Border>
+                                        </Grid>
+                                        <!-- 二级标签 -->
+                                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Children}">
+                                            <BindableLayout.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Margin="10,0,0,10"
+                                                            Stroke="{Binding Color2nd}"
+                                                            StrokeThickness="3"
+                                                            StrokeShape="RoundRectangle 3"
+                                                            BackgroundColor="{Binding Color2nd}"
+                                                            WidthRequest="{Binding Width2nd}"
+                                                            HeightRequest="{Binding Height2nd}">
+                                                        <Label Text="{Binding LabelClass.Name}"
+                                                               FontSize="{Binding FontSize2nd}"
+                                                               FontFamily="{Binding FontFamilyCurrent}"
+                                                               HorizontalOptions="Center"
+                                                               VerticalOptions="Center"
+                                                               Padding="10" />
+                                                    </Border>
+                                                </DataTemplate>
+                                            </BindableLayout.ItemTemplate>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </ScrollView>
+                </Grid>
+            </ContentView>
+        </TabViewItem>
+
+        <TabViewItem Text="标签 (属性)"
+                     ImageSource="icon_property.png">
+            <ContentView>
+                <!-- 标签属性管理页面 -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- 工具栏 -->
+                    <HorizontalStackLayout Grid.Row="0"
+                                           Spacing="10"
+                                           Margin="10">
+                        <Button Text="新增"
+                                ImageSource="icon_add.png"
+                                Command="{Binding LabelPropertyAddCommand}"
+                                ToolTipProperties.Text="添加属性标签" />
+                        <Button Text="刷新"
+                                ImageSource="icon_refresh.png"
+                                Command="{Binding LabelPropertyRefreshCommand}"
+                                ToolTipProperties.Text="刷新 (F5)" />
+
+                        <!-- 导入/导出按钮 -->
+                        <Button Text="导入"
+                                ImageSource="icon_import.png"
+                                Command="{Binding LabelPropertyImportCommand}"
+                                Margin="10,0,0,0" />
+                        <Button Text="导出"
+                                ImageSource="icon_export.png"
+                                Command="{Binding LabelPropertyExportCommand}" />
+                    </HorizontalStackLayout>
+
+                    <!-- 属性标签内容区域 -->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 左侧属性类别列表 -->
+                        <Border Grid.Column="0"
+                                Stroke="{AppThemeBinding Light=#CCCCCC, Dark=#555555}"
+                                StrokeThickness="1"
+                                Margin="10">
+                            <CollectionView ItemsSource="{Binding LabelPropertyTreeCollection}"
+                                            SelectionMode="Single"
+                                            SelectedItem="{Binding CurrentLabelPropertyTree, Mode=TwoWay}">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="10"
+                                              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#333333}">
+                                            <Label Text="{Binding LabelProperty.Name}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Border>
+
+                        <!-- 右侧属性项网格 -->
+                        <CollectionView Grid.Column="1"
+                                        ItemsSource="{Binding CurrentLabelPropertyDataCollection}"
+                                        SelectionMode="Single"
+                                        Margin="10">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Vertical"
+                                                 Span="3"
+                                                 HorizontalItemSpacing="8"
+                                                 VerticalItemSpacing="8" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border StrokeShape="RoundRectangle 4"
+                                            BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                                            Padding="10">
+                                        <Label Text="{Binding LabelProperty.Name}"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               TextAlignment="Center" />
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </Grid>
+                </Grid>
+            </ContentView>
+        </TabViewItem>
+    </TabView>
 </ContentPage>

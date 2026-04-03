@@ -4,8 +4,11 @@
              x:Class="OMDb.Maui.Views.ClassificationPage"
              xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
              xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
+             xmlns:models="clr-namespace:OMDb.Maui.Models"
              Title="分类"
-             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
     <ContentPage.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -13,78 +16,170 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="列表视图" IconImageSource="icon_list.png" Command="{Binding ChangeShowTypeCommand}" CommandParameter="True" />
-        <ToolbarItem Text="网格视图" IconImageSource="icon_grid.png" Command="{Binding ChangeShowTypeCommand}" CommandParameter="False" />
+        <ToolbarItem Text="列表视图"
+                     IconImageSource="icon_list.png"
+                     Command="{Binding ChangeShowTypeCommand}"
+                     CommandParameter="True" />
+        <ToolbarItem Text="网格视图"
+                     IconImageSource="icon_grid.png"
+                     Command="{Binding ChangeShowTypeCommand}"
+                     CommandParameter="False" />
+        <ToolbarItem Text="刷新"
+                     IconImageSource="icon_refresh.png"
+                     Command="{Binding RefreshCommand}" />
     </ContentPage.ToolbarItems>
 
-    <ScrollView>
+    <!-- 分类页 -->
+    <ScrollView Margin="0,0,4,0" CornerRadius="8,8,0,0">
         <VerticalStackLayout>
-            <!-- Banner 区域 -->
-            <ScrollView x:Name="BannerScroll"
-                        Orientation="Horizontal"
-                        HeightRequest="400"
-                        HorizontalScrollBarVisibility="Never">
-                <HorizontalStackLayout x:Name="BannerItemsPanel" Spacing="10" Padding="10">
-                    <!-- Banner 项目将动态添加 -->
-                </HorizontalStackLayout>
-            </ScrollView>
+            <!-- Banner 轮播图 -->
+            <mycontrols:Banner
+                x:Name="Banner"
+                HeightRequest="300"
+                Margin="4,0"
+                VerticalOptions="Start"
+                ItemsSource="{Binding BannerItemsSource, Mode=OneWay}"
+                DetailCommand="{Binding BannerDetailCommand}" />
 
-            <!-- 分类标签树 -->
-            <Frame Margin="10" HasShadow="False" CornerRadius="8" BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
-                <VerticalStackLayout Padding="10">
-                    <Label Text="分类" FontSize="18" FontAttributes="Bold" Margin="0,0,0,10" />
-                    <CollectionView x:Name="LabelTreesList"
-                                    ItemsSource="{Binding LabelTrees}"
-                                    SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout Padding="5">
-                                    <Label Text="{Binding LabelClass.Name}" FontAttributes="Bold" />
-                                    <CollectionView ItemsSource="{Binding Children}" SelectionMode="None">
+            <!-- 视图切换按钮 -->
+            <Grid Margin="10" HorizontalOptions="End">
+                <HorizontalStackLayout HorizontalOptions="End">
+                    <!-- 列表视图按钮 -->
+                    <Button Text="&#xE1A2;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="12"
+                            Command="{Binding ChangeShowTypeCommand}"
+                            CommandParameter="True">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding IsList}" Value="True">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=Blue, Dark=LightBlue}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+
+                    <!-- 网格视图按钮 -->
+                    <Button Text="&#xE154;"
+                            FontFamily="Segoe MDL2 Assets"
+                            FontSize="12"
+                            Margin="4,0"
+                            Command="{Binding ChangeShowTypeCommand}"
+                            CommandParameter="False">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button" Binding="{Binding IsList}" Value="False">
+                                <Setter Property="TextColor" Value="{AppThemeBinding Light=Blue, Dark=LightBlue}" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- 列表显示 -->
+            <CollectionView ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
+                            SelectionMode="None"
+                            Visibility="{Binding IsList, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollectionTree">
+                        <VerticalStackLayout Padding="0,0,0,4">
+                            <!-- Expander 模拟 -->
+                            <Border StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                                    Margin="4"
+                                    Padding="10">
+                                <VerticalStackLayout>
+                                    <!-- 头部 -->
+                                    <HorizontalStackLayout>
+                                        <Label Text="{Binding LabelCollection.Title}"
+                                               FontSize="16"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding LabelCollection.Description}"
+                                               Margin="10,0,0,0"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#999999}" />
+                                    </HorizontalStackLayout>
+
+                                    <!-- 子项列表 -->
+                                    <CollectionView ItemsSource="{Binding Children}"
+                                                    SelectionMode="None">
                                         <CollectionView.ItemsLayout>
-                                            <GridItemsLayout Orientation="Horizontal" Span="4" />
+                                            <LinearItemsLayout Orientation="Horizontal"
+                                                               ItemSpacing="8" />
                                         </CollectionView.ItemsLayout>
                                         <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Label Text="{Binding LabelClass.Name}"
-                                                       Padding="10"
-                                                       TextColor="{AppThemeBinding Light=#666666, Dark=#999999}">
-                                                    <Label.GestureRecognizers>
-                                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ClassificationViewModel}}, Path=LabelDetailCommand}"
-                                                                              CommandParameter="{Binding LabelClass.LabelClassDb.LCID}" />
-                                                    </Label.GestureRecognizers>
-                                                </Label>
+                                            <DataTemplate x:DataType="models:LabelCollection">
+                                                <mycontrols:LabelCollection1
+                                                    Title="{Binding Title}"
+                                                    Description="{Binding Description}"
+                                                    Id="{Binding Id}"
+                                                    ItemsSource="{Binding Entries}"
+                                                    BgImageSource="{Binding ImageSource}"
+                                                    DetailCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:ClassificationViewModel}}, Path=LabelDetailCommand}"
+                                                    ClickItemCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:ClassificationViewModel}}, Path=ItemClickCommand}"
+                                                    HeightRequest="200"
+                                                    WidthRequest="300"
+                                                    Margin="4" />
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
                                 </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </Frame>
+                            </Border>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-            <!-- 标签合集 -->
-            <Frame Margin="10" HasShadow="False" CornerRadius="8" BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
-                <VerticalStackLayout Padding="10">
-                    <Label Text="推荐合集" FontSize="18" FontAttributes="Bold" Margin="0,0,0,10" />
-                    <CollectionView x:Name="LabelCollectionsList"
-                                    ItemsSource="{Binding LabelCollectionTrees}"
-                                    SelectionMode="None">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <VerticalStackLayout Padding="5">
-                                    <Label Text="{Binding LabelCollection.Title}" FontAttributes="Bold" />
-                                    <Label Text="{Binding LabelCollection.Description}"
-                                           TextColor="{AppThemeBinding Light=#666666, Dark=#999999}"
-                                           FontSize="12" />
-                                    <!-- 合集内容将动态添加 -->
+            <!-- 网格显示 -->
+            <CollectionView ItemsSource="{Binding LabelCollectionTrees, Mode=OneWay}"
+                            SelectionMode="None"
+                            Visibility="{Binding IsList, Converter={StaticResource ReverseBoolToVisibilityConverter}, Mode=OneWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LabelCollectionTree">
+                        <VerticalStackLayout Padding="0,0,0,4">
+                            <Border StrokeShape="RoundRectangle 8"
+                                    BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                                    Margin="4"
+                                    Padding="10">
+                                <VerticalStackLayout>
+                                    <HorizontalStackLayout>
+                                        <Label Text="{Binding LabelCollection.Title}"
+                                               FontSize="16"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding LabelCollection.Description}"
+                                               Margin="10,0,0,0"
+                                               FontSize="14"
+                                               TextColor="{AppThemeBinding Light=#666666, Dark=#999999}" />
+                                    </HorizontalStackLayout>
+
+                                    <!-- 网格布局 -->
+                                    <CollectionView ItemsSource="{Binding Children}"
+                                                    SelectionMode="None">
+                                        <CollectionView.ItemsLayout>
+                                            <GridItemsLayout Orientation="Vertical"
+                                                             Span="2"
+                                                             HorizontalItemSpacing="8"
+                                                             VerticalItemSpacing="8" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:LabelCollection">
+                                                <mycontrols:LabelCollection1
+                                                    Title="{Binding Title}"
+                                                    Description="{Binding Description}"
+                                                    Id="{Binding Id}"
+                                                    ItemsSource="{Binding Entries}"
+                                                    BgImageSource="{Binding ImageSource}"
+                                                    DetailCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:ClassificationViewModel}}, Path=LabelDetailCommand}"
+                                                    ClickItemCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:ClassificationViewModel}}, Path=ItemClickCommand}"
+                                                    HeightRequest="200"
+                                                    WidthRequest="300"
+                                                    Margin="4" />
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
                                 </VerticalStackLayout>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </VerticalStackLayout>
-            </Frame>
+                            </Border>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

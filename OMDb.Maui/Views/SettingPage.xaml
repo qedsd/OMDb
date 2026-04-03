@@ -2,11 +2,206 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OMDb.Maui.Views.SettingPage"
-             Title="设置">
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
+             xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             Title="设置"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="设置" Style="{StaticResource Headline}" />
-        <Label Text="应用设置页面" />
-    </VerticalStackLayout>
+    <ContentPage.Resources>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+    </ContentPage.Resources>
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="刷新"
+                     IconImageSource="icon_refresh.png"
+                     Command="{Binding RefreshCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <!-- 设置页 -->
+    <ScrollView Margin="10">
+        <VerticalStackLayout Spacing="4">
+            <!-- 数据库选择器配置 -->
+            <mycontrols:ExpandableSettingControl Title="数据库选择器"
+                                                 Description="管理和切换数据库">
+                <mycontrols:ExpandableSettingControl.ExpandableContent>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="200" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <HorizontalStackLayout Margin="30,10,0,0"
+                                                   Spacing="10">
+                                <!-- 刷新按钮 -->
+                                <Button Command="{Binding DbSelector_RefreshCommand}"
+                                        ToolTipProperties.Text="刷新">
+                                    <Label Text="&#xE72C;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" />
+                                </Button>
+                                <!-- 新增按钮 -->
+                                <Button Command="{Binding DbSelector_AddCommand}"
+                                        ToolTipProperties.Text="新增">
+                                    <Label Text="&#xE710;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" />
+                                </Button>
+                                <!-- 保存按钮 -->
+                                <Button Command="{Binding DbSelector_SaveCommand}"
+                                        ToolTipProperties.Text="保存">
+                                    <Label Text="&#xE74E;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" />
+                                </Button>
+                                <!-- 编辑按钮 -->
+                                <Button Command="{Binding DbSelector_EditCommand}"
+                                        ToolTipProperties.Text="编辑">
+                                    <Label Text="&#xE70F;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" />
+                                </Button>
+                                <!-- 删除按钮 -->
+                                <Button Command="{Binding DbSelector_DeleteCommand}"
+                                        ToolTipProperties.Text="删除">
+                                    <Label Text="&#xE74D;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="16" />
+                                </Button>
+                            </HorizontalStackLayout>
+
+                            <!-- 数据库单选列表 -->
+                            <Grid Grid.Column="0"
+                                  Margin="30,10,30,30">
+                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding DbsCollection}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <RadioButton Content="{Binding DbCenterDb.DbName}"
+                                                         GroupName="DbSelector"
+                                                         IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                                                         Margin="5,0,10,0">
+                                                <RadioButton.ControlTemplate>
+                                                    <ControlTemplate>
+                                                        <Grid Width="120"
+                                                              Height="24"
+                                                              Padding="10,5">
+                                                            <Border StrokeShape="RoundRectangle 4"
+                                                                    Stroke="{AppThemeBinding Light=#CCCCCC, Dark=#555555}"
+                                                                    StrokeThickness="1"
+                                                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}">
+                                                                <Label Text="{TemplateBinding Content}"
+                                                                       VerticalOptions="Center"
+                                                                       HorizontalOptions="Center" />
+                                                            </Border>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </RadioButton.ControlTemplate>
+                                            </RadioButton>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+                </mycontrols:ExpandableSettingControl.ExpandableContent>
+            </mycontrols:ExpandableSettingControl>
+
+            <!-- 主题设置 -->
+            <mycontrols:ExpandableSettingControl Title="主题"
+                                                 Description="应用外观主题">
+                <Picker WidthRequest="128"
+                        SelectedIndex="{Binding SelectedThemeIndex, Mode=TwoWay}">
+                    <Picker.Items>
+                        <x:String>默认</x:String>
+                        <x:String>浅色</x:String>
+                        <x:String>深色</x:String>
+                    </Picker.Items>
+                </Picker>
+            </mycontrols:ExpandableSettingControl>
+
+            <!-- PotPlayer 播放列表设置 -->
+            <mycontrols:ExpandableSettingControl Title="PotPlayer 播放列表"
+                                                 Description="设置 PotPlayer 播放列表文件路径">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry Placeholder="PotPlayerMini64.dpl"
+                           Text="{Binding PotPlayerPlaylistPath, Mode=TwoWay}"
+                           MinWidthRequest="400" />
+                    <Button Grid.Column="1"
+                            Margin="10,0,0,0"
+                            Command="{Binding PickPotPlayerPlaylistFileCommand}"
+                            ToolTipProperties.Text="选择文件">
+                        <Label Text="&#xE28F;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="16" />
+                    </Button>
+                </Grid>
+            </mycontrols:ExpandableSettingControl>
+
+            <!-- 主页组件配置 -->
+            <mycontrols:ExpandableSettingControl Title="主页组件配置"
+                                                 Description="管理主页显示的组件">
+                <Grid Margin="20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 激活组件 -->
+                    <VerticalStackLayout Grid.Column="0">
+                        <Border Stroke="{AppThemeBinding Light=Blue, Dark=LightBlue}"
+                                StrokeThickness="1"
+                                HeightRequest="200"
+                                WidthRequest="300">
+                            <CollectionView ItemsSource="{Binding ActiveHomeItems}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="10"
+                                              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#333333}">
+                                            <Label Text="{Binding Name}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Border>
+                        <Label Text="激活组件"
+                               HorizontalOptions="Center"
+                               Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+
+                    <!-- 停用组件 -->
+                    <VerticalStackLayout Grid.Column="2">
+                        <Border Stroke="{AppThemeBinding Light=Gray, Dark=DarkGray}"
+                                StrokeThickness="1"
+                                HeightRequest="200"
+                                WidthRequest="300">
+                            <CollectionView ItemsSource="{Binding InactiveHomeItems}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Padding="10"
+                                              BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#333333}">
+                                            <Label Text="{Binding Name}"
+                                                   VerticalOptions="Center" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </Border>
+                        <Label Text="停用组件"
+                               HorizontalOptions="Center"
+                               Margin="0,10,0,0" />
+                    </VerticalStackLayout>
+                </Grid>
+            </mycontrols:ExpandableSettingControl>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

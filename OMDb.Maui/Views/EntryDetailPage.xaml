@@ -3,146 +3,371 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OMDb.Maui.Views.EntryDetailPage"
              xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
-             Title="词条详情">
+             xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             xmlns:dbmodels="clr-namespace:OMDb.Core.DbModels"
+             Title="词条详情"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
     <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" xmlns:converters="clr-namespace:OMDb.Maui.Converters"/>
-        </ResourceDictionary>
+        <converters:NullToZeroConverter x:Key="NullToZeroConverter" />
+        <converters:BoolToVisibilityConverter x:Key="TrueToVisibleConverter" />
+        <converters:BoolReverseConverter x:Key="FalseToVisibleConverter" />
+        <converters:ByteSizeConverter x:Key="ByteSizeConverter" />
+        <converters:StringToVisibilityConverter x:Key="NullStringToCollapsedConverter" IsNullOrEmptyToCollapsed="True" />
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="刷新" Command="{Binding RefreshCommand}" />
     </ContentPage.ToolbarItems>
 
-    <ScrollView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-            <!-- 左侧基本信息 -->
-            <VerticalStackLayout Grid.Column="0" Padding="20" Spacing="15">
+        <!-- 左侧基本信息栏 -->
+        <Border Grid.Column="0"
+                Margin="0,0,10,0"
+                Padding="40,0"
+                StrokeShape="RoundRectangle 8"
+                BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}">
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="24">
                 <!-- 封面图 -->
-                <Frame HeightRequest="400" Padding="0" IsClippedToBounds="True">
-                    <Image Source="{Binding Entry.CoverImgPath}" Aspect="AspectFill" />
-                </Frame>
+                <Border WidthRequest="160"
+                        HeightRequest="240"
+                        StrokeShape="RoundRectangle 4"
+                        Margin="0,40,0,0">
+                    <Image Source="{Binding Entry.FullCoverImgPath}" Aspect="UniformToFill" />
+                </Border>
 
                 <!-- 名称 -->
-                <Label Text="{Binding Entry.Name}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <Label x:Name="NameTextBlock"
+                           Text="{Binding Entry.Name}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" />
+                    <Button x:Name="EditNameButton"
+                            Text="&#xE104;"
+                            FontFamily="Segoe MDL2 Assets"
+                            HeightRequest="24"
+                            Padding="8,0"
+                            BackgroundColor="Transparent"
+                            BorderWidth="0"
+                            VerticalOptions="Center"
+                            IsVisible="False"
+                            Command="{Binding EditDescCommand}"
+                            ToolTipProperties.Text="编辑" />
+                </HorizontalStackLayout>
 
-                <!-- 评分 -->
+                <!-- 打开文件夹按钮 -->
+                <Button Text="打开"
+                        WidthRequest="160"
+                        Command="{Binding OpenFolderCommand}"
+                        CommandParameter="Entry"
+                        BackgroundColor="{AppThemeBinding Light=Blue, Dark=LightBlue}"
+                        TextColor="White" />
+
+                <!-- 评分和观看次数 -->
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
-                    <VerticalStackLayout>
-                        <Label Text="{Binding Rating}" HorizontalOptions="Center" />
+                    <!-- 评分 -->
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding Rating}" HorizontalOptions="Center" FontSize="16" />
                         <Label Text="我的评分" FontSize="12" HorizontalOptions="Center" />
                     </VerticalStackLayout>
-                    <BoxView WidthRequest="1" Color="LightGray" />
-                    <VerticalStackLayout>
-                        <Label Text="{Binding Entry.WatchCount}" HorizontalOptions="Center" />
+
+                    <BoxView WidthRequest="1"
+                             HeightRequest="30"
+                             BackgroundColor="LightGray" />
+
+                    <!-- 观看次数 -->
+                    <VerticalStackLayout HorizontalOptions="Center">
+                        <Label Text="{Binding Entry.WatchCount}" HorizontalOptions="Center" FontSize="16" />
                         <Label Text="观看次数" FontSize="12" HorizontalOptions="Center" />
                     </VerticalStackLayout>
                 </HorizontalStackLayout>
 
                 <!-- 描述 -->
-                <Label Text="{Binding Entry.Metadata.Desc}" FontSize="14" MaxLines="5" LineBreakMode="TailTruncation" />
+                <Label Text="{Binding Entry.Metadata.Desc}"
+                       FontSize="14"
+                       MaxLines="3"
+                       LineBreakMode="TailTruncation"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center" />
 
-                <!-- 编辑描述按钮 -->
-                <Button Text="编辑描述" Command="{Binding EditDescCommand}" />
+                <!-- 标签 -->
+                <!-- LabelsControl 待实现 -->
 
                 <!-- 添加到片单 -->
-                <Button Text="添加到片单" Command="{Binding AddToCollectionCommand}" />
+                <Button Text="添加到片单"
+                        Command="{Binding AddToCollectionCommand}"
+                        Margin="0,24,0,0" />
             </VerticalStackLayout>
+        </Border>
 
-            <!-- 右侧详细内容 -->
-            <ScrollView Grid.Column="1">
-                <VerticalStackLayout Padding="20" Spacing="20">
-                    <!-- 描述编辑区域 -->
-                    <Frame IsVisible="{Binding IsEditDesc}">
-                        <VerticalStackLayout>
-                            <Editor Text="{Binding Desc}" HeightRequest="200" />
-                            <HorizontalStackLayout HorizontalOptions="End" Spacing="10">
-                                <Button Text="保存" Command="{Binding SaveDescCommand}" />
-                                <Button Text="取消" Command="{Binding CancelEditDescCommand}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Frame>
+        <!-- 右侧滚动数据 -->
+        <ScrollView Grid.Column="1">
+            <VerticalStackLayout Margin="0,0,8,0" Spacing="10">
 
-                    <!-- 观看记录 -->
-                    <Frame>
-                        <VerticalStackLayout>
-                            <Label Text="观看记录" FontSize="18" FontAttributes="Bold" />
-                            <Button Text="添加记录" Command="{Binding AddHistoryCommand}" />
+                <!-- 描述 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#3D3D3D}"
+                        Padding="0,0,0,16"
+                        Margin="0,0,0,10">
+                    <VerticalStackLayout>
+                        <!-- 头部 -->
+                        <HorizontalStackLayout HeightRequest="48" Margin="20,0,0,0">
+                            <Label Text="描述"
+                                   FontSize="18"
+                                   VerticalOptions="Center" />
+                            <Button BackgroundColor="Transparent"
+                                    BorderWidth="0"
+                                    VerticalOptions="Center"
+                                    Command="{Binding EditDescCommand}"
+                                    ToolTipProperties.Text="编辑">
+                                <Label Text="&#xE104;"
+                                       FontFamily="Segoe UI Symbol"
+                                       VerticalOptions="Center" />
+                            </Button>
+                        </HorizontalStackLayout>
 
-                            <!-- 编辑观看记录 -->
-                            <Frame IsVisible="{Binding IsEditWatchHistory}">
-                                <VerticalStackLayout>
-                                    <DatePicker Date="{Binding NewHistorDate}" />
-                                    <TimePicker Time="{Binding NewHistorTime}" />
-                                    <Entry Text="{Binding NewHistorMark}" Placeholder="备注" />
-                                    <CheckBox IsChecked="{Binding NewHistorDone}" />
-                                    <Label Text="观看完结" />
-                                    <HorizontalStackLayout HorizontalOptions="End" Spacing="10">
-                                        <Button Text="保存" Command="{Binding SaveHistoryCommand}" />
-                                        <Button Text="取消" Command="{Binding CancelEditHistoryCommand}" />
+                        <!-- 分割线 -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#505050}"
+                                 Margin="0,0,0,24" />
+
+                        <!-- 内容 -->
+                        <Grid Margin="10,0,0,0">
+                            <!-- 只读模式 -->
+                            <Label Text="{Binding Entry.Metadata.Desc}"
+                                   IsVisible="{Binding IsEditDesc, Converter={StaticResource FalseToVisibleConverter}}"
+                                   TextWrapping="WordBreak" />
+
+                            <!-- 编辑模式 -->
+                            <VerticalStackLayout IsVisible="{Binding IsEditDesc, Converter={StaticResource TrueToVisibleConverter}}">
+                                <HorizontalStackLayout>
+                                    <Editor Text="{Binding Desc}"
+                                            AutoSize="TextChanges"
+                                            HorizontalOptions="FillAndExpand" />
+                                    <HorizontalStackLayout VerticalOptions="Start">
+                                        <Button BackgroundColor="Transparent"
+                                                BorderWidth="0"
+                                                Command="{Binding SaveDescCommand}"
+                                                ToolTipProperties.Text="保存">
+                                            <Label Text="&#xE105;" FontFamily="Segoe UI Symbol" />
+                                        </Button>
+                                        <Button BackgroundColor="Transparent"
+                                                BorderWidth="0"
+                                                Command="{Binding CancelEditDescCommand}"
+                                                ToolTipProperties.Text="取消">
+                                            <Label Text="&#xE10A;" FontFamily="Segoe UI Symbol" />
+                                        </Button>
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- 观看记录 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#3D3D3D}"
+                        Padding="0,0,0,16"
+                        Margin="0,0,0,10">
+                    <VerticalStackLayout>
+                        <!-- 头部 -->
+                        <HorizontalStackLayout HeightRequest="48" Margin="20,0,0,0">
+                            <Label Text="观看记录"
+                                   FontSize="18"
+                                   VerticalOptions="Center" />
+                            <Button BackgroundColor="Transparent"
+                                    BorderWidth="0"
+                                    VerticalOptions="Center"
+                                    Command="{Binding AddHistoryCommand}"
+                                    ToolTipProperties.Text="新增">
+                                <Label Text="&#xE109;" FontFamily="Segoe UI Symbol" />
+                            </Button>
+                        </HorizontalStackLayout>
+
+                        <!-- 分割线 -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#505050}"
+                                 Margin="0,0,0,24" />
+
+                        <!-- 内容 -->
+                        <Grid Margin="10,0,0,0">
+                            <VerticalStackLayout>
+                                <!-- 观看记录列表 -->
+                                <CollectionView ItemsSource="{Binding Entry.WatchHistory}"
+                                                HeightRequest="300"
+                                                SelectionMode="None">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <SwipeView>
+                                                <SwipeView.RightItems>
+                                                    <SwipeItems>
+                                                        <SwipeItem Text="编辑"
+                                                                   BackgroundColor="Blue"
+                                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditHistoryCommand}"
+                                                                   CommandParameter="{Binding .}" />
+                                                        <SwipeItem Text="删除"
+                                                                   BackgroundColor="Red"
+                                                                   Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteHistoryCommand}"
+                                                                   CommandParameter="{Binding .}" />
+                                                    </SwipeItems>
+                                                </SwipeView.RightItems>
+                                                <Grid Padding="10" ColumnDefinitions="120,Auto,*">
+                                                    <Label Text="{Binding Time}"
+                                                           VerticalOptions="Center" />
+                                                    <Label Grid.Column="1"
+                                                           Text="&#xE082;"
+                                                           FontFamily="Segoe UI Symbol"
+                                                           FontSize="10"
+                                                           TextColor="MediumSeaGreen"
+                                                           VerticalOptions="Center"
+                                                           IsVisible="{Binding Done, Converter={StaticResource TrueToVisibleConverter}}"
+                                                           ToolTipProperties.Text="看完" />
+                                                    <Label Grid.Column="2"
+                                                           Text="{Binding Mark}"
+                                                           MaxLines="3"
+                                                           LineBreakMode="TailTruncation"
+                                                           HorizontalOptions="End"
+                                                           VerticalOptions="Center"
+                                                           ToolTipProperties.Text="备注" />
+                                                </Grid>
+                                            </SwipeView>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+
+                                <!-- 编辑观看记录 -->
+                                <VerticalStackLayout IsVisible="{Binding IsEditWatchHistory, Converter={StaticResource TrueToVisibleConverter}}"
+                                                     Margin="0,10,0,0">
+                                    <HorizontalStackLayout>
+                                        <DatePicker Date="{Binding NewHistorDate}" />
+                                        <TimePicker Time="{Binding NewHistorTime}" Margin="10,0,0,0" />
+                                        <CheckBox IsChecked="{Binding NewHistorDone}"
+                                                  Margin="10,0,0,0"
+                                                  ToolTipProperties.Text="完全看完，添加一次观看次数" />
+                                        <Label Text="观看完结" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <Entry Text="{Binding NewHistorMark}"
+                                           Placeholder="备注"
+                                           Margin="0,10,0,0" />
+                                    <HorizontalStackLayout HorizontalOptions="End" Margin="0,10,0,0">
+                                        <Button BackgroundColor="Transparent"
+                                                BorderWidth="0"
+                                                Command="{Binding SaveHistoryCommand}"
+                                                ToolTipProperties.Text="保存">
+                                            <Label Text="&#xE105;" FontFamily="Segoe UI Symbol" />
+                                        </Button>
+                                        <Button BackgroundColor="Transparent"
+                                                BorderWidth="0"
+                                                Command="{Binding CancelEditHistoryCommand}"
+                                                ToolTipProperties.Text="取消编辑">
+                                            <Label Text="&#xE10A;" FontFamily="Segoe UI Symbol" />
+                                        </Button>
                                     </HorizontalStackLayout>
                                 </VerticalStackLayout>
-                            </Frame>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
 
-                            <!-- 观看记录列表 -->
-                            <CollectionView ItemsSource="{Binding Entry.WatchHistory}" HeightRequest="300">
+                <!-- 台词摘录 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#3D3D3D}"
+                        Padding="0,0,0,16"
+                        Margin="0,0,0,10">
+                    <VerticalStackLayout>
+                        <!-- 头部 -->
+                        <HorizontalStackLayout HeightRequest="48" Margin="20,0,0,0">
+                            <Label Text="台词摘录"
+                                   FontSize="18"
+                                   VerticalOptions="Center" />
+                            <Button BackgroundColor="Transparent"
+                                    BorderWidth="0"
+                                    VerticalOptions="Center"
+                                    Command="{Binding AddLineCommand}"
+                                    ToolTipProperties.Text="新增">
+                                <Label Text="&#xE109;" FontFamily="Segoe UI Symbol" />
+                            </Button>
+                        </HorizontalStackLayout>
+
+                        <!-- 分割线 -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#505050}"
+                                 Margin="0,0,0,24" />
+
+                        <!-- 内容 -->
+                        <Grid Margin="10,0,0,0" ColumnDefinitions="*,Auto">
+                            <CollectionView ItemsSource="{Binding Entry.ExtractsLines}"
+                                            HeightRequest="300"
+                                            SelectionMode="None">
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <SwipeView>
                                             <SwipeView.RightItems>
                                                 <SwipeItems>
-                                                    <SwipeItem Text="编辑" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditHistoryCommand}" CommandParameter="{Binding .}" />
-                                                    <SwipeItem Text="删除" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteHistoryCommand}" CommandParameter="{Binding .}" />
+                                                    <SwipeItem Text="编辑"
+                                                               BackgroundColor="Blue"
+                                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditLineCommand}"
+                                                               CommandParameter="{Binding .}" />
+                                                    <SwipeItem Text="删除"
+                                                               BackgroundColor="Red"
+                                                               Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteLineCommand}"
+                                                               CommandParameter="{Binding .}" />
                                                 </SwipeItems>
                                             </SwipeView.RightItems>
-                                            <Grid Padding="10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="150" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <Label Text="{Binding Time}" />
-                                                <Label Grid.Column="1" Text="{Binding Mark}" />
+                                            <Grid ColumnDefinitions="*,Auto,Auto" Padding="10">
+                                                <Label Text="{Binding Line}"
+                                                       LineBreakMode="TailTruncation" />
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding From}"
+                                                       Margin="10,0" />
+                                                <Label Grid.Column="2"
+                                                       Text="{Binding UpdateTime}" />
                                             </Grid>
                                         </SwipeView>
                                     </DataTemplate>
                                 </CollectionView.ItemTemplate>
                             </CollectionView>
-                        </VerticalStackLayout>
-                    </Frame>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
 
-                    <!-- 台词摘录 -->
-                    <Frame>
-                        <VerticalStackLayout>
-                            <Label Text="台词摘录" FontSize="18" FontAttributes="Bold" />
-                            <Button Text="添加台词" Command="{Binding AddLineCommand}" />
+                <!-- 其他信息 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#3D3D3D}"
+                        Padding="0,0,0,16"
+                        Margin="0,0,0,10">
+                    <VerticalStackLayout>
+                        <!-- 头部 -->
+                        <HorizontalStackLayout HeightRequest="48" Margin="20,0,0,0">
+                            <Label Text="其他信息"
+                                   FontSize="18"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
 
-                            <CollectionView ItemsSource="{Binding ExtractsLines}" HeightRequest="300">
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate>
-                                        <SwipeView>
-                                            <SwipeView.RightItems>
-                                                <SwipeItems>
-                                                    <SwipeItem Text="编辑" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditLineCommand}" CommandParameter="{Binding .}" />
-                                                    <SwipeItem Text="删除" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteLineCommand}" CommandParameter="{Binding .}" />
-                                                </SwipeItems>
-                                            </SwipeView.RightItems>
-                                            <Grid Padding="10">
-                                                <Label Text="{Binding Line}" />
-                                            </Grid>
-                                        </SwipeView>
-                                    </DataTemplate>
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
+                        <!-- 分割线 -->
+                        <BoxView HeightRequest="1"
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#505050}"
+                                 Margin="0,0,0,24" />
+
+                        <!-- 内容 -->
+                        <VerticalStackLayout Margin="10,0,0,0">
+                            <HorizontalStackLayout IsVisible="{Binding Entry.Alias, Converter={StaticResource NullStringToCollapsedConverter}}">
+                                <Label Text="别称" />
+                                <Label Text=":" />
+                                <Label Text="{Binding Entry.Alias}" Margin="10,0,0,0" />
+                            </HorizontalStackLayout>
                         </VerticalStackLayout>
-                    </Frame>
-                </VerticalStackLayout>
-            </ScrollView>
-        </Grid>
-    </ScrollView>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

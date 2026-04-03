@@ -2,11 +2,46 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="OMDb.Maui.Views.ToolsPage"
-             Title="工具">
+             xmlns:models="clr-namespace:OMDb.Maui.Models"
+             Title="工具"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+             NavigationCacheMode="Enabled">
 
-    <VerticalStackLayout Padding="20" Spacing="10">
-        <Label Text="工具" Style="{StaticResource Headline}" />
-        <Label Text="工具箱功能" />
-    </VerticalStackLayout>
-
+    <!-- 工具箱页面 -->
+    <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">
+        <CollectionView x:Name="ItemsGridView"
+                        ItemsSource="{Binding ToolItems}"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="3"
+                                 HorizontalItemSpacing="4"
+                                 VerticalItemSpacing="4" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ToolItem">
+                    <Grid WidthRequest="300"
+                          HeightRequest="70"
+                          BackgroundColor="{AppThemeBinding Light=#F5F5F5, Dark=#2D2D2D}"
+                          StrokeShape="RoundRectangle 4">
+                        <VerticalStackLayout Padding="10"
+                                             VerticalOptions="Center">
+                            <Label Text="{Binding Title}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   Margin="0,0,0,4" />
+                            <Label Text="{Binding Description}"
+                                   FontSize="12"
+                                   FontWeight="Thin"
+                                   TextColor="{AppThemeBinding Light=#666666, Dark=#999999}" />
+                        </VerticalStackLayout>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ToolsViewModel}}, Path=ItemClickCommand}"
+                                                  CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>
