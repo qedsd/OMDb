@@ -30,7 +30,7 @@
     </ContentPage.ToolbarItems>
 
     <!-- 分类页 -->
-    <ScrollView Margin="0,0,4,0" CornerRadius="8,8,0,0">
+    <ScrollView Margin="0,0,4,0">
         <VerticalStackLayout>
             <!-- Banner 轮播图 -->
             <mycontrols:Banner
