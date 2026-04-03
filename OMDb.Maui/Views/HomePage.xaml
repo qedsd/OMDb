@@ -5,8 +5,7 @@
              xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
              xmlns:converters="clr-namespace:OMDb.Maui.Converters"
              Title="主页"
-             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
 
     <ContentPage.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToCollapsedConverter" />

@@ -5,7 +5,7 @@
              xmlns:models="clr-namespace:OMDb.Maui.Models"
              Title="工具"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+            >
 
     <!-- 工具箱页面 -->
     <Grid Margin="{StaticResource MediumLeftTopRightBottomMargin}">

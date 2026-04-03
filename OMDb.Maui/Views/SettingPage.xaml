@@ -7,7 +7,7 @@
              xmlns:converters="clr-namespace:OMDb.Maui.Converters"
              Title="设置"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+            >
 
     <ContentPage.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -32,7 +32,7 @@
                             <ColumnDefinition Width="200" />
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="0">
+                        <VerticalStackLayout Grid.Column="0">
                             <HorizontalStackLayout Margin="30,10,0,0"
                                                    Spacing="10">
                                 <!-- 刷新按钮 -->
@@ -103,7 +103,7 @@
                                     </BindableLayout.ItemTemplate>
                                 </VerticalStackLayout>
                             </Grid>
-                        </StackPanel>
+                        </VerticalStackLayout>
                     </Grid>
                 </mycontrols:ExpandableSettingControl.ExpandableContent>
             </mycontrols:ExpandableSettingControl>

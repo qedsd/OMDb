@@ -7,7 +7,7 @@
              xmlns:dbmodels="clr-namespace:OMDb.Core.DbModels"
              Title="词条详情"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+            >
 
     <ContentPage.Resources>
         <converters:NullToZeroConverter x:Key="NullToZeroConverter" />

@@ -6,7 +6,7 @@
              xmlns:mycontrols="clr-namespace:OMDb.Maui.MyControls"
              Title="片单"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+            >
 
     <!-- 片单页 -->
     <Grid Margin="24,10">

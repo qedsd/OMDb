@@ -44,12 +44,8 @@
                     <!-- 菜单按钮 -->
                     <Button WidthRequest="70"
                             HeightRequest="32"
-                            Clicked="MenuButton_Clicked">
-                        <Label Text="&#xE700;"
-                               FontFamily="Segoe MDL2 Assets"
-                               FontSize="16"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center" />
+                            Clicked="MenuButton_Clicked"
+                            Text="&#xE700;">
                     </Button>
                 </HorizontalStackLayout>
 

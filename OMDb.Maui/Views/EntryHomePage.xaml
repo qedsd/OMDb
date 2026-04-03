@@ -8,7 +8,7 @@
              xmlns:converters="clr-namespace:OMDb.Maui.Converters"
              Title="词条"
              BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-             NavigationCacheMode="Enabled">
+            >
 
     <ContentPage.Resources>
         <converters:IntToDateTimeConverter x:Key="IntToDateTimeConverter" />
