@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.HomePage"
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             xmlns:converters="clr-namespace:OMDb.Maui.Converters"
+             Title="主页"
+             BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
+
+    <ContentPage.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToCollapsedConverter" />
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibleConverter" />
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="刷新"
+                     IconImageSource="icon_refresh.png"
+                     Command="{Binding RefreshCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- 主内容区域 -->
+        <ScrollView Grid.Row="0" Margin="10">
+            <VerticalStackLayout x:Name="ItemContentPanel"
+                                 Spacing="10"
+                                 Padding="10">
+                <!-- 动态加载的主页部件将添加到这里 -->
+
+                <!-- 临时占位内容 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#2D2D2D}"
+                        Padding="20"
+                        Margin="0,10">
+                    <VerticalStackLayout>
+                        <Label Text="欢迎使用 OMDb 电影数据库"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#333333, Dark=#CCCCCC}"/>
+                        <Label Text="管理您的电影收藏，记录观影历史"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#999999}"
+                               Margin="0,10,0,0"/>
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- 底部状态栏 -->
+        <BoxView Grid.Row="1"
+                 HeightRequest="1"
+                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#404040}"
+                 VerticalOptions="End"/>
+    </Grid>
+</ContentPage>

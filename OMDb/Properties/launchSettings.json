@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OMDb (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "OMDb (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

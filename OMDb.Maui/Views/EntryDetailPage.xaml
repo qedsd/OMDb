@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.EntryDetailPage"
+             xmlns:vm="clr-namespace:OMDb.Maui.ViewModels"
+             Title="词条详情">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" xmlns:converters="clr-namespace:OMDb.Maui.Converters"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="刷新" Command="{Binding RefreshCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- 左侧基本信息 -->
+            <VerticalStackLayout Grid.Column="0" Padding="20" Spacing="15">
+                <!-- 封面图 -->
+                <Frame HeightRequest="400" Padding="0" IsClippedToBounds="True">
+                    <Image Source="{Binding Entry.CoverImgPath}" Aspect="AspectFill" />
+                </Frame>
+
+                <!-- 名称 -->
+                <Label Text="{Binding Entry.Name}" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" />
+
+                <!-- 评分 -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="20">
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Rating}" HorizontalOptions="Center" />
+                        <Label Text="我的评分" FontSize="12" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                    <BoxView WidthRequest="1" Color="LightGray" />
+                    <VerticalStackLayout>
+                        <Label Text="{Binding Entry.WatchCount}" HorizontalOptions="Center" />
+                        <Label Text="观看次数" FontSize="12" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <!-- 描述 -->
+                <Label Text="{Binding Entry.Metadata.Desc}" FontSize="14" MaxLines="5" LineBreakMode="TailTruncation" />
+
+                <!-- 编辑描述按钮 -->
+                <Button Text="编辑描述" Command="{Binding EditDescCommand}" />
+
+                <!-- 添加到片单 -->
+                <Button Text="添加到片单" Command="{Binding AddToCollectionCommand}" />
+            </VerticalStackLayout>
+
+            <!-- 右侧详细内容 -->
+            <ScrollView Grid.Column="1">
+                <VerticalStackLayout Padding="20" Spacing="20">
+                    <!-- 描述编辑区域 -->
+                    <Frame IsVisible="{Binding IsEditDesc}">
+                        <VerticalStackLayout>
+                            <Editor Text="{Binding Desc}" HeightRequest="200" />
+                            <HorizontalStackLayout HorizontalOptions="End" Spacing="10">
+                                <Button Text="保存" Command="{Binding SaveDescCommand}" />
+                                <Button Text="取消" Command="{Binding CancelEditDescCommand}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 观看记录 -->
+                    <Frame>
+                        <VerticalStackLayout>
+                            <Label Text="观看记录" FontSize="18" FontAttributes="Bold" />
+                            <Button Text="添加记录" Command="{Binding AddHistoryCommand}" />
+
+                            <!-- 编辑观看记录 -->
+                            <Frame IsVisible="{Binding IsEditWatchHistory}">
+                                <VerticalStackLayout>
+                                    <DatePicker Date="{Binding NewHistorDate}" />
+                                    <TimePicker Time="{Binding NewHistorTime}" />
+                                    <Entry Text="{Binding NewHistorMark}" Placeholder="备注" />
+                                    <CheckBox IsChecked="{Binding NewHistorDone}" />
+                                    <Label Text="观看完结" />
+                                    <HorizontalStackLayout HorizontalOptions="End" Spacing="10">
+                                        <Button Text="保存" Command="{Binding SaveHistoryCommand}" />
+                                        <Button Text="取消" Command="{Binding CancelEditHistoryCommand}" />
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+
+                            <!-- 观看记录列表 -->
+                            <CollectionView ItemsSource="{Binding Entry.WatchHistory}" HeightRequest="300">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <SwipeView>
+                                            <SwipeView.RightItems>
+                                                <SwipeItems>
+                                                    <SwipeItem Text="编辑" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditHistoryCommand}" CommandParameter="{Binding .}" />
+                                                    <SwipeItem Text="删除" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteHistoryCommand}" CommandParameter="{Binding .}" />
+                                                </SwipeItems>
+                                            </SwipeView.RightItems>
+                                            <Grid Padding="10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Label Text="{Binding Time}" />
+                                                <Label Grid.Column="1" Text="{Binding Mark}" />
+                                            </Grid>
+                                        </SwipeView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- 台词摘录 -->
+                    <Frame>
+                        <VerticalStackLayout>
+                            <Label Text="台词摘录" FontSize="18" FontAttributes="Bold" />
+                            <Button Text="添加台词" Command="{Binding AddLineCommand}" />
+
+                            <CollectionView ItemsSource="{Binding ExtractsLines}" HeightRequest="300">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <SwipeView>
+                                            <SwipeView.RightItems>
+                                                <SwipeItems>
+                                                    <SwipeItem Text="编辑" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=EditLineCommand}" CommandParameter="{Binding .}" />
+                                                    <SwipeItem Text="删除" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EntryDetailViewModel}}, Path=DeleteLineCommand}" CommandParameter="{Binding .}" />
+                                                </SwipeItems>
+                                            </SwipeView.RightItems>
+                                            <Grid Padding="10">
+                                                <Label Text="{Binding Line}" />
+                                            </Grid>
+                                        </SwipeView>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+                    </Frame>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

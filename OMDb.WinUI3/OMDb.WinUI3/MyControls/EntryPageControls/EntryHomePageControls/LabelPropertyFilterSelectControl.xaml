@@ -1,0 +1,77 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.LabelPropertyFilterSelectControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:DbModels="using:OMDb.Core.DbModels"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:coverters="using:OMDb.WinUI3.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:Microsoft.Xaml.Interactivity"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:viewmodels="using:OMDb.WinUI3.ViewModels"
+    mc:Ignorable="d">
+    <Grid>
+        <controls:DockPanel
+            x:Name="SampleDockPanel"
+            Margin="0"
+            LastChildFill="False">
+            <Grid
+                Width="100"
+                controls:DockPanel.Dock="Left"
+                BorderBrush="BlueViolet"
+                BorderThickness="0">
+                <ListView x:Name="ListView_LabelPropertyTrees" SelectionChanged="ListView_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="models:LabelPropertyTree">
+                            <ListViewItem Width="100" IsSelected="True">
+                                <TextBlock Text="{x:Bind LabelProperty.Name, Mode=OneWay}" />
+                            </ListViewItem>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+
+            <Grid>
+                <GridView
+                    x:Name="GridView_Current_LPEZCollection"
+                    BorderBrush="Blue"
+                    BorderThickness="0"
+                    SelectionMode="None">
+                    <GridView.ItemTemplate>
+                        <DataTemplate x:DataType="models:LabelPropertyTree">
+                            <Border BorderBrush="CadetBlue" BorderThickness="0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20" />
+                                        <ColumnDefinition Width="70" />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox
+                                        Width="20"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Checked="CheckBox_Checked"
+                                        Unchecked="CheckBox_Checked" 
+                                        IsChecked="{x:Bind LabelProperty.IsChecked,Mode=OneWay}"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Width="120"
+                                        Height="30"
+                                        Margin="3,6,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        FontSize="14"
+                                        Text="{x:Bind LabelProperty.Name, Mode=OneWay}"
+                                        TextAlignment="Left" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </Grid>
+        </controls:DockPanel>
+    </Grid>
+</UserControl>

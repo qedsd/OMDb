@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.StoragePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    Background="Transparent"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <CommandBar OverflowButtonVisibility="Collapsed">
+
+                <AppBarButton Icon="Add" Command="{x:Bind VM.AddCommand}"/>
+                <AppBarButton Icon="Refresh" Command="{x:Bind VM.RefreshCommand}">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+            </CommandBar>
+
+            <controls:AdaptiveGridView
+            Padding="20"
+            DesiredWidth="160"
+            IsItemClickEnabled="True"
+            ItemHeight="240"
+            ItemsSource="{x:Bind VM.EnrtyStorages, Mode=TwoWay}"
+            OneRowModeEnabled="False"
+            SelectionMode="None"
+            StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <mycontrols:StorageCard Margin="4" EnrtyStorage="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext,Mode=TwoWay}" />
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,412 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.EntryHomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:DbModels="using:OMDb.Core.DbModels"
+    xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:OMDb.WinUI3.Models"
+    xmlns:mycontrols="using:OMDb.WinUI3.MyControls"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <converters:IntToDateTimeConverter x:Key="IntToDateTimeConverter" />
+        <converters:IntToDoubleConverter x:Key="IntToDoubleConverter" />
+    </Page.Resources>
+    <Grid Margin="{StaticResource MediumLeftRightMargin}">
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem
+                    Command="{x:Bind VM.AddEntryCommand}"
+                    Icon="Add"
+                    Text="新增" />
+                <MenuFlyoutItem
+                    Command="{x:Bind VM.RefreshCommand}"
+                    Icon="Refresh"
+                    Text="刷新" />
+            </MenuFlyout>
+        </Grid.ContextFlyout>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <!--  控件区  -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <ComboBox
+                    Grid.Column="0"
+                    Width="140"
+                    VerticalAlignment="Center"
+                    ItemsSource="{x:Bind VM.SortTypeStrs, Mode=OneWay}"
+                    SelectedIndex="{x:Bind VM.SortTypeIndex, Mode=TwoWay}" />
+                <ComboBox
+                    Grid.Column="1"
+                    Width="100"
+                    Margin="10,0,0,0"
+                    VerticalAlignment="Center"
+                    ItemsSource="{x:Bind VM.SortWayStrs, Mode=OneWay}"
+                    SelectedIndex="{x:Bind VM.SortWayIndex, Mode=TwoWay}" />
+            </Grid>
+            <CommandBar
+                Grid.Column="1"
+                HorizontalAlignment="Right"
+                DefaultLabelPosition="Right">
+                <AppBarButton
+                    Command="{x:Bind VM.RefreshCommand}"
+                    Icon="Refresh"
+                    Label="刷新">
+                    <AppBarButton.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </AppBarButton.KeyboardAccelerators>
+                </AppBarButton>
+
+                <!--<AppBarButton
+                    Command="{x:Bind VM.AddEntryCommand}"
+                    Icon="Add"
+                    Label="新增" />-->
+                <AppBarElementContainer>
+                    <SplitButton
+                        Width="90"
+                        Height="48"
+                        VerticalAlignment="Center"
+                        Command="{x:Bind VM.AddEntryCommand}">
+                        <SplitButton.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        FontSize="14"
+                                        Text="&#xE710;" />
+                                    <TextBlock Margin="5,0,0,0" Text="新增" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </SplitButton.ContentTemplate>
+                        <SplitButton.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel>
+                                    <Button
+                                        Width="120"
+                                        Margin="-20,-15,-20,0"
+                                        Command="{x:Bind VM.AddEntryCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="新增词条" />
+                                        </StackPanel>
+                                    </Button>
+                                    <Button
+                                        Width="120"
+                                        Margin="-20,0,-20,-18"
+                                        Command="{x:Bind VM.AddEntryBatchCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="批量新增" />
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                                <!--  flyout content  -->
+                            </Flyout>
+                        </SplitButton.Flyout>
+
+
+
+
+                    </SplitButton>
+                </AppBarElementContainer>
+
+                <AppBarButton Icon="Filter" Label="筛选">
+                    <AppBarButton.Flyout>
+                        <Flyout x:Name="FlyoutFilter">
+                            <Grid Width="420" Height="600">
+                                <StackPanel>
+                                    <Pivot Height="520">
+                                        <!--  基本信息过滤  -->
+                                        <PivotItem>
+                                            <PivotItem.Header>
+                                                <TextBlock FontSize="16" Text="基本信息" />
+                                            </PivotItem.Header>
+                                            <StackPanel Margin="10,10">
+                                                <TextBlock>仓库</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <Grid>
+                                                    <mycontrols:EntryStoragesControl
+                                                        Margin="0,0,0,0"
+                                                        CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}"
+                                                        EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
+                                                </Grid>
+                                                <TextBlock Margin="0,30,0,0">日期</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <Grid>
+                                                    <StackPanel>
+                                                        <!--<mycontrols:DoubleThumbSlider
+                                                        Margin="0,10,0,5"></mycontrols:DoubleThumbSlider>-->
+                                                        <mycontrols:DoubleThumbSlider
+                                                            Margin="0,10,0,5"
+                                                            CheckChangedCommand="{x:Bind VM.EmptyChangedCommand}"
+                                                            MaxValue="{x:Bind VM.MaxTime, Mode=TwoWay}"
+                                                            MinValue="{x:Bind VM.MinTime, Mode=TwoWay}" />
+                                                        <StackPanel Margin="8,5,0,0" Orientation="Horizontal">
+                                                            <CalendarDatePicker
+                                                                Width="120"
+                                                                Date="{x:Bind VM.MinTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}"
+                                                                IsEnabled="False" />
+                                                            <TextBlock
+                                                                Margin="5,0,5,0"
+                                                                FontSize="20"
+                                                                Text="~" />
+                                                            <CalendarDatePicker
+                                                                Width="120"
+                                                                Date="{x:Bind VM.MaxTime, Mode=TwoWay, Converter={StaticResource IntToDateTimeConverter}}"
+                                                                IsEnabled="False" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <TextBlock Margin="0,30,0,0">星级</TextBlock>
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <StackPanel>
+                                                    <Slider
+                                                        Width="200"
+                                                        Margin="8,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        Maximum="5"
+                                                        Minimum="1"
+                                                        StepFrequency="0.1"
+                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}" />
+                                                    <RatingControl
+                                                        Margin="12,0,0,0"
+                                                        HorizontalAlignment="Left"
+                                                        IsClearEnabled="True"
+                                                        Value="{x:Bind VM.MinRank, Mode=TwoWay}" />
+
+                                                </StackPanel>
+                                                <Grid />
+                                            </StackPanel>
+
+                                        </PivotItem>
+                                        <!--  分类标签过滤  -->
+                                        <PivotItem>
+                                            <PivotItem.Header>
+                                                <TextBlock FontSize="16" Text="标签(分类)" />
+                                            </PivotItem.Header>
+                                            <StackPanel>
+                                                <CheckBox
+                                                    Margin="12,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    Content="过滤"
+                                                    IsChecked="{x:Bind VM.IsFilterLabelClass, Mode=TwoWay}" />
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <mycontrols:LabelClassFilterSelectControl
+                                                    Margin="0,10,0,0"
+                                                    CheckChangedCommand="{x:Bind VM.LabelClassTreeChangedCommand}"
+                                                    IsEnabled="{x:Bind VM.IsFilterLabelClass, Mode=OneWay}"
+                                                    LabelClassTrees="{x:Bind VM.LabelClassTrees, Mode=TwoWay}" />
+                                            </StackPanel>
+                                        </PivotItem>
+                                        <!--  属性标签过滤  -->
+                                        <PivotItem>
+                                            <PivotItem.Header>
+                                                <TextBlock FontSize="16" Text="标签(属性)" />
+                                            </PivotItem.Header>
+                                            <StackPanel>
+                                                <CheckBox
+                                                    Margin="12,0,0,0"
+                                                    HorizontalAlignment="Left"
+                                                    Content="过滤"
+                                                    IsChecked="{x:Bind VM.IsFilterLabelProperty, Mode=TwoWay}" />
+                                                <Rectangle Height="1" Fill="{ThemeResource SystemAccentColor}" />
+                                                <mycontrols:LabelPropertyFilterSelectControl
+                                                    Margin="0,10,0,0"
+                                                    CheckChangedCommand="{x:Bind VM.LabelPropertyTreeChangedCommand}"
+                                                    IsEnabled="{x:Bind VM.IsFilterLabelProperty, Mode=OneWay}"
+                                                    LabelPropertyTrees="{x:Bind VM.LabelPropertyTreeCollection, Mode=TwoWay}" />
+                                            </StackPanel>
+
+                                        </PivotItem>
+                                    </Pivot>
+
+                                    <!--<Rectangle
+                                        Height="1"
+                                        Margin="10,10"
+                                        Fill="{ThemeResource SystemAccentColor}" />
+                                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                        <Button
+                                            Margin="10,10,10,10"
+                                            Command="{x:Bind VM.ConfirmFilterCommand}"
+                                            CommandParameter="{x:Bind FlyoutFilter}"
+                                            Content="确定" />
+                                        <Button
+                                            Margin="10,10,10,10"
+                                            Command="{x:Bind VM.CancelFilterCommand}"
+                                            CommandParameter="{x:Bind FlyoutFilter}"
+                                            Content="取消" />
+
+                                    </StackPanel>-->
+                                </StackPanel>
+                            </Grid>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+
+                <AppBarButton
+                    Icon="Sort"
+                    Label="排序"
+                    Visibility="Collapsed">
+                    <AppBarButton.Flyout>
+                        <Flyout x:Name="FlyoutSort">
+                            <StackPanel>
+                                <Grid Width="420" Height="200">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="3*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="auto" />
+                                        <ColumnDefinition Width="3*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <TreeView
+                                        x:Name="MyTreeView"
+                                        ItemsSource="{x:Bind VM.EntrySortInfoTrees, Mode=OneWay}"
+                                        SelectedItem="{x:Bind VM.EntrySortInfoCurrent, Mode=TwoWay}">
+                                        <TreeView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:EntrySortInfoTree">
+                                                <TreeViewItem ItemsSource="{x:Bind Children}">
+                                                    <TextBlock Text="{x:Bind Title}" />
+                                                </TreeViewItem>
+                                            </DataTemplate>
+                                        </TreeView.ItemTemplate>
+                                    </TreeView>
+                                    <Rectangle
+                                        Grid.Column="1"
+                                        Width="1"
+                                        Margin="10,0,10,0"
+                                        Fill="{ThemeResource SystemAccentColor}" />
+
+                                    <StackPanel Grid.Column="2">
+                                        <Button Margin="0,15,0,0" Command="{x:Bind VM.AddEntrySortInfoCommand}">
+                                            <FontIcon Glyph="&#xECC8;" />
+                                        </Button>
+                                        <Button Margin="0,15,0,0" Command="{x:Bind VM.RemoveEntrySortInfoCommand}">
+                                            <FontIcon Glyph="&#xECC9;" />
+                                        </Button>
+                                        <Button Margin="0,15,0,0" Command="{x:Bind VM.ClearEntrySortInfoCommand}">
+                                            <FontIcon Glyph="&#xEA99;" />
+                                        </Button>
+                                    </StackPanel>
+
+                                    <Rectangle
+                                        Grid.Column="3"
+                                        Width="1"
+                                        Margin="0,0,0,0"
+                                        Fill="{ThemeResource SystemAccentColor}" />
+
+                                    <ListView
+                                        Grid.Column="4"
+                                        ItemsSource="{x:Bind VM.EntrySortInfoResults, Mode=OneWay}"
+                                        SelectedItem="{x:Bind VM.EntrySortInfoResultCurrent, Mode=TwoWay}">
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:EntrySortInfoResult">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="63"
+                                                        VerticalAlignment="Center"
+                                                        Text="{x:Bind Title}" />
+
+                                                    <ToggleSwitch
+                                                        IsOn="{x:Bind IsDescending, Mode=TwoWay}"
+                                                        OffContent="倒序"
+                                                        OnContent="正序" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+
+                                    <!--  分隔符  -->
+                                    <!--<Rectangle
+                                    Grid.Row="1"
+                                    Height="1"
+                                    Margin="10,20"
+                                    Fill="{ThemeResource SystemAccentColor}" />-->
+                                    <!--<Grid Grid.Row="2">
+                                    <mycontrols:EntryStoragesControl CheckChangedCommand="{x:Bind VM.EntryStorageChangedCommand}" EntryStorages="{x:Bind VM.EntryStorages, Mode=OneWay}" />
+                                </Grid>-->
+                                </Grid>
+                                <Rectangle
+                                    Height="1"
+                                    Margin="10,10"
+                                    Fill="{ThemeResource SystemAccentColor}" />
+                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                                    <Button
+                                        Margin="10,10,10,10"
+                                        Command="{x:Bind VM.ConfirmSortCommand}"
+                                        CommandParameter="{x:Bind FlyoutSort}"
+                                        Content="确定" />
+                                    <Button
+                                        Margin="10,10,10,10"
+                                        Command="{x:Bind VM.CancelSortCommand}"
+                                        CommandParameter="{x:Bind FlyoutSort}"
+                                        Content="取消" />
+
+                                </StackPanel>
+                            </StackPanel>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+
+                <AppBarButton
+                    AllowFocusOnInteraction="True"
+                    Icon="Find"
+                    Label="搜索">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <AutoSuggestBox
+                                MinWidth="300"
+                                HorizontalAlignment="Right"
+                                DisplayMemberPath="Value"
+                                ItemsSource="{x:Bind VM.AutoSuggestItems, Mode=OneWay}"
+                                PlaceholderText="搜索词条..."
+                                QueryIcon="Find"
+                                QuerySubmitted="AutoSuggestBox_QuerySubmitted"
+                                Text="{x:Bind VM.AutoSuggestText, Mode=TwoWay}"
+                                UpdateTextOnSelect="True" />
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+            </CommandBar>
+        </Grid>
+        <Grid Grid.Row="1">
+            <!--  展示区  -->
+            <controls:AdaptiveGridView
+                DesiredWidth="160"
+                IsItemClickEnabled="True"
+                ItemClickCommand="{x:Bind VM.ItemClickCommand}"
+                ItemHeight="260"
+                ItemsSource="{x:Bind VM.Entries, Mode=OneWay}"
+                SelectionMode="None"
+                StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <mycontrols:EntryCard Margin="8" Entry="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=DataContext}" />
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
+        </Grid>
+        <Grid Grid.Row="2">
+            <!--  分页导航区  -->
+        </Grid>
+    </Grid>
+</Page>

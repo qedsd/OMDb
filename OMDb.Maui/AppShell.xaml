@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="OMDb.Maui.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:OMDb.Maui.Views"
+    Title="OMDb">
+
+    <Shell.FlyoutBehavior>Locked</Shell.FlyoutBehavior>
+
+    <Shell.TitleView>
+        <Grid BackgroundColor="Transparent" HeightRequest="48">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 左侧菜单按钮 -->
+            <ImageButton
+                x:Name="MenuButton"
+                WidthRequest="48"
+                HeightRequest="32"
+                Clicked="MenuButton_Clicked"
+                HorizontalOptions="Start"
+                VerticalOptions="Center">
+                <ImageButton.Source>
+                    <FontImageSource
+                        Glyph="&#xE700;"
+                        FontFamily="Segoe MDL2 Assets"
+                        Size="16"
+                        Color="{AppThemeBinding Light=Black, Dark=White}"/>
+                </ImageButton.Source>
+            </ImageButton>
+
+            <!-- 应用标题 -->
+            <HorizontalStackLayout
+                Grid.Column="0"
+                Margin="48,0,0,0"
+                Spacing="4"
+                VerticalOptions="Center">
+                <Image
+                    WidthRequest="16"
+                    HeightRequest="16"
+                    Source="logo_32.png"/>
+                <Label
+                    Text="OMDb"
+                    FontSize="12"
+                    VerticalOptions="Center"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+            </HorizontalStackLayout>
+        </Grid>
+    </Shell.TitleView>
+
+    <!-- 主页 -->
+    <ShellContent
+        Title="主页"
+        Icon="icon_home.png"
+        ContentTemplate="{DataTemplate views:HomePage}"
+        Route="HomePage" />
+
+    <!-- 分类 -->
+    <ShellContent
+        Title="分类"
+        Icon="icon_category.png"
+        ContentTemplate="{DataTemplate views:ClassificationPage}"
+        Route="ClassificationPage" />
+
+    <!-- 片单 -->
+    <ShellContent
+        Title="片单"
+        Icon="icon_collection.png"
+        ContentTemplate="{DataTemplate views:CollectionsPage}"
+        Route="CollectionsPage" />
+
+    <!-- 词条 -->
+    <ShellContent
+        Title="词条"
+        Icon="icon_entry.png"
+        ContentTemplate="{DataTemplate views:EntryHomePage}"
+        Route="EntryHomePage" />
+
+    <!-- 管理 -->
+    <ShellContent
+        Title="管理"
+        Icon="icon_manage.png"
+        ContentTemplate="{DataTemplate views:ManagementPage}"
+        Route="ManagementPage" />
+
+    <!-- 工具 -->
+    <ShellContent
+        Title="工具"
+        Icon="icon_tool.png"
+        ContentTemplate="{DataTemplate views:ToolsPage}"
+        Route="ToolsPage" />
+
+    <!-- 设置 -->
+    <ShellContent
+        Title="设置"
+        Icon="icon_setting.png"
+        ContentTemplate="{DataTemplate views:SettingPage}"
+        Route="SettingPage" />
+
+    <!-- 测试 -->
+    <ShellContent
+        Title="测试"
+        Icon="icon_tool.png"
+        ContentTemplate="{DataTemplate views:TestPage}"
+        Route="TestPage" />
+
+</Shell>

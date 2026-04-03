@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OMDb.Maui.Views.TestPage"
+             Title="ViewModel 测试">
+    <VerticalStackLayout Padding="20" Spacing="10">
+        <Label Text="ViewModel 命令测试" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+        <Label Text="点击运行测试按钮测试所有 ViewModel 命令" HorizontalOptions="Center" />
+
+        <Button x:Name="RunTestsButton" Text="运行所有测试" Clicked="OnRunTestsClicked"
+                HorizontalOptions="Center" Padding="20,10" />
+
+        <Label x:Name="StatusLabel" Text="" FontAttributes="Bold" HorizontalOptions="Center"
+               Margin="0,20,0,0" />
+
+        <ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <Label x:Name="ResultsLabel" Text="" FontFamily="Consolas" FontSize="12" />
+        </ScrollView>
+    </VerticalStackLayout>
+</ContentPage>

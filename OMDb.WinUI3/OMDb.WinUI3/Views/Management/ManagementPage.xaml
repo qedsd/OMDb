@@ -1,0 +1,39 @@
+﻿<Page
+    x:Class="OMDb.WinUI3.Views.ManagementPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource LayerFillColorDefaultBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style TargetType="Expander">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Margin" Value="{StaticResource SmallBottomMargin}" />
+        </Style>
+    </Page.Resources>
+    <Pivot>
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock FontSize="16" Text="仓库" />
+            </PivotItem.Header>
+            <local:StoragePage />
+        </PivotItem>
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock FontSize="16" Text="标签(分类)" />
+            </PivotItem.Header>
+            <local:LabelPage />
+        </PivotItem>
+
+        <PivotItem>
+            <PivotItem.Header>
+                <TextBlock FontSize="16" Text="标签(属性)" />
+            </PivotItem.Header>
+            <local:LabelPropertyPage />
+        </PivotItem>
+    </Pivot>
+</Page>

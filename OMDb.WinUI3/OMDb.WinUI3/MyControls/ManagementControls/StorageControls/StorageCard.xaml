@@ -1,0 +1,84 @@
+﻿<UserControl
+    x:Class="OMDb.WinUI3.MyControls.StorageCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:OMDb.WinUI3.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:OMDb.WinUI3.MyControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="page"
+    Foreground="White"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:FileToDirConverter x:Key="FileToDirConverter" />
+    </UserControl.Resources>
+    <Grid Margin="4" CornerRadius="4">
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Click="Edit_Click" Icon="Edit" Text="編輯倉庫" />
+                <MenuFlyoutItem Click="Remove_Click" Icon="Delete" Text="移除倉庫" />
+                <MenuFlyoutItem Click="Enter_Click" Text="已有詞條" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE74C;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <!--<MenuFlyoutItem Click="BatchAdd_Click" Icon="Add" Text="批量添加" />-->
+                <MenuFlyoutItem Click="Export_Click"  Text="導出詞條" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEDE1;" />
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Click="Import_Click" Icon="Import" Text="導入詞條" >
+
+                </MenuFlyoutItem>
+
+
+            </MenuFlyout>
+        </Grid.ContextFlyout>
+        <Grid x:Name="ShowGrid">
+            <Image
+                x:Name="Image_Cover"
+                Source="{Binding ElementName=page, Path=EnrtyStorage.CoverImg, Mode=OneWay}"
+                Stretch="UniformToFill" />
+            <Grid>
+                <Grid.Background>
+                    <SolidColorBrush Opacity="0.5" Color="Black" />
+                </Grid.Background>
+            </Grid>
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    x:Name="TextBlock_StorageName"
+                    HorizontalAlignment="Center"
+                    FontFamily="sion"
+                    FontSize="30"
+                    Text="{Binding ElementName=page, Path=EnrtyStorage.StorageName, Mode=OneWay}"
+                    TextWrapping="WrapWholeWords" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <TextBlock Text="(" />
+                    <TextBlock
+                        x:Name="TextBlock_EntryCount"
+                        FontSize="16"
+                        Opacity="0.8"
+                        Text="{Binding ElementName=page, Path=EnrtyStorage.EntryCount, Mode=OneWay}" />
+                    <TextBlock Text=")" />
+                </StackPanel>
+
+            </StackPanel>
+            <TextBlock
+                x:Name="TextBlock_StoragePath"
+                Margin="10"
+                VerticalAlignment="Bottom"
+                Opacity="0.8"
+                Text="{Binding ElementName=page, Path=EnrtyStorage.StoragePath, Mode=OneWay, Converter={StaticResource FileToDirConverter}}"
+                TextWrapping="Wrap" />
+        </Grid>
+        <!--<Grid x:Name="AddGrid" Visibility="Collapsed">
+            <Button
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="Add_Click">
+                <SymbolIcon Symbol="Add" />
+            </Button>
+        </Grid>-->
+    </Grid>
+</UserControl>
