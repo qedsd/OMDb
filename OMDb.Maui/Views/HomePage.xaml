@@ -19,7 +19,7 @@
     </ContentPage.ToolbarItems>
 
     <!-- 主内容区域 -->
-    <ScrollView Grid.Row="0" Margin="10" CornerRadius="8">
+    <ScrollView Grid.Row="0" Margin="10">
         <VerticalStackLayout x:Name="ItemContentPanel"
                              Spacing="10"
                              Padding="10">
