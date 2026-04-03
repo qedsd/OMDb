@@ -18,15 +18,11 @@
                 <Setter Property="MinimumHeightRequest" Value="40" />
                 <Setter Property="BorderColor" Value="Transparent" />
                 <Setter Property="BorderWidth" Value="0" />
-                <Setter Property="BorderRadius" Value="4" />
+                <Setter Property="CornerRadius" Value="4" />
                 <Setter Property="FontFamily" Value="Segoe UI Variable Display" />
                 <Setter Property="HorizontalOptions" Value="Center" />
                 <Setter Property="VerticalOptions" Value="Center" />
                 <Style.Triggers>
-                    <!-- 鼠标悬停效果 -->
-                    <Trigger TargetType="Button" Property="IsHovered" Value="True">
-                        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E5E5E5, Dark=#3D3D3D}" />
-                    </Trigger>
                     <!-- 按下效果 -->
                     <Trigger TargetType="Button" Property="IsPressed" Value="True">
                         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#D0D0D0, Dark=#2D2D2D}" />
