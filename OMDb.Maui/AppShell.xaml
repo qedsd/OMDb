@@ -4,146 +4,117 @@
        x:Class="OMDb.Maui.AppShell"
        xmlns:views="clr-namespace:OMDb.Maui.Views"
        Title="OMDb"
-       FlyoutBehavior="Locked">
+       FlyoutBehavior="Locked"
+       FlyoutWidth="280"
+       FlyoutBackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
+       FlyoutForegroundColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}"
+       BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
 
-    <!-- 自定义标题视图 - Microsoft Store 风格导航 -->
+    <!-- 自定义导航项模板 - Microsoft Store 风格 -->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid HeightRequest="44"
+                  Padding="16,0"
+                  ColumnDefinitions="Auto,*">
+                <Image Source="{Binding Icon}"
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       FontSize="14"
+                       VerticalOptions="Center"
+                       Margin="16,0,0,0"
+                       TextColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+
+    <Shell.FlyoutHeader>
+        <Grid Padding="20,24,20,20"
+              BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#252525}">
+            <VerticalStackLayout Spacing="12">
+                <HorizontalStackLayout Spacing="12">
+                    <Border WidthRequest="44"
+                            HeightRequest="44"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=#0078D4, Dark=#2D7DFF}"
+                            StrokeShape="RoundRectangle 12">
+                        <Image Source="logo_32.png"
+                               WidthRequest="24"
+                               HeightRequest="24"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Spacing="2"
+                                          VerticalOptions="Center">
+                        <Label Text="OMDb"
+                               FontAttributes="Bold"
+                               FontSize="20"
+                               TextColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
+                        <Label Text="Movie Database"
+                               FontSize="12"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#B8B8B8}" />
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <!-- 搜索框 -->
+                <Border StrokeShape="RoundRectangle 8"
+                        BackgroundColor="{AppThemeBinding Light=#E8E8E8, Dark=#2D2D2D}"
+                        HeightRequest="36"
+                        Padding="12,0">
+                    <HorizontalStackLayout Spacing="8"
+                                           VerticalOptions="Center">
+                        <Label Text="&#xE721;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="14"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#888888}" />
+                        <Label Text="搜索..."
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#666666, Dark=#888888}" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </Grid>
+    </Shell.FlyoutHeader>
+
+    <!-- 顶部标题栏 -->
     <Shell.TitleView>
         <Grid BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#202020}"
-              HeightRequest="54">
+              HeightRequest="48"
+              Padding="16,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <!-- Logo 区域 -->
             <HorizontalStackLayout Grid.Column="0"
-                                   Spacing="8"
-                                   VerticalOptions="Center"
-                                   Margin="16,0,0,0">
+                                   Spacing="12"
+                                   VerticalOptions="Center">
+                <Button WidthRequest="36"
+                        HeightRequest="36"
+                        CornerRadius="18"
+                        BackgroundColor="Transparent"
+                        BorderWidth="0"
+                        Clicked="MenuButton_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE700;"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        Size="16"
+                                        Color="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
+                    </Button.ImageSource>
+                </Button>
+
                 <Image Source="logo_32.png"
-                       WidthRequest="24"
-                       HeightRequest="24"
-                       VerticalOptions="Center"/>
+                       WidthRequest="20"
+                       HeightRequest="20"
+                       VerticalOptions="Center" />
                 <Label Text="OMDb"
-                       FontSize="14"
+                       FontSize="13"
                        FontAttributes="Bold"
                        VerticalOptions="Center"
-                       TextColor="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
+                       TextColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
             </HorizontalStackLayout>
-
-            <!-- 水平导航标签 - Microsoft Store 风格 -->
-            <ScrollView Grid.Column="1"
-                        Orientation="Horizontal"
-                        VerticalOptions="Center"
-                        Margin="20,0">
-                <HorizontalStackLayout Spacing="4"
-                                       x:Name="NavStack">
-                    <!-- 主页 -->
-                    <Button x:Name="HomeNavButton"
-                            Text="主页"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="HomePage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE80F;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 分类 -->
-                    <Button x:Name="ClassificationNavButton"
-                            Text="分类"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="ClassificationPage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE8C3;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 片单 -->
-                    <Button x:Name="CollectionsNavButton"
-                            Text="片单"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="CollectionsPage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE8A7;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 词条 -->
-                    <Button x:Name="EntryNavButton"
-                            Text="词条"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="EntryHomePage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE82D;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 管理 -->
-                    <Button x:Name="ManagementNavButton"
-                            Text="管理"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="ManagementPage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE7ED;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 工具 -->
-                    <Button x:Name="ToolsNavButton"
-                            Text="工具"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="ToolsPage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE90F;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <!-- 设置 -->
-                    <Button x:Name="SettingNavButton"
-                            Text="设置"
-                            Clicked="NavButton_Clicked"
-                            CommandParameter="SettingPage"
-                            Style="{StaticResource StoreNavButton}"
-                            FontSize="14">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE713;"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Size="14"
-                                            Color="{AppThemeBinding Light=#000000, Dark=#FFFFFF}"/>
-                        </Button.ImageSource>
-                    </Button>
-                </HorizontalStackLayout>
-            </ScrollView>
         </Grid>
     </Shell.TitleView>
 
