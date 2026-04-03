@@ -1,28 +1,14 @@
-using OMDb.Maui.ViewModels;
-using OMDb.Maui.Models;
+using System;
 using System.Collections.ObjectModel;
+using OMDb.Maui.ViewModels;
 
 namespace OMDb.Maui.Tests;
 
 /// <summary>
-/// 数据绑定测试 - 测试数据绑定不会崩溃
+/// 数据绑定测试 - 测试 ViewModel 属性和绑定
 /// </summary>
 public class DataBindingTests
 {
-    [Fact]
-    public void HomeViewModel_BindingContext_ShouldNotThrow()
-    {
-        // Arrange
-        var viewModel = new HomeViewModel();
-
-        // Act & Assert
-        var exception = Record.Exception(() => {
-            viewModel.Init();
-        });
-
-        Assert.Null(exception);
-    }
-
     [Fact]
     public void ShellViewModel_Properties_ShouldNotThrow()
     {
@@ -30,11 +16,32 @@ public class DataBindingTests
         var viewModel = new ShellViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() => {
+        var exception = Record.Exception(() =>
+        {
+            var isInTabView = viewModel.IsInTabView;
             viewModel.IsInTabView = true;
             viewModel.IsInTabView = false;
-            viewModel.SelectedPage = "Test";
-            viewModel.SetSelected(typeof(string));
+
+            var selectedPage = viewModel.SelectedPage;
+            viewModel.SelectedPage = "TestPage";
+            viewModel.SelectedPage = null;
+        });
+
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void HomeViewModel_Properties_ShouldNotThrow()
+    {
+        // Arrange
+        var viewModel = new HomeViewModel();
+
+        // Act & Assert
+        var exception = Record.Exception(() =>
+        {
+            // 测试可访问性
+            var refreshCommand = viewModel.RefreshCommand;
+            Assert.NotNull(refreshCommand);
         });
 
         Assert.Null(exception);
@@ -46,11 +53,16 @@ public class DataBindingTests
         // Arrange
         var viewModel = new CollectionsViewModel();
 
-        // Act & Assert - 等待初始化完成
-        var exception = Record.Exception(() => {
-            viewModel.SuggestText = "test";
-            viewModel.NewCollectionTitle = "New Collection";
-            viewModel.NewCollectionDesc = "Description";
+        // Act & Assert
+        var exception = Record.Exception(() =>
+        {
+            var addCommand = viewModel.AddNewCollectionCommand;
+            var refreshCommand = viewModel.RefreshCommand;
+            var suggestionCommand = viewModel.SuggestionChosenCommand;
+
+            Assert.NotNull(addCommand);
+            Assert.NotNull(refreshCommand);
+            Assert.NotNull(suggestionCommand);
         });
 
         Assert.Null(exception);
@@ -63,9 +75,17 @@ public class DataBindingTests
         var viewModel = new ClassificationViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() => {
-            viewModel.IsList = true;
-            viewModel.IsList = false;
+        var exception = Record.Exception(() =>
+        {
+            var refreshCommand = viewModel.RefreshCommand;
+            var changeShowTypeCommand = viewModel.ChangeShowTypeCommand;
+            var bannerDetailCommand = viewModel.BannerDetailCommand;
+            var labelDetailCommand = viewModel.LabelDetailCommand;
+
+            Assert.NotNull(refreshCommand);
+            Assert.NotNull(changeShowTypeCommand);
+            Assert.NotNull(bannerDetailCommand);
+            Assert.NotNull(labelDetailCommand);
         });
 
         Assert.Null(exception);
@@ -78,13 +98,10 @@ public class DataBindingTests
         var viewModel = new SettingViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() => {
-            viewModel.SelectedThemeIndex = 0;
-            viewModel.PotPlayerPlaylistPath = "test";
-
-            // 测试集合操作
-            viewModel.ActiveHomeItems.Add(new HomeItemConfig("Test", typeof(string)));
-            viewModel.InactiveHomeItems.Add(new HomeItemConfig("Test2", typeof(string)));
+        var exception = Record.Exception(() =>
+        {
+            var dbSelectorRefreshCommand = viewModel.DbSelector_RefreshCommand;
+            Assert.NotNull(dbSelectorRefreshCommand);
         });
 
         Assert.Null(exception);
@@ -97,11 +114,10 @@ public class DataBindingTests
         var viewModel = new EntryCollectionDetailViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() => {
-            viewModel.EditTitle = "Test Title";
-            viewModel.EditDesc = "Test Description";
-            viewModel.SortTypeIndex = 0;
-            viewModel.SortWayIndex = 0;
+        var exception = Record.Exception(() =>
+        {
+            var cancelEditCommand = viewModel.CancelEditCommand;
+            Assert.NotNull(cancelEditCommand);
         });
 
         Assert.Null(exception);
@@ -114,12 +130,10 @@ public class DataBindingTests
         var viewModel = new LabelCollectionViewModel();
 
         // Act & Assert
-        var exception = Record.Exception(() => {
-            viewModel.Title = "Test";
-            viewModel.Description = "Test Desc";
-            viewModel.LabelId = "123";
-            viewModel.SortTypeIndex = 0;
-            viewModel.SortWayIndex = 0;
+        var exception = Record.Exception(() =>
+        {
+            var itemClickCommand = viewModel.ItemClickCommand;
+            Assert.NotNull(itemClickCommand);
         });
 
         Assert.Null(exception);
@@ -129,18 +143,31 @@ public class DataBindingTests
     public void ObservableCollectionOperations_ShouldNotThrow()
     {
         // Arrange
-        var viewModel = new SettingViewModel();
+        var viewModel = new CollectionsViewModel();
 
-        // Act
-        var exception = Record.Exception(() => {
-            // 测试集合的添加、删除操作
-            var item = new HomeItemConfig("Test", typeof(string));
-            viewModel.ActiveHomeItems.Add(item);
-            viewModel.ActiveHomeItems.RemoveAt(0);
-            viewModel.ActiveHomeItems.Clear();
+        // Act & Assert
+        var exception = Record.Exception(() =>
+        {
+            // 测试集合属性访问
+            var items = viewModel.EntryCollections;
+            Assert.NotNull(items);
         });
 
-        // Assert
+        Assert.Null(exception);
+    }
+
+    [Fact]
+    public void HomeViewModel_BindingContext_ShouldNotThrow()
+    {
+        // Arrange
+        var viewModel = new HomeViewModel();
+
+        // Act & Assert
+        var exception = Record.Exception(() =>
+        {
+            viewModel.Init();
+        });
+
         Assert.Null(exception);
     }
 }

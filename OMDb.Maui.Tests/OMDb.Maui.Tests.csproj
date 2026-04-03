@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -15,6 +15,7 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.20" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +23,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="OMDb.Maui">
-      <HintPath>..\OMDb.Maui\bin\Debug\net10.0-windows10.0.19041.0\win-x64\OMDb.Maui.dll</HintPath>
-    </Reference>
     <ProjectReference Include="..\OMDb.Core\OMDb.Core.csproj" />
+  </ItemGroup>
+
+  <!-- 直接引用 ViewModel 源代码进行测试 -->
+  <ItemGroup>
+    <Compile Include="..\OMDb.Maui\ViewModels\*.cs" Link="ViewModels\%(Filename)%(Extension)" />
+    <Compile Include="..\OMDb.Maui\Models\*.cs" Link="Models\%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>
