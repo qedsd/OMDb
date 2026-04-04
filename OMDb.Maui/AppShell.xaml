@@ -7,28 +7,9 @@
        FlyoutBehavior="Locked"
        FlyoutWidth="280"
        FlyoutBackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}"
-       FlyoutForegroundColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}"
        BackgroundColor="{AppThemeBinding Light=#F3F3F3, Dark=#1F1F1F}">
 
-    <!-- 自定义导航项模板 - Microsoft Store 风格 -->
-    <Shell.ItemTemplate>
-        <DataTemplate>
-            <Grid HeightRequest="44"
-                  Padding="16,0"
-                  ColumnDefinitions="Auto,*">
-                <Image Source="{Binding Icon}"
-                       WidthRequest="20"
-                       HeightRequest="20"
-                       VerticalOptions="Center" />
-                <Label Grid.Column="1"
-                       Text="{Binding Title}"
-                       FontSize="14"
-                       VerticalOptions="Center"
-                       Margin="16,0,0,0"
-                       TextColor="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
-            </Grid>
-        </DataTemplate>
-    </Shell.ItemTemplate>
+    <!-- 临时移除自定义 ItemTemplate 以排查问题 -->
 
     <Shell.FlyoutHeader>
         <Grid Padding="20,24,20,20"
@@ -91,19 +72,19 @@
             <HorizontalStackLayout Grid.Column="0"
                                    Spacing="12"
                                    VerticalOptions="Center">
-                <Button WidthRequest="36"
+                <ImageButton WidthRequest="36"
                         HeightRequest="36"
                         CornerRadius="18"
                         BackgroundColor="Transparent"
                         BorderWidth="0"
                         Clicked="MenuButton_Clicked">
-                    <Button.ImageSource>
+                    <ImageButton.Source>
                         <FontImageSource Glyph="&#xE700;"
                                         FontFamily="Segoe MDL2 Assets"
                                         Size="16"
                                         Color="{AppThemeBinding Light=#111111, Dark=#FFFFFF}" />
-                    </Button.ImageSource>
-                </Button>
+                    </ImageButton.Source>
+                </ImageButton>
 
                 <Image Source="logo_32.png"
                        WidthRequest="20"
@@ -120,44 +101,65 @@
 
     <!-- 主页 -->
     <ShellContent Title="主页"
-                  Icon="icon_home.png"
                   ContentTemplate="{DataTemplate views:HomePage}"
-                  Route="HomePage" />
+                  Route="HomePage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE80F;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 分类 -->
     <ShellContent Title="分类"
-                  Icon="icon_category.png"
                   ContentTemplate="{DataTemplate views:ClassificationPage}"
-                  Route="ClassificationPage" />
+                  Route="ClassificationPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE8C8;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 片单 -->
     <ShellContent Title="片单"
-                  Icon="icon_collection.png"
                   ContentTemplate="{DataTemplate views:CollectionsPage}"
-                  Route="CollectionsPage" />
+                  Route="CollectionsPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE8A8;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 词条 -->
     <ShellContent Title="词条"
-                  Icon="icon_entry.png"
                   ContentTemplate="{DataTemplate views:EntryHomePage}"
-                  Route="EntryHomePage" />
+                  Route="EntryHomePage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE82D;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 管理 -->
     <ShellContent Title="管理"
-                  Icon="icon_manage.png"
                   ContentTemplate="{DataTemplate views:ManagementPage}"
-                  Route="ManagementPage" />
+                  Route="ManagementPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE7EF;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 工具 -->
     <ShellContent Title="工具"
-                  Icon="icon_tool.png"
                   ContentTemplate="{DataTemplate views:ToolsPage}"
-                  Route="ToolsPage" />
+                  Route="ToolsPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE7FC;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
     <!-- 设置 -->
     <ShellContent Title="设置"
-                  Icon="icon_setting.png"
                   ContentTemplate="{DataTemplate views:SettingPage}"
-                  Route="SettingPage" />
+                  Route="SettingPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE713;" FontFamily="Segoe MDL2 Assets" Size="20" />
+        </ShellContent.Icon>
+    </ShellContent>
 
 </Shell>
